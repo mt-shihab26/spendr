@@ -18,6 +18,8 @@ package-lock.json
 boost.json
 CLAUDE.md
 .claude/
+.agents/
+.codex/
 
 # Config & env
 *.env
