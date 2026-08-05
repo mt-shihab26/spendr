@@ -7,7 +7,7 @@ type TFlashToast = {
     message: string;
 };
 
-export function useFlashToast(): void {
+export const useFlashToast = () => {
     useEffect(() => {
         return router.on('flash', (event) => {
             const flash = (event as CustomEvent).detail?.flash;
@@ -20,4 +20,4 @@ export function useFlashToast(): void {
             toast[data.type](data.message);
         });
     }, []);
-}
+};
