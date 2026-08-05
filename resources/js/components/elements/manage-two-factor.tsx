@@ -1,7 +1,7 @@
 import { Form } from '@inertiajs/react';
 import { ShieldCheck } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import Heading from '@/components/elements/heading';
+import { Heading } from '@/components/elements/heading';
 import TwoFactorRecoveryCodes from '@/components/elements/two-factor-recovery-codes';
 import TwoFactorSetupModal from '@/components/elements/two-factor-setup-modal';
 import { Button } from '@/components/ui/button';
