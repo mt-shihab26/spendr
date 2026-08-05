@@ -1,13 +1,12 @@
 import { router } from '@inertiajs/react';
 import { KeyRound } from 'lucide-react';
 import Heading from '@/components/heading';
-import PasskeyItem from '@/components/passkey-item';
+import PasskeyItem, { type TPasskey } from '@/components/passkey-item';
 import PasskeyRegistration from '@/components/passkey-register';
-import type { Passkey } from '@/types/auth';
 
 export type Props = {
     canManagePasskeys?: boolean;
-    passkeys?: Passkey[];
+    passkeys?: TPasskey[];
 };
 
 const EmptyState = () => {

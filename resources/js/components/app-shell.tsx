@@ -1,11 +1,12 @@
-import { usePage } from '@inertiajs/react';
 import type { ReactNode } from 'react';
+
+import { usePage } from '@inertiajs/react';
+
 import { SidebarProvider } from '@/components/ui/sidebar';
-import type { AppVariant } from '@/types';
 
 type Props = {
     children: ReactNode;
-    variant?: AppVariant;
+    variant?: 'header' | 'sidebar';
 };
 
 export function AppShell({ children, variant = 'sidebar' }: Props) {

@@ -10,10 +10,17 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import type { Passkey } from '@/types/auth';
+
+export type TPasskey = {
+    id: number;
+    name: string;
+    authenticator: string | null;
+    created_at_diff: string;
+    last_used_at_diff: string | null;
+};
 
 type Props = {
-    passkey: Passkey;
+    passkey: TPasskey;
     onDelete: (id: number, onError: () => void) => void;
 };
 

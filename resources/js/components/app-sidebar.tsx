@@ -4,6 +4,7 @@ import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
+import type { TNavItem } from '@/types/utils';
 import {
     Sidebar,
     SidebarContent,
@@ -13,9 +14,8 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import type { NavItem } from '@/types';
 
-const footerNavItems: NavItem[] = [
+const footerNavItems: TNavItem[] = [
     {
         title: 'Repository',
         href: 'https://github.com/laravel/react-starter-kit',
@@ -29,7 +29,7 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
-    const mainNavItems: NavItem[] = [
+    const mainNavItems: TNavItem[] = [
         {
             title: 'Dashboard',
             href: route('dashboard'),

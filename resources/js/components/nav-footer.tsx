@@ -1,4 +1,6 @@
 import type { ComponentPropsWithoutRef } from 'react';
+import type { TNavItem } from '@/types/utils';
+
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -7,14 +9,13 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { toUrl } from '@/lib/utils';
-import type { NavItem } from '@/types';
 
 export function NavFooter({
     items,
     className,
     ...props
 }: ComponentPropsWithoutRef<typeof SidebarGroup> & {
-    items: NavItem[];
+    items: TNavItem[];
 }) {
     return (
         <SidebarGroup
