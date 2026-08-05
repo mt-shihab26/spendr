@@ -38,14 +38,6 @@ type Props = {
     breadcrumbs?: BreadcrumbItem[];
 };
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: route('dashboard'),
-        icon: LayoutGrid,
-    },
-];
-
 const rightNavItems: NavItem[] = [
     {
         title: 'Repository',
@@ -63,6 +55,14 @@ const activeItemStyles =
     'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
 
 export function AppHeader({ breadcrumbs = [] }: Props) {
+    const mainNavItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: route('dashboard'),
+            icon: LayoutGrid,
+        },
+    ];
+
     const page = usePage();
     const { auth } = page.props;
     const getInitials = useInitials();

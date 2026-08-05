@@ -1,7 +1,11 @@
-import { Head } from '@inertiajs/react';
+import { Head, setLayoutProps } from '@inertiajs/react';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 
 export default function Dashboard() {
+    setLayoutProps({
+        breadcrumbs: [{ title: 'Dashboard', href: route('dashboard') }],
+    });
+
     return (
         <>
             <Head title="Dashboard" />
@@ -25,11 +29,3 @@ export default function Dashboard() {
     );
 }
 
-Dashboard.layout = {
-    breadcrumbs: [
-        {
-            title: 'Dashboard',
-            href: route('dashboard'),
-        },
-    ],
-};

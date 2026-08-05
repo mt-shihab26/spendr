@@ -7,25 +7,25 @@ import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn, toUrl } from '@/lib/utils';
 import type { NavItem } from '@/types';
 
-const sidebarNavItems: NavItem[] = [
-    {
-        title: 'Profile',
-        href: route('profile.edit'),
-        icon: null,
-    },
-    {
-        title: 'Security',
-        href: route('security.edit'),
-        icon: null,
-    },
-    {
-        title: 'Appearance',
-        href: route('appearance.edit'),
-        icon: null,
-    },
-];
-
 export default function SettingsLayout({ children }: PropsWithChildren) {
+    const sidebarNavItems: NavItem[] = [
+        {
+            title: 'Profile',
+            href: route('profile.edit'),
+            icon: null,
+        },
+        {
+            title: 'Security',
+            href: route('security.edit'),
+            icon: null,
+        },
+        {
+            title: 'Appearance',
+            href: route('appearance.edit'),
+            icon: null,
+        },
+    ];
+
     const { isCurrentOrParentUrl } = useCurrentUrl();
 
     return (

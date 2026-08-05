@@ -1,4 +1,4 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form, Head, setLayoutProps } from '@inertiajs/react';
 import { useRef } from 'react';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -16,6 +16,12 @@ type Props = {
     ManageTwoFactorProps;
 
 export default function Security(props: Props) {
+    setLayoutProps({
+        breadcrumbs: [
+            { title: 'Security settings', href: route('security.edit') },
+        ],
+    });
+
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
 
@@ -136,11 +142,3 @@ export default function Security(props: Props) {
     );
 }
 
-Security.layout = {
-    breadcrumbs: [
-        {
-            title: 'Security settings',
-            href: route('security.edit'),
-        },
-    ],
-};
