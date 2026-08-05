@@ -1,19 +1,20 @@
-import { Form } from '@inertiajs/react';
-import { ShieldCheck } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Heading } from '@/components/elements/heading';
-import TwoFactorRecoveryCodes from '@/components/elements/two-factor-recovery-codes';
-import TwoFactorSetupModal from '@/components/elements/two-factor-setup-modal';
-import { Button } from '@/components/ui/button';
 import { useTwoFactorAuth } from '@/hooks/use-two-factor-auth';
 
-export type Props = {
+import { Form } from '@inertiajs/react';
+import { ShieldCheck } from 'lucide-react';
+import { Heading } from '@/components/elements/heading';
+import { Button } from '@/components/ui/button';
+import { TwoFactorRecoveryCodes } from './two-factor-recovery-codes';
+import { TwoFactorSetupModal } from './two-factor-setup-modal';
+
+export type TManageTwoFactorProps = {
     canManageTwoFactor?: boolean;
     requiresConfirmation?: boolean;
     twoFactorEnabled?: boolean;
 };
 
-export default function ManageTwoFactor(props: Props) {
+export const ManageTwoFactor = (props: TManageTwoFactorProps) => {
     const requiresConfirmation = props.requiresConfirmation ?? false;
     const twoFactorEnabled = props.twoFactorEnabled ?? false;
 
@@ -126,4 +127,4 @@ export default function ManageTwoFactor(props: Props) {
             />
         </div>
     );
-}
+};

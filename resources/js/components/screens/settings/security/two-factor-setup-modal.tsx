@@ -1,10 +1,9 @@
-import { Form } from '@inertiajs/react';
-import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import { Check, Copy, ScanLine } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { InputError } from '@/components/elements/input-error';
-import { AlertError } from '@/components/elements/alert-error';
-import { Button } from '@/components/ui/button';
+import {
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSlot,
+} from '@/components/ui/input-otp';
+
 import {
     Dialog,
     DialogContent,
@@ -12,17 +11,22 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import {
-    InputOTP,
-    InputOTPGroup,
-    InputOTPSlot,
-} from '@/components/ui/input-otp';
-import { Spinner } from '@/components/ui/spinner';
+
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAppearance } from '@/hooks/use-appearance';
 import { useClipboard } from '@/hooks/use-clipboard';
+
+import { Form } from '@inertiajs/react';
+import { Check, Copy, ScanLine } from 'lucide-react';
+import { InputError } from '@/components/elements/input-error';
+import { AlertError } from '@/components/elements/alert-error';
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
+
+import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { OTP_MAX_LENGTH } from '@/hooks/use-two-factor-auth';
 
-function GridScanIcon() {
+const GridScanIcon = () => {
     return (
         <div className="mb-3 rounded-full border border-border bg-card p-0.5 shadow-sm">
             <div className="relative overflow-hidden rounded-full border border-border bg-muted p-2.5">
@@ -46,9 +50,9 @@ function GridScanIcon() {
             </div>
         </div>
     );
-}
+};
 
-function TwoFactorSetupStep({
+const TwoFactorSetupStep = ({
     qrCodeSvg,
     manualSetupKey,
     buttonText,
@@ -60,7 +64,7 @@ function TwoFactorSetupStep({
     buttonText: string;
     onNextStep: () => void;
     errors: string[];
-}) {
+}) => {
     const { resolvedAppearance } = useAppearance();
     const [copiedText, copy] = useClipboard();
     const IconComponent = copiedText === manualSetupKey ? Check : Copy;
@@ -135,15 +139,15 @@ function TwoFactorSetupStep({
             )}
         </>
     );
-}
+};
 
-function TwoFactorVerificationStep({
+const TwoFactorVerificationStep = ({
     onClose,
     onBack,
 }: {
     onClose: () => void;
     onBack: () => void;
-}) {
+}) => {
     const [code, setCode] = useState<string>('');
     const pinInputContainerRef = useRef<HTMLDivElement>(null);
 
@@ -227,21 +231,9 @@ function TwoFactorVerificationStep({
             )}
         </Form>
     );
-}
-
-type Props = {
-    isOpen: boolean;
-    onClose: () => void;
-    requiresConfirmation: boolean;
-    twoFactorEnabled: boolean;
-    qrCodeSvg: string | null;
-    manualSetupKey: string | null;
-    clearSetupData: () => void;
-    fetchSetupData: () => Promise<void>;
-    errors: string[];
 };
 
-export default function TwoFactorSetupModal({
+export const TwoFactorSetupModal = ({
     isOpen,
     onClose,
     requiresConfirmation,
@@ -251,7 +243,17 @@ export default function TwoFactorSetupModal({
     clearSetupData,
     fetchSetupData,
     errors,
-}: Props) {
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    requiresConfirmation: boolean;
+    twoFactorEnabled: boolean;
+    qrCodeSvg: string | null;
+    manualSetupKey: string | null;
+    clearSetupData: () => void;
+    fetchSetupData: () => Promise<void>;
+    errors: string[];
+}) => {
     const [showVerificationStep, setShowVerificationStep] =
         useState<boolean>(false);
 
@@ -352,4 +354,4 @@ export default function TwoFactorSetupModal({
             </DialogContent>
         </Dialog>
     );
-}
+};

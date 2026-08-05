@@ -1,19 +1,24 @@
-import { Form, Head, setLayoutProps } from '@inertiajs/react';
-import { InputError } from '@/components/elements/input-error';
 import { useRef } from 'react';
+import { setLayoutProps } from '@inertiajs/react';
+
+import { Form, Head } from '@inertiajs/react';
+import { InputError } from '@/components/elements/input-error';
 import { Heading } from '@/components/elements/heading';
+
 import type { TManagePasskeysProps } from '@/components/screens/settings/security/manage-passkeys';
+import type { TManageTwoFactorProps } from '@/components/screens/settings/security/manage-two-factor';
+
 import { ManagePasskeys } from '@/components/screens/settings/security/manage-passkeys';
-import type { Props as ManageTwoFactorProps } from '@/components/elements/manage-two-factor';
-import ManageTwoFactor from '@/components/elements/manage-two-factor';
-import PasswordInput from '@/components/elements/password-input';
+import { ManageTwoFactor } from '@/components/screens/settings/security/manage-two-factor';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+
+import PasswordInput from '@/components/elements/password-input';
 
 type Props = {
     passwordRules: string;
 } & TManagePasskeysProps &
-    ManageTwoFactorProps;
+    TManageTwoFactorProps;
 
 export default function Security(props: Props) {
     setLayoutProps({

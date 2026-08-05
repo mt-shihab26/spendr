@@ -1,8 +1,3 @@
-import { Form } from '@inertiajs/react';
-import { Eye, EyeOff, LockKeyhole, RefreshCw } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { AlertError } from '@/components/elements/alert-error';
-import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -11,17 +6,22 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 
-type Props = {
-    recoveryCodesList: string[];
-    fetchRecoveryCodes: () => Promise<void>;
-    errors: string[];
-};
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-export default function TwoFactorRecoveryCodes({
+import { Form } from '@inertiajs/react';
+import { Eye, EyeOff, LockKeyhole, RefreshCw } from 'lucide-react';
+import { AlertError } from '@/components/elements/alert-error';
+import { Button } from '@/components/ui/button';
+
+export const TwoFactorRecoveryCodes = ({
     recoveryCodesList,
     fetchRecoveryCodes,
     errors,
-}: Props) {
+}: {
+    recoveryCodesList: string[];
+    fetchRecoveryCodes: () => Promise<void>;
+    errors: string[];
+}) => {
     const [codesAreVisible, setCodesAreVisible] = useState<boolean>(false);
     const codesSectionRef = useRef<HTMLDivElement | null>(null);
     const canRegenerateCodes = recoveryCodesList.length > 0 && codesAreVisible;
@@ -163,4 +163,4 @@ export default function TwoFactorRecoveryCodes({
             </CardContent>
         </Card>
     );
-}
+};
