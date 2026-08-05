@@ -1,21 +1,21 @@
-import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
-import AppLogo from '@/components/elements/app-logo';
-import AppLogoIcon from '@/components/elements/app-logo-icon';
-import { Breadcrumbs } from '@/components/elements/breadcrumbs';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+
 import {
     NavigationMenu,
     NavigationMenuItem,
     NavigationMenuList,
-    navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
+
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
+
 import {
     Sheet,
     SheetContent,
@@ -23,20 +23,24 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { UserMenuContent } from '@/components/elements/user-menu-content';
-import { useCurrentUrl } from '@/hooks/use-current-url';
-import { useInitials } from '@/hooks/use-initials';
-import { cn, toUrl } from '@/lib/utils';
+
 import type { TBreadcrumb, TNavItem } from '@/types/utils';
 
-type Props = {
-    breadcrumbs?: TBreadcrumb[];
-};
+import { usePage } from '@inertiajs/react';
+import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
+import { useCurrentUrl } from '@/hooks/use-current-url';
+import { cn, toUrl } from '@/lib/utils';
+
+import { Link } from '@inertiajs/react';
+import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+
+import { Breadcrumbs } from './breadcrumbs';
+import { UserMenuContent } from './user-menu-content';
+import { AppLogo } from './app-logo';
+import { AppLogoIcon } from './app-logo-icon';
+import { formatInitial } from '@/lib/formats';
 
 const rightNavItems: TNavItem[] = [
     {
@@ -54,7 +58,11 @@ const rightNavItems: TNavItem[] = [
 const activeItemStyles =
     'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
 
-export function AppHeader({ breadcrumbs = [] }: Props) {
+export const AppHeader = ({
+    breadcrumbs = [],
+}: {
+    breadcrumbs?: TBreadcrumb[];
+}) => {
     const mainNavItems: TNavItem[] = [
         {
             title: 'Dashboard',
@@ -63,10 +71,8 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
         },
     ];
 
-    const page = usePage();
-    const { auth } = page.props;
-    const getInitials = useInitials();
     const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
+    const { auth } = usePage().props;
 
     return (
         <>
@@ -79,7 +85,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="mr-2 h-[34px] w-[34px]"
+                                    className="mr-2 h-8.5 w-8.5"
                                 >
                                     <Menu className="h-5 w-5" />
                                 </Button>
@@ -182,7 +188,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                 size="icon"
                                 className="group h-9 w-9 cursor-pointer"
                             >
-                                <Search className="!size-5 opacity-80 group-hover:opacity-100" />
+                                <Search className="size-5! opacity-80 group-hover:opacity-100" />
                             </Button>
                             <div className="ml-1 hidden gap-1 lg:flex">
                                 {rightNavItems.map((item) => (
@@ -221,7 +227,9 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                             alt={auth.user?.name}
                                         />
                                         <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                                            {getInitials(auth.user?.name ?? '')}
+                                            {formatInitial(
+                                                auth.user?.name ?? '',
+                                            )}
                                         </AvatarFallback>
                                     </Avatar>
                                 </Button>
@@ -244,4 +252,4 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
             )}
         </>
     );
-}
+};
