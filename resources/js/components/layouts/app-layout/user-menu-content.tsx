@@ -12,7 +12,7 @@ import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 
 import { Link } from '@inertiajs/react';
 import { LogOut, Settings } from 'lucide-react';
-import { UserInfo } from '@/components/elements/user-info';
+import { UserInfo } from '@/components/layouts/app-layout/user-info';
 
 export const UserMenuContent = ({ user }: { user: TUser }) => {
     const cleanup = useMobileNavigation();
