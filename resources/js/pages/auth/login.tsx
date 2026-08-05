@@ -2,7 +2,7 @@ import { Form, Head } from '@inertiajs/react';
 import { InputError } from '@/components/elements/input-error';
 import { PasskeyVerify } from '@/components/elements/passkey-verify';
 import { PasswordInput } from '@/components/elements/password-input';
-import TextLink from '@/components/elements/text-link';
+import { TextLink } from '@/components/elements/text-link';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';

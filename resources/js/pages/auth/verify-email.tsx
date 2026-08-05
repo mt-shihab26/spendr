@@ -1,6 +1,5 @@
-// Components
 import { Form, Head } from '@inertiajs/react';
-import TextLink from '@/components/elements/text-link';
+import { TextLink } from '@/components/elements/text-link';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 
