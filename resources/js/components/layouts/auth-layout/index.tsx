@@ -1,19 +1,23 @@
 import type { ReactNode } from 'react';
 
-import { Link } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { AppLogoIcon } from '@/components/icons/app-logo-icon';
 
 export const AuthLayout = ({
-    title = '',
-    description = '',
+    title,
+    description,
     children,
 }: {
-    title?: string;
-    description?: string;
+    title: string;
+    description: string;
     children: ReactNode;
 }) => {
     return (
         <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 md:p-10">
+            <Head>
+                <title>{title}</title>
+                <meta name="description" content={description} />
+            </Head>
             <div className="w-full max-w-sm">
                 <div className="flex flex-col gap-8">
                     <div className="flex flex-col items-center gap-4">
