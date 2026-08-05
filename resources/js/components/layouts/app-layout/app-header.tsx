@@ -39,7 +39,7 @@ import { Button } from '@/components/ui/button';
 import { Breadcrumbs } from './breadcrumbs';
 import { UserMenuContent } from './user-menu-content';
 import { AppLogo } from './app-logo';
-import { AppLogoIcon } from './app-logo-icon';
+import { AppLogoIcon } from '../../icons/app-logo-icon';
 import { formatInitial } from '@/lib/formats';
 
 const rightNavItems: TNavItem[] = [
