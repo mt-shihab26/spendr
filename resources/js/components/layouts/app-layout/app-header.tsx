@@ -72,7 +72,7 @@ export const AppHeader = ({
     ];
 
     const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
-    const { auth } = usePage().props;
+    const { user } = usePage().props.auth;
 
     return (
         <>
@@ -223,21 +223,17 @@ export const AppHeader = ({
                                 >
                                     <Avatar className="size-8 overflow-hidden rounded-full">
                                         <AvatarImage
-                                            src={auth.user?.avatar}
-                                            alt={auth.user?.name}
+                                            src={user?.avatar}
+                                            alt={user?.name}
                                         />
                                         <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                                            {formatInitial(
-                                                auth.user?.name ?? '',
-                                            )}
+                                            {formatInitial(user?.name ?? '')}
                                         </AvatarFallback>
                                     </Avatar>
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56" align="end">
-                                {auth.user && (
-                                    <UserMenuContent user={auth.user} />
-                                )}
+                                {user && <UserMenuContent user={user} />}
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
