@@ -1,6 +1,6 @@
 import { Head, setLayoutProps } from '@inertiajs/react';
-import AppearanceTabs from '@/components/appearance-tabs';
-import Heading from '@/components/heading';
+import AppearanceTabs from '@/components/elements/appearance-tabs';
+import Heading from '@/components/elements/heading';
 
 export default function Appearance() {
     setLayoutProps({
@@ -26,4 +26,3 @@ export default function Appearance() {
         </>
     );
 }
-

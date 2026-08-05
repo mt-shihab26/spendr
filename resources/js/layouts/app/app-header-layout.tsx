@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 
-import { AppContent } from '@/components/app-content';
-import { AppHeader } from '@/components/app-header';
-import { AppShell } from '@/components/app-shell';
+import { AppContent } from '@/components/elements/app-content';
+import { AppHeader } from '@/components/elements/app-header';
+import { AppShell } from '@/components/elements/app-shell';
 import type { TBreadcrumb } from '@/types/utils';
 
 export default function AppHeaderLayout({

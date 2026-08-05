@@ -1,7 +1,7 @@
 import { Form } from '@inertiajs/react';
 import { Eye, EyeOff, LockKeyhole, RefreshCw } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import AlertError from '@/components/alert-error';
+import AlertError from '@/components/elements/alert-error';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -80,7 +80,9 @@ export default function TwoFactorRecoveryCodes({
 
                     {canRegenerateCodes && (
                         <Form
-                            action={route('two-factor.regenerate-recovery-codes')}
+                            action={route(
+                                'two-factor.regenerate-recovery-codes',
+                            )}
                             method="post"
                             options={{ preserveScroll: true }}
                             onSuccess={fetchRecoveryCodes}

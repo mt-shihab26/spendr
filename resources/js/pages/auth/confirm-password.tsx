@@ -1,7 +1,7 @@
 import { Form, Head } from '@inertiajs/react';
-import InputError from '@/components/input-error';
-import PasskeyVerify from '@/components/passkey-verify';
-import PasswordInput from '@/components/password-input';
+import InputError from '@/components/elements/input-error';
+import PasskeyVerify from '@/components/elements/passkey-verify';
+import PasswordInput from '@/components/elements/password-input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
@@ -13,7 +13,10 @@ export default function ConfirmPassword() {
 
             <PasskeyVerify
                 routes={{
-                    options: { url: route('passkey.confirm-options'), method: 'get' },
+                    options: {
+                        url: route('passkey.confirm-options'),
+                        method: 'get',
+                    },
                     submit: { url: route('passkey.confirm'), method: 'post' },
                 }}
                 label="Confirm with passkey"
@@ -21,7 +24,11 @@ export default function ConfirmPassword() {
                 separator="Or confirm with password"
             />
 
-            <Form action={route('password.confirm.store')} method="post" resetOnSuccess={['password']}>
+            <Form
+                action={route('password.confirm.store')}
+                method="post"
+                resetOnSuccess={['password']}
+            >
                 {({ processing, errors }) => (
                     <div className="space-y-6">
                         <div className="grid gap-2">

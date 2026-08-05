@@ -1,9 +1,9 @@
 import { Form } from '@inertiajs/react';
 import { ShieldCheck } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import Heading from '@/components/heading';
-import TwoFactorRecoveryCodes from '@/components/two-factor-recovery-codes';
-import TwoFactorSetupModal from '@/components/two-factor-setup-modal';
+import Heading from '@/components/elements/heading';
+import TwoFactorRecoveryCodes from '@/components/elements/two-factor-recovery-codes';
+import TwoFactorSetupModal from '@/components/elements/two-factor-setup-modal';
 import { Button } from '@/components/ui/button';
 import { useTwoFactorAuth } from '@/hooks/use-two-factor-auth';
 
@@ -59,7 +59,10 @@ export default function ManageTwoFactor(props: Props) {
                     </p>
 
                     <div className="relative inline">
-                        <Form action={route('two-factor.disable')} method="delete">
+                        <Form
+                            action={route('two-factor.disable')}
+                            method="delete"
+                        >
                             {({ processing }) => (
                                 <Button
                                     variant="destructive"

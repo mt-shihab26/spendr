@@ -1,8 +1,8 @@
 import { router } from '@inertiajs/react';
 import { KeyRound } from 'lucide-react';
-import Heading from '@/components/heading';
-import PasskeyItem, { type TPasskey } from '@/components/passkey-item';
-import PasskeyRegistration from '@/components/passkey-register';
+import Heading from '@/components/elements/heading';
+import PasskeyItem, { type TPasskey } from '@/components/elements/passkey-item';
+import PasskeyRegistration from '@/components/elements/passkey-register';
 
 export type Props = {
     canManagePasskeys?: boolean;

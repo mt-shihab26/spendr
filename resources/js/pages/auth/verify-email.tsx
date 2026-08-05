@@ -1,6 +1,6 @@
 // Components
 import { Form, Head } from '@inertiajs/react';
-import TextLink from '@/components/text-link';
+import TextLink from '@/components/elements/text-link';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 
@@ -16,7 +16,11 @@ export default function VerifyEmail({ status }: { status?: string }) {
                 </div>
             )}
 
-            <Form action={route('verification.send')} method="post" className="space-y-6 text-center">
+            <Form
+                action={route('verification.send')}
+                method="post"
+                className="space-y-6 text-center"
+            >
                 {({ processing }) => (
                     <>
                         <Button disabled={processing} variant="secondary">

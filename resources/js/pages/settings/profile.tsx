@@ -1,8 +1,8 @@
 import { Form, Head, setLayoutProps, usePage } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
-import DeleteUser from '@/components/delete-user';
-import Heading from '@/components/heading';
-import InputError from '@/components/input-error';
+import DeleteUser from '@/components/elements/delete-user';
+import Heading from '@/components/elements/heading';
+import InputError from '@/components/elements/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
