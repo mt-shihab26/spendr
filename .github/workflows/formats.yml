@@ -5,8 +5,11 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
-  test:
+  ci:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,8 +33,20 @@ jobs:
       - name: Setup Application
         run: composer run setup
 
-      - name: Run PHP Test
-        run: composer run test
+      - name: Lint PHP Code
+        run: composer run lint
 
-      - name: Run JavaScript Test
-        run: bun run test
+      - name: Format JavaScript Code
+        run: bun run lint
+
+      - name: Format PHP Code
+        run: composer run format
+
+      - name: Format JavaScript Code
+        run: bun run format
+
+      - name: Commit Changes
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: fix code style
+          commit_options: '--no-verify'
