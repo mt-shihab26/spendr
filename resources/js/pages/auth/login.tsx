@@ -1,5 +1,5 @@
 import { Form, Head } from '@inertiajs/react';
-import InputError from '@/components/elements/input-error';
+import { InputError } from '@/components/elements/input-error';
 import PasskeyVerify from '@/components/elements/passkey-verify';
 import PasswordInput from '@/components/elements/password-input';
 import TextLink from '@/components/elements/text-link';

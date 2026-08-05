@@ -1,8 +1,8 @@
 import type { UrlMethodPair } from '@inertiajs/core';
+import { InputError } from '@/components/elements/input-error';
 import { router } from '@inertiajs/react';
 import { usePasskeyVerify } from '@laravel/passkeys/react';
 import { KeyRound } from 'lucide-react';
-import InputError from '@/components/elements/input-error';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Spinner } from '@/components/ui/spinner';

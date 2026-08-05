@@ -1,7 +1,6 @@
-// Components
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
-import InputError from '@/components/elements/input-error';
+import { InputError } from '@/components/elements/input-error';
 import TextLink from '@/components/elements/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

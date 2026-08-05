@@ -1,7 +1,7 @@
 import { Form, Head, setLayoutProps } from '@inertiajs/react';
+import { InputError } from '@/components/elements/input-error';
 import { useRef } from 'react';
 import { Heading } from '@/components/elements/heading';
-import InputError from '@/components/elements/input-error';
 import type { Props as ManagePasskeysProps } from '@/components/elements/manage-passkeys';
 import ManagePasskeys from '@/components/elements/manage-passkeys';
 import type { Props as ManageTwoFactorProps } from '@/components/elements/manage-two-factor';

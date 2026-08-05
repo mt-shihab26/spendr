@@ -14,8 +14,8 @@ import { Form } from '@inertiajs/react';
 import { Heading } from '@/components/elements/heading';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { InputError } from '@/components/elements/input-error';
 
-import InputError from '@/components/elements/input-error';
 import PasswordInput from '@/components/elements/password-input';
 
 export const DeleteUser = () => {
