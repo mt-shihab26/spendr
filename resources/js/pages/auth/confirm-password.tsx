@@ -1,15 +1,10 @@
 import { Form, Head } from '@inertiajs/react';
-import {
-    index as confirmOptions,
-    store as confirmStore,
-} from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyConfirmationController';
 import InputError from '@/components/input-error';
 import PasskeyVerify from '@/components/passkey-verify';
 import PasswordInput from '@/components/password-input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { store } from '@/routes/password/confirm';
 
 export default function ConfirmPassword() {
     return (
@@ -18,15 +13,15 @@ export default function ConfirmPassword() {
 
             <PasskeyVerify
                 routes={{
-                    options: confirmOptions(),
-                    submit: confirmStore(),
+                    options: { url: route('passkey.confirm-options'), method: 'get' },
+                    submit: { url: route('passkey.confirm'), method: 'post' },
                 }}
                 label="Confirm with passkey"
                 loadingLabel="Confirming..."
                 separator="Or confirm with password"
             />
 
-            <Form {...store.form()} resetOnSuccess={['password']}>
+            <Form action={route('password.confirm.store')} method="post" resetOnSuccess={['password']}>
                 {({ processing, errors }) => (
                     <div className="space-y-6">
                         <div className="grid gap-2">
