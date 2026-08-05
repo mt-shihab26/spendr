@@ -1,7 +1,7 @@
 import { Form, Head } from '@inertiajs/react';
 import { InputError } from '@/components/elements/input-error';
-import PasskeyVerify from '@/components/elements/passkey-verify';
-import PasswordInput from '@/components/elements/password-input';
+import { PasswordInput } from '@/components/elements/password-input';
+import { PasskeyVerify } from '@/components/elements/passkey-verify';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
