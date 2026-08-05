@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 
 import { AppHeader } from './app-header';
 
-const AppLayout = ({
+export const AppLayout = ({
     children,
     breadcrumbs = [],
 }: {
@@ -19,5 +19,3 @@ const AppLayout = ({
         </div>
     );
 };
-
-export default AppLayout;

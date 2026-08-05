@@ -1,8 +1,8 @@
 import type { SVGAttributes } from 'react';
 
-export function AppLogoIcon(props: SVGAttributes<SVGElement>) {
+export const AppLogoIcon = (props: SVGAttributes<SVGElement>) => {
     return (
-        <svg {...props} viewBox="0 0 40 42" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 40 42" xmlns="http://www.w3.org/2000/svg" {...props}>
             <path
                 fillRule="evenodd"
                 clipRule="evenodd"
@@ -10,4 +10,4 @@ export function AppLogoIcon(props: SVGAttributes<SVGElement>) {
             />
         </svg>
     );
-}
+};

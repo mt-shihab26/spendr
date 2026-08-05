@@ -2,7 +2,7 @@ import { usePage } from '@inertiajs/react';
 
 import { AppLogoIcon } from './app-logo-icon';
 
-export function AppLogo() {
+export const AppLogo = () => {
     const { name } = usePage().props;
 
     return (
@@ -17,4 +17,4 @@ export function AppLogo() {
             </div>
         </>
     );
-}
+};
