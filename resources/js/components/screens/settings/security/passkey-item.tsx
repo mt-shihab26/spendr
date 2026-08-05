@@ -1,6 +1,3 @@
-import { KeyRound, Trash2 } from 'lucide-react';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogClose,
@@ -11,6 +8,11 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 
+import { useState } from 'react';
+
+import { KeyRound, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
 export type TPasskey = {
     id: number;
     name: string;
@@ -19,12 +21,13 @@ export type TPasskey = {
     last_used_at_diff: string | null;
 };
 
-type Props = {
+export const PasskeyItem = ({
+    passkey,
+    onDelete,
+}: {
     passkey: TPasskey;
     onDelete: (id: number, onError: () => void) => void;
-};
-
-export default function PasskeyItem({ passkey, onDelete }: Props) {
+}) => {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDelete = () => {
@@ -97,4 +100,4 @@ export default function PasskeyItem({ passkey, onDelete }: Props) {
             </Dialog>
         </div>
     );
-}
+};

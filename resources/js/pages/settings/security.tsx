@@ -2,8 +2,8 @@ import { Form, Head, setLayoutProps } from '@inertiajs/react';
 import { InputError } from '@/components/elements/input-error';
 import { useRef } from 'react';
 import { Heading } from '@/components/elements/heading';
-import type { Props as ManagePasskeysProps } from '@/components/elements/manage-passkeys';
-import ManagePasskeys from '@/components/elements/manage-passkeys';
+import type { TManagePasskeysProps } from '@/components/screens/settings/security/manage-passkeys';
+import { ManagePasskeys } from '@/components/screens/settings/security/manage-passkeys';
 import type { Props as ManageTwoFactorProps } from '@/components/elements/manage-two-factor';
 import ManageTwoFactor from '@/components/elements/manage-two-factor';
 import PasswordInput from '@/components/elements/password-input';
@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 
 type Props = {
     passwordRules: string;
-} & ManagePasskeysProps &
+} & TManagePasskeysProps &
     ManageTwoFactorProps;
 
 export default function Security(props: Props) {

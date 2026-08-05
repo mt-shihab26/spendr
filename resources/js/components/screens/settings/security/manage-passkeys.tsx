@@ -1,13 +1,11 @@
+import type { TPasskey } from '@/components/screens/settings/security/passkey-item';
+
 import { router } from '@inertiajs/react';
+
 import { KeyRound } from 'lucide-react';
 import { Heading } from '@/components/elements/heading';
-import PasskeyItem, { type TPasskey } from '@/components/elements/passkey-item';
-import PasskeyRegistration from '@/components/elements/passkey-register';
-
-export type Props = {
-    canManagePasskeys?: boolean;
-    passkeys?: TPasskey[];
-};
+import { PasskeyItem } from './passkey-item';
+import { PasskeyRegistration } from './passkey-register';
 
 const EmptyState = () => {
     return (
@@ -23,7 +21,12 @@ const EmptyState = () => {
     );
 };
 
-export default function ManagePasskeys(props: Props) {
+export type TManagePasskeysProps = {
+    canManagePasskeys?: boolean;
+    passkeys?: TPasskey[];
+};
+
+export const ManagePasskeys = (props: TManagePasskeysProps) => {
     const passkeys = props.passkeys ?? [];
 
     const handleDelete = (id: number, onError: () => void) => {
@@ -66,4 +69,4 @@ export default function ManagePasskeys(props: Props) {
             <PasskeyRegistration onSuccess={handleRegisterSuccess} />
         </div>
     );
-}
+};
