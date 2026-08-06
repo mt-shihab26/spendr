@@ -8,13 +8,36 @@ export const utcToLocalDatetimeInput = (utcDatetime: string): string => {
     return format(parseISO(utcDatetime), "yyyy-MM-dd'T'HH:mm:ss");
 };
 
-export const formatLocalDateTime = (
-    date: string | null | undefined,
-    pattern = 'MMM d, yyyy h:mm a',
-): string => {
-    return date ? format(parseISO(date), pattern) : '';
-};
-
 export const nowUtcIso = (): string => {
     return new Date().toISOString();
+};
+
+const parse = (date: string | null | undefined) => {
+    return date ? parseISO(date) : null;
+};
+
+export const formatLocalDate = (date: string | null | undefined): string => {
+    const d = parse(date);
+    return d ? format(d, 'MMM d, yyyy') : '';
+};
+
+export const formatLocalDateLong = (
+    date: string | null | undefined,
+): string => {
+    const d = parse(date);
+    return d ? format(d, 'EEEE, MMMM d, yyyy') : '';
+};
+
+export const formatLocalDateTime = (
+    date: string | null | undefined,
+): string => {
+    const d = parse(date);
+    return d ? format(d, 'MMM d, yyyy h:mm a') : '';
+};
+
+export const formatLocalDateTimeLong = (
+    date: string | null | undefined,
+): string => {
+    const d = parse(date);
+    return d ? format(d, 'EEEE, MMM d, yyyy h:mm a') : '';
 };
