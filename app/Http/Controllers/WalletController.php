@@ -94,7 +94,7 @@ class WalletController extends Controller
         });
 
         return redirect()
-            ->route('wallets.show', $wallet)
+            ->back()
             ->with('success', 'Wallet updated.');
     }
 

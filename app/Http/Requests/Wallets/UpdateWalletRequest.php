@@ -26,6 +26,7 @@ class UpdateWalletRequest extends FormRequest
     {
         return [
             'name' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:100',
@@ -33,11 +34,11 @@ class UpdateWalletRequest extends FormRequest
                     ->where('user_id', $this->user()->id)
                     ->ignore($this->wallet->id),
             ],
-            'currency' => ['required', Rule::enum(Currency::class)],
-            'initial_balance' => ['nullable', 'numeric', 'min:0'],
-            'color' => ['required', 'string'],
-            'icon' => ['nullable', 'string'],
-            'is_default' => ['boolean'],
+            'currency' => ['sometimes', 'required', Rule::enum(Currency::class)],
+            'initial_balance' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'color' => ['sometimes', 'required', 'string'],
+            'icon' => ['sometimes', 'nullable', 'string'],
+            'is_default' => ['sometimes', 'boolean'],
         ];
     }
 }
