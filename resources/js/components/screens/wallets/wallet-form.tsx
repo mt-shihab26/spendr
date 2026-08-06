@@ -1,10 +1,4 @@
-import {
-    NativeSelect,
-    NativeSelectOption,
-} from '@/components/ui/native-select';
-
 import type { TWallet } from '@/types/models';
-import type { TCurrency } from '@/types/enums';
 
 import { useForm } from '@inertiajs/react';
 
@@ -16,9 +10,8 @@ import { InputError } from '@/components/elements/input-error';
 import { NumberInput } from '@/components/elements/number-input';
 import { ColorPicker } from '@/components/elements/color-picker';
 import { IconPicker } from '@/components/elements/icon-picker';
+import { CurrencyPicker } from '@/components/elements/currency-picker';
 import { Label } from '@/components/ui/label';
-
-import { CURRENCIES_OPTIONS } from '@/lib/options';
 
 export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
     const { data, setData, post, patch, processing, errors } = useForm({
@@ -47,8 +40,8 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
                     Name <span className="text-destructive">*</span>
                 </Label>
                 <Input
-                    id="name"
-                    name="name"
+                    id="wallet-name"
+                    name="wallet-name"
                     value={data.name}
                     onChange={(e) => setData('name', e.target.value)}
                     placeholder="e.g. Cash, Bank Account"
@@ -58,24 +51,13 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="currency">
+                <Label>
                     Currency <span className="text-destructive">*</span>
                 </Label>
-                <NativeSelect
-                    id="currency"
-                    name="currency"
+                <CurrencyPicker
                     value={data.currency}
-                    className="w-full"
-                    onChange={(e) =>
-                        setData('currency', e.target.value as TCurrency)
-                    }
-                >
-                    {CURRENCIES_OPTIONS.map((c) => (
-                        <NativeSelectOption key={c} value={c}>
-                            {c}
-                        </NativeSelectOption>
-                    ))}
-                </NativeSelect>
+                    onChange={(currency) => setData('currency', currency)}
+                />
                 <InputError message={errors.currency} />
             </div>
 
