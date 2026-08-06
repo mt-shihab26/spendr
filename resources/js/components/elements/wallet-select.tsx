@@ -22,7 +22,7 @@ export const WalletSelect = ({
     value: string | null;
     onValueChange: (value: string | null) => void;
     disabled?: boolean;
-    includeAll: boolean;
+    includeAll?: boolean;
 }) => {
     const selected = wallets.find((w) => w.id === value);
 

@@ -27,7 +27,7 @@ test('budgets store creates a budget for the authenticated user', function () {
     $this->actingAs($user)
         ->post(route('budgets.store'), [
             'category_id' => $category->id,
-            'amount' => 500.00,
+            'amount' => ['BDT' => 500.00, 'USD' => 50.00],
         ])
         ->assertRedirect();
 
@@ -41,7 +41,7 @@ test('budgets store rejects an income category', function () {
     $this->actingAs($user)
         ->post(route('budgets.store'), [
             'category_id' => $category->id,
-            'amount' => 500.00,
+            'amount' => ['BDT' => 500.00, 'USD' => 50.00],
         ])
         ->assertSessionHasErrors('category_id');
 });
@@ -54,7 +54,7 @@ test('budgets store rejects a duplicate category budget', function () {
     $this->actingAs($user)
         ->post(route('budgets.store'), [
             'category_id' => $category->id,
-            'amount' => 200.00,
+            'amount' => ['BDT' => 200.00, 'USD' => 20.00],
         ])
         ->assertSessionHasErrors('category_id');
 });
@@ -62,13 +62,13 @@ test('budgets store rejects a duplicate category budget', function () {
 test('budgets update changes the budget amount', function () {
     $user = User::factory()->create();
     $category = Category::factory()->for($user)->expense()->create();
-    $budget = Budget::factory()->for($user)->create(['category_id' => $category->id, 'amount' => 100]);
+    $budget = Budget::factory()->for($user)->create(['category_id' => $category->id, 'amount' => ['BDT' => 100, 'USD' => 10]]);
 
     $this->actingAs($user)
-        ->patch(route('budgets.update', $budget), ['amount' => 999.99])
+        ->patch(route('budgets.update', $budget), ['amount' => ['BDT' => 999.99, 'USD' => 99.99]])
         ->assertRedirect();
 
-    expect($budget->fresh()->amount)->toBe(999.99);
+    expect($budget->fresh()->amount)->toBe(['BDT' => 999.99, 'USD' => 99.99]);
 });
 
 test('budgets destroy deletes the budget', function () {

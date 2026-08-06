@@ -9,6 +9,8 @@ import { EditButton } from '@/components/elements/edit-button';
 import { BackButton } from '@/components/elements/back-button';
 import { IconBadge } from '@/components/elements/icon-badge';
 
+import { CURRENCIES_OPTIONS } from '@/lib/currency';
+
 const BudgetsShow = ({ budget }: { budget: TBudget }) => {
     return (
         <AppLayout
@@ -42,9 +44,19 @@ const BudgetsShow = ({ budget }: { budget: TBudget }) => {
                         <p className="text-xs text-muted-foreground">
                             Monthly Limit
                         </p>
-                        <p className="mt-1 text-lg font-semibold tabular-nums">
-                            {formatCurrency(budget.amount)}
-                        </p>
+                        <div className="mt-1 flex flex-col">
+                            {CURRENCIES_OPTIONS.map((currency) => (
+                                <p
+                                    key={currency}
+                                    className="text-lg font-semibold tabular-nums"
+                                >
+                                    {formatCurrency(
+                                        budget.amount[currency] ?? 0,
+                                        currency,
+                                    )}
+                                </p>
+                            ))}
+                        </div>
                     </div>
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">

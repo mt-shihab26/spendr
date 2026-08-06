@@ -7,6 +7,8 @@ import { IconBadge } from '@/components/elements/icon-badge';
 import { BudgetActions } from '@/components/screens/budgets/budget-actions';
 import { BudgetDeleteDialog } from '@/components/screens/budgets/budget-delete-dialog';
 
+import { CURRENCIES_OPTIONS } from '@/lib/currency';
+
 export const BudgetsTable = ({ budgets }: { budgets: TBudget[] }) => {
     const [toDelete, setToDelete] = useState<TBudget | null>(null);
 
@@ -30,12 +32,22 @@ export const BudgetsTable = ({ budgets }: { budgets: TBudget[] }) => {
                                 {budget.category?.type}
                             </span>
                         </div>
-                        <span className="text-sm font-semibold tabular-nums">
-                            {formatCurrency(budget.amount)}
-                            <span className="ml-1 text-xs font-normal text-muted-foreground">
-                                / mo
-                            </span>
-                        </span>
+                        <div className="flex flex-col items-end">
+                            {CURRENCIES_OPTIONS.map((currency) => (
+                                <span
+                                    key={currency}
+                                    className="text-sm font-semibold tabular-nums"
+                                >
+                                    {formatCurrency(
+                                        budget.amount[currency] ?? 0,
+                                        currency,
+                                    )}
+                                    <span className="ml-1 text-xs font-normal text-muted-foreground">
+                                        / mo
+                                    </span>
+                                </span>
+                            ))}
+                        </div>
                         <BudgetActions budget={budget} onDelete={setToDelete} />
                     </div>
                 ))}

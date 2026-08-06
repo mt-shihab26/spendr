@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
  * @property string $id
  * @property string $user_id
  * @property string $category_id
- * @property float $amount
+ * @property array<string, float> $amount
  * @property Carbon|null $deleted_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -36,7 +36,7 @@ class Budget extends Model
     protected function casts(): array
     {
         return [
-            'amount' => 'float',
+            'amount' => 'array',
         ];
     }
 

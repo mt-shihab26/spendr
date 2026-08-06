@@ -1,13 +1,15 @@
 import type { TCategory } from '@/types/models';
 
 import { useState } from 'react';
-import { formatNumber } from '@/lib/formats';
+import { formatCurrency, formatNumber } from '@/lib/formats';
 
 import { Link } from '@inertiajs/react';
 import { Badge } from '@/components/ui/badge';
 import { IconBadge } from '@/components/elements/icon-badge';
 import { CategoryActions } from '@/components/screens/categories/category-actions';
 import { CategoryDeleteDialog } from '@/components/screens/categories/category-delete-dialog';
+
+import { CURRENCIES_OPTIONS } from '@/lib/currency';
 
 export const CategoriesTable = ({
     categories,
@@ -54,9 +56,18 @@ export const CategoriesTable = ({
                         {category.budget && (
                             <span className="text-xs text-muted-foreground tabular-nums">
                                 Budget:{' '}
-                                <span className="font-medium text-foreground">
-                                    {formatNumber(category.budget.amount)}
-                                </span>
+                                {CURRENCIES_OPTIONS.map((currency) => (
+                                    <span
+                                        key={currency}
+                                        className="font-medium text-foreground"
+                                    >
+                                        {formatCurrency(
+                                            category.budget!.amount[currency] ??
+                                                0,
+                                            currency,
+                                        )}
+                                    </span>
+                                ))}
                             </span>
                         )}
                         <CategoryActions

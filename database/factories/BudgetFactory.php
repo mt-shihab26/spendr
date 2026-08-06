@@ -29,7 +29,10 @@ class BudgetFactory extends Factory
         return [
             'user_id' => $user?->id,
             'category_id' => $category?->id,
-            'amount' => fake()->randomFloat(2, 50, 5000),
+            'amount' => [
+                'BDT' => fake()->randomFloat(2, 500, 50000),
+                'USD' => fake()->randomFloat(2, 50, 5000),
+            ],
         ];
     }
 }

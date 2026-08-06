@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();
-            $table->decimal('amount', 15, 2);
+            $table->json('amount');
             $table->softDeletes();
             $table->timestamps();
 

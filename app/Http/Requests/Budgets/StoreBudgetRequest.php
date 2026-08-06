@@ -31,7 +31,9 @@ class StoreBudgetRequest extends FormRequest
                 Rule::exists('categories', 'id')->where('user_id', $this->user()->id)->where('type', Type::Expense->value),
                 Rule::unique('budgets')->where('user_id', $this->user()->id),
             ],
-            'amount' => ['required', 'numeric', 'min:0.01'],
+            'amount' => ['required', 'array'],
+            'amount.BDT' => ['required', 'numeric', 'min:0'],
+            'amount.USD' => ['required', 'numeric', 'min:0'],
         ];
     }
 }

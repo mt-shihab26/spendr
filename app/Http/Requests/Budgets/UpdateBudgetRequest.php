@@ -32,7 +32,9 @@ class UpdateBudgetRequest extends FormRequest
                 Rule::exists('categories', 'id')->where('user_id', $this->user()->id)->where('type', Type::Expense->value),
                 Rule::unique('budgets')->where('user_id', $this->user()->id)->ignore($this->route('budget')),
             ],
-            'amount' => ['sometimes', 'required', 'numeric', 'min:0.01'],
+            'amount' => ['sometimes', 'required', 'array'],
+            'amount.BDT' => ['sometimes', 'required', 'numeric', 'min:0'],
+            'amount.USD' => ['sometimes', 'required', 'numeric', 'min:0'],
         ];
     }
 }
