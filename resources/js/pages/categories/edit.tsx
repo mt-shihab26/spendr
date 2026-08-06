@@ -8,7 +8,13 @@ import { Button } from '@/components/ui/button';
 import { CategoryForm } from '@/components/screens/categories/category-form';
 import { CategoryDeleteDialog } from '@/components/screens/categories/category-delete-dialog';
 
-const CategoriesEdit = ({ category }: { category: TCategory }) => {
+const CategoriesEdit = ({
+    category,
+    replacement_categories,
+}: {
+    category: TCategory;
+    replacement_categories: TCategory[];
+}) => {
     return (
         <AppLayout
             title="Edit Category"
@@ -44,6 +50,7 @@ const CategoriesEdit = ({ category }: { category: TCategory }) => {
                         <div className="mt-6 border-t pt-4">
                             <CategoryDeleteDialog
                                 category={category}
+                                categories={replacement_categories}
                                 trigger={
                                     <Button variant="destructive" size="sm">
                                         <Trash2 />

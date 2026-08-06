@@ -5,6 +5,7 @@ import { formatCurrency } from '@/lib/formats';
 import { CURRENCIES_OPTIONS } from '@/lib/currency';
 
 import { Link } from '@inertiajs/react';
+import { ChevronRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { IconBadge } from '@/components/elements/icon-badge';
 import { CategoryActions } from '@/components/screens/categories/category-actions';
@@ -50,6 +51,9 @@ export const CategoriesTable = ({
                         {isOverBudget(category) && (
                             <Badge variant="destructive">⚠ Over</Badge>
                         )}
+                        <span className="text-xs text-muted-foreground tabular-nums">
+                            {category.transactions_count ?? 0} transactions
+                        </span>
                         <div className="flex flex-col items-end gap-0.5">
                             {CURRENCIES_OPTIONS.map((currency) => {
                                 const spent = category.month_spent?.[currency] ?? 0;
@@ -65,12 +69,23 @@ export const CategoriesTable = ({
                             category={category}
                             onDelete={setCategoryToDelete}
                         />
+                        {!category.is_default ? (
+                            <Link
+                                href={route('categories.edit', category.id)}
+                                className="text-muted-foreground hover:text-foreground"
+                            >
+                                <ChevronRight className="size-4" />
+                            </Link>
+                        ) : (
+                            <div className="size-4" />
+                        )}
                     </div>
                 ))}
             </div>
             {categoryToDelete && (
                 <CategoryDeleteDialog
                     category={categoryToDelete}
+                    categories={categories}
                     open={!!categoryToDelete}
                     onDeleted={() => setCategoryToDelete(null)}
                     onOpenChange={(open) => !open && setCategoryToDelete(null)}

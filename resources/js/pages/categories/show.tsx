@@ -2,14 +2,13 @@ import type { TCategory, TTransaction } from '@/types/models';
 import type { TPaginated } from '@/types/utils';
 
 import { getIcon } from '@/lib/icons';
-import { formatNumber } from '@/lib/formats';
 
 import { InfiniteScroll } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { EditButton } from '@/components/elements/edit-button';
 import { BackButton } from '@/components/elements/back-button';
-import { Badge } from '@/components/ui/badge';
 import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
 
 const CategoriesShow = ({
@@ -54,29 +53,34 @@ const CategoriesShow = ({
                         <BackButton href={route('categories.index')} />
                     </div>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2">
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Type</p>
-                        <Badge variant="secondary" className="mt-1 capitalize">
-                            {category.type}
-                        </Badge>
-                    </div>
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">
-                            Total Amount
-                        </p>
-                        <p className="mt-1 text-lg font-semibold tabular-nums">
-                            {formatNumber(category.total_amount ?? 0)}
-                        </p>
-                    </div>
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">
-                            Transactions
-                        </p>
+                        <p className="text-xs text-muted-foreground">Transactions</p>
                         <p className="mt-1 text-lg font-semibold tabular-nums">
                             {category.transactions_count ?? 0}
                         </p>
                     </div>
+                    {category.budget ? (
+                        <div className="border p-4">
+                            <p className="text-xs text-muted-foreground">Budget</p>
+                            <Link
+                                href={route('budgets.show', category.budget.id)}
+                                className="mt-1 text-sm font-medium hover:underline"
+                            >
+                                View budget →
+                            </Link>
+                        </div>
+                    ) : category.type === 'expense' ? (
+                        <div className="border p-4">
+                            <p className="text-xs text-muted-foreground">Budget</p>
+                            <Link
+                                href={route('budgets.create')}
+                                className="mt-1 text-sm font-medium hover:underline"
+                            >
+                                Set a budget →
+                            </Link>
+                        </div>
+                    ) : null}
                 </div>
                 {transactions.data.length > 0 ? (
                     <InfiniteScroll data="transactions" onlyNext preserveUrl>

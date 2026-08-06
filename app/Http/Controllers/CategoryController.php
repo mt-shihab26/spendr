@@ -8,6 +8,7 @@ use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -99,8 +100,18 @@ class CategoryController extends Controller
     {
         abort_if($category->user_id !== $request->user()->id, 403);
 
+        $category->loadStats();
+
+        $replacementCategories = $request->user()
+            ->categories()
+            ->where('type', $category->getRawOriginal('type'))
+            ->where('id', '!=', $category->id)
+            ->orderBy('sort_order')
+            ->get();
+
         return inertia('categories/edit', [
             'category' => $category,
+            'replacement_categories' => $replacementCategories,
         ]);
     }
 
@@ -110,6 +121,10 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, Category $category): RedirectResponse
     {
         abort_if($category->user_id !== $request->user()->id, 403);
+
+        if ($request->filled('type') && $request->input('type') !== $category->getRawOriginal('type') && $category->transactions()->exists()) {
+            return back()->withErrors(['type' => 'Cannot change type when the category has transactions.']);
+        }
 
         $category->update($request->validated());
 
@@ -125,6 +140,20 @@ class CategoryController extends Controller
     {
         abort_if($category->is_default, 403);
         abort_if($category->user_id !== $request->user()->id, 403);
+
+        if ($category->transactions()->exists()) {
+            $request->validate([
+                'replacement_id' => [
+                    'required',
+                    'uuid',
+                    Rule::exists('categories', 'id')
+                        ->where('user_id', $request->user()->id)
+                        ->where('type', $category->getRawOriginal('type')),
+                ],
+            ]);
+
+            $category->transactions()->update(['category_id' => $request->input('replacement_id')]);
+        }
 
         $category->delete();
 
