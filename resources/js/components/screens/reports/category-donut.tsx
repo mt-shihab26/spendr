@@ -44,7 +44,10 @@ export const CategoryDonut = ({
         <div className="border p-4">
             <p className="mb-2 text-sm font-medium">{title}</p>
             <div className="flex items-center gap-6">
-                <ChartContainer config={chartConfig} className="h-40 w-40 shrink-0">
+                <ChartContainer
+                    config={chartConfig}
+                    className="h-40 w-40 shrink-0"
+                >
                     <PieChart>
                         <ChartTooltip
                             content={
@@ -72,7 +75,10 @@ export const CategoryDonut = ({
                 </ChartContainer>
                 <ul className="flex flex-1 flex-col gap-1.5 overflow-hidden">
                     {data.map((item) => (
-                        <li key={item.name} className="flex items-center gap-2 text-xs">
+                        <li
+                            key={item.name}
+                            className="flex items-center gap-2 text-xs"
+                        >
                             <span
                                 className="size-2 shrink-0 rounded-full"
                                 style={{ backgroundColor: item.color }}

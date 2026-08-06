@@ -63,12 +63,20 @@ export const TransactionsTable = ({
                                             <span className="text-xs text-muted-foreground">
                                                 {transaction.category ? (
                                                     <Link
-                                                        href={route('categories.show', transaction.category.id)}
+                                                        href={route(
+                                                            'categories.show',
+                                                            transaction.category
+                                                                .id,
+                                                        )}
                                                         className="hover:underline"
                                                     >
-                                                        {transaction.category.name}
+                                                        {
+                                                            transaction.category
+                                                                .name
+                                                        }
                                                     </Link>
-                                                ) : null}{' · '}
+                                                ) : null}
+                                                {' · '}
                                                 {transaction.wallet && (
                                                     <Link
                                                         href={route(

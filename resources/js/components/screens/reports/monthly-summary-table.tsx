@@ -12,7 +12,13 @@ type TSummaryRow = {
     savings_rate: number | null;
 };
 
-export const MonthlySummaryTable = ({ rows, currency }: { rows: TSummaryRow[]; currency: TCurrency }) => {
+export const MonthlySummaryTable = ({
+    rows,
+    currency,
+}: {
+    rows: TSummaryRow[];
+    currency: TCurrency;
+}) => {
     if (rows.length === 0) {
         return (
             <div className="border p-4 text-center text-xs text-muted-foreground">
@@ -46,24 +52,30 @@ export const MonthlySummaryTable = ({ rows, currency }: { rows: TSummaryRow[]; c
                 <tbody className="divide-y">
                     {rows.map((row) => (
                         <tr key={row.key} className="hover:bg-muted/30">
-                            <td className="px-4 py-2.5 font-medium">{row.month}</td>
-                            <td className="px-4 py-2.5 text-right tabular-nums text-green-600">
+                            <td className="px-4 py-2.5 font-medium">
+                                {row.month}
+                            </td>
+                            <td className="px-4 py-2.5 text-right text-green-600 tabular-nums">
                                 {formatCurrency(row.income, currency)}
                             </td>
-                            <td className="px-4 py-2.5 text-right tabular-nums text-red-500">
+                            <td className="px-4 py-2.5 text-right text-red-500 tabular-nums">
                                 {formatCurrency(row.expenses, currency)}
                             </td>
                             <td
                                 className={cn(
                                     'px-4 py-2.5 text-right font-semibold tabular-nums',
-                                    row.net >= 0 ? 'text-green-600' : 'text-red-500',
+                                    row.net >= 0
+                                        ? 'text-green-600'
+                                        : 'text-red-500',
                                 )}
                             >
                                 {row.net >= 0 ? '+' : ''}
                                 {formatCurrency(row.net, currency)}
                             </td>
-                            <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">
-                                {row.savings_rate !== null ? `${row.savings_rate}%` : '—'}
+                            <td className="px-4 py-2.5 text-right text-muted-foreground tabular-nums">
+                                {row.savings_rate !== null
+                                    ? `${row.savings_rate}%`
+                                    : '—'}
                             </td>
                         </tr>
                     ))}

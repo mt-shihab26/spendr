@@ -115,7 +115,6 @@ const ReportsIndex = ({
                         Export CSV
                     </Button>
                 </div>
-
                 <div className="flex items-center justify-between gap-4">
                     {currencies.length > 1 ? (
                         <Tabs value={currency} onValueChange={switchCurrency}>

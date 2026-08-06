@@ -33,14 +33,23 @@ const chartConfig = {
     net: { label: 'Net', color: '#6366f1' },
 } satisfies ChartConfig;
 
-export const CashFlowChart = ({ data, currency }: { data: TCashFlowRow[]; currency: TCurrency }) => {
+export const CashFlowChart = ({
+    data,
+    currency,
+}: {
+    data: TCashFlowRow[];
+    currency: TCurrency;
+}) => {
     const chartData = data.map((row) => ({ ...row, expenses: -row.expenses }));
 
     return (
         <div className="border p-4">
             <p className="mb-4 text-sm font-medium">Monthly Cash Flow</p>
             <ChartContainer config={chartConfig} className="h-64 w-full">
-                <ComposedChart data={chartData} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
+                <ComposedChart
+                    data={chartData}
+                    margin={{ top: 4, right: 8, bottom: 0, left: 0 }}
+                >
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis
                         dataKey="month"
@@ -52,7 +61,9 @@ export const CashFlowChart = ({ data, currency }: { data: TCashFlowRow[]; curren
                         tickLine={false}
                         axisLine={false}
                         tick={{ fontSize: 11 }}
-                        tickFormatter={(v) => formatCurrency(Math.abs(v), currency)}
+                        tickFormatter={(v) =>
+                            formatCurrency(Math.abs(v), currency)
+                        }
                         width={72}
                     />
                     <ChartTooltip
@@ -65,19 +76,36 @@ export const CashFlowChart = ({ data, currency }: { data: TCashFlowRow[]; curren
                                         {payload
                                             .filter((p) => p.type !== 'none')
                                             .map((p, i) => {
-                                                const cfg = chartConfig[p.dataKey as keyof typeof chartConfig];
+                                                const cfg =
+                                                    chartConfig[
+                                                        p.dataKey as keyof typeof chartConfig
+                                                    ];
                                                 return (
-                                                    <div key={i} className="flex items-center gap-2">
+                                                    <div
+                                                        key={i}
+                                                        className="flex items-center gap-2"
+                                                    >
                                                         <div
                                                             className="size-2.5 shrink-0 rounded-[2px]"
-                                                            style={{ backgroundColor: p.color }}
+                                                            style={{
+                                                                backgroundColor:
+                                                                    p.color,
+                                                            }}
                                                         />
                                                         <div className="flex flex-1 items-center justify-between gap-4">
                                                             <span className="text-muted-foreground">
-                                                                {cfg?.label ?? p.name}
+                                                                {cfg?.label ??
+                                                                    p.name}
                                                             </span>
                                                             <span className="font-mono font-medium tabular-nums">
-                                                                {formatCurrency(Math.abs(Number(p.value)), currency)}
+                                                                {formatCurrency(
+                                                                    Math.abs(
+                                                                        Number(
+                                                                            p.value,
+                                                                        ),
+                                                                    ),
+                                                                    currency,
+                                                                )}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -89,8 +117,18 @@ export const CashFlowChart = ({ data, currency }: { data: TCashFlowRow[]; curren
                         }}
                     />
                     <ChartLegend content={<ChartLegendContent />} />
-                    <Bar dataKey="income" fill="var(--color-income)" radius={2} maxBarSize={32} />
-                    <Bar dataKey="expenses" fill="var(--color-expenses)" radius={2} maxBarSize={32} />
+                    <Bar
+                        dataKey="income"
+                        fill="var(--color-income)"
+                        radius={2}
+                        maxBarSize={32}
+                    />
+                    <Bar
+                        dataKey="expenses"
+                        fill="var(--color-expenses)"
+                        radius={2}
+                        maxBarSize={32}
+                    />
                     <Line
                         dataKey="net"
                         stroke="var(--color-net)"

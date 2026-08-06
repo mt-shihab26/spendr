@@ -42,17 +42,17 @@ export const CategoriesTable = ({
                         {category.is_default && (
                             <Badge variant="secondary">Default</Badge>
                         )}
-                        <span className="text-xs tabular-nums text-muted-foreground">
+                        <span className="text-xs text-muted-foreground tabular-nums">
                             {category.transactions_count ?? 0} transactions
                         </span>
-                        <span className="text-xs tabular-nums text-muted-foreground">
+                        <span className="text-xs text-muted-foreground tabular-nums">
                             {category.type === 'expense' ? 'Spent' : 'Earned'}:{' '}
                             <span className="font-medium text-foreground">
                                 {formatNumber(category.total_amount ?? 0)}
                             </span>
                         </span>
                         {category.budget && (
-                            <span className="text-xs tabular-nums text-muted-foreground">
+                            <span className="text-xs text-muted-foreground tabular-nums">
                                 Budget:{' '}
                                 <span className="font-medium text-foreground">
                                     {formatNumber(category.budget.amount)}

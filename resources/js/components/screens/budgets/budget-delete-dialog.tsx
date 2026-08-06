@@ -41,8 +41,8 @@ export const BudgetDeleteDialog = ({
                 <AlertDialogHeader>
                     <AlertDialogTitle>Delete this budget?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        This cannot be undone. The category will no longer have a
-                        spending limit.
+                        This cannot be undone. The category will no longer have
+                        a spending limit.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

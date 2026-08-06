@@ -36,10 +36,7 @@ export const BudgetsTable = ({ budgets }: { budgets: TBudget[] }) => {
                                 / mo
                             </span>
                         </span>
-                        <BudgetActions
-                            budget={budget}
-                            onDelete={setToDelete}
-                        />
+                        <BudgetActions budget={budget} onDelete={setToDelete} />
                     </div>
                 ))}
             </div>

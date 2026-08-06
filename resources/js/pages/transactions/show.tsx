@@ -70,7 +70,10 @@ const TransactionsShow = ({ transaction }: { transaction: TTransaction }) => {
                             )}
                             {transaction.category ? (
                                 <Link
-                                    href={route('categories.show', transaction.category.id)}
+                                    href={route(
+                                        'categories.show',
+                                        transaction.category.id,
+                                    )}
                                     className="text-sm font-medium hover:underline"
                                 >
                                     {transaction.category.name}

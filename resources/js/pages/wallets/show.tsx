@@ -85,7 +85,7 @@ const WalletsShow = ({
                         <p className="text-xs text-muted-foreground">
                             Transfers Out
                         </p>
-                        <p className="mt-1 text-lg font-semibold tabular-nums text-orange-500">
+                        <p className="mt-1 text-lg font-semibold text-orange-500 tabular-nums">
                             {formatCurrency(
                                 wallet.transfers_out ?? 0,
                                 wallet.currency,
@@ -96,7 +96,7 @@ const WalletsShow = ({
                         <p className="text-xs text-muted-foreground">
                             Transfers In
                         </p>
-                        <p className="mt-1 text-lg font-semibold tabular-nums text-blue-500">
+                        <p className="mt-1 text-lg font-semibold text-blue-500 tabular-nums">
                             {formatCurrency(
                                 wallet.transfers_in ?? 0,
                                 wallet.currency,
