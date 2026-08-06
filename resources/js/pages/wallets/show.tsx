@@ -49,7 +49,7 @@ const WalletsShow = ({
                         <BackButton href={route('wallets.index')} />
                     </div>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-4">
+                <div className="grid gap-4 sm:grid-cols-5">
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">Initial Balance</p>
                         <p className="mt-1 text-lg font-semibold text-initial-balance tabular-nums">
@@ -73,6 +73,15 @@ const WalletsShow = ({
                         <p className="mt-1 text-lg font-semibold text-expense tabular-nums">
                             {formatCurrency(
                                 wallet.expense ?? 0,
+                                wallet.currency,
+                            )}
+                        </p>
+                    </div>
+                    <div className="border p-4">
+                        <p className="text-xs text-muted-foreground">Net</p>
+                        <p className={`mt-1 text-lg font-semibold tabular-nums ${(wallet.income ?? 0) - (wallet.expense ?? 0) >= 0 ? 'text-income' : 'text-expense'}`}>
+                            {formatCurrency(
+                                (wallet.income ?? 0) - (wallet.expense ?? 0),
                                 wallet.currency,
                             )}
                         </p>
