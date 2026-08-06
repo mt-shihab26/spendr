@@ -3,7 +3,6 @@ import {
     ChartLegend,
     ChartLegendContent,
     ChartTooltip,
-    ChartTooltipContent,
     type ChartConfig,
 } from '@/components/ui/chart';
 
@@ -35,11 +34,13 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export const CashFlowChart = ({ data, currency }: { data: TCashFlowRow[]; currency: TCurrency }) => {
+    const chartData = data.map((row) => ({ ...row, expenses: -row.expenses }));
+
     return (
         <div className="border p-4">
             <p className="mb-4 text-sm font-medium">Monthly Cash Flow</p>
             <ChartContainer config={chartConfig} className="h-64 w-full">
-                <ComposedChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
+                <ComposedChart data={chartData} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis
                         dataKey="month"
@@ -51,32 +52,41 @@ export const CashFlowChart = ({ data, currency }: { data: TCashFlowRow[]; curren
                         tickLine={false}
                         axisLine={false}
                         tick={{ fontSize: 11 }}
-                        tickFormatter={(v) => formatCurrency(v, currency)}
+                        tickFormatter={(v) => formatCurrency(Math.abs(v), currency)}
                         width={72}
                     />
                     <ChartTooltip
-                        content={
-                            <ChartTooltipContent
-                                formatter={(value, name, item) => {
-                                    const label = chartConfig[name as keyof typeof chartConfig]?.label ?? String(name);
-                                    const color = (item as any).color ?? (item as any).payload?.fill;
-                                    return (
-                                        <>
-                                            <div
-                                                className="size-2.5 shrink-0 rounded-[2px]"
-                                                style={{ backgroundColor: color }}
-                                            />
-                                            <div className="flex flex-1 items-center justify-between gap-4 leading-none">
-                                                <span className="text-muted-foreground">{label}</span>
-                                                <span className="font-mono font-medium tabular-nums">
-                                                    {formatCurrency(Number(value), currency)}
-                                                </span>
-                                            </div>
-                                        </>
-                                    );
-                                }}
-                            />
-                        }
+                        content={({ active, payload, label }) => {
+                            if (!active || !payload?.length) return null;
+                            return (
+                                <div className="grid min-w-40 gap-1.5 rounded-none border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
+                                    <p className="font-medium">{label}</p>
+                                    <div className="grid gap-1.5">
+                                        {payload
+                                            .filter((p) => p.type !== 'none')
+                                            .map((p, i) => {
+                                                const cfg = chartConfig[p.dataKey as keyof typeof chartConfig];
+                                                return (
+                                                    <div key={i} className="flex items-center gap-2">
+                                                        <div
+                                                            className="size-2.5 shrink-0 rounded-[2px]"
+                                                            style={{ backgroundColor: p.color }}
+                                                        />
+                                                        <div className="flex flex-1 items-center justify-between gap-4">
+                                                            <span className="text-muted-foreground">
+                                                                {cfg?.label ?? p.name}
+                                                            </span>
+                                                            <span className="font-mono font-medium tabular-nums">
+                                                                {formatCurrency(Math.abs(Number(p.value)), currency)}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                    </div>
+                                </div>
+                            );
+                        }}
                     />
                     <ChartLegend content={<ChartLegendContent />} />
                     <Bar dataKey="income" fill="var(--color-income)" radius={2} maxBarSize={32} />
