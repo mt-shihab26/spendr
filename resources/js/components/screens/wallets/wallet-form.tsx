@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { InputError } from '@/components/elements/input-error';
+import { NumberInput } from '@/components/elements/number-input';
 import { Label } from '@/components/ui/label';
 
 import { CURRENCIES_OPTIONS } from '@/lib/options';
@@ -76,10 +77,10 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
                     id="currency"
                     name="currency"
                     value={data.currency}
+                    className="w-full"
                     onChange={(e) =>
                         setData('currency', e.target.value as TCurrency)
                     }
-                    className="w-full"
                 >
                     {CURRENCIES_OPTIONS.map((c) => (
                         <NativeSelectOption key={c} value={c}>
@@ -92,15 +93,18 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
 
             <div className="grid gap-2">
                 <Label htmlFor="initial_balance">Initial Balance</Label>
-                <Input
+                <NumberInput
                     id="initial_balance"
                     name="initial_balance"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={data.initial_balance}
-                    onChange={(e) => setData('initial_balance', e.target.value)}
                     placeholder="0.00"
+                    decimalScale={2}
+                    fixedDecimalScale
+                    thousandSeparator
+                    allowNegative={false}
+                    value={data.initial_balance}
+                    onValueChange={({ value }) =>
+                        setData('initial_balance', value)
+                    }
                 />
                 <InputError message={errors.initial_balance} />
             </div>
