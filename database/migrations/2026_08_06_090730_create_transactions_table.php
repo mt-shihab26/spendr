@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignUuid('category_id')->constrained()->restrictOnDelete();
             $table->string('type')->default(Type::Expense->value);
             $table->decimal('amount', 15, 2);
-            $table->date('transacted_at');
+            $table->dateTime('transacted_at');
             $table->string('description');
             $table->text('notes')->nullable();
             $table->softDeletes();

@@ -30,7 +30,7 @@ class TransactionFactory extends Factory
             'category_id' => Category::where('user_id', $user?->id)->where('type', $type->value)->inRandomOrder()->first()?->id,
             'type' => $type->value,
             'amount' => fake()->randomFloat(2, 1, 5000),
-            'transacted_at' => fake()->dateTimeBetween('-1 year', 'now')->format('Y-m-d'),
+            'transacted_at' => fake()->dateTimeBetween('-1 year', 'now')->format('Y-m-d H:i:s'),
             'description' => fake()->sentence(4),
             'notes' => fake()->optional(0.3)->sentence(),
         ];
