@@ -19,7 +19,7 @@ import { getIcon } from '@/lib/icons';
 import { Badge } from '@/components/ui/badge';
 import { WalletActions } from '@/components/screens/wallets/wallet-actions';
 
-import { CURRENCY_SYMBOLS } from '@/lib/options';
+import { getCurrencySymbol } from '@/lib/currency';
 
 export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
     const [walletToDelete, setWalletToDelete] = useState<TWallet | null>(null);
@@ -52,7 +52,7 @@ export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
                             {wallet.name}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                            {CURRENCY_SYMBOLS[wallet.currency]}{' '}
+                            {getCurrencySymbol(wallet.currency)}{' '}
                             {wallet.currency}
                         </span>
                         {wallet.is_default && (

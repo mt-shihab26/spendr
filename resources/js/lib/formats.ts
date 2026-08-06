@@ -1,6 +1,6 @@
 import type { TCurrency } from '@/types/enums';
 
-import { CURRENCY_SYMBOLS } from '@/lib/options';
+import { getCurrencySymbol } from '@/lib/currency';
 
 export const formatInitial = (fullName: string): string => {
     const getInitial = (name: string): string => Array.from(name)[0] ?? '';
@@ -22,5 +22,5 @@ export const formatCurrency = (
         maximumFractionDigits: 2,
     }).format(Number(amount));
 
-    return `${CURRENCY_SYMBOLS[currency]}${formatted}`;
+    return `${getCurrencySymbol(currency)}${formatted}`;
 };
