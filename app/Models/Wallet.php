@@ -66,4 +66,24 @@ class Wallet extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    /**
+     * Get transfers sent from this wallet.
+     *
+     * @return HasMany<Transfer, $this>
+     */
+    public function outgoingTransfers(): HasMany
+    {
+        return $this->hasMany(Transfer::class, 'from_wallet_id');
+    }
+
+    /**
+     * Get transfers received into this wallet.
+     *
+     * @return HasMany<Transfer, $this>
+     */
+    public function incomingTransfers(): HasMany
+    {
+        return $this->hasMany(Transfer::class, 'to_wallet_id');
+    }
 }

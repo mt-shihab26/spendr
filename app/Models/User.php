@@ -80,4 +80,14 @@ class User extends Authenticatable implements PasskeyUser
     {
         return $this->hasMany(Transaction::class);
     }
+
+    /**
+     * Get the user's transfers.
+     *
+     * @return HasMany<Transfer, $this>
+     */
+    public function transfers(): HasMany
+    {
+        return $this->hasMany(Transfer::class);
+    }
 }
