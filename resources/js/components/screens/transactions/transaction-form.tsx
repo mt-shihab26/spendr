@@ -2,7 +2,7 @@ import {
     localToUtcDatetime,
     utcToLocalDatetimeInput,
     nowUtcIso,
-} from '@/lib/formats';
+} from '@/lib/date';
 
 import type { TTransaction, TWallet, TCategory } from '@/types/models';
 import type { TType } from '@/types/enums';
