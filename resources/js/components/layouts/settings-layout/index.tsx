@@ -44,7 +44,7 @@ export const SettingsLayout = ({
             title={title}
             description={description}
             breadcrumbs={[
-                { title: 'Settings', href: 'profile.edit' },
+                { title: 'Settings', route: 'profile.edit' },
                 ...breadcrumbs,
             ]}
         >

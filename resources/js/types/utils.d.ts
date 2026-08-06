@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 
 export type TBreadcrumb = {
     title: string;
-    href: NonNullable<InertiaLinkProps['href']>;
+    route: string;
 };
 
 export type TNavItem = {

@@ -33,7 +33,7 @@ export const Breadcrumbs = ({
                                             </BreadcrumbPage>
                                         ) : (
                                             <BreadcrumbLink asChild>
-                                                <Link href={item.href}>
+                                                <Link href={route(item.route)}>
                                                     {item.title}
                                                 </Link>
                                             </BreadcrumbLink>

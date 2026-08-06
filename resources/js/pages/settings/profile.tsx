@@ -22,9 +22,7 @@ const Profile = ({
         <SettingsLayout
             title="Profile settings"
             description="Update your name and email address"
-            breadcrumbs={[
-                { title: 'Profile settings', href: route('profile.edit') },
-            ]}
+            breadcrumbs={[{ title: 'Profile', route: 'profile.edit' }]}
         >
             <Form
                 action={route('profile.update')}
