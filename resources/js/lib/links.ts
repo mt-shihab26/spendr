@@ -27,7 +27,7 @@ export const mainLinks = (): TLink[] => [
     },
     {
         title: 'Wallets',
-        href: '/wallets',
+        href: route('wallets.index'),
         icon: Wallet,
     },
     {
