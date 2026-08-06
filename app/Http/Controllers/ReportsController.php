@@ -31,8 +31,8 @@ class ReportsController extends Controller
                 'uuid',
                 Rule::exists('wallets', 'id')->where('user_id', $user->id),
             ],
-            'date_from' => ['nullable', 'date'],
-            'date_to' => ['nullable', 'date', 'before_or_equal:today'],
+            'date_from' => ['nullable', 'date', 'before_or_equal:today', 'before_or_equal:date_to', 'required_with:date_to'],
+            'date_to' => ['nullable', 'date', 'before_or_equal:today', 'after_or_equal:date_from', 'required_with:date_from'],
         ]);
 
         $currency = $validated['currency'] ?? (in_array('BDT', $currencies) ? 'BDT' : ($currencies[0] ?? null));

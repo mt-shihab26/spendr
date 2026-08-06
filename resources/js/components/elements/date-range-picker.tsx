@@ -1,6 +1,6 @@
 import type { DateRange } from 'react-day-picker';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { format, subDays, startOfWeek, startOfMonth, subMonths } from 'date-fns';
 import { CalendarIcon, ChevronDownIcon, CheckIcon, XIcon } from 'lucide-react';
 
@@ -90,9 +90,21 @@ export const DateRangePicker = ({
 
     const hasSelection = !!dateFrom && !!dateTo;
 
+    const matchedPreset = useMemo(() => {
+        if (!dateFrom || !dateTo) return null;
+        return (
+            PRESETS.flat().find(({ key }) => {
+                const r = resolvePreset(key);
+                return r !== null && r.from === dateFrom && r.to === dateTo;
+            })?.key ?? null
+        );
+    }, [dateFrom, dateTo]);
+
+    const effectivePreset = activePreset ?? matchedPreset;
+
     const triggerLabel =
-        activePreset && hasSelection
-            ? PRESETS.flat().find((p) => p.key === activePreset)?.label ?? 'Date range'
+        effectivePreset && hasSelection
+            ? PRESETS.flat().find((p) => p.key === effectivePreset)?.label ?? 'Date range'
             : hasSelection
               ? `${displayDate(dateFrom!)} – ${displayDate(dateTo!)}`
               : 'Date range';
@@ -159,11 +171,11 @@ export const DateRangePicker = ({
                                             onClick={() => handlePreset(key)}
                                             className={cn(
                                                 'flex w-full items-center justify-between px-3 py-1.5 text-xs hover:bg-muted',
-                                                activePreset === key && 'font-medium text-primary',
+                                                effectivePreset === key && 'font-medium text-primary',
                                             )}
                                         >
                                             <span>{label}</span>
-                                            {activePreset === key && (
+                                            {effectivePreset === key && (
                                                 <CheckIcon className="size-3 shrink-0" />
                                             )}
                                         </button>
