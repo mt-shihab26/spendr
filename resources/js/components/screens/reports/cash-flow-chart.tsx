@@ -1,12 +1,4 @@
 import {
-    ChartContainer,
-    ChartLegend,
-    ChartLegendContent,
-    ChartTooltip,
-    type ChartConfig,
-} from '@/components/ui/chart';
-
-import {
     Bar,
     CartesianGrid,
     ComposedChart,
@@ -15,16 +7,25 @@ import {
     YAxis,
 } from 'recharts';
 
+import {
+    ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
+    ChartTooltip,
+} from '@/components/ui/chart';
+
 import type { TCurrency } from '@/types/enums';
+import type { ChartConfig } from '@/components/ui/chart';
 
 import { formatCurrency } from '@/lib/formats';
 
-type TCashFlowRow = {
+export type TCashFlowRow = {
     month: string;
     key: string;
     income: number;
     expenses: number;
     net: number;
+    savings_rate: number | null;
 };
 
 const chartConfig = {
@@ -86,7 +87,7 @@ export const CashFlowChart = ({
                                                         className="flex items-center gap-2"
                                                     >
                                                         <div
-                                                            className="size-2.5 shrink-0 rounded-[2px]"
+                                                            className="size-2.5 shrink-0 rounded-xs"
                                                             style={{
                                                                 backgroundColor:
                                                                     p.color,

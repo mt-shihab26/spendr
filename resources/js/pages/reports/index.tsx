@@ -1,11 +1,7 @@
-import {
-    NativeSelect,
-    NativeSelectOption,
-} from '@/components/ui/native-select';
-
 import type { TCurrency } from '@/types/enums';
 import type { TWallet } from '@/types/models';
 import type { TSummary } from '@/components/screens/reports/reports-summary';
+import { type TCashFlowRow } from '@/components/screens/reports/cash-flow-chart';
 
 import { router } from '@inertiajs/react';
 
@@ -20,15 +16,7 @@ import { MonthlySummaryTable } from '@/components/screens/reports/monthly-summar
 import { CurrencyTabs } from '@/components/elements/currency-tabs';
 import { ShowBalance } from '@/components/elements/show-balance';
 import { WalletSelect } from '@/components/elements/wallet-select';
-
-type TCashFlowRow = {
-    month: string;
-    key: string;
-    income: number;
-    expenses: number;
-    net: number;
-    savings_rate: number | null;
-};
+import { ExportCSV } from '@/components/screens/reports/export-csv';
 
 type TCategoryRow = {
     name: string;
@@ -113,13 +101,7 @@ const ReportsIndex = ({
                         title="Reports"
                         description="Analyse your spending and income trends"
                     />
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => exportCsv(monthly_summary)}
-                    >
-                        Export CSV
-                    </Button>
+                    <ExportCSV monthlySummary={monthly_summary} />
                 </div>
                 <div className="flex items-center justify-between gap-4">
                     <CurrencyTabs
@@ -155,9 +137,7 @@ const ReportsIndex = ({
                     />
                 </div>
                 <ReportsSummary summary={summary} currency={currency} />
-
                 <CashFlowChart data={monthly_cash_flow} currency={currency} />
-
                 <div className="grid gap-4 sm:grid-cols-2">
                     <CategoryDonut
                         title="Expenses by Category"
