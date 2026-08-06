@@ -37,6 +37,7 @@ const ForgotPassword = ({ status }: { status?: string }) => {
 
                             <div className="my-6 flex items-center justify-start">
                                 <Button
+                                    type="submit"
                                     className="w-full"
                                     disabled={processing}
                                     data-test="email-password-reset-link-button"
