@@ -83,18 +83,12 @@ export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
                                 </span>
                                 <span className="font-medium text-balance tabular-nums">
                                     {formatCurrency(
-                                        wallet.initial_balance +
-                                            (wallet.income ?? 0) -
-                                            (wallet.expense ?? 0),
+                                        wallet.balance ?? 0,
                                         wallet.currency,
                                     )}
                                 </span>
                             </div>
-                            <ProfitLossBadge
-                                net={
-                                    (wallet.income ?? 0) - (wallet.expense ?? 0)
-                                }
-                            />
+                            <ProfitLossBadge net={wallet.net ?? 0} />
                             <WalletActions
                                 wallet={wallet}
                                 onDelete={setWalletToDelete}

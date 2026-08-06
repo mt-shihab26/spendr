@@ -23,6 +23,10 @@ export type TWallet = {
     sort_order: number;
     income: number | null;
     expense: number | null;
+    transfers_out: number | null;
+    transfers_in: number | null;
+    net: number | null;
+    balance: number | null;
     deleted_at: string | null;
     created_at: string;
     updated_at: string;

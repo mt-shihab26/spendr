@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Type;
 use App\Http\Requests\Wallets\StoreWalletRequest;
 use App\Http\Requests\Wallets\UpdateWalletRequest;
 use App\Models\Wallet;
@@ -21,30 +20,26 @@ class WalletController extends Controller
     {
         $wallets = $request->user()
             ->wallets()
-            ->withSum(['transactions as income' => fn ($q) => $q->where('type', Type::Income->value)], 'amount')
-            ->withSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount')
+            ->withStats()
             ->orderBy('sort_order')
             ->orderBy('created_at')
-            ->get();
-
-        $initialBalances = $request->user()
-            ->wallets()
-            ->selectRaw('currency, SUM(initial_balance) as total')
-            ->groupBy('currency')
-            ->pluck('total', 'currency');
-
-        $stats = $request->user()
-            ->transactions()
-            ->join('wallets', 'transactions.wallet_id', '=', 'wallets.id')
-            ->selectRaw('wallets.currency, transactions.type, SUM(transactions.amount) as total')
-            ->groupBy('wallets.currency', 'transactions.type')
             ->get()
-            ->groupBy('currency')
-            ->map(fn ($rows, $currency) => [
+            ->each(function (Wallet $wallet) {
+                $wallet->setAttribute('net', $wallet->netFlow());
+                $wallet->setAttribute('balance', $wallet->currentBalance());
+            });
+
+        $stats = $wallets
+            ->groupBy(fn (Wallet $wallet) => $wallet->currency->value)
+            ->map(fn ($group, string $currency) => [
                 'currency' => $currency,
-                'initial_balance' => (float) ($initialBalances[$currency] ?? 0),
-                'income' => (float) ($rows->firstWhere('type', Type::Income->value)?->total ?? 0),
-                'expense' => (float) ($rows->firstWhere('type', Type::Expense->value)?->total ?? 0),
+                'initial_balance' => round((float) $group->sum('initial_balance'), 2),
+                'income' => round((float) $group->sum('income'), 2),
+                'expense' => round((float) $group->sum('expense'), 2),
+                'transfers_out' => round((float) $group->sum('transfers_out'), 2),
+                'transfers_in' => round((float) $group->sum('transfers_in'), 2),
+                'net' => round((float) $group->sum('net'), 2),
+                'balance' => round((float) $group->sum('balance'), 2),
             ])
             ->values();
 
@@ -87,8 +82,7 @@ class WalletController extends Controller
     {
         abort_if($wallet->user_id !== $request->user()->id, 403);
 
-        $wallet->loadSum(['transactions as income' => fn ($q) => $q->where('type', Type::Income->value)], 'amount');
-        $wallet->loadSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount');
+        $wallet->loadStats();
 
         $transactions = Inertia::scroll(
             $wallet->transactions()

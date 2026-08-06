@@ -67,6 +67,8 @@ class TransactionController extends Controller
                 'currency' => $currency,
                 'income' => (float) ($rows->firstWhere('type', Type::Income->value)?->total ?? 0),
                 'expense' => (float) ($rows->firstWhere('type', Type::Expense->value)?->total ?? 0),
+                'net' => (float) ($rows->firstWhere('type', Type::Income->value)?->total ?? 0)
+                    - (float) ($rows->firstWhere('type', Type::Expense->value)?->total ?? 0),
             ])
             ->values();
 

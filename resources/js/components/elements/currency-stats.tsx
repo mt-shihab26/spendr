@@ -9,13 +9,16 @@ export type TStat = {
     initial_balance?: number;
     income: number;
     expense: number;
+    net: number;
+    balance?: number;
+    transfers_out?: number;
+    transfers_in?: number;
 };
 
 export const CurrencyStats = ({ stats }: { stats: TStat[] }) => {
     return (
         <div className="grid gap-4 sm:grid-cols-2">
-            {stats.map(({ currency, initial_balance, income, expense }) => {
-                const net = income - expense;
+            {stats.map(({ currency, initial_balance, income, expense, net }) => {
                 return (
                     <div key={currency} className="border p-4">
                         <div className="flex items-center justify-between">
