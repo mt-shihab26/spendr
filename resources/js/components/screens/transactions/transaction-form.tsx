@@ -75,17 +75,16 @@ export const TransactionForm = ({
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="description">
-                    Description <span className="text-destructive">*</span>
+                <Label>
+                    Wallet <span className="text-destructive">*</span>
                 </Label>
-                <Input
-                    id="description"
-                    value={data.description}
-                    onChange={(e) => setData('description', e.target.value)}
-                    placeholder="e.g. Grocery shopping"
-                    required
+                <WalletSelect
+                    wallets={wallets}
+                    value={data.wallet_id}
+                    onValueChange={(value) => setData('wallet_id', value)}
+                    disabled={!!transaction}
                 />
-                <InputError message={errors.description} />
+                <InputError message={errors.wallet_id} />
             </div>
 
             <div className="space-y-2">
@@ -100,6 +99,33 @@ export const TransactionForm = ({
                     prefix={currencyPrefix}
                 />
                 <InputError message={errors.amount} />
+            </div>
+
+            <div className="space-y-2">
+                <Label>
+                    Category <span className="text-destructive">*</span>
+                </Label>
+                <CategorySelect
+                    categories={categories}
+                    type={data.type}
+                    value={data.category_id}
+                    onValueChange={(value) => setData('category_id', value)}
+                />
+                <InputError message={errors.category_id} />
+            </div>
+
+            <div className="space-y-2">
+                <Label htmlFor="description">
+                    Description <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                    id="description"
+                    value={data.description}
+                    onChange={(e) => setData('description', e.target.value)}
+                    placeholder="e.g. Grocery shopping"
+                    required
+                />
+                <InputError message={errors.description} />
             </div>
 
             <div className="space-y-2">
@@ -119,32 +145,6 @@ export const TransactionForm = ({
                     required
                 />
                 <InputError message={errors.transacted_at} />
-            </div>
-
-            <div className="space-y-2">
-                <Label>
-                    Wallet <span className="text-destructive">*</span>
-                </Label>
-                <WalletSelect
-                    wallets={wallets}
-                    value={data.wallet_id}
-                    onValueChange={(value) => setData('wallet_id', value)}
-                    disabled={!!transaction}
-                />
-                <InputError message={errors.wallet_id} />
-            </div>
-
-            <div className="space-y-2">
-                <Label>
-                    Category <span className="text-destructive">*</span>
-                </Label>
-                <CategorySelect
-                    categories={categories}
-                    type={data.type}
-                    value={data.category_id}
-                    onValueChange={(value) => setData('category_id', value)}
-                />
-                <InputError message={errors.category_id} />
             </div>
 
             <div className="space-y-2">
