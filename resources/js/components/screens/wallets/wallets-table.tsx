@@ -1,6 +1,7 @@
 import type { TWallet } from '@/types/models';
 
 import { useState } from 'react';
+import { getCurrencySymbol } from '@/lib/currency';
 import { formatCurrency } from '@/lib/formats';
 
 import { Link } from '@inertiajs/react';
@@ -32,6 +33,10 @@ export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
                             >
                                 {wallet.name}
                             </Link>
+                            <span className="text-muted-foreground">
+                                {getCurrencySymbol(wallet.currency)}{' '}
+                                {wallet.currency}
+                            </span>
                             {wallet.is_default && (
                                 <Badge variant="secondary">Default</Badge>
                             )}
