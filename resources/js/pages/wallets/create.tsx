@@ -17,8 +17,7 @@ const WalletsCreate = () => {
                     title="New Wallet"
                     description="Add a new account to track"
                 />
-
-                <div className="max-w-lg border p-4">
+                <div className="mx-auto w-full max-w-lg border p-4">
                     <WalletForm action={route('wallets.store')} method="post" />
                 </div>
             </div>

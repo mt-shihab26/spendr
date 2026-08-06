@@ -1,17 +1,22 @@
-import { useForm } from '@inertiajs/react';
-import { Link } from '@inertiajs/react';
+import {
+    NativeSelect,
+    NativeSelectOption,
+} from '@/components/ui/native-select';
 
+import type { TWallet } from '@/types/models';
+import type { TCurrency } from '@/types/enums';
+
+import { useForm } from '@inertiajs/react';
+import { cn } from '@/lib/utils';
+
+import { Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { InputError } from '@/components/elements/input-error';
 import { Label } from '@/components/ui/label';
-import {
-    NativeSelect,
-    NativeSelectOption,
-} from '@/components/ui/native-select';
-import { cn } from '@/lib/utils';
-import type { TWallet } from '@/types/models';
+
+import { CURRENCIES_OPTIONS } from '@/lib/options';
 
 const COLORS = [
     '#6366f1',
@@ -26,16 +31,8 @@ const COLORS = [
     '#14b8a6',
 ];
 
-const CURRENCIES = ['BDT', 'USD'];
-
-type WalletFormProps = {
-    wallet?: TWallet;
-    action: string;
-    method: 'post' | 'patch';
-};
-
-export const WalletForm = ({ wallet, action, method }: WalletFormProps) => {
-    const { data, setData, submit, processing, errors } = useForm({
+export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
+    const { data, setData, post, patch, processing, errors } = useForm({
         name: wallet?.name ?? '',
         currency: wallet?.currency ?? 'BDT',
         initial_balance: wallet?.initial_balance ?? '0.00',
@@ -44,13 +41,18 @@ export const WalletForm = ({ wallet, action, method }: WalletFormProps) => {
         is_default: wallet?.is_default ?? false,
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        submit(method, action);
-    };
-
     return (
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form
+            onSubmit={(e) => {
+                e.preventDefault();
+                if (wallet) {
+                    patch(route('wallets.store'));
+                } else {
+                    post(route('wallets.update'));
+                }
+            }}
+            className="space-y-5"
+        >
             <div className="grid gap-2">
                 <Label htmlFor="name">
                     Name <span className="text-destructive">*</span>
@@ -74,10 +76,12 @@ export const WalletForm = ({ wallet, action, method }: WalletFormProps) => {
                     id="currency"
                     name="currency"
                     value={data.currency}
-                    onChange={(e) => setData('currency', e.target.value)}
+                    onChange={(e) =>
+                        setData('currency', e.target.value as TCurrency)
+                    }
                     className="w-full"
                 >
-                    {CURRENCIES.map((c) => (
+                    {CURRENCIES_OPTIONS.map((c) => (
                         <NativeSelectOption key={c} value={c}>
                             {c}
                         </NativeSelectOption>
@@ -114,7 +118,7 @@ export const WalletForm = ({ wallet, action, method }: WalletFormProps) => {
                             className={cn(
                                 'size-6 rounded-full border-2 transition-transform hover:scale-110',
                                 data.color === color
-                                    ? 'border-foreground scale-110'
+                                    ? 'scale-110 border-foreground'
                                     : 'border-transparent',
                             )}
                             style={{ backgroundColor: color }}
@@ -146,7 +150,7 @@ export const WalletForm = ({ wallet, action, method }: WalletFormProps) => {
                 />
                 <Label
                     htmlFor="is_default"
-                    className="font-normal cursor-pointer"
+                    className="cursor-pointer font-normal"
                 >
                     Set as default wallet
                 </Label>
@@ -161,7 +165,7 @@ export const WalletForm = ({ wallet, action, method }: WalletFormProps) => {
                     Cancel
                 </Button>
                 <Button type="submit" disabled={processing}>
-                    {method === 'post' ? 'Create Wallet' : 'Save Changes'}
+                    {!wallet ? 'Create Wallet' : 'Save Changes'}
                 </Button>
             </div>
         </form>
