@@ -17,6 +17,7 @@ export const QuickAction = () => {
             >
                 <Button
                     size="icon-lg"
+                    nativeButton={false}
                     render={<Link href="/transactions/create" />}
                 >
                     <PlusIcon className="size-8" />

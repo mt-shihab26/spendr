@@ -10,7 +10,7 @@ export const NewButton = ({
     children: React.ReactNode;
 }) => {
     return (
-        <Button render={<Link href={href} />}>
+        <Button nativeButton={false} render={<Link href={href} />}>
             <Plus />
             {children}
         </Button>
