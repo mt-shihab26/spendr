@@ -3,7 +3,6 @@
 use App\Models\Budget;
 use App\Models\Category;
 use App\Models\User;
-use Inertia\Testing\AssertableInertia as Assert;
 
 test('budgets index lists the authenticated user budgets', function () {
     $user = User::factory()->create();
