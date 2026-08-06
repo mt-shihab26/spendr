@@ -1,16 +1,12 @@
 import {
-    DropdownMenu,
-    DropdownMenuItem,
-    DropdownMenuContent,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+    ActionsMenu,
+    ActionsMenuSeparator,
+    DeleteItem,
+    EditItem,
+    ViewItem,
+} from '@/components/elements/actions-menu';
 
 import type { TCategory } from '@/types/models';
-
-import { Link } from '@inertiajs/react';
-import { MoreHorizontal, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 export const CategoryActions = ({
     category,
@@ -20,41 +16,15 @@ export const CategoryActions = ({
     onDelete: (category: TCategory) => void;
 }) => {
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger
-                render={<Button variant="ghost" size="icon-xs" />}
-            >
-                <MoreHorizontal />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                    render={
-                        <Link href={route('categories.show', category.id)} />
-                    }
-                >
-                    View
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                    render={
-                        <Link href={route('categories.edit', category.id)} />
-                    }
-                >
-                    Edit
-                </DropdownMenuItem>
-                {!category.is_default && (
-                    <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                            variant="destructive"
-                            className="text-destructive!"
-                            onClick={() => onDelete(category)}
-                        >
-                            <Trash2 />
-                            Delete
-                        </DropdownMenuItem>
-                    </>
-                )}
-            </DropdownMenuContent>
-        </DropdownMenu>
+        <ActionsMenu>
+            <ViewItem href={route('categories.show', category.id)} />
+            <EditItem href={route('categories.edit', category.id)} />
+            {!category.is_default && (
+                <>
+                    <ActionsMenuSeparator />
+                    <DeleteItem onClick={() => onDelete(category)} />
+                </>
+            )}
+        </ActionsMenu>
     );
 };
