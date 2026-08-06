@@ -17,17 +17,19 @@ export const CategorySelect = ({
     type,
     value,
     onValueChange,
+    disabled = false,
 }: {
     categories: TCategory[];
     type: TType;
     value: string | null;
     onValueChange: (value: string | null) => void;
+    disabled?: boolean;
 }) => {
     const filtered = categories.filter((c) => c.type === type);
     const selected = filtered.find((c) => c.id === value);
 
     return (
-        <Select value={value} onValueChange={onValueChange}>
+        <Select value={value} onValueChange={onValueChange} disabled={disabled}>
             <SelectTrigger className="w-full">
                 {selected ? (
                     <div className="flex items-center gap-2">

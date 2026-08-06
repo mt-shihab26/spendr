@@ -40,6 +40,8 @@ export type TBudget = {
     deleted_at: string | null;
     created_at: string;
     updated_at: string;
+
+    category?: TCategory;
 };
 
 export type TCategory = {

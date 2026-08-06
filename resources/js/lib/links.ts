@@ -1,6 +1,5 @@
 import {
     ArrowRightLeft,
-    BookOpen,
     ChartBar,
     CircleDollarSign,
     Folder,
@@ -47,7 +46,7 @@ export const mainLinks = (): TLink[] => [
     },
     {
         title: 'Budgets',
-        href: '/budgets',
+        href: route('budgets.index'),
         icon: CircleDollarSign,
     },
 
@@ -61,12 +60,7 @@ export const mainLinks = (): TLink[] => [
 export const rightLinks = (): TLink[] => [
     {
         title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
+        href: 'https://github.com/mt-shihab26/spendr',
         icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
     },
 ];
