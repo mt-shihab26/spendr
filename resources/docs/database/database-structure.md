@@ -35,7 +35,7 @@ A user can have multiple wallets (e.g. cash, bank account, credit card). Transac
 | `id`              | bigint        | PK, auto-increment              |
 | `user_id`         | bigint        | FK → `users.id`, cascade delete |
 | `name`            | varchar(100)  | not null                        |
-| `currency`        | varchar(3)    | not null, default `USD`         |
+| `currency`        | varchar(3)    | not null, default `BDT`         |
 | `initial_balance` | decimal(15,2) | not null, default `0.00`        |
 | `color`           | varchar(7)    | not null, default `#6366f1`     |
 | `icon`            | varchar(50)   | nullable                        |
