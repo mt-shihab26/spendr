@@ -94,6 +94,8 @@ class ReportsController extends Controller
         $monthlyCashFlow = $this->computeMonthlyCashFlow($transactions, $startDate, $endDate);
 
         return inertia('reports/index', [
+            'currencies' => $currencies,
+            'balance' => $initialBalance + $allTimeIncome - $allTimeExpense,
             'monthly_cash_flow' => $monthlyCashFlow,
             'monthly_summary' => array_reverse($monthlyCashFlow),
             'expense_breakdown' => $this->computeCategoryBreakdown(
@@ -102,7 +104,6 @@ class ReportsController extends Controller
             'income_breakdown' => $this->computeCategoryBreakdown(
                 $transactions->where('type', 'income')
             ),
-            'balance' => $initialBalance + $allTimeIncome - $allTimeExpense,
             'summary' => [
                 'income' => $periodIncome,
                 'expenses' => $periodExpense,
@@ -112,7 +113,6 @@ class ReportsController extends Controller
             'date_to' => $dateTo,
             'currency' => $currency,
             'wallet_id' => $walletId,
-            'currencies' => $currencies,
             'wallets' => $wallets,
         ]);
     }
