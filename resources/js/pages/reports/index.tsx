@@ -1,22 +1,18 @@
 import type { TCurrency } from '@/types/enums';
 import type { TWallet } from '@/types/models';
 
-import { router } from '@inertiajs/react';
-import { getCurrencySymbol } from '@/lib/currency';
-import { formatCurrency } from '@/lib/formats';
-
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ReportsFilter } from '@/components/screens/reports/reports-filter';
 import { ReportsSummary } from '@/components/screens/reports/reports-summary';
 import { CashFlowChart } from '@/components/screens/reports/cash-flow-chart';
 import { CategoryDonut } from '@/components/screens/reports/category-donut';
 import { MonthlySummaryTable } from '@/components/screens/reports/monthly-summary-table';
+import { CurrencyTabs } from '@/components/elements/currency-tabs';
+import { ShowBalance } from '@/components/elements/show-balance';
 
 type TSummary = {
-    balance: number;
     income: number;
     expenses: number;
     net: number;
@@ -68,6 +64,7 @@ const ReportsIndex = ({
     wallet_id,
     currencies,
     wallets,
+    balance,
 }: {
     monthly_cash_flow: TCashFlowRow[];
     monthly_summary: TCashFlowRow[];
@@ -80,21 +77,8 @@ const ReportsIndex = ({
     wallet_id: string | null;
     currencies: TCurrency[];
     wallets: TWallet[];
+    balance: number;
 }) => {
-    const switchCurrency = (c: string) => {
-        router.get(
-            route('reports.index'),
-            Object.fromEntries(
-                Object.entries({
-                    currency: c,
-                    date_from,
-                    date_to,
-                }).filter(([, v]) => v !== null && v !== undefined),
-            ),
-            { preserveScroll: true, replace: true },
-        );
-    };
-
     return (
         <AppLayout
             title="Reports"
@@ -116,29 +100,12 @@ const ReportsIndex = ({
                     </Button>
                 </div>
                 <div className="flex items-center justify-between gap-4">
-                    {currencies.length > 1 ? (
-                        <Tabs value={currency} onValueChange={switchCurrency}>
-                            <TabsList variant="line">
-                                {currencies.map((c) => (
-                                    <TabsTrigger
-                                        className="cursor-pointer text-lg"
-                                        key={c}
-                                        value={c}
-                                    >
-                                        {getCurrencySymbol(c)} {c}
-                                    </TabsTrigger>
-                                ))}
-                            </TabsList>
-                        </Tabs>
-                    ) : (
-                        <div />
-                    )}
-                    <div className="text-right">
-                        <p className="text-xs text-muted-foreground">Balance</p>
-                        <p className="text-lg font-semibold text-balance tabular-nums">
-                            {formatCurrency(summary.balance, currency)}
-                        </p>
-                    </div>
+                    <CurrencyTabs
+                        href={route('reports.index')}
+                        currency={currency}
+                        currencies={currencies}
+                    />
+                    <ShowBalance balance={balance} currency={currency} />
                 </div>
 
                 <ReportsFilter

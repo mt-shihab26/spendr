@@ -102,8 +102,8 @@ class ReportsController extends Controller
             'income_breakdown' => $this->computeCategoryBreakdown(
                 $transactions->where('type', 'income')
             ),
+            'balance' => $initialBalance + $allTimeIncome - $allTimeExpense,
             'summary' => [
-                'balance' => $initialBalance + $allTimeIncome - $allTimeExpense,
                 'income' => $periodIncome,
                 'expenses' => $periodExpense,
                 'net' => $periodIncome - $periodExpense,
