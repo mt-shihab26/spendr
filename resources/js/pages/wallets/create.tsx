@@ -1,6 +1,7 @@
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { WalletForm } from '@/components/screens/wallets/wallet-form';
+import { BackButton } from '@/components/elements/back-button';
 
 const WalletsCreate = () => {
     return (
@@ -13,12 +14,15 @@ const WalletsCreate = () => {
             ]}
         >
             <div className="flex flex-col gap-4 p-4">
-                <Heading
-                    title="New Wallet"
-                    description="Add a new account to track"
-                />
+                <div className="flex items-start justify-between">
+                    <Heading
+                        title="New Wallet"
+                        description="Add a new account to track"
+                    />
+                    <BackButton href={route('wallets.index')} />
+                </div>
                 <div className="mx-auto w-full max-w-lg border p-4">
-                    <WalletForm action={route('wallets.store')} method="post" />
+                    <WalletForm />
                 </div>
             </div>
         </AppLayout>

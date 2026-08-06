@@ -13,19 +13,20 @@ import {
 import type { TWallet } from '@/types/models';
 
 import { router } from '@inertiajs/react';
-import type { ReactNode } from 'react';
+import type { ReactElement } from 'react';
 
 export const WalletDeleteDialog = ({
     wallet,
     open,
     onOpenChange,
     onDeleted,
+    trigger,
 }: {
     wallet: TWallet;
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
     onDeleted?: () => void;
-    trigger?: ReactNode;
+    trigger?: ReactElement;
 }) => {
     const handleDelete = () => {
         router.delete(route('wallets.destroy', wallet.id), {

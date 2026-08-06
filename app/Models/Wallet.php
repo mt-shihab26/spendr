@@ -41,7 +41,7 @@ class Wallet extends Model
     {
         return [
             'currency' => Currency::class,
-            'initial_balance' => 'decimal:2',
+            'initial_balance' => 'float',
             'is_default' => 'boolean',
         ];
     }

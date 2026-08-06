@@ -1,17 +1,14 @@
 import type { TWallet } from '@/types/models';
 
-import { useState } from 'react';
-
 import { Trash2 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { WalletForm } from '@/components/screens/wallets/wallet-form';
 import { WalletDeleteDialog } from '@/components/screens/wallets/wallet-delete-dialog';
+import { BackButton } from '@/components/elements/back-button';
 import { Button } from '@/components/ui/button';
 
 const WalletsEdit = ({ wallet }: { wallet: TWallet }) => {
-    const [open, setOpen] = useState(false);
-
     return (
         <AppLayout
             title="Edit Wallet"
@@ -34,25 +31,24 @@ const WalletsEdit = ({ wallet }: { wallet: TWallet }) => {
             ]}
         >
             <div className="flex flex-col gap-4 p-4">
-                <Heading
-                    title="Edit Wallet"
-                    description="Update account details"
-                />
-                <div className="max-w-lg border p-4">
+                <div className="flex items-start justify-between">
+                    <Heading
+                        title="Edit Wallet"
+                        description="Update account details"
+                    />
+                    <BackButton href={route('wallets.show', wallet.id)} />
+                </div>
+                <div className="mx-auto w-full max-w-lg border p-4">
                     <WalletForm wallet={wallet} />
                     <div className="mt-6 border-t pt-4">
-                        <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => setOpen(true)}
-                        >
-                            <Trash2 />
-                            Delete Wallet
-                        </Button>
                         <WalletDeleteDialog
                             wallet={wallet}
-                            open={open}
-                            onOpenChange={setOpen}
+                            trigger={
+                                <Button variant="destructive" size="sm">
+                                    <Trash2 />
+                                    Delete Wallet
+                                </Button>
+                            }
                         />
                     </div>
                 </div>

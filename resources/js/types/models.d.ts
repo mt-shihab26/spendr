@@ -16,7 +16,7 @@ export type TWallet = {
     user_id: string;
     name: string;
     currency: TCurrency;
-    initial_balance: string;
+    initial_balance: number;
     color: string;
     icon: string | null;
     is_default: boolean;
