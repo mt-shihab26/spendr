@@ -20,14 +20,20 @@ class TransactionController extends Controller
     public function index(Request $request): Response
     {
         $validated = $request->validate([
+            'type' => ['nullable', 'string', Rule::in(['income', 'expense', 'all'])],
             'period' => ['nullable', 'string', Rule::in(['today', 'week', 'month', 'year', 'all'])],
         ]);
 
+        $type = $validated['type'] ?? 'all';
         $period = $validated['period'] ?? 'month';
 
         $query = $request->user()
             ->transactions()
             ->with(['wallet', 'category']);
+
+        if ($type !== 'all') {
+            $query->where('type', $type);
+        }
 
         if ($period !== 'all') {
             $now = now();
@@ -67,6 +73,7 @@ class TransactionController extends Controller
         return inertia('transactions/index', [
             'transactions' => $transactions,
             'period' => $period,
+            'type' => $type,
             'stats' => $stats,
         ]);
     }

@@ -11,10 +11,10 @@ export type TStat = {
     expense: number;
 };
 
-export const WalletStats = ({ stats }: { stats: TStat[] }) => {
+export const CurrencyStats = ({ stats }: { stats: TStat[] }) => {
     return (
         <div className="grid gap-4 sm:grid-cols-2">
-            {stats.map(({ currency, initial_balance = 0, income, expense }) => {
+            {stats.map(({ currency, initial_balance, income, expense }) => {
                 const net = income - expense;
                 return (
                     <div key={currency} className="border p-4">
@@ -25,15 +25,20 @@ export const WalletStats = ({ stats }: { stats: TStat[] }) => {
                             <ProfitLossBadge net={net} />
                         </div>
                         <div className="mt-3 flex items-end justify-between gap-4 text-xs">
+                            {initial_balance !== undefined && (
+                                <div className="flex flex-col gap-1">
+                                    <span className="text-muted-foreground">
+                                        Initial
+                                    </span>
+                                    <span className="text-sm font-medium text-initial-balance tabular-nums">
+                                        {formatCurrency(
+                                            initial_balance,
+                                            currency,
+                                        )}
+                                    </span>
+                                </div>
+                            )}
                             <div className="flex flex-col gap-1">
-                                <span className="text-muted-foreground">
-                                    Initial
-                                </span>
-                                <span className="text-sm font-medium text-initial-balance tabular-nums">
-                                    {formatCurrency(initial_balance, currency)}
-                                </span>
-                            </div>
-                            <div className="flex flex-col items-center gap-1">
                                 <span className="text-muted-foreground">
                                     Income
                                 </span>
@@ -41,7 +46,7 @@ export const WalletStats = ({ stats }: { stats: TStat[] }) => {
                                     {formatCurrency(income, currency)}
                                 </span>
                             </div>
-                            <div className="flex flex-col items-center gap-1">
+                            <div className="flex flex-col gap-1">
                                 <span className="text-muted-foreground">
                                     Expenses
                                 </span>

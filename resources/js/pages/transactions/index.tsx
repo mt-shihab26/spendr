@@ -6,15 +6,19 @@ import {
     EmptyTitle,
 } from '@/components/ui/empty';
 
-import type { TPaginated, TTransactionPeriod } from '@/types/utils';
+import type {
+    TPaginated,
+    TTransactionPeriod,
+    TTransactionType,
+} from '@/types/utils';
+
 import type { TTransaction } from '@/types/models';
+import type { TStat } from '@/components/elements/currency-stats';
 
-import { router, InfiniteScroll } from '@inertiajs/react';
-import {
-    TransactionStats,
-    type TStat,
-} from '@/components/elements/transaction-stats';
+import { router } from '@inertiajs/react';
 
+import { InfiniteScroll } from '@inertiajs/react';
+import { CurrencyStats } from '@/components/elements/currency-stats';
 import { ArrowRightLeft } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
@@ -25,27 +29,19 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 const TransactionsIndex = ({
     transactions,
     period,
+    type,
     stats,
 }: {
     transactions: TPaginated<TTransaction>;
     period: TTransactionPeriod;
+    type: TTransactionType;
     stats: TStat[];
 }) => {
-    const changePeriod = (value: TTransactionPeriod) => {
-        if (value === period) {
-            return;
-        }
-
+    const navigate = (params: { period?: string; type?: string }) => {
         router.get(
             route('transactions.index'),
-            {
-                period: value,
-            },
-            {
-                preserveScroll: true,
-                preserveState: false,
-                replace: true,
-            },
+            { period, type, ...params },
+            { preserveScroll: true, preserveState: false, replace: true },
         );
     };
 
@@ -67,12 +63,20 @@ const TransactionsIndex = ({
                         New Transaction
                     </NewButton>
                 </div>
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-3">
+                    <Tabs
+                        value={type}
+                        onValueChange={(value) => navigate({ type: value })}
+                    >
+                        <TabsList>
+                            <TabsTrigger value="all">All</TabsTrigger>
+                            <TabsTrigger value="income">Income</TabsTrigger>
+                            <TabsTrigger value="expense">Expense</TabsTrigger>
+                        </TabsList>
+                    </Tabs>
                     <Tabs
                         value={period}
-                        onValueChange={(value) => {
-                            changePeriod(value);
-                        }}
+                        onValueChange={(value) => navigate({ period: value })}
                     >
                         <TabsList>
                             <TabsTrigger value="today">Today</TabsTrigger>
@@ -82,8 +86,8 @@ const TransactionsIndex = ({
                             <TabsTrigger value="all">All</TabsTrigger>
                         </TabsList>
                     </Tabs>
-                    <TransactionStats stats={stats} />
                 </div>
+                {stats.length > 0 && <CurrencyStats stats={stats} />}
                 {transactions.data.length === 0 ? (
                     <Empty className="border">
                         <EmptyHeader>
