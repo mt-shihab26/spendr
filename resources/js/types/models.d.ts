@@ -1,3 +1,5 @@
+import type { TCurrency } from '@/types/enums';
+
 export type TUser = {
     id: number;
     name: string;
@@ -13,7 +15,7 @@ export type TWallet = {
     id: string;
     user_id: string;
     name: string;
-    currency: string;
+    currency: TCurrency;
     initial_balance: string;
     color: string;
     icon: string | null;

@@ -94,7 +94,7 @@ const WalletsIndex = ({ wallets }: { wallets: TWallet[] }) => {
                         <p className="text-xs text-muted-foreground">
                             Net Worth:{' '}
                             <span className="font-medium text-foreground">
-                                {netWorth.toFixed(2)}
+                                {formatCurrency(netWorth, wallets[0].currency)}
                             </span>
                         </p>
 
@@ -122,10 +122,10 @@ const WalletsIndex = ({ wallets }: { wallets: TWallet[] }) => {
                                         </Badge>
                                     )}
                                     <span className="text-xs font-medium tabular-nums">
-                                        $
-                                        {parseFloat(
+                                        {formatCurrency(
                                             wallet.initial_balance,
-                                        ).toFixed(2)}
+                                            wallet.currency,
+                                        )}
                                     </span>
                                     <DropdownMenu>
                                         <DropdownMenuTrigger
