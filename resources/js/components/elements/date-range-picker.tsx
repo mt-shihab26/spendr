@@ -1,11 +1,21 @@
 import type { DateRange } from 'react-day-picker';
 
 import { useMemo, useState } from 'react';
-import { format, subDays, startOfWeek, startOfMonth, subMonths } from 'date-fns';
+import {
+    format,
+    subDays,
+    startOfWeek,
+    startOfMonth,
+    subMonths,
+} from 'date-fns';
 import { CalendarIcon, ChevronDownIcon, CheckIcon, XIcon } from 'lucide-react';
 
 import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -15,43 +25,7 @@ type TDateRange = { from: string; to: string } | null;
 const fmt = (d: Date) => format(d, 'yyyy-MM-dd');
 const displayDate = (d: string) => format(new Date(d), 'MMM d, yyyy');
 
-const resolvePreset = (key: string): TDateRange => {
-    const today = new Date();
-    switch (key) {
-        case 'today':
-            return { from: fmt(today), to: fmt(today) };
-        case 'yesterday': {
-            const y = subDays(today, 1);
-            return { from: fmt(y), to: fmt(y) };
-        }
-        case 'last_2_days':
-            return { from: fmt(subDays(today, 1)), to: fmt(today) };
-        case 'this_week':
-            return { from: fmt(startOfWeek(today, { weekStartsOn: 1 })), to: fmt(today) };
-        case 'this_month':
-            return { from: fmt(startOfMonth(today)), to: fmt(today) };
-        case 'last_2_months':
-            return { from: fmt(startOfMonth(subMonths(today, 1))), to: fmt(today) };
-        case 'last_3_months':
-            return { from: fmt(startOfMonth(subMonths(today, 2))), to: fmt(today) };
-        case 'last_7_days':
-            return { from: fmt(subDays(today, 6)), to: fmt(today) };
-        case 'last_14_days':
-            return { from: fmt(subDays(today, 13)), to: fmt(today) };
-        case 'last_30_days':
-            return { from: fmt(subDays(today, 29)), to: fmt(today) };
-        case 'last_60_days':
-            return { from: fmt(subDays(today, 59)), to: fmt(today) };
-        case 'last_90_days':
-            return { from: fmt(subDays(today, 89)), to: fmt(today) };
-        case 'all_time':
-            return null;
-        default:
-            return null;
-    }
-};
-
-const PRESETS: { key: string; label: string }[][] = [
+const PRESETS = [
     [
         { key: 'today', label: 'Today' },
         { key: 'yesterday', label: 'Yesterday' },
@@ -70,8 +44,58 @@ const PRESETS: { key: string; label: string }[][] = [
         { key: 'last_60_days', label: 'Last 60 Days' },
         { key: 'last_90_days', label: 'Last 90 Days' },
     ],
-    [{ key: 'all_time', label: 'All Time' }],
+    [
+        {
+            key: 'all_time',
+            label: 'All Time',
+        },
+    ],
 ];
+
+const resolvePreset = (key: string): TDateRange => {
+    const today = new Date();
+    switch (key) {
+        case 'today':
+            return { from: fmt(today), to: fmt(today) };
+        case 'yesterday': {
+            const y = subDays(today, 1);
+            return { from: fmt(y), to: fmt(y) };
+        }
+        case 'last_2_days':
+            return { from: fmt(subDays(today, 1)), to: fmt(today) };
+        case 'this_week':
+            return {
+                from: fmt(startOfWeek(today, { weekStartsOn: 1 })),
+                to: fmt(today),
+            };
+        case 'this_month':
+            return { from: fmt(startOfMonth(today)), to: fmt(today) };
+        case 'last_2_months':
+            return {
+                from: fmt(startOfMonth(subMonths(today, 1))),
+                to: fmt(today),
+            };
+        case 'last_3_months':
+            return {
+                from: fmt(startOfMonth(subMonths(today, 2))),
+                to: fmt(today),
+            };
+        case 'last_7_days':
+            return { from: fmt(subDays(today, 6)), to: fmt(today) };
+        case 'last_14_days':
+            return { from: fmt(subDays(today, 13)), to: fmt(today) };
+        case 'last_30_days':
+            return { from: fmt(subDays(today, 29)), to: fmt(today) };
+        case 'last_60_days':
+            return { from: fmt(subDays(today, 59)), to: fmt(today) };
+        case 'last_90_days':
+            return { from: fmt(subDays(today, 89)), to: fmt(today) };
+        case 'all_time':
+            return null;
+        default:
+            return null;
+    }
+};
 
 export const DateRangePicker = ({
     dateFrom,
@@ -104,21 +128,23 @@ export const DateRangePicker = ({
 
     const triggerLabel =
         effectivePreset && hasSelection
-            ? PRESETS.flat().find((p) => p.key === effectivePreset)?.label ?? 'Date range'
+            ? (PRESETS.flat().find((p) => p.key === effectivePreset)?.label ??
+              'Date range')
             : hasSelection
               ? `${displayDate(dateFrom!)} – ${displayDate(dateTo!)}`
               : 'Date range';
 
     const calSelected: DateRange | undefined =
         pending ??
-        (dateFrom && dateTo ? { from: new Date(dateFrom), to: new Date(dateTo) } : undefined);
+        (dateFrom && dateTo
+            ? { from: new Date(dateFrom), to: new Date(dateTo) }
+            : undefined);
 
-    const dateLabel =
-        hasSelection
-            ? dateFrom === dateTo
-                ? displayDate(dateFrom!)
-                : `${displayDate(dateFrom!)} – ${displayDate(dateTo!)}`
-            : null;
+    const dateLabel = hasSelection
+        ? dateFrom === dateTo
+            ? displayDate(dateFrom!)
+            : `${displayDate(dateFrom!)} – ${displayDate(dateTo!)}`
+        : null;
 
     const handlePreset = (key: string) => {
         const dates = resolvePreset(key);
@@ -147,10 +173,19 @@ export const DateRangePicker = ({
 
     return (
         <div className="flex items-center gap-1">
-            <Popover open={open} onOpenChange={(o) => { if (!o) setPending(undefined); setOpen(o); }}>
+            <Popover
+                open={open}
+                onOpenChange={(o) => {
+                    if (!o) setPending(undefined);
+                    setOpen(o);
+                }}
+            >
                 <PopoverTrigger
                     className={cn(
-                        buttonVariants({ variant: hasSelection ? 'default' : 'outline', size: 'sm' }),
+                        buttonVariants({
+                            variant: hasSelection ? 'default' : 'outline',
+                            size: 'sm',
+                        }),
                         'h-8 max-w-56 gap-1.5 text-xs font-normal',
                     )}
                 >
@@ -164,14 +199,17 @@ export const DateRangePicker = ({
                         <div className="flex w-44 flex-col py-1">
                             {PRESETS.map((group, gi) => (
                                 <div key={gi}>
-                                    {gi > 0 && <div className="my-1 border-t" />}
+                                    {gi > 0 && (
+                                        <div className="my-1 border-t" />
+                                    )}
                                     {group.map(({ key, label }) => (
                                         <button
                                             key={key}
                                             onClick={() => handlePreset(key)}
                                             className={cn(
                                                 'flex w-full items-center justify-between px-3 py-1.5 text-xs hover:bg-muted',
-                                                effectivePreset === key && 'font-medium text-primary',
+                                                effectivePreset === key &&
+                                                    'font-medium text-primary',
                                             )}
                                         >
                                             <span>{label}</span>
@@ -184,8 +222,10 @@ export const DateRangePicker = ({
                             ))}
 
                             {dateLabel && (
-                                <div className="mt-1 border-t px-3 pb-1 pt-2">
-                                    <p className="text-xs text-muted-foreground">{dateLabel}</p>
+                                <div className="mt-1 border-t px-3 pt-2 pb-1">
+                                    <p className="text-xs text-muted-foreground">
+                                        {dateLabel}
+                                    </p>
                                 </div>
                             )}
                         </div>
@@ -209,7 +249,12 @@ export const DateRangePicker = ({
             </Popover>
 
             {hasSelection && (
-                <Button variant="ghost" size="icon" className="size-8" onClick={handleClear}>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-8"
+                    onClick={handleClear}
+                >
                     <XIcon className="size-3.5" />
                 </Button>
             )}
