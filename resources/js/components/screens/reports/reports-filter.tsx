@@ -1,15 +1,12 @@
-import type { TCurrency } from '@/types/enums';
 import type { TWallet } from '@/types/models';
 
 import { router } from '@inertiajs/react';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
-import { getCurrencySymbol } from '@/lib/currency';
 import { DateRangePicker } from '@/components/screens/reports/date-range-picker';
 
 export const ReportsFilter = ({
     currency,
     walletId,
-    currencies,
     wallets,
     range,
     dateFrom,
@@ -17,7 +14,6 @@ export const ReportsFilter = ({
 }: {
     currency: string | null;
     walletId: string | null;
-    currencies: string[];
     wallets: TWallet[];
     range: string | null;
     dateFrom: string | null;
@@ -55,21 +51,6 @@ export const ReportsFilter = ({
                 }
                 onClear={() => navigate({ range: null, date_from: null, date_to: null })}
             />
-
-            {currencies.length > 1 && (
-                <NativeSelect
-                    value={currency ?? ''}
-                    onChange={(e) =>
-                        navigate({ currency: e.target.value || null, wallet_id: null })
-                    }
-                >
-                    {currencies.map((c) => (
-                        <NativeSelectOption key={c} value={c}>
-                            {getCurrencySymbol(c as TCurrency)} {c}
-                        </NativeSelectOption>
-                    ))}
-                </NativeSelect>
-            )}
 
             <NativeSelect
                 value={walletId ?? ''}

@@ -1,14 +1,17 @@
 import type { TCurrency } from '@/types/enums';
 import type { TWallet } from '@/types/models';
 
+import { router } from '@inertiajs/react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ReportsFilter } from '@/components/screens/reports/reports-filter';
 import { ReportsSummary } from '@/components/screens/reports/reports-summary';
 import { CashFlowChart } from '@/components/screens/reports/cash-flow-chart';
 import { CategoryDonut } from '@/components/screens/reports/category-donut';
 import { MonthlySummaryTable } from '@/components/screens/reports/monthly-summary-table';
+import { getCurrencySymbol } from '@/lib/currency';
 
 type TSummary = {
     balance: number;
@@ -80,6 +83,21 @@ const ReportsIndex = ({
 }) => {
     const cur = currency ?? 'BDT';
 
+    const switchCurrency = (c: string) => {
+        router.get(
+            route('reports.index'),
+            Object.fromEntries(
+                Object.entries({
+                    currency: c,
+                    range,
+                    date_from,
+                    date_to,
+                }).filter(([, v]) => v !== null && v !== undefined),
+            ),
+            { preserveScroll: true, replace: true },
+        );
+    };
+
     return (
         <AppLayout
             title="Reports"
@@ -101,6 +119,18 @@ const ReportsIndex = ({
                     </Button>
                 </div>
 
+                {currencies.length > 1 && (
+                    <Tabs value={cur} onValueChange={switchCurrency}>
+                        <TabsList variant="line">
+                            {currencies.map((c) => (
+                                <TabsTrigger key={c} value={c}>
+                                    {getCurrencySymbol(c)} {c}
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                    </Tabs>
+                )}
+
                 <ReportsSummary summary={summary} currency={cur} />
 
                 <ReportsFilter
@@ -109,7 +139,6 @@ const ReportsIndex = ({
                     dateTo={date_to}
                     currency={currency}
                     walletId={wallet_id}
-                    currencies={currencies}
                     wallets={wallets}
                 />
 
