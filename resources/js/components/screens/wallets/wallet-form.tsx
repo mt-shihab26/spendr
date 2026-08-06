@@ -7,7 +7,6 @@ import type { TWallet } from '@/types/models';
 import type { TCurrency } from '@/types/enums';
 
 import { useForm } from '@inertiajs/react';
-import { cn } from '@/lib/utils';
 
 import { Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
@@ -15,22 +14,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { InputError } from '@/components/elements/input-error';
 import { NumberInput } from '@/components/elements/number-input';
+import { ColorPicker } from '@/components/elements/color-picker';
 import { Label } from '@/components/ui/label';
 
 import { CURRENCIES_OPTIONS } from '@/lib/options';
-
-const COLORS = [
-    '#6366f1',
-    '#ef4444',
-    '#f97316',
-    '#eab308',
-    '#22c55e',
-    '#06b6d4',
-    '#3b82f6',
-    '#a855f7',
-    '#ec4899',
-    '#14b8a6',
-];
 
 export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
     const { data, setData, post, patch, processing, errors } = useForm({
@@ -113,22 +100,10 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
                 <Label>
                     Color <span className="text-destructive">*</span>
                 </Label>
-                <div className="flex flex-wrap gap-2">
-                    {COLORS.map((color) => (
-                        <button
-                            key={color}
-                            type="button"
-                            onClick={() => setData('color', color)}
-                            className={cn(
-                                'size-6 rounded-full border-2 transition-transform hover:scale-110',
-                                data.color === color
-                                    ? 'scale-110 border-foreground'
-                                    : 'border-transparent',
-                            )}
-                            style={{ backgroundColor: color }}
-                        />
-                    ))}
-                </div>
+                <ColorPicker
+                    value={data.color}
+                    onChange={(color) => setData('color', color)}
+                />
                 <InputError message={errors.color} />
             </div>
 
