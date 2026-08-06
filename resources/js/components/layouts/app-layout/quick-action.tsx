@@ -12,7 +12,7 @@ export const QuickAction = () => {
     return (
         <Tooltip>
             <TooltipTrigger
-                className="absolute right-10 bottom-10"
+                className="fixed right-10 bottom-10"
                 render={<span />}
             >
                 <Button
