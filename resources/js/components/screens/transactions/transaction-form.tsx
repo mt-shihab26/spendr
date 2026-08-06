@@ -2,6 +2,7 @@ import type { TTransaction, TWallet, TCategory } from '@/types/models';
 import type { TType } from '@/types/enums';
 
 import { useForm } from '@inertiajs/react';
+import { localToUtcDatetime, utcToLocalDatetimeInput } from '@/lib/formats';
 
 import { Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
@@ -96,8 +97,13 @@ export const TransactionForm = ({
                 <Input
                     id="transacted_at"
                     type="datetime-local"
-                    value={data.transacted_at}
-                    onChange={(e) => setData('transacted_at', e.target.value)}
+                    value={data.transacted_at ? utcToLocalDatetimeInput(data.transacted_at) : ''}
+                    onChange={(e) =>
+                        setData(
+                            'transacted_at',
+                            localToUtcDatetime(e.target.value),
+                        )
+                    }
                     required
                 />
                 <InputError message={errors.transacted_at} />

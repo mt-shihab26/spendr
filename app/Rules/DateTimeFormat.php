@@ -16,16 +16,10 @@ class DateTimeFormat implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $formats = ['Y-m-d\TH:i', 'Y-m-d\TH:i:s', 'Y-m-d H:i:s'];
+        $date = DateTime::createFromFormat('Y-m-d\TH:i:s.v\Z', $value);
 
-        foreach ($formats as $format) {
-            $date = DateTime::createFromFormat($format, $value);
-
-            if ($date && $date->format($format) === $value) {
-                return;
-            }
+        if (! $date || $date->format('Y-m-d\TH:i:s.v\Z') !== $value) {
+            $fail('The :attribute must be a valid ISO 8601 datetime.');
         }
-
-        $fail('The :attribute must be a valid datetime.');
     }
 }

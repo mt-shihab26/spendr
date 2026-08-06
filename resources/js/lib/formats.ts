@@ -33,3 +33,11 @@ export const formatDateTime = (
 ): string => {
     return date ? format(parseISO(date), pattern) : '';
 };
+
+export const localToUtcDatetime = (localDatetime: string): string => {
+    return parseISO(localDatetime).toISOString();
+};
+
+export const utcToLocalDatetimeInput = (utcDatetime: string): string => {
+    return format(parseISO(utcDatetime), "yyyy-MM-dd'T'HH:mm:ss");
+};
