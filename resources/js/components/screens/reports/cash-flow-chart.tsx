@@ -16,6 +16,8 @@ import {
     YAxis,
 } from 'recharts';
 
+import type { TCurrency } from '@/types/enums';
+
 import { formatCurrency } from '@/lib/formats';
 
 type TCashFlowRow = {
@@ -32,7 +34,7 @@ const chartConfig = {
     net: { label: 'Net', color: '#6366f1' },
 } satisfies ChartConfig;
 
-export const CashFlowChart = ({ data }: { data: TCashFlowRow[] }) => {
+export const CashFlowChart = ({ data, currency }: { data: TCashFlowRow[]; currency: TCurrency }) => {
     return (
         <div className="border p-4">
             <p className="mb-4 text-sm font-medium">Monthly Cash Flow</p>
@@ -49,7 +51,7 @@ export const CashFlowChart = ({ data }: { data: TCashFlowRow[] }) => {
                         tickLine={false}
                         axisLine={false}
                         tick={{ fontSize: 11 }}
-                        tickFormatter={(v) => formatCurrency(v)}
+                        tickFormatter={(v) => formatCurrency(v, currency)}
                         width={72}
                     />
                     <ChartTooltip
@@ -67,7 +69,7 @@ export const CashFlowChart = ({ data }: { data: TCashFlowRow[] }) => {
                                             <div className="flex flex-1 items-center justify-between gap-4 leading-none">
                                                 <span className="text-muted-foreground">{label}</span>
                                                 <span className="font-mono font-medium tabular-nums">
-                                                    {formatCurrency(Number(value))}
+                                                    {formatCurrency(Number(value), currency)}
                                                 </span>
                                             </div>
                                         </>

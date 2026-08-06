@@ -1,7 +1,9 @@
+import type { TCurrency } from '@/types/enums';
 import type { TWallet } from '@/types/models';
 
 import { router } from '@inertiajs/react';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
+import { getCurrencySymbol } from '@/lib/currency';
 
 type TPeriod = '3m' | '6m' | '12m';
 
@@ -13,20 +15,27 @@ const PERIOD_LABELS: Record<TPeriod, string> = {
 
 export const ReportsFilter = ({
     period,
+    currency,
     walletId,
+    currencies,
     wallets,
 }: {
     period: TPeriod;
+    currency: string | null;
     walletId: string | null;
+    currencies: string[];
     wallets: TWallet[];
 }) => {
     const update = (params: Record<string, string | null>) => {
         router.get(
             route('reports.index'),
             Object.fromEntries(
-                Object.entries({ period, wallet_id: walletId, ...params }).filter(
-                    ([, v]) => v !== null,
-                ),
+                Object.entries({
+                    period,
+                    currency,
+                    wallet_id: walletId,
+                    ...params,
+                }).filter(([, v]) => v !== null),
             ),
             { preserveScroll: true, replace: true },
         );
@@ -45,11 +54,24 @@ export const ReportsFilter = ({
                 ))}
             </NativeSelect>
 
+            {currencies.length > 1 && (
+                <NativeSelect
+                    value={currency ?? ''}
+                    onChange={(e) =>
+                        update({ currency: e.target.value || null, wallet_id: null })
+                    }
+                >
+                    {currencies.map((c) => (
+                        <NativeSelectOption key={c} value={c}>
+                            {getCurrencySymbol(c as TCurrency)} {c}
+                        </NativeSelectOption>
+                    ))}
+                </NativeSelect>
+            )}
+
             <NativeSelect
                 value={walletId ?? ''}
-                onChange={(e) =>
-                    update({ wallet_id: e.target.value || null })
-                }
+                onChange={(e) => update({ wallet_id: e.target.value || null })}
             >
                 <NativeSelectOption value="">All Wallets</NativeSelectOption>
                 {wallets.map((w) => (

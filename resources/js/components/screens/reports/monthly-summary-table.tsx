@@ -1,3 +1,5 @@
+import type { TCurrency } from '@/types/enums';
+
 import { formatCurrency } from '@/lib/formats';
 import { cn } from '@/lib/utils';
 
@@ -10,7 +12,7 @@ type TSummaryRow = {
     savings_rate: number | null;
 };
 
-export const MonthlySummaryTable = ({ rows }: { rows: TSummaryRow[] }) => {
+export const MonthlySummaryTable = ({ rows, currency }: { rows: TSummaryRow[]; currency: TCurrency }) => {
     if (rows.length === 0) {
         return (
             <div className="border p-4 text-center text-xs text-muted-foreground">
@@ -46,10 +48,10 @@ export const MonthlySummaryTable = ({ rows }: { rows: TSummaryRow[] }) => {
                         <tr key={row.key} className="hover:bg-muted/30">
                             <td className="px-4 py-2.5 font-medium">{row.month}</td>
                             <td className="px-4 py-2.5 text-right tabular-nums text-green-600">
-                                {formatCurrency(row.income)}
+                                {formatCurrency(row.income, currency)}
                             </td>
                             <td className="px-4 py-2.5 text-right tabular-nums text-red-500">
-                                {formatCurrency(row.expenses)}
+                                {formatCurrency(row.expenses, currency)}
                             </td>
                             <td
                                 className={cn(
@@ -58,7 +60,7 @@ export const MonthlySummaryTable = ({ rows }: { rows: TSummaryRow[] }) => {
                                 )}
                             >
                                 {row.net >= 0 ? '+' : ''}
-                                {formatCurrency(row.net)}
+                                {formatCurrency(row.net, currency)}
                             </td>
                             <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">
                                 {row.savings_rate !== null ? `${row.savings_rate}%` : '—'}

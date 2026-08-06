@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -15,16 +16,26 @@ class ReportsController extends Controller
      */
     public function index(Request $request): Response
     {
+        $user = $request->user();
+
+        $currencies = $user->wallets()
+            ->distinct()
+            ->orderBy('currency')
+            ->pluck('currency')
+            ->all();
+
         $validated = $request->validate([
             'period' => ['nullable', Rule::in(['3m', '6m', '12m'])],
+            'currency' => ['nullable', 'string', Rule::in($currencies)],
             'wallet_id' => [
                 'nullable',
                 'uuid',
-                Rule::exists('wallets', 'id')->where('user_id', $request->user()->id),
+                Rule::exists('wallets', 'id')->where('user_id', $user->id),
             ],
         ]);
 
         $period = $validated['period'] ?? '6m';
+        $currency = $validated['currency'] ?? (in_array('BDT', $currencies) ? 'BDT' : ($currencies[0] ?? null));
         $walletId = $validated['wallet_id'] ?? null;
 
         $months = match ($period) {
@@ -36,13 +47,24 @@ class ReportsController extends Controller
         $startDate = now()->subMonths($months)->startOfMonth()->toDateString();
         $endDate = now()->endOfMonth()->toDateString();
 
-        $query = $request->user()
+        $wallets = $user->wallets()
+            ->when($currency, fn ($q) => $q->where('currency', $currency))
+            ->orderBy('sort_order')
+            ->get();
+
+        $query = $user
             ->transactions()
             ->with('category')
             ->whereBetween('transacted_at', [$startDate, $endDate]);
 
-        if ($walletId) {
+        if ($currency) {
+            $query->whereHas('wallet', fn ($q) => $q->where('currency', $currency));
+        }
+
+        if ($walletId && $wallets->contains('id', $walletId)) {
             $query->where('wallet_id', $walletId);
+        } else {
+            $walletId = null;
         }
 
         $transactions = $query->get();
@@ -59,15 +81,17 @@ class ReportsController extends Controller
                 $transactions->where('type', 'income')
             ),
             'period' => $period,
+            'currency' => $currency,
             'wallet_id' => $walletId,
-            'wallets' => $request->user()->wallets()->orderBy('sort_order')->get(),
+            'currencies' => $currencies,
+            'wallets' => $wallets,
         ]);
     }
 
     /**
      * Build per-month income/expenses/net rows for the given date range.
      *
-     * @param  Collection<int, \App\Models\Transaction>  $transactions
+     * @param  Collection<int, Transaction>  $transactions
      * @return array<int, array{month: string, key: string, income: float, expenses: float, net: float}>
      */
     private function computeMonthlyCashFlow(Collection $transactions, string $startDate, string $endDate): array
@@ -107,7 +131,7 @@ class ReportsController extends Controller
     /**
      * Group transactions by category, return top 6 + "Other".
      *
-     * @param  Collection<int, \App\Models\Transaction>  $transactions
+     * @param  Collection<int, Transaction>  $transactions
      * @return array<int, array{name: string, color: string, total: float, percentage: float}>
      */
     private function computeCategoryBreakdown(Collection $transactions): array

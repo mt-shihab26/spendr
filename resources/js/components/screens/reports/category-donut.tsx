@@ -7,6 +7,8 @@ import {
 
 import { Cell, Pie, PieChart } from 'recharts';
 
+import type { TCurrency } from '@/types/enums';
+
 import { formatCurrency } from '@/lib/formats';
 
 type TCategoryRow = {
@@ -19,9 +21,11 @@ type TCategoryRow = {
 export const CategoryDonut = ({
     title,
     data,
+    currency,
 }: {
     title: string;
     data: TCategoryRow[];
+    currency: TCurrency;
 }) => {
     const chartConfig = Object.fromEntries(
         data.map((d) => [d.name, { label: d.name, color: d.color }]),
@@ -46,7 +50,7 @@ export const CategoryDonut = ({
                             content={
                                 <ChartTooltipContent
                                     formatter={(value, name) => [
-                                        formatCurrency(Number(value)),
+                                        formatCurrency(Number(value), currency),
                                         name,
                                     ]}
                                 />
@@ -80,7 +84,7 @@ export const CategoryDonut = ({
                                 {item.percentage}%
                             </span>
                             <span className="shrink-0 font-medium tabular-nums">
-                                {formatCurrency(item.total)}
+                                {formatCurrency(item.total, currency)}
                             </span>
                         </li>
                     ))}

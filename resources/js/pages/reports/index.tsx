@@ -1,3 +1,4 @@
+import type { TCurrency } from '@/types/enums';
 import type { TWallet } from '@/types/models';
 
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -50,7 +51,9 @@ const ReportsIndex = ({
     expense_breakdown,
     income_breakdown,
     period,
+    currency,
     wallet_id,
+    currencies,
     wallets,
 }: {
     monthly_cash_flow: TCashFlowRow[];
@@ -58,7 +61,9 @@ const ReportsIndex = ({
     expense_breakdown: TCategoryRow[];
     income_breakdown: TCategoryRow[];
     period: TPeriod;
+    currency: TCurrency | null;
     wallet_id: string | null;
+    currencies: TCurrency[];
     wallets: TWallet[];
 }) => {
     return (
@@ -84,24 +89,28 @@ const ReportsIndex = ({
 
                 <ReportsFilter
                     period={period}
+                    currency={currency}
                     walletId={wallet_id}
+                    currencies={currencies}
                     wallets={wallets}
                 />
 
-                <CashFlowChart data={monthly_cash_flow} />
+                <CashFlowChart data={monthly_cash_flow} currency={currency ?? 'BDT'} />
 
                 <div className="grid gap-4 sm:grid-cols-2">
                     <CategoryDonut
                         title="Expenses by Category"
                         data={expense_breakdown}
+                        currency={currency ?? 'BDT'}
                     />
                     <CategoryDonut
                         title="Income by Category"
                         data={income_breakdown}
+                        currency={currency ?? 'BDT'}
                     />
                 </div>
 
-                <MonthlySummaryTable rows={monthly_summary} />
+                <MonthlySummaryTable rows={monthly_summary} currency={currency ?? 'BDT'} />
             </div>
         </AppLayout>
     );
