@@ -74,6 +74,27 @@ test('transactions reject an invalid period', function () {
         ->assertSessionHasErrors('period');
 });
 
+test('transactions can show all periods', function () {
+    Carbon::setTestNow('2026-08-06 12:00:00');
+
+    $user = User::factory()->create();
+    $wallet = Wallet::factory()->for($user)->create();
+    $category = Category::factory()->for($user)->expense()->create();
+
+    Transaction::factory()->for($user)->for($wallet)->for($category)->create([
+        'description' => 'Last year',
+        'transacted_at' => '2025-12-31',
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('transactions.index', ['period' => 'all']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('transactions/index')
+            ->where('period', 'all')
+            ->has('transactions', 1),
+        );
+});
+
 test('example', function () {
     $response = $this->get('/');
 

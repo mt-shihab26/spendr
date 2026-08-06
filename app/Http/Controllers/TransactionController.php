@@ -18,24 +18,31 @@ class TransactionController extends Controller
     public function index(Request $request): Response
     {
         $validated = $request->validate([
-            'period' => ['nullable', 'string', Rule::in(['today', 'week', 'month', 'year'])],
+            'period' => ['nullable', 'string', Rule::in(['today', 'week', 'month', 'year', 'all'])],
         ]);
 
-        $period = $validated['period'] ?? 'week';
+        $period = $validated['period'] ?? 'year';
 
-        $now = now();
-        $startDate = match ($period) {
-            'today' => $now->startOfDay(),
-            'week' => $now->startOfWeek(),
-            'month' => $now->startOfMonth(),
-            default => $now->startOfYear(),
-        };
-
-        $transactions = $request->user()
+        $query = $request->user()
             ->transactions()
-            ->with(['wallet', 'category'])
-            ->whereDate('transacted_at', '>=', $startDate->toDateString())
-            ->whereDate('transacted_at', '<=', $now->toDateString())
+            ->with(['wallet', 'category']);
+
+        if ($period !== 'all') {
+            $now = now();
+
+            $startDate = match ($period) {
+                'today' => $now->startOfDay(),
+                'week' => $now->startOfWeek(),
+                'month' => $now->startOfMonth(),
+                default => $now->startOfYear(),
+            };
+
+            $query
+                ->whereDate('transacted_at', '>=', $startDate->toDateString())
+                ->whereDate('transacted_at', '<=', $now->toDateString());
+        }
+
+        $transactions = $query
             ->orderByDesc('transacted_at')
             ->orderByDesc('created_at')
             ->get();

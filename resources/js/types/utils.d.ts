@@ -7,4 +7,4 @@ export type TBreadcrumb = {
     params?: Record<string, string | number>;
 };
 
-type TTransactionPeriod = 'today' | 'week' | 'month' | 'year';
+type TTransactionPeriod = 'today' | 'week' | 'month' | 'year' | 'all';

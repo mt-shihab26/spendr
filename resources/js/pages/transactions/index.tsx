@@ -72,6 +72,7 @@ const TransactionsIndex = ({
                         <TabsTrigger value="week">This Week</TabsTrigger>
                         <TabsTrigger value="month">This Month</TabsTrigger>
                         <TabsTrigger value="year">This Year</TabsTrigger>
+                        <TabsTrigger value="all">All</TabsTrigger>
                     </TabsList>
                 </Tabs>
                 {transactions.length === 0 ? (
