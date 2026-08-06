@@ -47,7 +47,7 @@ export const mainLinks = (): TLink[] => [
     },
     {
         title: 'Budgets',
-        href: '/transfers',
+        href: '/budgets',
         icon: CircleDollarSign,
     },
 

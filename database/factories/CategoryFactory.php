@@ -24,7 +24,7 @@ class CategoryFactory extends Factory
             'name' => fake()->unique()->word(),
             'type' => fake()->randomElement(Type::cases())->value,
             'color' => fake()->hexColor(),
-            'icon' => null,
+            'icon' => fake()->randomElement(config('seeds.category_icons')),
             'is_default' => false,
             'sort_order' => fake()->numberBetween(0, 100),
         ];

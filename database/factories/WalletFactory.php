@@ -25,7 +25,7 @@ class WalletFactory extends Factory
             'currency' => fake()->randomElement(Currency::cases())->value,
             'initial_balance' => fake()->randomFloat(2, 0, 10000),
             'color' => fake()->hexColor(),
-            'icon' => null,
+            'icon' => fake()->randomElement(config('seeds.wallet_icons')),
             'is_default' => false,
             'sort_order' => fake()->numberBetween(0, 100),
         ];
