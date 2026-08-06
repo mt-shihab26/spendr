@@ -26,16 +26,21 @@ class WalletController extends Controller
 
         $stats = $request->user()
             ->transactions()
-            ->selectRaw('type, SUM(amount) as total')
-            ->groupBy('type')
-            ->pluck('total', 'type');
+            ->join('wallets', 'transactions.wallet_id', '=', 'wallets.id')
+            ->selectRaw('wallets.currency, transactions.type, SUM(transactions.amount) as total')
+            ->groupBy('wallets.currency', 'transactions.type')
+            ->get()
+            ->groupBy('currency')
+            ->map(fn ($rows, $currency) => [
+                'currency' => $currency,
+                'income' => (float) ($rows->firstWhere('type', Type::Income->value)?->total ?? 0),
+                'expense' => (float) ($rows->firstWhere('type', Type::Expense->value)?->total ?? 0),
+            ])
+            ->values();
 
         return inertia('wallets/index', [
             'wallets' => $wallets,
-            'stats' => [
-                'income' => (float) ($stats[Type::Income->value] ?? 0),
-                'expense' => (float) ($stats[Type::Expense->value] ?? 0),
-            ],
+            'stats' => $stats,
         ]);
     }
 

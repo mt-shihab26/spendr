@@ -10,7 +10,10 @@ import type { TTransactionPeriod } from '@/types/utils';
 import type { TTransaction } from '@/types/models';
 
 import { router } from '@inertiajs/react';
-import { TransactionStats } from '@/components/elements/transaction-stats';
+import {
+    TransactionStats,
+    type TStat,
+} from '@/components/elements/transaction-stats';
 
 import { ArrowRightLeft } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -26,7 +29,7 @@ const TransactionsIndex = ({
 }: {
     transactions: TTransaction[];
     period: TTransactionPeriod;
-    stats: { income: number; expense: number };
+    stats: TStat[];
 }) => {
     const changePeriod = (value: TTransactionPeriod) => {
         if (value === period) {
@@ -79,10 +82,7 @@ const TransactionsIndex = ({
                             <TabsTrigger value="all">All</TabsTrigger>
                         </TabsList>
                     </Tabs>
-                    <TransactionStats
-                        income={stats.income}
-                        expense={stats.expense}
-                    />
+                    <TransactionStats stats={stats} />
                 </div>
                 {transactions.length === 0 ? (
                     <Empty className="border">

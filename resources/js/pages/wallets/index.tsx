@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/empty';
 
 import type { TWallet } from '@/types/models';
+import type { TStat } from '@/components/elements/transaction-stats';
 
 import { Wallet } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -21,7 +22,7 @@ const WalletsIndex = ({
     stats,
 }: {
     wallets: TWallet[];
-    stats: { income: number; expense: number };
+    stats: TStat[];
 }) => {
     return (
         <AppLayout
@@ -59,10 +60,7 @@ const WalletsIndex = ({
                     <>
                         <div className="flex items-center justify-between">
                             <NetWorth wallets={wallets} />
-                            <TransactionStats
-                                income={stats.income}
-                                expense={stats.expense}
-                            />
+                            <TransactionStats stats={stats} />
                         </div>
                         <WalletsTable wallets={wallets} />
                     </>
