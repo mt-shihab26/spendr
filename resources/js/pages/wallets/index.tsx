@@ -13,7 +13,6 @@ import { Wallet } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
-import { NetWorth } from '@/components/screens/wallets/net-worth';
 import { WalletsTable } from '@/components/screens/wallets/wallets-table';
 import { TransactionStats } from '@/components/elements/transaction-stats';
 
@@ -58,8 +57,7 @@ const WalletsIndex = ({
                     </Empty>
                 ) : (
                     <>
-                        <div className="flex items-center justify-between">
-                            <NetWorth wallets={wallets} />
+                        <div className="flex justify-end">
                             <TransactionStats stats={stats} />
                         </div>
                         <WalletsTable wallets={wallets} />
