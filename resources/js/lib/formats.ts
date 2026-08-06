@@ -27,17 +27,17 @@ export const formatCurrency = (
     return `${getCurrencySymbol(currency ?? 'BDT')}${formatted}`;
 };
 
-export const formatDateTime = (
-    date: string | null | undefined,
-    pattern = 'MMM d, yyyy h:mm a',
-): string => {
-    return date ? format(parseISO(date), pattern) : '';
-};
-
 export const localToUtcDatetime = (localDatetime: string): string => {
     return parseISO(localDatetime).toISOString();
 };
 
 export const utcToLocalDatetimeInput = (utcDatetime: string): string => {
     return format(parseISO(utcDatetime), "yyyy-MM-dd'T'HH:mm:ss");
+};
+
+export const formatDateTime = (
+    date: string | null | undefined,
+    pattern = 'MMM d, yyyy h:mm a',
+): string => {
+    return date ? format(parseISO(date), pattern) : '';
 };
