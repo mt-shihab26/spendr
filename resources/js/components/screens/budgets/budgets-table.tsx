@@ -3,6 +3,7 @@ import type { TBudget } from '@/types/models';
 import { useState } from 'react';
 import { formatCurrency } from '@/lib/formats';
 
+import { Link } from '@inertiajs/react';
 import { IconBadge } from '@/components/elements/icon-badge';
 import { BudgetActions } from '@/components/screens/budgets/budget-actions';
 import { BudgetDeleteDialog } from '@/components/screens/budgets/budget-delete-dialog';
@@ -25,9 +26,12 @@ export const BudgetsTable = ({ budgets }: { budgets: TBudget[] }) => {
                             color={budget.category?.color}
                         />
                         <div className="flex flex-1 flex-col">
-                            <span className="text-sm font-medium">
+                            <Link
+                                href={route('budgets.show', budget.id)}
+                                className="text-sm font-medium hover:underline"
+                            >
                                 {budget.category?.name ?? '—'}
-                            </span>
+                            </Link>
                             <span className="text-xs text-muted-foreground capitalize">
                                 {budget.category?.type}
                             </span>
