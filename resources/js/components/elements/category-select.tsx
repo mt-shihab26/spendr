@@ -7,20 +7,25 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-import type { TWallet } from '@/types/models';
+import type { TCategory } from '@/types/models';
+import type { TType } from '@/types/enums';
 
-export const WalletSelect = ({
-    wallets,
+export const CategorySelect = ({
+    categories,
+    type,
     value,
     onValueChange,
 }: {
-    wallets: TWallet[];
+    categories: TCategory[];
+    type: TType;
     value: string | null;
-    onValueChange: (value: string) => void;
+    onValueChange: (value: string | null) => void;
 }) => {
+    const filtered = categories.filter((c) => c.type === type);
+
     const items = [
-        { label: 'Select wallet', value: null },
-        ...wallets.map((w) => ({ label: w.name, value: w.id })),
+        { label: 'Select category', value: null },
+        ...filtered.map((c) => ({ label: c.name, value: c.id })),
     ];
 
     return (

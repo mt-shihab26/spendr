@@ -10,7 +10,7 @@ export const NetWorth = ({ wallets }: { wallets: TWallet[] }) => {
         (acc, w) => ({
             ...acc,
             [w.currency]:
-                (acc[w.currency] ?? 0) + parseFloat(w.initial_balance),
+                (acc[w.currency] ?? 0) + w.initial_balance,
         }),
         {},
     );
@@ -23,7 +23,7 @@ export const NetWorth = ({ wallets }: { wallets: TWallet[] }) => {
                     <span key={currency}>
                         {index > 0 && <span className="mx-1">+</span>}
                         <span className="font-medium text-foreground">
-                            {formatCurrency(total, currency)}
+                            {formatCurrency(total, currency as TCurrency)}
                         </span>
                     </span>
                 ),

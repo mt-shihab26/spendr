@@ -12,8 +12,8 @@ import { InputError } from '@/components/elements/input-error';
 import { NumberInput } from '@/components/elements/number-input';
 import { TypePicker } from '@/components/elements/type-picker';
 import { Textarea } from '@/components/ui/textarea';
-import { WalletSelect } from '@/components/screens/transactions/wallet-select';
-import { CategorySelect } from '@/components/screens/transactions/category-select';
+import { WalletSelect } from '@/components/elements/wallet-select';
+import { CategorySelect } from '@/components/elements/category-select';
 
 export const TransactionForm = ({
     transaction,
@@ -33,7 +33,6 @@ export const TransactionForm = ({
         description: transaction?.description ?? '',
         notes: transaction?.notes ?? '',
     });
-
 
     return (
         <form
