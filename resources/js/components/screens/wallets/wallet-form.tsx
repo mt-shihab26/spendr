@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { InputError } from '@/components/elements/input-error';
 import { NumberInput } from '@/components/elements/number-input';
 import { ColorPicker } from '@/components/elements/color-picker';
+import { IconPicker } from '@/components/elements/icon-picker';
 import { Label } from '@/components/ui/label';
 
 import { CURRENCIES_OPTIONS } from '@/lib/options';
@@ -108,13 +109,10 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="icon">Icon</Label>
-                <Input
-                    id="icon"
-                    name="icon"
-                    value={data.icon ?? ''}
-                    onChange={(e) => setData('icon', e.target.value)}
-                    placeholder="e.g. wallet, bank, credit-card"
+                <Label>Icon</Label>
+                <IconPicker
+                    value={data.icon}
+                    onChange={(icon) => setData('icon', icon)}
                 />
                 <InputError message={errors.icon} />
             </div>
