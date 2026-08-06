@@ -27,7 +27,7 @@ class TransactionSeeder extends Seeder
                 return;
             }
 
-            foreach (range(1, 30) as $ignored) {
+            foreach (range(1, 100) as $ignored) {
                 $isIncome = fake()->boolean(40);
                 $category = $isIncome
                     ? $incomeCategories->random()

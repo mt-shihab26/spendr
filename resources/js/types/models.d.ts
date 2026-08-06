@@ -1,5 +1,15 @@
 import type { TCurrency, TType } from '@/types/enums';
 
+export type TPaginated<T> = {
+    data: T[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    next_page_url: string | null;
+    prev_page_url: string | null;
+};
+
 export type TUser = {
     id: number;
     name: string;

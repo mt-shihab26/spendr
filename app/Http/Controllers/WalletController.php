@@ -9,6 +9,7 @@ use App\Models\Wallet;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 use Inertia\Response;
 
 class WalletController extends Controller
@@ -82,11 +83,13 @@ class WalletController extends Controller
         $wallet->loadSum(['transactions as income' => fn ($q) => $q->where('type', Type::Income->value)], 'amount');
         $wallet->loadSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount');
 
-        $transactions = $wallet->transactions()
-            ->with(['wallet', 'category'])
-            ->orderByDesc('transacted_at')
-            ->orderByDesc('created_at')
-            ->get();
+        $transactions = Inertia::scroll(
+            $wallet->transactions()
+                ->with(['wallet', 'category'])
+                ->orderByDesc('transacted_at')
+                ->orderByDesc('created_at')
+                ->paginate(20)
+        );
 
         return inertia('wallets/show', [
             'wallet' => $wallet,

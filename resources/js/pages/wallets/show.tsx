@@ -1,8 +1,10 @@
-import type { TWallet, TTransaction } from '@/types/models';
+import type { TWallet, TTransaction, TPaginated } from '@/types/models';
 
 import { formatCurrency } from '@/lib/formats';
 import { getCurrencySymbol } from '@/lib/currency';
 import { getIcon } from '@/lib/icons';
+
+import { InfiniteScroll } from '@inertiajs/react';
 
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
@@ -15,7 +17,7 @@ const WalletsShow = ({
     transactions,
 }: {
     wallet: TWallet;
-    transactions: TTransaction[];
+    transactions: TPaginated<TTransaction>;
 }) => {
     return (
         <AppLayout
@@ -77,8 +79,10 @@ const WalletsShow = ({
                         </p>
                     </div>
                 </div>
-                {transactions.length > 0 ? (
-                    <TransactionsTable transactions={transactions} />
+                {transactions.data.length > 0 ? (
+                    <InfiniteScroll data="transactions" onlyNext preserveUrl>
+                        <TransactionsTable transactions={transactions.data} />
+                    </InfiniteScroll>
                 ) : (
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">
