@@ -2,6 +2,7 @@ import type { TWallet } from '@/types/models';
 
 import { formatCurrency } from '@/lib/formats';
 import { getCurrencySymbol } from '@/lib/currency';
+import { getIcon } from '@/lib/icons';
 
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
@@ -29,6 +30,8 @@ const WalletsShow = ({ wallet }: { wallet: TWallet }) => {
                     <Heading
                         title={wallet.name}
                         description={`${getCurrencySymbol(wallet.currency)} ${wallet.currency}${wallet.is_default ? ' · Default wallet' : ''}`}
+                        icon={getIcon(wallet.icon)}
+                        color={wallet.color}
                     />
                     <EditButton href={route('wallets.edit', wallet.id)} />
                 </div>
