@@ -59,3 +59,19 @@ export type TTransaction = {
     wallet?: TWallet;
     category?: TCategory;
 };
+
+export type TTransfer = {
+    id: string;
+    user_id: string;
+    from_wallet_id: string;
+    to_wallet_id: string;
+    amount: number;
+    transacted_at: string;
+    notes: string | null;
+    deleted_at: string | null;
+    created_at: string;
+    updated_at: string;
+
+    from_wallet?: TWallet;
+    to_wallet?: TWallet;
+};

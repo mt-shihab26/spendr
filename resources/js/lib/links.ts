@@ -37,7 +37,7 @@ export const mainLinks = (): TLink[] => [
     },
     {
         title: 'Transfers',
-        href: '/transfers',
+        href: route('transfers.index'),
         icon: Repeat,
     },
     {
