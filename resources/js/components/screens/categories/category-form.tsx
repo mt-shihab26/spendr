@@ -6,7 +6,6 @@ import { useForm } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
 import { TypePicker } from '@/components/screens/categories/type-picker';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { InputError } from '@/components/elements/input-error';
 import { ColorPicker } from '@/components/elements/color-picker';
@@ -19,7 +18,6 @@ export const CategoryForm = ({ category }: { category?: TCategory }) => {
         type: (category?.type ?? 'expense') as TType,
         color: category?.color ?? '#6366f1',
         icon: category?.icon ?? '',
-        is_default: category?.is_default ?? false,
     });
 
     return (
@@ -78,22 +76,6 @@ export const CategoryForm = ({ category }: { category?: TCategory }) => {
                     onChange={(icon) => setData('icon', icon)}
                 />
                 <InputError message={errors.icon} />
-            </div>
-
-            <div className="flex items-center space-x-2">
-                <Checkbox
-                    id="is_default"
-                    checked={data.is_default}
-                    onCheckedChange={(checked) =>
-                        setData('is_default', checked === true)
-                    }
-                />
-                <Label
-                    htmlFor="is_default"
-                    className="cursor-pointer font-normal"
-                >
-                    Set as default category
-                </Label>
             </div>
 
             <div className="flex items-center justify-end space-x-2 pt-2">
