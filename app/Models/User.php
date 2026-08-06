@@ -53,6 +53,8 @@ class User extends Authenticatable implements PasskeyUser
 
     /**
      * Get the user's wallets.
+     *
+     * @return HasMany<Wallet, $this>
      */
     public function wallets(): HasMany
     {

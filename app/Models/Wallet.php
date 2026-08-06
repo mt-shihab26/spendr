@@ -48,6 +48,8 @@ class Wallet extends Model
 
     /**
      * Get the user that owns the wallet.
+     *
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {

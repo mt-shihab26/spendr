@@ -7,6 +7,7 @@ use App\Http\Requests\Settings\ProfileDeleteRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use App\Http\Requests\Settings\TwoFactorAuthenticationRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
@@ -18,7 +19,7 @@ class SettingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): RedirectResponse
     {
         return redirect()->route('settings.profile.edit');
     }
@@ -26,7 +27,7 @@ class SettingController extends Controller
     /**
      * Show the user's profile settings page.
      */
-    public function profileEdit(Request $request)
+    public function profileEdit(Request $request): Response
     {
         return inertia('settings/profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
@@ -37,7 +38,7 @@ class SettingController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function profileUpdate(ProfileUpdateRequest $request)
+    public function profileUpdate(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
 
@@ -53,7 +54,7 @@ class SettingController extends Controller
     /**
      * Delete the user's profile.
      */
-    public function profileDestroy(ProfileDeleteRequest $request)
+    public function profileDestroy(ProfileDeleteRequest $request): RedirectResponse
     {
         $user = $request->user();
 
@@ -107,7 +108,7 @@ class SettingController extends Controller
     /**
      * Update the user's password.
      */
-    public function passwordUpdate(PasswordUpdateRequest $request)
+    public function passwordUpdate(PasswordUpdateRequest $request): RedirectResponse
     {
         $request->user()->update([
             'password' => $request->password,
@@ -119,7 +120,7 @@ class SettingController extends Controller
     /**
      * Show the user's appearance settings page.
      */
-    public function appearanceEdit(Request $request)
+    public function appearanceEdit(Request $request): Response
     {
         return inertia('settings/appearance', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
