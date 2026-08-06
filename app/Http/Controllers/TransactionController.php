@@ -31,10 +31,6 @@ class TransactionController extends Controller
             ->transactions()
             ->with(['wallet', 'category']);
 
-        if ($type !== 'all') {
-            $query->where('type', $type);
-        }
-
         if ($period !== 'all') {
             $now = now();
 
@@ -50,8 +46,12 @@ class TransactionController extends Controller
                 ->whereDate('transacted_at', '<=', $now->toDateString());
         }
 
+        $transactionsQuery = $type !== 'all'
+            ? (clone $query)->where('type', $type)
+            : clone $query;
+
         $transactions = Inertia::scroll(
-            (clone $query)
+            $transactionsQuery
                 ->orderByDesc('transacted_at')
                 ->orderByDesc('created_at')
                 ->paginate(20)

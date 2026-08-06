@@ -56,7 +56,7 @@ const TransactionsIndex = ({
             <div className="flex flex-col gap-4 p-4">
                 <div className="flex items-center justify-between">
                     <Heading
-                        title="Transactions"
+                        title={`Transactions (${transactions.total})`}
                         description="Track your income and expenses"
                     />
                     <NewButton href={route('transactions.create')}>
@@ -79,11 +79,11 @@ const TransactionsIndex = ({
                         onValueChange={(value) => navigate({ period: value })}
                     >
                         <TabsList>
+                            <TabsTrigger value="all">All</TabsTrigger>
                             <TabsTrigger value="today">Today</TabsTrigger>
                             <TabsTrigger value="week">This Week</TabsTrigger>
                             <TabsTrigger value="month">This Month</TabsTrigger>
                             <TabsTrigger value="year">This Year</TabsTrigger>
-                            <TabsTrigger value="all">All</TabsTrigger>
                         </TabsList>
                     </Tabs>
                 </div>

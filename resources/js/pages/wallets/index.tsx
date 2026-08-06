@@ -7,14 +7,14 @@ import {
 } from '@/components/ui/empty';
 
 import type { TWallet } from '@/types/models';
-import type { TStat } from '@/components/screens/wallets/currency-stats';
+import type { TStat } from '@/components/elements/currency-stats';
 
 import { Wallet } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { WalletsTable } from '@/components/screens/wallets/wallets-table';
-import { CurrencyStats } from '@/components/screens/wallets/currency-stats';
+import { CurrencyStats } from '@/components/elements/currency-stats';
 
 const WalletsIndex = ({
     wallets,
