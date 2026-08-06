@@ -66,11 +66,6 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
                 <NumberInput
                     id="initial_balance"
                     name="initial_balance"
-                    placeholder="0.00"
-                    decimalScale={2}
-                    fixedDecimalScale
-                    thousandSeparator
-                    allowNegative={false}
                     value={data.initial_balance}
                     onValueChange={({ value }) =>
                         setData('initial_balance', value)
