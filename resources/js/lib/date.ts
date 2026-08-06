@@ -12,6 +12,10 @@ export const nowUtcIso = (): string => {
     return new Date().toISOString();
 };
 
+export const normalizeUtcIso = (date: string): string => {
+    return parseISO(date).toISOString();
+};
+
 const parse = (date: string | null | undefined) => {
     return date ? parseISO(date) : null;
 };

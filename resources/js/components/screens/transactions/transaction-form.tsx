@@ -2,6 +2,7 @@ import {
     localToUtcDatetime,
     utcToLocalDatetimeInput,
     nowUtcIso,
+    normalizeUtcIso,
 } from '@/lib/date';
 
 import type { TTransaction, TWallet, TCategory } from '@/types/models';
@@ -34,7 +35,7 @@ export const TransactionForm = ({
         category_id: transaction?.category_id ?? null,
         type: (transaction?.type ?? 'expense') as TType,
         amount: transaction?.amount ?? 0,
-        transacted_at: transaction?.transacted_at ?? nowUtcIso(),
+        transacted_at: transaction?.transacted_at ? normalizeUtcIso(transaction.transacted_at) : nowUtcIso(),
         description: transaction?.description ?? '',
         notes: transaction?.notes ?? '',
     });
