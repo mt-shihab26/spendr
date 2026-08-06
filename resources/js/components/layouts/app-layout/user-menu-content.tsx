@@ -58,10 +58,7 @@ export const UserMenuContent = ({ user }: { user: TUser }) => {
                 </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-                data-test="logout-button"
-                onClick={handleLogout}
-            >
+            <DropdownMenuItem data-test="logout-button" onClick={handleLogout}>
                 <LogOut className="mr-2" />
                 Log out
             </DropdownMenuItem>

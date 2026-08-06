@@ -51,9 +51,9 @@ Switching tabs filters the list to expense or income categories. Default tab is 
 
 ### Row actions (⋮)
 
-| Action | Condition |
-|--------|-----------|
-| Edit | always |
+| Action | Condition                                                       |
+| ------ | --------------------------------------------------------------- |
+| Edit   | always                                                          |
 | Delete | only when `is_default = false` AND no transactions reference it |
 
 Default categories show a lock icon instead of `⋮`.
@@ -92,12 +92,12 @@ Shown when the user has not created any custom categories of the selected type.
 
 ### Fields
 
-| Field | Type | Rules |
-|-------|------|-------|
-| Type | toggle (Expense / Income) | required |
-| Name | text | required, max 100, unique per user |
-| Color | swatch picker + hex input | required |
-| Icon | icon search/picker | optional |
+| Field | Type                      | Rules                              |
+| ----- | ------------------------- | ---------------------------------- |
+| Type  | toggle (Expense / Income) | required                           |
+| Name  | text                      | required, max 100, unique per user |
+| Color | swatch picker + hex input | required                           |
+| Icon  | icon search/picker        | optional                           |
 
 ---
 

@@ -40,18 +40,19 @@ Full log of all income and expense entries across all wallets. Supports rich fil
 
 ### Filter bar
 
-| Control | Type | Behaviour |
-|---------|------|-----------|
-| Search | text input | debounced `LIKE %term%` on `description` |
-| Type | select | All / Income / Expense |
-| Wallet | select | populated from user's wallets |
-| Category | select | populated from user's categories, filtered by selected Type |
-| Date from / Date to | date inputs | inclusive range on `transacted_at` |
-| Clear filters | button | resets all controls |
+| Control             | Type        | Behaviour                                                   |
+| ------------------- | ----------- | ----------------------------------------------------------- |
+| Search              | text input  | debounced `LIKE %term%` on `description`                    |
+| Type                | select      | All / Income / Expense                                      |
+| Wallet              | select      | populated from user's wallets                               |
+| Category            | select      | populated from user's categories, filtered by selected Type |
+| Date from / Date to | date inputs | inclusive range on `transacted_at`                          |
+| Clear filters       | button      | resets all controls                                         |
 
 ### List rows
 
 Grouped by date header. Each row:
+
 - Category icon (colored circle matching category color)
 - Description
 - Category name
@@ -106,15 +107,15 @@ Opened from the "[+ New Transaction]" button or the Quick-Add FAB.
 
 ### Fields
 
-| Field | Type | Rules |
-|-------|------|-------|
-| Type | toggle (Expense / Income) | required, defaults to Expense |
-| Amount | decimal input | required, > 0 |
-| Description | text | required, max 255 |
-| Category | select | required; list filtered by selected type |
-| Wallet | select | required; defaults to user's default wallet |
-| Date | date picker | required, defaults to today |
-| Notes | textarea | optional |
+| Field       | Type                      | Rules                                       |
+| ----------- | ------------------------- | ------------------------------------------- |
+| Type        | toggle (Expense / Income) | required, defaults to Expense               |
+| Amount      | decimal input             | required, > 0                               |
+| Description | text                      | required, max 255                           |
+| Category    | select                    | required; list filtered by selected type    |
+| Wallet      | select                    | required; defaults to user's default wallet |
+| Date        | date picker               | required, defaults to today                 |
+| Notes       | textarea                  | optional                                    |
 
 Switching **Type** clears the Category selection and repopulates the dropdown.
 

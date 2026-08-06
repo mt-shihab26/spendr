@@ -59,11 +59,11 @@ Trend analysis, category breakdowns, and net cash flow charts. Read-only — no 
 
 ## Filter Bar
 
-| Control | Options | Behaviour |
-|---------|---------|-----------|
-| Period | Last 3 months / Last 6 months / Last 12 months / Custom range | Changes date window for all charts and table |
-| Wallet | All / individual wallet | Scopes all data to one wallet |
-| Export CSV | — | Downloads the monthly breakdown table as CSV |
+| Control    | Options                                                       | Behaviour                                    |
+| ---------- | ------------------------------------------------------------- | -------------------------------------------- |
+| Period     | Last 3 months / Last 6 months / Last 12 months / Custom range | Changes date window for all charts and table |
+| Wallet     | All / individual wallet                                       | Scopes all data to one wallet                |
+| Export CSV | —                                                             | Downloads the monthly breakdown table as CSV |
 
 ---
 
@@ -89,12 +89,12 @@ Two side-by-side donuts, one for expenses and one for income, aggregated across 
 
 ## Monthly Breakdown Table
 
-| Column | Description |
-|--------|-------------|
-| Month | `MMM YYYY` |
-| Income | Total income transactions |
-| Expenses | Total expense transactions |
-| Net | Income − Expenses (red if negative) |
-| Savings Rate | Net / Income × 100, shown as % |
+| Column       | Description                         |
+| ------------ | ----------------------------------- |
+| Month        | `MMM YYYY`                          |
+| Income       | Total income transactions           |
+| Expenses     | Total expense transactions          |
+| Net          | Income − Expenses (red if negative) |
+| Savings Rate | Net / Income × 100, shown as %      |
 
 Rows are sorted newest first. Clicking a month row navigates to `transactions.index` pre-filtered to that month.

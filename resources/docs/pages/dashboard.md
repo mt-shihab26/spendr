@@ -60,10 +60,10 @@ The first screen after login. Gives a full picture of financial health at a glan
 
 Three stat cards, each showing:
 
-| Card | Primary value | Secondary |
-|------|---------------|-----------|
-| Net Worth | Sum of all wallet balances | vs. previous month (+ / -) |
-| This Month Income | Total income transactions for current month | % change vs previous month |
+| Card                | Primary value                                | Secondary                  |
+| ------------------- | -------------------------------------------- | -------------------------- |
+| Net Worth           | Sum of all wallet balances                   | vs. previous month (+ / -) |
+| This Month Income   | Total income transactions for current month  | % change vs previous month |
 | This Month Expenses | Total expense transactions for current month | % change vs previous month |
 
 Clicking a card does nothing — they are display-only.
@@ -108,11 +108,11 @@ Clicking a card does nothing — they are display-only.
 
 ## Data Sources
 
-| Widget | Query |
-|--------|-------|
-| Net Worth | `wallets` computed balances, summed |
-| Month Income/Expenses | `transactions` grouped by type, current month |
-| Wallets panel | `wallets` with computed balance |
-| Category donut | `transactions` grouped by `category_id`, current month, type = expense |
-| Recent transactions | `transactions` latest 10, eager-load category + wallet |
-| Budget status | `budgets` joined with current-month expense totals |
+| Widget                | Query                                                                  |
+| --------------------- | ---------------------------------------------------------------------- |
+| Net Worth             | `wallets` computed balances, summed                                    |
+| Month Income/Expenses | `transactions` grouped by type, current month                          |
+| Wallets panel         | `wallets` with computed balance                                        |
+| Category donut        | `transactions` grouped by `category_id`, current month, type = expense |
+| Recent transactions   | `transactions` latest 10, eager-load category + wallet                 |
+| Budget status         | `budgets` joined with current-month expense totals                     |

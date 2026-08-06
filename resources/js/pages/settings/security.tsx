@@ -25,7 +25,9 @@ const Security = (
         <SettingsLayout
             title="Security settings"
             description="Manage your password and account security"
-            breadcrumbs={[{ title: 'Security', route: 'settings.security.edit' }]}
+            breadcrumbs={[
+                { title: 'Security', route: 'settings.security.edit' },
+            ]}
         >
             <Form
                 action={route('settings.password.update')}

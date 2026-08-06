@@ -34,6 +34,7 @@ All auth screens share a centred card layout with the app logo at the top. No si
 ```
 
 **Actions**
+
 - Email + password → POST `/login`
 - "Forgot?" link → `/forgot-password`
 - "Register" link → `/register`

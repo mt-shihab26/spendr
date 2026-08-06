@@ -6,17 +6,17 @@ Wallet-type personal finance tracker. All screens live inside the `AppLayout` sh
 
 ## Screen Inventory
 
-| File | Route | Description |
-|------|-------|-------------|
-| [auth.md](./auth.md) | `/login`, `/register`, … | Login, register, 2FA, password reset |
-| [dashboard.md](./dashboard.md) | `/dashboard` | Net worth, summary cards, recent activity |
-| [wallets.md](./wallets.md) | `/wallets` | Wallet list, detail, create, edit |
-| [transactions.md](./transactions.md) | `/transactions` | Full transaction log, create, edit |
-| [transfers.md](./transfers.md) | `/transfers` | Between-wallet transfers, create, edit |
-| [categories.md](./categories.md) | `/categories` | Income & expense category management |
-| [budgets.md](./budgets.md) | `/budgets` | Monthly budget caps per expense category |
-| [reports.md](./reports.md) | `/reports` | Monthly trends, category breakdowns, charts |
-| [settings.md](./settings.md) | `/settings/*` | Profile, security, appearance |
+| File                                 | Route                    | Description                                 |
+| ------------------------------------ | ------------------------ | ------------------------------------------- |
+| [auth.md](./auth.md)                 | `/login`, `/register`, … | Login, register, 2FA, password reset        |
+| [dashboard.md](./dashboard.md)       | `/dashboard`             | Net worth, summary cards, recent activity   |
+| [wallets.md](./wallets.md)           | `/wallets`               | Wallet list, detail, create, edit           |
+| [transactions.md](./transactions.md) | `/transactions`          | Full transaction log, create, edit          |
+| [transfers.md](./transfers.md)       | `/transfers`             | Between-wallet transfers, create, edit      |
+| [categories.md](./categories.md)     | `/categories`            | Income & expense category management        |
+| [budgets.md](./budgets.md)           | `/budgets`               | Monthly budget caps per expense category    |
+| [reports.md](./reports.md)           | `/reports`               | Monthly trends, category breakdowns, charts |
+| [settings.md](./settings.md)         | `/settings/*`            | Profile, security, appearance               |
 
 ---
 
@@ -45,17 +45,17 @@ Wallet-type personal finance tracker. All screens live inside the `AppLayout` sh
 
 ### Sidebar nav items
 
-| Label | Icon | Route |
-|-------|------|-------|
-| Dashboard | `layout-dashboard` | `dashboard` |
-| Wallets | `wallet` | `wallets.index` |
-| Transactions | `arrow-right-left` | `transactions.index` |
-| Transfers | `repeat` | `transfers.index` |
-| Categories | `tag` | `categories.index` |
-| Budgets | `circle-dollar-sign` | `budgets.index` |
-| Reports | `chart-bar` | `reports.index` |
-| — | — | — |
-| Settings | `settings` | `settings.profile.edit` |
+| Label        | Icon                 | Route                   |
+| ------------ | -------------------- | ----------------------- |
+| Dashboard    | `layout-dashboard`   | `dashboard`             |
+| Wallets      | `wallet`             | `wallets.index`         |
+| Transactions | `arrow-right-left`   | `transactions.index`    |
+| Transfers    | `repeat`             | `transfers.index`       |
+| Categories   | `tag`                | `categories.index`      |
+| Budgets      | `circle-dollar-sign` | `budgets.index`         |
+| Reports      | `chart-bar`          | `reports.index`         |
+| —            | —                    | —                       |
+| Settings     | `settings`           | `settings.profile.edit` |
 
 ### Header user menu (dropdown)
 

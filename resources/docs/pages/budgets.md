@@ -82,10 +82,10 @@ When no budgets have been set: icon + "No budgets yet" + "Set your first budget"
 
 ### Fields
 
-| Field | Type | Rules |
-|-------|------|-------|
-| Category | select | required; only expense type; excludes categories that already have a budget |
-| Monthly Limit | decimal | required, > 0 |
+| Field         | Type    | Rules                                                                       |
+| ------------- | ------- | --------------------------------------------------------------------------- |
+| Category      | select  | required; only expense type; excludes categories that already have a budget |
+| Monthly Limit | decimal | required, > 0                                                               |
 
 ---
 

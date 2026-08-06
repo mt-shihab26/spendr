@@ -33,10 +33,10 @@ Moves money between two of the user's wallets. Recorded separately from transact
 
 ### Filter bar
 
-| Control | Type | Behaviour |
-|---------|------|-----------|
-| Date from / Date to | date inputs | inclusive range on `transacted_at` |
-| Wallet | select | shows transfers where wallet is either source or destination |
+| Control             | Type        | Behaviour                                                    |
+| ------------------- | ----------- | ------------------------------------------------------------ |
+| Date from / Date to | date inputs | inclusive range on `transacted_at`                           |
+| Wallet              | select      | shows transfers where wallet is either source or destination |
 
 ### Row actions (⋮)
 
@@ -75,13 +75,13 @@ Opened from "[+ New Transfer]" or the Quick-Add FAB.
 
 ### Fields
 
-| Field | Type | Rules |
-|-------|------|-------|
-| Amount | decimal | required, > 0 |
-| From Wallet | select | required; must differ from To |
-| To Wallet | select | required; must differ from From |
-| Date | date picker | required, defaults to today |
-| Notes | textarea | optional |
+| Field       | Type        | Rules                           |
+| ----------- | ----------- | ------------------------------- |
+| Amount      | decimal     | required, > 0                   |
+| From Wallet | select      | required; must differ from To   |
+| To Wallet   | select      | required; must differ from From |
+| Date        | date picker | required, defaults to today     |
+| Notes       | textarea    | optional                        |
 
 Selecting the same wallet for both From and To shows an inline error.
 

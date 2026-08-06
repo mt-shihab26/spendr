@@ -119,14 +119,14 @@ Grouped by date. Each row: category icon · description · category name · amou
 
 ### Fields
 
-| Field | Type | Rules |
-|-------|------|-------|
-| Name | text | required, max 100, unique per user |
-| Currency | select (ISO 4217) | required, default USD |
-| Initial Balance | decimal | min 0, default 0 |
-| Color | color swatch picker | required |
-| Icon | icon picker | optional |
-| Set as default | checkbox | — |
+| Field           | Type                | Rules                              |
+| --------------- | ------------------- | ---------------------------------- |
+| Name            | text                | required, max 100, unique per user |
+| Currency        | select (ISO 4217)   | required, default USD              |
+| Initial Balance | decimal             | min 0, default 0                   |
+| Color           | color swatch picker | required                           |
+| Icon            | icon picker         | optional                           |
+| Set as default  | checkbox            | —                                  |
 
 ---
 
