@@ -34,13 +34,13 @@ test('transactions can be filtered by period', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->component('transactions/index')
             ->where('period', 'month')
-            ->has('transactions', 3)
-            ->where('transactions.0.description', 'Today')
-            ->where('transactions.2.description', 'This month'),
+            ->has('transactions.data', 3)
+            ->where('transactions.data.0.description', 'Today')
+            ->where('transactions.data.2.description', 'This month'),
         );
 });
 
-test('transactions default to the current year period', function () {
+test('transactions default to the current month period', function () {
     Carbon::setTestNow('2026-08-06 12:00:00');
 
     $user = User::factory()->create();
@@ -48,21 +48,21 @@ test('transactions default to the current year period', function () {
     $category = Category::factory()->for($user)->expense()->create();
 
     Transaction::factory()->for($user)->for($wallet)->for($category)->create([
-        'description' => 'This year',
-        'transacted_at' => '2026-01-01',
+        'description' => 'This month',
+        'transacted_at' => '2026-08-01',
     ]);
     Transaction::factory()->for($user)->for($wallet)->for($category)->create([
-        'description' => 'Last year',
-        'transacted_at' => '2025-12-31',
+        'description' => 'Last month',
+        'transacted_at' => '2026-07-31',
     ]);
 
     $this->actingAs($user)
         ->get(route('transactions.index'))
         ->assertInertia(fn (Assert $page) => $page
             ->component('transactions/index')
-            ->where('period', 'year')
-            ->has('transactions', 1)
-            ->where('transactions.0.description', 'This year'),
+            ->where('period', 'month')
+            ->has('transactions.data', 1)
+            ->where('transactions.data.0.description', 'This month'),
         );
 });
 
@@ -91,7 +91,7 @@ test('transactions can show all periods', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->component('transactions/index')
             ->where('period', 'all')
-            ->has('transactions', 1),
+            ->has('transactions.data', 1),
         );
 });
 
