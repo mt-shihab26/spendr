@@ -56,6 +56,11 @@ export const TransactionsTable = ({
                                                 {transaction.category?.name} ·{' '}
                                                 {transaction.wallet?.name}
                                             </span>
+                                            {transaction.notes && (
+                                                <span className="text-xs text-muted-foreground/70 italic">
+                                                    {transaction.notes}
+                                                </span>
+                                            )}
                                         </div>
                                         <span className="text-xs text-muted-foreground">
                                             {formatLocalDateTime(
