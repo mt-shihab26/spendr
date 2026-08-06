@@ -1,22 +1,26 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form } from '@inertiajs/react';
 import { InputError } from '@/components/elements/input-error';
 import { PasswordInput } from '@/components/elements/password-input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { AuthLayout } from '@/components/layouts/auth-layout';
 
-type Props = {
+const ResetPassword = ({
+    token,
+    email,
+    passwordRules,
+}: {
     token: string;
     email: string;
     passwordRules: string;
-};
-
-export default function ResetPassword({ token, email, passwordRules }: Props) {
+}) => {
     return (
-        <>
-            <Head title="Reset password" />
-
+        <AuthLayout
+            title="Reset password"
+            description="Please enter your new password below"
+        >
             <Form
                 action={route('password.update')}
                 method="post"
@@ -41,7 +45,6 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
                                 className="mt-2"
                             />
                         </div>
-
                         <div className="grid gap-2">
                             <Label htmlFor="password">Password</Label>
                             <PasswordInput
@@ -55,7 +58,6 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
                             />
                             <InputError message={errors.password} />
                         </div>
-
                         <div className="grid gap-2">
                             <Label htmlFor="password_confirmation">
                                 Confirm password
@@ -73,7 +75,6 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
                                 className="mt-2"
                             />
                         </div>
-
                         <Button
                             type="submit"
                             className="mt-4 w-full"
@@ -86,11 +87,8 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
                     </div>
                 )}
             </Form>
-        </>
+        </AuthLayout>
     );
-}
-
-ResetPassword.layout = {
-    title: 'Reset password',
-    description: 'Please enter your new password below',
 };
+
+export default ResetPassword;

@@ -1,4 +1,4 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form } from '@inertiajs/react';
 import { InputError } from '@/components/elements/input-error';
 import { PasswordInput } from '@/components/elements/password-input';
 import { TextLink } from '@/components/elements/text-link';
@@ -6,15 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { AuthLayout } from '@/components/layouts/auth-layout';
 
-type Props = {
-    passwordRules: string;
-};
-
-export default function Register({ passwordRules }: Props) {
+const Register = ({ passwordRules }: { passwordRules: string }) => {
     return (
-        <>
-            <Head title="Register" />
+        <AuthLayout
+            title="Create an account"
+            description="Enter your details below to create your account"
+        >
             <Form
                 action={route('register.store')}
                 method="post"
@@ -42,7 +41,6 @@ export default function Register({ passwordRules }: Props) {
                                     className="mt-2"
                                 />
                             </div>
-
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email address</Label>
                                 <Input
@@ -56,7 +54,6 @@ export default function Register({ passwordRules }: Props) {
                                 />
                                 <InputError message={errors.email} />
                             </div>
-
                             <div className="grid gap-2">
                                 <Label htmlFor="password">Password</Label>
                                 <PasswordInput
@@ -70,7 +67,6 @@ export default function Register({ passwordRules }: Props) {
                                 />
                                 <InputError message={errors.password} />
                             </div>
-
                             <div className="grid gap-2">
                                 <Label htmlFor="password_confirmation">
                                     Confirm password
@@ -88,7 +84,6 @@ export default function Register({ passwordRules }: Props) {
                                     message={errors.password_confirmation}
                                 />
                             </div>
-
                             <Button
                                 type="submit"
                                 className="mt-2 w-full"
@@ -99,7 +94,6 @@ export default function Register({ passwordRules }: Props) {
                                 Create account
                             </Button>
                         </div>
-
                         <div className="text-center text-sm text-muted-foreground">
                             Already have an account?{' '}
                             <TextLink href={route('login')} tabIndex={6}>
@@ -109,11 +103,8 @@ export default function Register({ passwordRules }: Props) {
                     </>
                 )}
             </Form>
-        </>
+        </AuthLayout>
     );
-}
-
-Register.layout = {
-    title: 'Create an account',
-    description: 'Enter your details below to create your account',
 };
+
+export default Register;

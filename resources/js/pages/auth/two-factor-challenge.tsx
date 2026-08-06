@@ -1,17 +1,21 @@
-import { Form, Head, setLayoutProps } from '@inertiajs/react';
-import { InputError } from '@/components/elements/input-error';
-import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import { useMemo, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
     InputOTP,
     InputOTPGroup,
     InputOTPSlot,
 } from '@/components/ui/input-otp';
-import { OTP_MAX_LENGTH } from '@/hooks/use-two-factor-auth';
 
-export default function TwoFactorChallenge() {
+import { useMemo, useState } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Form } from '@inertiajs/react';
+import { InputError } from '@/components/elements/input-error';
+import { AuthLayout } from '@/components/layouts/auth-layout';
+
+import { OTP_MAX_LENGTH } from '@/hooks/use-two-factor-auth';
+import { REGEXP_ONLY_DIGITS } from 'input-otp';
+
+const TwoFactorChallenge = () => {
     const [showRecoveryInput, setShowRecoveryInput] = useState<boolean>(false);
     const [code, setCode] = useState<string>('');
 
@@ -37,11 +41,6 @@ export default function TwoFactorChallenge() {
         };
     }, [showRecoveryInput]);
 
-    setLayoutProps({
-        title: authConfigContent.title,
-        description: authConfigContent.description,
-    });
-
     const toggleRecoveryMode = (clearErrors: () => void): void => {
         setShowRecoveryInput(!showRecoveryInput);
         clearErrors();
@@ -49,9 +48,10 @@ export default function TwoFactorChallenge() {
     };
 
     return (
-        <>
-            <Head title="Two-factor authentication" />
-
+        <AuthLayout
+            title={authConfigContent.title}
+            description={authConfigContent.description}
+        >
             <div className="space-y-6">
                 <Form
                     action={route('two-factor.login.store')}
@@ -128,6 +128,8 @@ export default function TwoFactorChallenge() {
                     )}
                 </Form>
             </div>
-        </>
+        </AuthLayout>
     );
-}
+};
+
+export default TwoFactorChallenge;

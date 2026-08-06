@@ -1,22 +1,23 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { InputError } from '@/components/elements/input-error';
 import { TextLink } from '@/components/elements/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { AuthLayout } from '@/components/layouts/auth-layout';
 
-export default function ForgotPassword({ status }: { status?: string }) {
+const ForgotPassword = ({ status }: { status?: string }) => {
     return (
-        <>
-            <Head title="Forgot password" />
-
+        <AuthLayout
+            title="Forgot password"
+            description="Enter your email to receive a password reset link"
+        >
             {status && (
                 <div className="mb-4 text-center text-sm font-medium text-green-600">
                     {status}
                 </div>
             )}
-
             <div className="space-y-6">
                 <Form action={route('password.email')} method="post">
                     {({ processing, errors }) => (
@@ -31,7 +32,6 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                     autoFocus
                                     placeholder="email@example.com"
                                 />
-
                                 <InputError message={errors.email} />
                             </div>
 
@@ -50,17 +50,13 @@ export default function ForgotPassword({ status }: { status?: string }) {
                         </>
                     )}
                 </Form>
-
                 <div className="space-x-1 text-center text-sm text-muted-foreground">
                     <span>Or, return to</span>
                     <TextLink href={route('login')}>log in</TextLink>
                 </div>
             </div>
-        </>
+        </AuthLayout>
     );
-}
-
-ForgotPassword.layout = {
-    title: 'Forgot password',
-    description: 'Enter your email to receive a password reset link',
 };
+
+export default ForgotPassword;

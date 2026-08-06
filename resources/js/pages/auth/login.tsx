@@ -1,4 +1,4 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form } from '@inertiajs/react';
 import { InputError } from '@/components/elements/input-error';
 import { PasskeyVerify } from '@/components/elements/passkey-verify';
 import { PasswordInput } from '@/components/elements/password-input';
@@ -8,19 +8,21 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { AuthLayout } from '@/components/layouts/auth-layout';
 
-type Props = {
+const Login = ({
+    status,
+    canResetPassword,
+}: {
     status?: string;
     canResetPassword: boolean;
-};
-
-export default function Login({ status, canResetPassword }: Props) {
+}) => {
     return (
-        <>
-            <Head title="Log in" />
-
+        <AuthLayout
+            title="Log in to your account"
+            description="Enter your email and password below to log in"
+        >
             <PasskeyVerify />
-
             <Form
                 action={route('login.store')}
                 method="post"
@@ -44,7 +46,6 @@ export default function Login({ status, canResetPassword }: Props) {
                                 />
                                 <InputError message={errors.email} />
                             </div>
-
                             <div className="grid gap-2">
                                 <div className="flex items-center">
                                     <Label htmlFor="password">Password</Label>
@@ -68,7 +69,6 @@ export default function Login({ status, canResetPassword }: Props) {
                                 />
                                 <InputError message={errors.password} />
                             </div>
-
                             <div className="flex items-center space-x-3">
                                 <Checkbox
                                     id="remember"
@@ -77,7 +77,6 @@ export default function Login({ status, canResetPassword }: Props) {
                                 />
                                 <Label htmlFor="remember">Remember me</Label>
                             </div>
-
                             <Button
                                 type="submit"
                                 className="mt-4 w-full"
@@ -89,7 +88,6 @@ export default function Login({ status, canResetPassword }: Props) {
                                 Log in
                             </Button>
                         </div>
-
                         <div className="text-center text-sm text-muted-foreground">
                             Don't have an account?{' '}
                             <TextLink href={route('register')} tabIndex={5}>
@@ -99,17 +97,13 @@ export default function Login({ status, canResetPassword }: Props) {
                     </>
                 )}
             </Form>
-
             {status && (
                 <div className="mb-4 text-center text-sm font-medium text-green-600">
                     {status}
                 </div>
             )}
-        </>
+        </AuthLayout>
     );
-}
-
-Login.layout = {
-    title: 'Log in to your account',
-    description: 'Enter your email and password below to log in',
 };
+
+export default Login;
