@@ -52,7 +52,7 @@ export const mainLinks = (): TLink[] => [
 
     {
         title: 'Reports',
-        href: '/reports',
+        href: route('reports.index'),
         icon: ChartBar,
     },
 ];

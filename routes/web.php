@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransferController;
@@ -65,6 +66,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{budget}/edit', [BudgetController::class, 'edit'])->name('budgets.edit');
         Route::patch('/{budget}', [BudgetController::class, 'update'])->name('budgets.update');
         Route::delete('/{budget}', [BudgetController::class, 'destroy'])->name('budgets.destroy');
+    });
+
+    Route::prefix('/reports')->group(function () {
+        Route::get('/', [ReportsController::class, 'index'])->name('reports.index');
     });
 
     Route::prefix('/settings')->group(function () {
