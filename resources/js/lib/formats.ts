@@ -27,10 +27,6 @@ export const formatCurrency = (
     return `${getCurrencySymbol(currency ?? 'BDT')}${formatted}`;
 };
 
-export const toDateInput = (date?: string | null): string => {
-    return date?.slice(0, 10) ?? new Date().toISOString().slice(0, 10);
-};
-
 export const formatDateTime = (
     date: string | null | undefined,
     pattern = 'MMM d, yyyy h:mm a',

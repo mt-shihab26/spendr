@@ -29,13 +29,14 @@ export const TransactionForm = ({
         category_id: transaction?.category_id ?? null,
         type: (transaction?.type ?? 'expense') as TType,
         amount: transaction?.amount ?? 0,
-        transacted_at: toDateInput(transaction?.transacted_at),
+        transacted_at: transaction?.transacted_at,
         description: transaction?.description ?? '',
         notes: transaction?.notes ?? '',
     });
 
     return (
         <form
+            className="space-y-5"
             onSubmit={(e) => {
                 e.preventDefault();
                 if (transaction) {
@@ -44,7 +45,6 @@ export const TransactionForm = ({
                     post(route('transactions.store'));
                 }
             }}
-            className="space-y-5"
         >
             <div className="space-y-2">
                 <Label>
