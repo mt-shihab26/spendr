@@ -13,8 +13,8 @@ import { Plus, Wallet } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { Button } from '@/components/ui/button';
-import { NetWorth } from '@/components/screens/wallets/index/net-worth';
-import { WalletsTable } from '@/components/screens/wallets/index/wallets-table';
+import { NetWorth } from '@/components/screens/wallets/net-worth';
+import { WalletsTable } from '@/components/screens/wallets/wallets-table';
 
 const WalletsIndex = ({ wallets }: { wallets: TWallet[] }) => {
     return (
