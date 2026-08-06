@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Type;
 use App\Http\Requests\Transactions\StoreTransactionRequest;
 use App\Http\Requests\Transactions\UpdateTransactionRequest;
 use App\Models\Transaction;
@@ -21,7 +22,7 @@ class TransactionController extends Controller
             'period' => ['nullable', 'string', Rule::in(['today', 'week', 'month', 'year', 'all'])],
         ]);
 
-        $period = $validated['period'] ?? 'week';
+        $period = $validated['period'] ?? 'month';
 
         $query = $request->user()
             ->transactions()
@@ -42,14 +43,23 @@ class TransactionController extends Controller
                 ->whereDate('transacted_at', '<=', $now->toDateString());
         }
 
-        $transactions = $query
+        $transactions = (clone $query)
             ->orderByDesc('transacted_at')
             ->orderByDesc('created_at')
             ->get();
 
+        $stats = (clone $query)
+            ->selectRaw('type, SUM(amount) as total')
+            ->groupBy('type')
+            ->pluck('total', 'type');
+
         return inertia('transactions/index', [
             'transactions' => $transactions,
             'period' => $period,
+            'stats' => [
+                'income' => (float) ($stats[Type::Income->value] ?? 0),
+                'expense' => (float) ($stats[Type::Expense->value] ?? 0),
+            ],
         ]);
     }
 

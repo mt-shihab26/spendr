@@ -17,13 +17,16 @@ import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { formatCurrency } from '@/lib/formats';
 
 const TransactionsIndex = ({
     transactions,
     period,
+    stats,
 }: {
     transactions: TTransaction[];
     period: TTransactionPeriod;
+    stats: { income: number; expense: number };
 }) => {
     const changePeriod = (value: TTransactionPeriod) => {
         if (value === period) {
@@ -61,20 +64,31 @@ const TransactionsIndex = ({
                         New Transaction
                     </NewButton>
                 </div>
-                <Tabs
-                    value={period}
-                    onValueChange={(value) => {
-                        changePeriod(value);
-                    }}
-                >
-                    <TabsList>
-                        <TabsTrigger value="today">Today</TabsTrigger>
-                        <TabsTrigger value="week">This Week</TabsTrigger>
-                        <TabsTrigger value="month">This Month</TabsTrigger>
-                        <TabsTrigger value="year">This Year</TabsTrigger>
-                        <TabsTrigger value="all">All</TabsTrigger>
-                    </TabsList>
-                </Tabs>
+                <div className="flex items-center justify-between gap-4">
+                    <Tabs
+                        value={period}
+                        onValueChange={(value) => {
+                            changePeriod(value);
+                        }}
+                    >
+                        <TabsList>
+                            <TabsTrigger value="today">Today</TabsTrigger>
+                            <TabsTrigger value="week">This Week</TabsTrigger>
+                            <TabsTrigger value="month">This Month</TabsTrigger>
+                            <TabsTrigger value="year">This Year</TabsTrigger>
+                            <TabsTrigger value="all">All</TabsTrigger>
+                        </TabsList>
+                    </Tabs>
+                    <div className="flex items-center gap-3 text-sm">
+                        <span className="font-medium text-green-600">+{formatCurrency(stats.income)}</span>
+                        <span className="text-muted-foreground">·</span>
+                        <span className="font-medium text-red-500">-{formatCurrency(stats.expense)}</span>
+                        <span className="text-muted-foreground">·</span>
+                        <span className={`font-medium ${stats.income - stats.expense >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                            {formatCurrency(stats.income - stats.expense)}
+                        </span>
+                    </div>
+                </div>
                 {transactions.length === 0 ? (
                     <Empty className="border">
                         <EmptyHeader>
