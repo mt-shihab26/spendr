@@ -57,7 +57,8 @@ const WalletsIndex = ({
                     </Empty>
                 ) : (
                     <>
-                        <div className="flex justify-end">
+                        <div className="flex items-center justify-between">
+                            <div className="text-base">All time</div>
                             <TransactionStats stats={stats} />
                         </div>
                         <WalletsTable wallets={wallets} />
