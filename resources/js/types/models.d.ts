@@ -21,6 +21,8 @@ export type TWallet = {
     icon: string | null;
     is_default: boolean;
     sort_order: number;
+    income: number | null;
+    expense: number | null;
     deleted_at: string | null;
     created_at: string;
     updated_at: string;

@@ -20,6 +20,7 @@ import { TypePicker } from '@/components/elements/type-picker';
 import { Textarea } from '@/components/ui/textarea';
 import { WalletSelect } from '@/components/elements/wallet-select';
 import { CategorySelect } from '@/components/elements/category-select';
+import { getCurrencySymbol } from '@/lib/currency';
 
 export const TransactionForm = ({
     transaction,
@@ -39,6 +40,9 @@ export const TransactionForm = ({
         description: transaction?.description ?? '',
         notes: transaction?.notes ?? '',
     });
+
+    const selectedWallet = wallets.find((w) => w.id === data.wallet_id);
+    const currencyPrefix = selectedWallet ? getCurrencySymbol(selectedWallet.currency) : '';
 
     return (
         <form
@@ -93,6 +97,7 @@ export const TransactionForm = ({
                     onValueChange={({ value }) =>
                         setData('amount', Number(value))
                     }
+                    prefix={currencyPrefix}
                 />
                 <InputError message={errors.amount} />
             </div>

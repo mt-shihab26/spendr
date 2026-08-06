@@ -20,6 +20,8 @@ class WalletController extends Controller
     {
         $wallets = $request->user()
             ->wallets()
+            ->withSum(['transactions as income' => fn ($q) => $q->where('type', Type::Income->value)], 'amount')
+            ->withSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount')
             ->orderBy('sort_order')
             ->orderBy('created_at')
             ->get();

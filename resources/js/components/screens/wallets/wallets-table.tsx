@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { formatCurrency } from '@/lib/formats';
 import { getCurrencySymbol } from '@/lib/currency';
 
+import { Plus, Minus, Equal } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { IconBadge } from '@/components/elements/icon-badge';
 import { WalletActions } from '@/components/screens/wallets/wallet-actions';
@@ -24,18 +25,38 @@ export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
                         <span className="flex-1 text-xs font-medium">
                             {wallet.name}
                         </span>
-                        <span className="text-xs text-muted-foreground">
-                            {getCurrencySymbol(wallet.currency)}{' '}
-                            {wallet.currency}
-                        </span>
                         {wallet.is_default && (
                             <Badge variant="secondary">Default</Badge>
                         )}
-                        <span className="text-xs font-medium tabular-nums">
-                            {formatCurrency(
-                                wallet.initial_balance,
-                                wallet.currency,
-                            )}
+                        <div className="flex items-center gap-3 text-xs tabular-nums">
+                            <span className="flex items-center gap-1 font-medium text-green-600">
+                                <Plus className="size-3" />
+                                {formatCurrency(
+                                    wallet.income ?? 0,
+                                    wallet.currency,
+                                )}
+                            </span>
+                            <span className="flex items-center gap-1 font-medium text-red-500">
+                                <Minus className="size-3" />
+                                {formatCurrency(
+                                    wallet.expense ?? 0,
+                                    wallet.currency,
+                                )}
+                            </span>
+                            <span
+                                className={`flex items-center gap-1 font-medium ${(wallet.income ?? 0) - (wallet.expense ?? 0) >= 0 ? 'text-green-600' : 'text-red-500'}`}
+                            >
+                                <Equal className="size-3" />
+                                {formatCurrency(
+                                    (wallet.income ?? 0) -
+                                        (wallet.expense ?? 0),
+                                    wallet.currency,
+                                )}
+                            </span>
+                        </div>
+                        <span className="text-xs text-muted-foreground">
+                            {getCurrencySymbol(wallet.currency)}{' '}
+                            {wallet.currency}
                         </span>
                         <WalletActions
                             wallet={wallet}
