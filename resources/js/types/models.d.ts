@@ -32,6 +32,16 @@ export type TWallet = {
     updated_at: string;
 };
 
+export type TBudget = {
+    id: string;
+    user_id: string;
+    category_id: string;
+    amount: number;
+    deleted_at: string | null;
+    created_at: string;
+    updated_at: string;
+};
+
 export type TCategory = {
     id: string;
     user_id: string;
@@ -46,6 +56,8 @@ export type TCategory = {
     deleted_at: string | null;
     created_at: string;
     updated_at: string;
+
+    budget?: TBudget | null;
 };
 
 export type TTransaction = {

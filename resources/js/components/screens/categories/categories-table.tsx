@@ -45,9 +45,20 @@ export const CategoriesTable = ({
                         <span className="text-xs tabular-nums text-muted-foreground">
                             {category.transactions_count ?? 0} transactions
                         </span>
-                        <span className="text-xs font-medium tabular-nums">
-                            {formatNumber(category.total_amount ?? 0)}
+                        <span className="text-xs tabular-nums text-muted-foreground">
+                            {category.type === 'expense' ? 'Spent' : 'Earned'}:{' '}
+                            <span className="font-medium text-foreground">
+                                {formatNumber(category.total_amount ?? 0)}
+                            </span>
                         </span>
+                        {category.budget && (
+                            <span className="text-xs tabular-nums text-muted-foreground">
+                                Budget:{' '}
+                                <span className="font-medium text-foreground">
+                                    {formatNumber(category.budget.amount)}
+                                </span>
+                            </span>
+                        )}
                         <CategoryActions
                             category={category}
                             onDelete={setCategoryToDelete}

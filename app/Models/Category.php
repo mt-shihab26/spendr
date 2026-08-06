@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -71,22 +72,34 @@ class Category extends Model
     }
 
     /**
-     * Eager-load transaction count and total amount. Use on collection queries to avoid N+1.
+     * Get the budget for this category.
+     *
+     * @return HasOne<Budget, $this>
+     */
+    public function budget(): HasOne
+    {
+        return $this->hasOne(Budget::class);
+    }
+
+    /**
+     * Eager-load transaction count, total amount, and budget. Use on collection queries to avoid N+1.
      */
     public function scopeWithStats(Builder $query): void
     {
         $query
             ->withCount('transactions')
-            ->withSum('transactions as total_amount', 'amount');
+            ->withSum('transactions as total_amount', 'amount')
+            ->with('budget');
     }
 
     /**
-     * Load transaction count and total amount onto this instance.
+     * Load transaction count, total amount, and budget onto this instance.
      */
     public function loadStats(): static
     {
         $this->loadCount('transactions');
         $this->loadSum('transactions as total_amount', 'amount');
+        $this->load('budget');
 
         return $this;
     }
