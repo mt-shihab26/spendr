@@ -72,6 +72,8 @@ class TransactionController extends Controller
      */
     public function store(StoreTransactionRequest $request): RedirectResponse
     {
+        dd($request->validated());
+
         $transaction = $request->user()->transactions()->create($request->validated());
 
         return redirect()
