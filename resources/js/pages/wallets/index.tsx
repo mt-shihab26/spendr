@@ -8,11 +8,10 @@ import {
 
 import type { TWallet } from '@/types/models';
 
-import { Link } from '@inertiajs/react';
-import { Plus, Wallet } from 'lucide-react';
+import { Wallet } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
-import { Button } from '@/components/ui/button';
+import { NewButton } from '@/components/elements/new-button';
 import { NetWorth } from '@/components/screens/wallets/net-worth';
 import { WalletsTable } from '@/components/screens/wallets/wallets-table';
 
@@ -29,10 +28,9 @@ const WalletsIndex = ({ wallets }: { wallets: TWallet[] }) => {
                         title="Wallets"
                         description="Manage your accounts and balances"
                     />
-                    <Button render={<Link href={route('wallets.create')} />}>
-                        <Plus />
+                    <NewButton href={route('wallets.create')}>
                         New Wallet
-                    </Button>
+                    </NewButton>
                 </div>
                 {wallets.length === 0 ? (
                     <Empty className="border">
@@ -46,12 +44,9 @@ const WalletsIndex = ({ wallets }: { wallets: TWallet[] }) => {
                                 finances.
                             </EmptyDescription>
                         </EmptyHeader>
-                        <Button
-                            render={<Link href={route('wallets.create')} />}
-                        >
-                            <Plus />
+                        <NewButton href={route('wallets.create')}>
                             Create your first wallet
-                        </Button>
+                        </NewButton>
                     </Empty>
                 ) : (
                     <>

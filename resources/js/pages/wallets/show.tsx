@@ -3,11 +3,9 @@ import type { TWallet } from '@/types/models';
 import { formatCurrency } from '@/lib/formats';
 import { getCurrencySymbol } from '@/lib/currency';
 
-import { Link } from '@inertiajs/react';
-import { Pencil } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
-import { Button } from '@/components/ui/button';
+import { EditButton } from '@/components/elements/edit-button';
 
 const WalletsShow = ({ wallet }: { wallet: TWallet }) => {
     return (
@@ -32,15 +30,7 @@ const WalletsShow = ({ wallet }: { wallet: TWallet }) => {
                         title={wallet.name}
                         description={`${getCurrencySymbol(wallet.currency)} ${wallet.currency}${wallet.is_default ? ' · Default wallet' : ''}`}
                     />
-                    <Button
-                        variant="outline"
-                        render={
-                            <Link href={route('wallets.edit', wallet.id)} />
-                        }
-                    >
-                        <Pencil />
-                        Edit
-                    </Button>
+                    <EditButton href={route('wallets.edit', wallet.id)} />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                     <div className="border p-4">
