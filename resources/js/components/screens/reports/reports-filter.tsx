@@ -40,7 +40,7 @@ export const ReportsFilter = ({
     };
 
     return (
-        <div className="flex flex-wrap items-start gap-2">
+        <div className="flex items-center justify-between gap-2">
             <DateRangePicker
                 range={range}
                 dateFrom={dateFrom}
