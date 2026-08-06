@@ -6,19 +6,43 @@ import {
     EmptyTitle,
 } from '@/components/ui/empty';
 
+import type { TTransactionPeriod } from '@/types/utils';
 import type { TTransaction } from '@/types/models';
+
+import { router } from '@inertiajs/react';
 
 import { ArrowRightLeft } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const TransactionsIndex = ({
     transactions,
+    period,
 }: {
     transactions: TTransaction[];
+    period: TTransactionPeriod;
 }) => {
+    const changePeriod = (value: TTransactionPeriod) => {
+        if (value === period) {
+            return;
+        }
+
+        router.get(
+            route('transactions.index'),
+            {
+                period: value,
+            },
+            {
+                preserveScroll: true,
+                preserveState: false,
+                replace: true,
+            },
+        );
+    };
+
     return (
         <AppLayout
             title="Transactions"
@@ -37,6 +61,19 @@ const TransactionsIndex = ({
                         New Transaction
                     </NewButton>
                 </div>
+                <Tabs
+                    value={period}
+                    onValueChange={(value) => {
+                        changePeriod(value);
+                    }}
+                >
+                    <TabsList>
+                        <TabsTrigger value="today">Today</TabsTrigger>
+                        <TabsTrigger value="week">This Week</TabsTrigger>
+                        <TabsTrigger value="month">This Month</TabsTrigger>
+                        <TabsTrigger value="year">This Year</TabsTrigger>
+                    </TabsList>
+                </Tabs>
                 {transactions.length === 0 ? (
                     <Empty className="border">
                         <EmptyHeader>

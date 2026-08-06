@@ -6,3 +6,5 @@ export type TBreadcrumb = {
     route: string;
     params?: Record<string, string | number>;
 };
+
+type TTransactionPeriod = 'today' | 'week' | 'month' | 'year';

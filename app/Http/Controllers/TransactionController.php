@@ -7,6 +7,7 @@ use App\Http\Requests\Transactions\UpdateTransactionRequest;
 use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Response;
 
 class TransactionController extends Controller
@@ -16,15 +17,32 @@ class TransactionController extends Controller
      */
     public function index(Request $request): Response
     {
+        $validated = $request->validate([
+            'period' => ['nullable', 'string', Rule::in(['today', 'week', 'month', 'year'])],
+        ]);
+
+        $period = $validated['period'] ?? 'week';
+
+        $now = now();
+        $startDate = match ($period) {
+            'today' => $now->startOfDay(),
+            'week' => $now->startOfWeek(),
+            'month' => $now->startOfMonth(),
+            default => $now->startOfYear(),
+        };
+
         $transactions = $request->user()
             ->transactions()
             ->with(['wallet', 'category'])
+            ->whereDate('transacted_at', '>=', $startDate->toDateString())
+            ->whereDate('transacted_at', '<=', $now->toDateString())
             ->orderByDesc('transacted_at')
             ->orderByDesc('created_at')
             ->get();
 
         return inertia('transactions/index', [
             'transactions' => $transactions,
+            'period' => $period,
         ]);
     }
 
