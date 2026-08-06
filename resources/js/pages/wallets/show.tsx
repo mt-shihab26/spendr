@@ -79,7 +79,7 @@ const WalletsShow = ({
                     </div>
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">Net</p>
-                        <p className={`mt-1 text-lg font-semibold tabular-nums ${(wallet.income ?? 0) - (wallet.expense ?? 0) >= 0 ? 'text-income' : 'text-expense'}`}>
+                        <p className="mt-1 text-lg font-semibold text-net tabular-nums">
                             {formatCurrency(
                                 (wallet.income ?? 0) - (wallet.expense ?? 0),
                                 wallet.currency,
