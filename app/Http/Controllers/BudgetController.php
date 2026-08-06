@@ -8,6 +8,7 @@ use App\Http\Requests\Budgets\UpdateBudgetRequest;
 use App\Models\Budget;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Inertia\Response;
 
@@ -19,7 +20,6 @@ class BudgetController extends Controller
     public function index(Request $request): Response
     {
         $month = $request->input('month', now()->format('Y-m'));
-        [$year, $monthNum] = explode('-', $month);
 
         $budgets = $request->user()
             ->budgets()
@@ -27,18 +27,7 @@ class BudgetController extends Controller
             ->orderBy('created_at')
             ->get();
 
-        $spending = DB::table('transactions')
-            ->join('wallets', 'transactions.wallet_id', '=', 'wallets.id')
-            ->where('transactions.user_id', $request->user()->id)
-            ->where('transactions.type', Type::Expense->value)
-            ->whereYear('transactions.transacted_at', (int) $year)
-            ->whereMonth('transactions.transacted_at', (int) $monthNum)
-            ->whereNull('transactions.deleted_at')
-            ->select('transactions.category_id', 'wallets.currency', DB::raw('SUM(transactions.amount) as total'))
-            ->groupBy('transactions.category_id', 'wallets.currency')
-            ->get()
-            ->groupBy('category_id')
-            ->map(fn ($rows) => $rows->pluck('total', 'currency')->toArray());
+        $spending = $this->getSpending($request->user()->id, $month);
 
         $budgets = $budgets->map(fn (Budget $budget) => array_merge(
             $budget->toArray(),
@@ -72,10 +61,10 @@ class BudgetController extends Controller
      */
     public function store(StoreBudgetRequest $request): RedirectResponse
     {
-        $budget = $request->user()->budgets()->create($request->validated());
+        $request->user()->budgets()->create($request->validated());
 
         return redirect()
-            ->route('budgets.show', $budget)
+            ->route('budgets.index')
             ->with('success', 'Budget created.');
     }
 
@@ -86,10 +75,15 @@ class BudgetController extends Controller
     {
         abort_if($budget->user_id !== $request->user()->id, 403);
 
+        $month = $request->input('month', now()->format('Y-m'));
+
         $budget->load('category');
 
+        $spending = $this->getSpending($request->user()->id, $month, $budget->category_id);
+
         return inertia('budgets/show', [
-            'budget' => $budget,
+            'budget' => array_merge($budget->toArray(), ['spent' => $spending]),
+            'month' => $month,
         ]);
     }
 
@@ -138,5 +132,40 @@ class BudgetController extends Controller
         return redirect()
             ->route('budgets.index')
             ->with('success', 'Budget deleted.');
+    }
+
+    /**
+     * Get per-currency spending for the given month, grouped by category_id.
+     * When $categoryId is provided, returns a flat currency => total array for that single category.
+     *
+     * @return Collection<string, array<string, float>>|array<string, float>
+     */
+    private function getSpending(string $userId, string $month, ?string $categoryId = null): Collection|array
+    {
+        [$year, $monthNum] = explode('-', $month);
+
+        $query = DB::table('transactions')
+            ->join('wallets', 'transactions.wallet_id', '=', 'wallets.id')
+            ->where('transactions.user_id', $userId)
+            ->where('transactions.type', Type::Expense->value)
+            ->whereYear('transactions.transacted_at', (int) $year)
+            ->whereMonth('transactions.transacted_at', (int) $monthNum)
+            ->whereNull('transactions.deleted_at');
+
+        if ($categoryId !== null) {
+            return $query
+                ->where('transactions.category_id', $categoryId)
+                ->select('wallets.currency', DB::raw('SUM(transactions.amount) as total'))
+                ->groupBy('wallets.currency')
+                ->pluck('total', 'currency')
+                ->toArray();
+        }
+
+        return $query
+            ->select('transactions.category_id', 'wallets.currency', DB::raw('SUM(transactions.amount) as total'))
+            ->groupBy('transactions.category_id', 'wallets.currency')
+            ->get()
+            ->groupBy('category_id')
+            ->map(fn ($rows) => $rows->pluck('total', 'currency')->toArray());
     }
 }
