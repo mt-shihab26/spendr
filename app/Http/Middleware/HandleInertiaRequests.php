@@ -40,9 +40,16 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'ziggy' => fn () => [...(new Ziggy)->toArray(), 'location' => $request->url()],
             'name' => config('app.name'),
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+                'info' => fn () => $request->session()->get('info'),
+                'warning' => fn () => $request->session()->get('warning'),
+            ],
             'auth' => [
                 'user' => $request->user(),
             ],
+
         ];
     }
 }
