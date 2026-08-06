@@ -1,5 +1,6 @@
 import type { TTransaction } from '@/types/models';
 
+import { Link } from '@inertiajs/react';
 import { formatLocalDateTimeLong } from '@/lib/date';
 
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -79,9 +80,16 @@ const TransactionsShow = ({ transaction }: { transaction: TTransaction }) => {
                                     color={transaction.wallet.color}
                                 />
                             )}
-                            <span className="text-sm font-medium">
-                                {transaction.wallet?.name ?? '—'}
-                            </span>
+                            {transaction.wallet ? (
+                                <Link
+                                    href={route('wallets.show', transaction.wallet.id)}
+                                    className="text-sm font-medium hover:underline"
+                                >
+                                    {transaction.wallet.name}
+                                </Link>
+                            ) : (
+                                <span className="text-sm font-medium">—</span>
+                            )}
                         </div>
                     </div>
                 </div>

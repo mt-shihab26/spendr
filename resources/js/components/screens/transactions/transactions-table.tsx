@@ -3,6 +3,8 @@ import type { TTransaction } from '@/types/models';
 import { useState } from 'react';
 import { formatLocalDateLong, formatLocalDateTime } from '@/lib/date';
 
+import { Link } from '@inertiajs/react';
+
 import { Badge } from '@/components/ui/badge';
 import { TransactionAmount } from '@/components/elements/transaction-amount';
 import { IconBadge } from '@/components/elements/icon-badge';
@@ -49,12 +51,22 @@ export const TransactionsTable = ({
                                             color={transaction.category?.color}
                                         />
                                         <div className="flex flex-1 flex-col">
-                                            <span className="text-xs font-medium">
+                                            <Link
+                                                href={route('transactions.show', transaction.id)}
+                                                className="text-xs font-medium hover:underline"
+                                            >
                                                 {transaction.description}
-                                            </span>
+                                            </Link>
                                             <span className="text-xs text-muted-foreground">
                                                 {transaction.category?.name} ·{' '}
-                                                {transaction.wallet?.name}
+                                                {transaction.wallet && (
+                                                    <Link
+                                                        href={route('wallets.show', transaction.wallet.id)}
+                                                        className="hover:underline"
+                                                    >
+                                                        {transaction.wallet.name}
+                                                    </Link>
+                                                )}
                                             </span>
                                             {transaction.notes && (
                                                 <span className="text-xs text-muted-foreground/70 italic">
