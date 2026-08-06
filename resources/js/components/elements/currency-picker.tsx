@@ -3,7 +3,7 @@ import type { TCurrency } from '@/types/enums';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 
-import { CURRENCIES_OPTIONS } from '@/lib/options';
+import { CURRENCIES_OPTIONS, CURRENCY_SYMBOLS } from '@/lib/options';
 
 export const CurrencyPicker = ({
     value,
@@ -12,7 +12,7 @@ export const CurrencyPicker = ({
 }: {
     value: TCurrency;
     onChange: (currency: TCurrency) => void;
-    options?: string[];
+    options?: TCurrency[];
 }) => {
     return (
         <RadioGroup
@@ -30,7 +30,7 @@ export const CurrencyPicker = ({
                         htmlFor={`currency-${currency}`}
                         className="cursor-pointer font-normal"
                     >
-                        {currency}
+                        <span>{CURRENCY_SYMBOLS[currency]}</span> {currency}
                     </Label>
                 </div>
             ))}
