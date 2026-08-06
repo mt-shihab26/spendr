@@ -1,4 +1,5 @@
-import type { TWallet, TTransaction, TPaginated } from '@/types/models';
+import type { TWallet, TTransaction } from '@/types/models';
+import type { TPaginated } from '@/types/utils';
 
 import { formatCurrency } from '@/lib/formats';
 import { getCurrencySymbol } from '@/lib/currency';
@@ -48,9 +49,9 @@ const WalletsShow = ({
                         <BackButton href={route('wallets.index')} />
                     </div>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-4">
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Balance</p>
+                        <p className="text-xs text-muted-foreground">Initial Balance</p>
                         <p className="mt-1 text-lg font-semibold tabular-nums">
                             {formatCurrency(
                                 wallet.initial_balance,
@@ -68,12 +69,21 @@ const WalletsShow = ({
                         </p>
                     </div>
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">
-                            Expenses
-                        </p>
+                        <p className="text-xs text-muted-foreground">Expenses</p>
                         <p className="mt-1 text-lg font-semibold text-red-500 tabular-nums">
                             {formatCurrency(
                                 wallet.expense ?? 0,
+                                wallet.currency,
+                            )}
+                        </p>
+                    </div>
+                    <div className="border p-4">
+                        <p className="text-xs text-muted-foreground">Balance</p>
+                        <p className="mt-1 text-lg font-semibold tabular-nums">
+                            {formatCurrency(
+                                wallet.initial_balance +
+                                    (wallet.income ?? 0) -
+                                    (wallet.expense ?? 0),
                                 wallet.currency,
                             )}
                         </p>
