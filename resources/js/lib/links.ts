@@ -1,7 +1,13 @@
+import {
+    ArrowRightLeft,
+    BookOpen,
+    Folder,
+    LayoutGrid,
+    Wallet,
+} from 'lucide-react';
+
 import type { InertiaLinkProps } from '@inertiajs/react';
 import type { LucideIcon } from 'lucide-react';
-
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
 
 type TLink = {
     title: string;
@@ -14,6 +20,16 @@ export const mainLinks = (): TLink[] => [
         title: 'Dashboard',
         href: route('dashboard'),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Wallets',
+        href: '/wallets',
+        icon: Wallet,
+    },
+    {
+        title: 'Transactions',
+        href: '/transactions',
+        icon: ArrowRightLeft,
     },
 ];
 

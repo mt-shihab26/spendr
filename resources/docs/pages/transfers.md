@@ -37,10 +37,10 @@ Moves money between two of the user's wallets. Kept separate from transactions s
 
 ### Filter bar
 
-| Control | Behaviour |
-|---------|-----------|
-| Date from / to | Inclusive range on `transacted_at` |
-| Wallet | Shows transfers where the wallet is source or destination |
+| Control        | Behaviour                                                 |
+| -------------- | --------------------------------------------------------- |
+| Date from / to | Inclusive range on `transacted_at`                        |
+| Wallet         | Shows transfers where the wallet is source or destination |
 
 Each row has a `→` chevron that navigates to `transfers.edit`. "[+ New Transfer]" button and the Quick-Add FAB both navigate to `transfers.create`.
 
@@ -81,13 +81,13 @@ Each row has a `→` chevron that navigates to `transfers.edit`. "[+ New Transfe
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-| Field | Rules |
-|-------|-------|
-| Amount | required, > 0 |
-| From Wallet | required; must differ from To |
-| To Wallet | required; must differ from From |
-| Date | required; defaults to today |
-| Notes | optional |
+| Field       | Rules                           |
+| ----------- | ------------------------------- |
+| Amount      | required, > 0                   |
+| From Wallet | required; must differ from To   |
+| To Wallet   | required; must differ from From |
+| Date        | required; defaults to today     |
+| Notes       | optional                        |
 
 On success → redirects to `transfers.index`. Cancel → `transfers.index`.
 

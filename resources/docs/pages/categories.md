@@ -89,12 +89,12 @@ Expense / Income. Default tab: Expense.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-| Field | Rules |
-|-------|-------|
-| Type | required |
-| Name | required, max 100, unique per user |
-| Color | required |
-| Icon | optional |
+| Field | Rules                              |
+| ----- | ---------------------------------- |
+| Type  | required                           |
+| Name  | required, max 100, unique per user |
+| Color | required                           |
+| Icon  | optional                           |
 
 On success → redirects to `categories.index`. Cancel → `categories.index`.
 

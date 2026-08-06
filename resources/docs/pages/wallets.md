@@ -120,14 +120,14 @@ Icon + "No wallets yet" + "Create your first wallet" button → `wallets.create`
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-| Field | Rules |
-|-------|-------|
-| Name | required, max 100, unique per user |
-| Currency | required, ISO 4217, default USD |
-| Initial Balance | min 0, default 0 |
-| Color | required |
-| Icon | optional |
-| Set as default | unchecked by default |
+| Field           | Rules                              |
+| --------------- | ---------------------------------- |
+| Name            | required, max 100, unique per user |
+| Currency        | required, ISO 4217, default USD    |
+| Initial Balance | min 0, default 0                   |
+| Color           | required                           |
+| Icon            | optional                           |
+| Set as default  | unchecked by default               |
 
 On success → redirects to `wallets.show`. Cancel → `wallets.index`.
 

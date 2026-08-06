@@ -40,14 +40,14 @@ Full log of all income and expense entries across all wallets.
 
 ### Filter bar
 
-| Control | Behaviour |
-|---------|-----------|
-| Search | Debounced `LIKE %term%` on `description` |
-| Type | All / Income / Expense |
-| Wallet | User's wallets |
-| Category | User's categories; narrows when Type is selected |
-| Date from / to | Inclusive range on `transacted_at` |
-| Clear filters | Resets all controls |
+| Control        | Behaviour                                        |
+| -------------- | ------------------------------------------------ |
+| Search         | Debounced `LIKE %term%` on `description`         |
+| Type           | All / Income / Expense                           |
+| Wallet         | User's wallets                                   |
+| Category       | User's categories; narrows when Type is selected |
+| Date from / to | Inclusive range on `transacted_at`               |
+| Clear filters  | Resets all controls                              |
 
 Rows grouped by date. Each row has a `→` chevron — clicking navigates to `transactions.edit`.
 
@@ -96,15 +96,15 @@ Rows grouped by date. Each row has a `→` chevron — clicking navigates to `tr
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-| Field | Rules |
-|-------|-------|
-| Type | required, default Expense |
-| Amount | required, > 0 |
-| Description | required, max 255 |
-| Category | required; filtered by selected type |
-| Wallet | required; defaults to user's default wallet |
-| Date | required; defaults to today |
-| Notes | optional |
+| Field       | Rules                                       |
+| ----------- | ------------------------------------------- |
+| Type        | required, default Expense                   |
+| Amount      | required, > 0                               |
+| Description | required, max 255                           |
+| Category    | required; filtered by selected type         |
+| Wallet      | required; defaults to user's default wallet |
+| Date        | required; defaults to today                 |
+| Notes       | optional                                    |
 
 Switching Type clears Category and reloads the dropdown. On success → redirects to `transactions.index`. Cancel → `transactions.index`.
 

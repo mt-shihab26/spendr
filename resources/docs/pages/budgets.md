@@ -84,10 +84,10 @@ Icon + "No budgets set yet" + "Set your first budget" → `budgets.create`.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-| Field | Rules |
-|-------|-------|
-| Category | required; expense type only; excludes already-budgeted categories |
-| Monthly Limit | required, > 0 |
+| Field         | Rules                                                             |
+| ------------- | ----------------------------------------------------------------- |
+| Category      | required; expense type only; excludes already-budgeted categories |
+| Monthly Limit | required, > 0                                                     |
 
 On success → redirects to `budgets.index`. Cancel → `budgets.index`.
 
