@@ -7,6 +7,7 @@ use App\Http\Requests\Categories\UpdateCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Response;
 
 class CategoryController extends Controller
@@ -18,6 +19,7 @@ class CategoryController extends Controller
     {
         $categories = $request->user()
             ->categories()
+            ->withStats()
             ->orderBy('sort_order')
             ->orderBy('created_at')
             ->get();
@@ -54,8 +56,19 @@ class CategoryController extends Controller
     {
         abort_if($category->user_id !== $request->user()->id, 403);
 
+        $category->loadStats();
+
+        $transactions = Inertia::scroll(
+            $category->transactions()
+                ->with(['wallet'])
+                ->orderByDesc('transacted_at')
+                ->orderByDesc('created_at')
+                ->paginate(20)
+        );
+
         return inertia('categories/show', [
             'category' => $category,
+            'transactions' => $transactions,
         ]);
     }
 

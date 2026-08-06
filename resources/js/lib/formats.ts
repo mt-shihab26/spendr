@@ -24,3 +24,10 @@ export const formatCurrency = (
 
     return `${getCurrencySymbol(currency ?? 'BDT')}${formatted}`;
 };
+
+export const formatNumber = (amount: number | string): string => {
+    return new Intl.NumberFormat(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(Number(amount));
+};

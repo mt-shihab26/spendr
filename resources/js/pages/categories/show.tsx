@@ -1,14 +1,24 @@
-import type { TCategory } from '@/types/models';
+import type { TCategory, TTransaction } from '@/types/models';
+import type { TPaginated } from '@/types/utils';
 
 import { getIcon } from '@/lib/icons';
+import { formatNumber } from '@/lib/formats';
 
+import { InfiniteScroll } from '@inertiajs/react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { EditButton } from '@/components/elements/edit-button';
 import { BackButton } from '@/components/elements/back-button';
 import { Badge } from '@/components/ui/badge';
+import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
 
-const CategoriesShow = ({ category }: { category: TCategory }) => {
+const CategoriesShow = ({
+    category,
+    transactions,
+}: {
+    category: TCategory;
+    transactions: TPaginated<TTransaction>;
+}) => {
     return (
         <AppLayout
             title={category.name}
@@ -53,10 +63,10 @@ const CategoriesShow = ({ category }: { category: TCategory }) => {
                     </div>
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">
-                            Month Total
+                            Total Amount
                         </p>
                         <p className="mt-1 text-lg font-semibold tabular-nums">
-                            —
+                            {formatNumber(category.total_amount ?? 0)}
                         </p>
                     </div>
                     <div className="border p-4">
@@ -64,15 +74,21 @@ const CategoriesShow = ({ category }: { category: TCategory }) => {
                             Transactions
                         </p>
                         <p className="mt-1 text-lg font-semibold tabular-nums">
-                            —
+                            {category.transactions_count ?? 0}
                         </p>
                     </div>
                 </div>
-                <div className="border p-4">
-                    <p className="text-xs text-muted-foreground">
-                        No transactions yet.
-                    </p>
-                </div>
+                {transactions.data.length > 0 ? (
+                    <InfiniteScroll data="transactions" onlyNext preserveUrl>
+                        <TransactionsTable transactions={transactions.data} />
+                    </InfiniteScroll>
+                ) : (
+                    <div className="border p-4">
+                        <p className="text-xs text-muted-foreground">
+                            No transactions yet.
+                        </p>
+                    </div>
+                )}
             </div>
         </AppLayout>
     );

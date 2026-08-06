@@ -1,7 +1,9 @@
 import type { TCategory } from '@/types/models';
 
 import { useState } from 'react';
+import { formatNumber } from '@/lib/formats';
 
+import { Link } from '@inertiajs/react';
 import { Badge } from '@/components/ui/badge';
 import { IconBadge } from '@/components/elements/icon-badge';
 import { CategoryActions } from '@/components/screens/categories/category-actions';
@@ -28,15 +30,24 @@ export const CategoriesTable = ({
                             icon={category.icon}
                             color={category.color}
                         />
-                        <span className="flex-1 text-xs font-medium">
+                        <Link
+                            href={route('categories.show', category.id)}
+                            className="flex-1 text-xs font-medium hover:underline"
+                        >
                             {category.name}
-                        </span>
+                        </Link>
                         <Badge variant="secondary" className="capitalize">
                             {category.type}
                         </Badge>
                         {category.is_default && (
                             <Badge variant="secondary">Default</Badge>
                         )}
+                        <span className="text-xs tabular-nums text-muted-foreground">
+                            {category.transactions_count ?? 0} transactions
+                        </span>
+                        <span className="text-xs font-medium tabular-nums">
+                            {formatNumber(category.total_amount ?? 0)}
+                        </span>
                         <CategoryActions
                             category={category}
                             onDelete={setCategoryToDelete}

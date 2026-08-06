@@ -41,6 +41,8 @@ export type TCategory = {
     icon: string | null;
     is_default: boolean;
     sort_order: number;
+    transactions_count: number | null;
+    total_amount: number | null;
     deleted_at: string | null;
     created_at: string;
     updated_at: string;
