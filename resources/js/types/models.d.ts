@@ -36,7 +36,7 @@ export type TBudget = {
     id: string;
     user_id: string;
     category_id: string;
-    amount: number;
+    amount: Record<TCurrency, number>;
     deleted_at: string | null;
     created_at: string;
     updated_at: string;

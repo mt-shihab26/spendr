@@ -1,12 +1,16 @@
 import type { TBudget, TCategory } from '@/types/models';
 
-import { useForm, Link } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
+import { getCurrencySymbol } from '@/lib/currency';
 
+import { Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { InputError } from '@/components/elements/input-error';
 import { NumberInput } from '@/components/elements/number-input';
 import { CategorySelect } from '@/components/elements/category-select';
+
+import { CURRENCIES_OPTIONS } from '@/lib/currency';
 
 export const BudgetForm = ({
     budget,
@@ -17,7 +21,7 @@ export const BudgetForm = ({
 }) => {
     const { data, setData, post, patch, processing, errors } = useForm({
         category_id: budget?.category_id ?? null,
-        amount: budget?.amount ?? 0,
+        amount: budget?.amount ?? ({} as TBudget['amount']),
     });
 
     return (
@@ -46,19 +50,25 @@ export const BudgetForm = ({
                 <InputError message={errors.category_id} />
             </div>
 
-            <div className="space-y-2">
-                <Label>
-                    Monthly Limit <span className="text-destructive">*</span>
-                </Label>
-                <NumberInput
-                    value={data.amount}
-                    onValueChange={({ value }) =>
-                        setData('amount', Number(value))
-                    }
-                    prefix="$"
-                />
-                <InputError message={errors.amount} />
-            </div>
+            {CURRENCIES_OPTIONS.map((currency) => (
+                <div className="space-y-2" key={currency}>
+                    <Label>
+                        Monthly Limit ({currency})
+                        <span className="text-destructive">*</span>
+                    </Label>
+                    <NumberInput
+                        value={data.amount?.[currency] ?? ''}
+                        prefix={getCurrencySymbol(currency)}
+                        onValueChange={({ value }) =>
+                            setData('amount', {
+                                ...data.amount,
+                                [currency]: Number(value),
+                            })
+                        }
+                    />
+                    <InputError message={errors.amount} />
+                </div>
+            ))}
 
             <div className="flex items-center justify-end space-x-2 pt-2">
                 <Button
