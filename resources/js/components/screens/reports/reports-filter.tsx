@@ -6,28 +6,20 @@ import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { getCurrencySymbol } from '@/lib/currency';
 import { DateRangePicker } from '@/components/screens/reports/date-range-picker';
 
-type TPeriod = '3m' | '6m' | '12m';
-
-const PERIOD_LABELS: Record<TPeriod, string> = {
-    '3m': 'Last 3 months',
-    '6m': 'Last 6 months',
-    '12m': 'Last 12 months',
-};
-
 export const ReportsFilter = ({
-    period,
     currency,
     walletId,
     currencies,
     wallets,
+    range,
     dateFrom,
     dateTo,
 }: {
-    period: TPeriod;
     currency: string | null;
     walletId: string | null;
     currencies: string[];
     wallets: TWallet[];
+    range: string | null;
     dateFrom: string | null;
     dateTo: string | null;
 }) => {
@@ -36,9 +28,9 @@ export const ReportsFilter = ({
             route('reports.index'),
             Object.fromEntries(
                 Object.entries({
-                    period,
                     currency,
                     wallet_id: walletId,
+                    range,
                     date_from: dateFrom,
                     date_to: dateTo,
                     ...params,
@@ -49,25 +41,19 @@ export const ReportsFilter = ({
     };
 
     return (
-        <div className="flex flex-wrap items-center gap-2">
-            <NativeSelect
-                value={period}
-                onChange={(e) => navigate({ period: e.target.value, date_from: null, date_to: null })}
-            >
-                {(Object.keys(PERIOD_LABELS) as TPeriod[]).map((p) => (
-                    <NativeSelectOption key={p} value={p}>
-                        {PERIOD_LABELS[p]}
-                    </NativeSelectOption>
-                ))}
-            </NativeSelect>
-
+        <div className="flex flex-wrap items-start gap-2">
             <DateRangePicker
+                range={range}
                 dateFrom={dateFrom}
                 dateTo={dateTo}
-                onSelect={({ from, to }) =>
-                    navigate({ date_from: from, date_to: to })
+                onSelect={(newRange, dates) =>
+                    navigate({
+                        range: newRange,
+                        date_from: dates?.from ?? null,
+                        date_to: dates?.to ?? null,
+                    })
                 }
-                onClear={() => navigate({ date_from: null, date_to: null })}
+                onClear={() => navigate({ range: null, date_from: null, date_to: null })}
             />
 
             {currencies.length > 1 && (

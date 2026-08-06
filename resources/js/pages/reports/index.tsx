@@ -17,8 +17,6 @@ type TSummary = {
     net: number;
 };
 
-type TPeriod = '3m' | '6m' | '12m';
-
 type TCashFlowRow = {
     month: string;
     key: string;
@@ -59,7 +57,7 @@ const ReportsIndex = ({
     expense_breakdown,
     income_breakdown,
     summary,
-    period,
+    range,
     date_from,
     date_to,
     currency,
@@ -72,7 +70,7 @@ const ReportsIndex = ({
     expense_breakdown: TCategoryRow[];
     income_breakdown: TCategoryRow[];
     summary: TSummary;
-    period: TPeriod;
+    range: string | null;
     date_from: string | null;
     date_to: string | null;
     currency: TCurrency | null;
@@ -106,7 +104,7 @@ const ReportsIndex = ({
                 <ReportsSummary summary={summary} currency={cur} />
 
                 <ReportsFilter
-                    period={period}
+                    range={range}
                     dateFrom={date_from}
                     dateTo={date_to}
                     currency={currency}

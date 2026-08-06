@@ -25,33 +25,31 @@ class ReportsController extends Controller
             ->all();
 
         $validated = $request->validate([
-            'period' => ['nullable', Rule::in(['3m', '6m', '12m'])],
             'currency' => ['nullable', 'string', Rule::in($currencies)],
             'wallet_id' => [
                 'nullable',
                 'uuid',
                 Rule::exists('wallets', 'id')->where('user_id', $user->id),
             ],
-            'date_from' => ['nullable', 'date', 'before_or_equal:date_to'],
-            'date_to' => ['nullable', 'date', 'after_or_equal:date_from', 'before_or_equal:today'],
+            'range' => ['nullable', 'string'],
+            'date_from' => ['nullable', 'date'],
+            'date_to' => ['nullable', 'date', 'before_or_equal:today'],
         ]);
 
-        $period = $validated['period'] ?? '6m';
         $currency = $validated['currency'] ?? (in_array('BDT', $currencies) ? 'BDT' : ($currencies[0] ?? null));
         $walletId = $validated['wallet_id'] ?? null;
+        $range = $validated['range'] ?? null;
         $dateFrom = $validated['date_from'] ?? null;
         $dateTo = $validated['date_to'] ?? null;
 
         if ($dateFrom && $dateTo) {
             $startDate = Carbon::parse($dateFrom)->startOfDay()->toDateString();
             $endDate = Carbon::parse($dateTo)->endOfDay()->toDateString();
+        } elseif ($range === 'all_time') {
+            $startDate = null;
+            $endDate = null;
         } else {
-            $months = match ($period) {
-                '3m' => 3,
-                '12m' => 12,
-                default => 6,
-            };
-            $startDate = now()->subMonths($months)->startOfMonth()->toDateString();
+            $startDate = now()->subMonths(6)->startOfMonth()->toDateString();
             $endDate = now()->endOfMonth()->toDateString();
             $dateFrom = null;
             $dateTo = null;
@@ -65,7 +63,7 @@ class ReportsController extends Controller
         $query = $user
             ->transactions()
             ->with('category')
-            ->whereBetween('transacted_at', [$startDate, $endDate]);
+            ->when($startDate && $endDate, fn ($q) => $q->whereBetween('transacted_at', [$startDate, $endDate]));
 
         if ($currency) {
             $query->whereHas('wallet', fn ($q) => $q->where('currency', $currency));
@@ -112,7 +110,7 @@ class ReportsController extends Controller
                 'expenses' => $periodExpense,
                 'net' => $periodIncome - $periodExpense,
             ],
-            'period' => $period,
+            'range' => $range,
             'date_from' => $dateFrom,
             'date_to' => $dateTo,
             'currency' => $currency,
@@ -128,15 +126,22 @@ class ReportsController extends Controller
      * @param  Collection<int, Transaction>  $transactions
      * @return array<int, array{month: string, key: string, income: float, expenses: float, net: float}>
      */
-    private function computeMonthlyCashFlow(Collection $transactions, string $startDate, string $endDate): array
+    private function computeMonthlyCashFlow(Collection $transactions, ?string $startDate, ?string $endDate): array
     {
+        if ($transactions->isEmpty()) {
+            return [];
+        }
+
         $byMonth = $transactions->groupBy(
             fn ($t) => Carbon::parse($t->transacted_at)->format('Y-m')
         );
 
+        $resolvedStart = $startDate ?? $transactions->min('transacted_at');
+        $resolvedEnd = $endDate ?? $transactions->max('transacted_at');
+
         $result = [];
-        $current = Carbon::parse($startDate)->startOfMonth();
-        $end = Carbon::parse($endDate)->startOfMonth();
+        $current = Carbon::parse($resolvedStart)->startOfMonth();
+        $end = Carbon::parse($resolvedEnd)->startOfMonth();
 
         while ($current->lte($end)) {
             $key = $current->format('Y-m');
