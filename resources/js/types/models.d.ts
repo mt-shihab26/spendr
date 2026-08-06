@@ -8,3 +8,18 @@ export type TUser = {
     created_at: string;
     updated_at: string;
 };
+
+export type TWallet = {
+    id: string;
+    user_id: string;
+    name: string;
+    currency: string;
+    initial_balance: string;
+    color: string;
+    icon: string | null;
+    is_default: boolean;
+    sort_order: number;
+    deleted_at: string | null;
+    created_at: string;
+    updated_at: string;
+};
