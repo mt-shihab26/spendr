@@ -56,7 +56,7 @@ export const DeleteUser = () => {
                         </DialogDescription>
 
                         <Form
-                            action={route('profile.destroy')}
+                            action={route('settings.profile.destroy')}
                             method="delete"
                             options={{
                                 preserveScroll: true,

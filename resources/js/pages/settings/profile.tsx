@@ -22,10 +22,10 @@ const Profile = ({
         <SettingsLayout
             title="Profile settings"
             description="Update your name and email address"
-            breadcrumbs={[{ title: 'Profile', route: 'profile.edit' }]}
+            breadcrumbs={[{ title: 'Profile', route: 'settings.profile.edit' }]}
         >
             <Form
-                action={route('profile.update')}
+                action={route('settings.profile.update')}
                 method="patch"
                 options={{ preserveScroll: true }}
                 className="space-y-6"

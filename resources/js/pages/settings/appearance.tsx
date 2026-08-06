@@ -55,7 +55,7 @@ const Appearance = () => {
             breadcrumbs={[
                 {
                     title: 'Appearance',
-                    route: 'appearance.edit',
+                    route: 'settings.appearance.edit',
                 },
             ]}
         >

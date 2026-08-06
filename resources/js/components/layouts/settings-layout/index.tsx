@@ -13,17 +13,17 @@ import { Lock, Palette, User } from 'lucide-react';
 const links = [
     {
         title: 'Profile',
-        route: 'profile.edit',
+        route: 'settings.profile.edit',
         icon: User,
     },
     {
         title: 'Security',
-        route: 'security.edit',
+        route: 'settings.security.edit',
         icon: Lock,
     },
     {
         title: 'Appearance',
-        route: 'appearance.edit',
+        route: 'settings.appearance.edit',
         icon: Palette,
     },
 ];
@@ -44,7 +44,7 @@ export const SettingsLayout = ({
             title={title}
             description={description}
             breadcrumbs={[
-                { title: 'Settings', route: 'profile.edit' },
+                { title: 'Settings', route: 'settings.profile.edit' },
                 ...breadcrumbs,
             ]}
         >
