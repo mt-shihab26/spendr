@@ -27,6 +27,12 @@ class WalletController extends Controller
             ->orderBy('created_at')
             ->get();
 
+        $initialBalances = $request->user()
+            ->wallets()
+            ->selectRaw('currency, SUM(initial_balance) as total')
+            ->groupBy('currency')
+            ->pluck('total', 'currency');
+
         $stats = $request->user()
             ->transactions()
             ->join('wallets', 'transactions.wallet_id', '=', 'wallets.id')
@@ -36,6 +42,7 @@ class WalletController extends Controller
             ->groupBy('currency')
             ->map(fn ($rows, $currency) => [
                 'currency' => $currency,
+                'initial_balance' => (float) ($initialBalances[$currency] ?? 0),
                 'income' => (float) ($rows->firstWhere('type', Type::Income->value)?->total ?? 0),
                 'expense' => (float) ($rows->firstWhere('type', Type::Expense->value)?->total ?? 0),
             ])

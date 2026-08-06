@@ -6,6 +6,7 @@ import { Plus, Minus, Equal } from 'lucide-react';
 
 export type TStat = {
     currency: TCurrency;
+    initial_balance?: number;
     income: number;
     expense: number;
 };

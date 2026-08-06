@@ -91,7 +91,10 @@ const WalletsShow = ({
                         </p>
                     </div>
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Balance</p>
+                        <div className="flex items-center justify-between">
+                            <p className="text-xs text-muted-foreground">Balance</p>
+                            <ProfitLossBadge net={(wallet.income ?? 0) - (wallet.expense ?? 0)} />
+                        </div>
                         <p className="mt-1 text-lg font-semibold text-balance tabular-nums">
                             {formatCurrency(
                                 wallet.initial_balance +
@@ -102,7 +105,6 @@ const WalletsShow = ({
                         </p>
                     </div>
                 </div>
-                <ProfitLossBadge net={(wallet.income ?? 0) - (wallet.expense ?? 0)} />
                 {transactions.data.length > 0 ? (
                     <InfiniteScroll data="transactions" onlyNext preserveUrl>
                         <TransactionsTable transactions={transactions.data} />

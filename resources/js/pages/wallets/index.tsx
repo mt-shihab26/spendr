@@ -7,14 +7,14 @@ import {
 } from '@/components/ui/empty';
 
 import type { TWallet } from '@/types/models';
-import type { TStat } from '@/components/elements/transaction-stats';
+import type { TStat } from '@/components/screens/wallets/wallet-stats';
 
 import { Wallet } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { WalletsTable } from '@/components/screens/wallets/wallets-table';
-import { TransactionStats } from '@/components/elements/transaction-stats';
+import { WalletStats } from '@/components/screens/wallets/wallet-stats';
 
 const WalletsIndex = ({
     wallets,
@@ -32,7 +32,7 @@ const WalletsIndex = ({
             <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-center justify-between">
                     <Heading
-                        title="Wallets"
+                        title={`Wallets (${wallets.length})`}
                         description="Manage your accounts and balances"
                     />
                     <NewButton href={route('wallets.create')}>
@@ -57,15 +57,7 @@ const WalletsIndex = ({
                     </Empty>
                 ) : (
                     <>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <div className="text-base">All time</div>
-                                <div className="text-sm text-muted-foreground">
-                                    Total income and expenses across all wallets
-                                </div>
-                            </div>
-                            <TransactionStats stats={stats} />
-                        </div>
+                        <WalletStats stats={stats} />
                         <WalletsTable wallets={wallets} />
                     </>
                 )}
