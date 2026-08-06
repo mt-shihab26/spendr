@@ -24,36 +24,24 @@ import {
     SheetTrigger,
 } from '@/components/ui/sheet';
 
-import type { TBreadcrumb, TNavItem } from '@/types/utils';
+import type { TBreadcrumb } from '@/types/utils';
 
 import { usePage } from '@inertiajs/react';
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn, toUrl } from '@/lib/utils';
+import { formatInitial } from '@/lib/formats';
+import { mainLinks, rightLinks } from '@/lib/links';
 
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
+import { Menu, Search } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { AppLogoIcon } from '@/components/icons/app-logo-icon';
 
 import { Breadcrumbs } from './breadcrumbs';
 import { UserMenuContent } from './user-menu-content';
 import { AppLogo } from './app-logo';
-import { AppLogoIcon } from '../../icons/app-logo-icon';
-import { formatInitial } from '@/lib/formats';
-
-const rightNavItems: TNavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
 
 const activeItemStyles =
     'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
@@ -63,14 +51,6 @@ export const AppHeader = ({
 }: {
     breadcrumbs?: TBreadcrumb[];
 }) => {
-    const mainNavItems: TNavItem[] = [
-        {
-            title: 'Dashboard',
-            href: route('dashboard'),
-            icon: LayoutGrid,
-        },
-    ];
-
     const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
     const { user } = usePage().props.auth;
 
@@ -105,7 +85,7 @@ export const AppHeader = ({
                                 <div className="flex h-full flex-1 flex-col space-y-4 p-4">
                                     <div className="flex h-full flex-col justify-between text-sm">
                                         <div className="flex flex-col space-y-4">
-                                            {mainNavItems.map((item) => (
+                                            {mainLinks().map((item) => (
                                                 <Link
                                                     key={item.title}
                                                     href={item.href}
@@ -120,7 +100,7 @@ export const AppHeader = ({
                                         </div>
 
                                         <div className="flex flex-col space-y-4">
-                                            {rightNavItems.map((item) => (
+                                            {rightLinks().map((item) => (
                                                 <a
                                                     key={item.title}
                                                     href={toUrl(item.href)}
@@ -153,7 +133,7 @@ export const AppHeader = ({
                     <div className="ml-6 hidden h-full items-center space-x-6 lg:flex">
                         <NavigationMenu className="flex h-full items-stretch">
                             <NavigationMenuList className="flex h-full items-stretch space-x-2">
-                                {mainNavItems.map((item, index) => (
+                                {mainLinks().map((item, index) => (
                                     <NavigationMenuItem
                                         key={index}
                                         className="relative flex h-full items-center"
@@ -193,7 +173,7 @@ export const AppHeader = ({
                                 <Search className="size-5! opacity-80 group-hover:opacity-100" />
                             </Button>
                             <div className="ml-1 hidden gap-1 lg:flex">
-                                {rightNavItems.map((item) => (
+                                {rightLinks().map((item) => (
                                     <Tooltip key={item.title}>
                                         <TooltipTrigger>
                                             <a
