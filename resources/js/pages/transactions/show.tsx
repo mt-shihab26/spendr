@@ -72,9 +72,17 @@ const TransactionsShow = ({ transaction }: { transaction: TTransaction }) => {
                     </div>
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">Wallet</p>
-                        <p className="mt-1 text-sm font-medium">
-                            {transaction.wallet?.name ?? '—'}
-                        </p>
+                        <div className="mt-1 flex items-center gap-2">
+                            {transaction.wallet && (
+                                <IconBadge
+                                    icon={transaction.wallet.icon}
+                                    color={transaction.wallet.color}
+                                />
+                            )}
+                            <span className="text-sm font-medium">
+                                {transaction.wallet?.name ?? '—'}
+                            </span>
+                        </div>
                     </div>
                 </div>
                 {transaction.notes && (

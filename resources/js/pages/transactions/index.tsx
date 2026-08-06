@@ -10,6 +10,7 @@ import type { TTransactionPeriod } from '@/types/utils';
 import type { TTransaction } from '@/types/models';
 
 import { router } from '@inertiajs/react';
+import { formatCurrency } from '@/lib/formats';
 
 import { ArrowRightLeft } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -17,7 +18,6 @@ import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { formatCurrency } from '@/lib/formats';
 
 const TransactionsIndex = ({
     transactions,
@@ -80,11 +80,17 @@ const TransactionsIndex = ({
                         </TabsList>
                     </Tabs>
                     <div className="flex items-center gap-3 text-sm">
-                        <span className="font-medium text-green-600">+{formatCurrency(stats.income)}</span>
+                        <span className="font-medium text-green-600">
+                            +{formatCurrency(stats.income)}
+                        </span>
                         <span className="text-muted-foreground">·</span>
-                        <span className="font-medium text-red-500">-{formatCurrency(stats.expense)}</span>
+                        <span className="font-medium text-red-500">
+                            -{formatCurrency(stats.expense)}
+                        </span>
                         <span className="text-muted-foreground">·</span>
-                        <span className={`font-medium ${stats.income - stats.expense >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                        <span
+                            className={`font-medium ${stats.income - stats.expense >= 0 ? 'text-green-600' : 'text-red-500'}`}
+                        >
                             {formatCurrency(stats.income - stats.expense)}
                         </span>
                     </div>
