@@ -129,6 +129,7 @@ export const DateRangePicker = ({
                 <Select
                     value={range ?? undefined}
                     onValueChange={(val) => {
+                        if (!val) return;
                         const dates = resolvePreset(val);
                         onSelect(val, dates);
                     }}
@@ -196,7 +197,7 @@ export const DateRangePicker = ({
                                 defaultMonth={calSelected?.from ?? new Date()}
                                 selected={calSelected}
                                 onSelect={(r) => {
-                                    if (r?.from && r?.to) {
+                                    if (r?.from && r?.to && r.to > r.from) {
                                         onSelect(null, {
                                             from: fmt(r.from),
                                             to: fmt(r.to),
