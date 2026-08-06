@@ -1,4 +1,3 @@
-import type { TNavItem } from '@/types/utils';
 import type { ReactNode } from 'react';
 
 import { useCurrentUrl } from '@/hooks/use-current-url';
@@ -11,21 +10,18 @@ import { Separator } from '@/components/ui/separator';
 import { AppLayout } from '@/components/layouts/app-layout';
 
 export const SettingsLayout = ({ children }: { children: ReactNode }) => {
-    const sidebarNavItems: TNavItem[] = [
+    const links = [
         {
             title: 'Profile',
             href: route('profile.edit'),
-            icon: null,
         },
         {
             title: 'Security',
             href: route('security.edit'),
-            icon: null,
         },
         {
             title: 'Appearance',
             href: route('appearance.edit'),
-            icon: null,
         },
     ];
 
@@ -44,7 +40,7 @@ export const SettingsLayout = ({ children }: { children: ReactNode }) => {
                             className="flex flex-col space-y-1 space-x-0"
                             aria-label="Settings"
                         >
-                            {sidebarNavItems.map((item, index) => (
+                            {links.map((item, index) => (
                                 <Button
                                     key={`${toUrl(item.href)}-${index}`}
                                     size="sm"
@@ -69,7 +65,14 @@ export const SettingsLayout = ({ children }: { children: ReactNode }) => {
                     <Separator className="my-6 lg:hidden" />
                     <div className="flex-1 md:max-w-2xl">
                         <section className="max-w-xl space-y-12">
-                            {children}
+                            <div className="space-y-6">
+                                <Heading
+                                    variant="small"
+                                    title="Appearance settings"
+                                    description="Update the appearance settings for your account"
+                                />
+                                {children}
+                            </div>
                         </section>
                     </div>
                 </div>

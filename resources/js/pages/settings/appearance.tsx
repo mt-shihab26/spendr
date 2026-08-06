@@ -7,6 +7,7 @@ import type { HTMLAttributes } from 'react';
 import type { TAppearance } from '@/hooks/use-appearance';
 import { useAppearance } from '@/hooks/use-appearance';
 import { cn } from '@/lib/utils';
+import { SettingsLayout } from '@/components/layouts/settings-layout';
 
 function AppearanceToggleTab({
     className = '',
@@ -47,27 +48,21 @@ function AppearanceToggleTab({
     );
 }
 
-export default function Appearance() {
-    setLayoutProps({
-        breadcrumbs: [
-            { title: 'Appearance settings', href: route('appearance.edit') },
-        ],
-    });
-
+const Appearance = () => {
     return (
-        <>
-            <Head title="Appearance settings" />
-
-            <h1 className="sr-only">Appearance settings</h1>
-
-            <div className="space-y-6">
-                <Heading
-                    variant="small"
-                    title="Appearance settings"
-                    description="Update the appearance settings for your account"
-                />
-                <AppearanceToggleTab />
-            </div>
-        </>
+        <SettingsLayout
+            title="Appearance settings"
+            description="Update the appearance settings for your account"
+            breadcrumbs={[
+                {
+                    title: 'Appearance settings',
+                    href: route('appearance.edit'),
+                },
+            ]}
+        >
+            <AppearanceToggleTab />
+        </SettingsLayout>
     );
-}
+};
+
+export default Appearance;
