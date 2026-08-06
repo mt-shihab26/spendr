@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Transactions;
 
 use App\Enums\Type;
+use App\Rules\DateTimeFormat;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -37,7 +38,7 @@ class StoreTransactionRequest extends FormRequest
             ],
             'type' => ['required', Rule::enum(Type::class)],
             'amount' => ['required', 'numeric', 'min:0.01'],
-            'transacted_at' => ['required', 'date'],
+            'transacted_at' => ['required', new DateTimeFormat],
             'description' => ['required', 'string', 'max:255'],
             'notes' => ['nullable', 'string'],
         ];

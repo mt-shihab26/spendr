@@ -44,7 +44,7 @@ class Transaction extends Model
         return [
             'type' => Type::class,
             'amount' => 'float',
-            'transacted_at' => 'date',
+            'transacted_at' => 'datetime',
         ];
     }
 
