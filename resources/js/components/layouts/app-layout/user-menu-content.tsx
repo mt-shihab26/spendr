@@ -8,14 +8,24 @@ import {
 import type { TUser } from '@/types/models';
 
 import { router } from '@inertiajs/react';
-import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 
 import { Link } from '@inertiajs/react';
 import { LogOut, Settings } from 'lucide-react';
 import { UserInfo } from '@/components/layouts/app-layout/user-info';
 
+import { useCallback } from 'react';
+
+type TCleanupFn = () => void;
+
+const useMobileNavigation2 = (): TCleanupFn => {
+    return useCallback(() => {
+        // Remove pointer-events style from body...
+        document.body.style.removeProperty('pointer-events');
+    }, []);
+};
+
 export const UserMenuContent = ({ user }: { user: TUser }) => {
-    const cleanup = useMobileNavigation();
+    const cleanup = useMobileNavigation2();
 
     const handleLogout = () => {
         cleanup();
