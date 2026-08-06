@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
 use Inertia\Response;
 
 class TransactionController extends Controller
@@ -43,10 +44,12 @@ class TransactionController extends Controller
                 ->whereDate('transacted_at', '<=', $now->toDateString());
         }
 
-        $transactions = (clone $query)
-            ->orderByDesc('transacted_at')
-            ->orderByDesc('created_at')
-            ->get();
+        $transactions = Inertia::scroll(
+            (clone $query)
+                ->orderByDesc('transacted_at')
+                ->orderByDesc('created_at')
+                ->paginate(20)
+        );
 
         $stats = (clone $query)
             ->join('wallets', 'transactions.wallet_id', '=', 'wallets.id')

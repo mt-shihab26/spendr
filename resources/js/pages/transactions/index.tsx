@@ -6,10 +6,10 @@ import {
     EmptyTitle,
 } from '@/components/ui/empty';
 
-import type { TTransactionPeriod } from '@/types/utils';
+import type { TPaginated, TTransactionPeriod } from '@/types/utils';
 import type { TTransaction } from '@/types/models';
 
-import { router } from '@inertiajs/react';
+import { router, InfiniteScroll } from '@inertiajs/react';
 import {
     TransactionStats,
     type TStat,
@@ -27,7 +27,7 @@ const TransactionsIndex = ({
     period,
     stats,
 }: {
-    transactions: TTransaction[];
+    transactions: TPaginated<TTransaction>;
     period: TTransactionPeriod;
     stats: TStat[];
 }) => {
@@ -84,7 +84,7 @@ const TransactionsIndex = ({
                     </Tabs>
                     <TransactionStats stats={stats} />
                 </div>
-                {transactions.length === 0 ? (
+                {transactions.data.length === 0 ? (
                     <Empty className="border">
                         <EmptyHeader>
                             <EmptyMedia>
@@ -101,7 +101,9 @@ const TransactionsIndex = ({
                         </NewButton>
                     </Empty>
                 ) : (
-                    <TransactionsTable transactions={transactions} />
+                    <InfiniteScroll data="transactions" onlyNext preserveUrl>
+                        <TransactionsTable transactions={transactions.data} />
+                    </InfiniteScroll>
                 )}
             </div>
         </AppLayout>
