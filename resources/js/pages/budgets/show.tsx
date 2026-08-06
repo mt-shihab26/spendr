@@ -89,6 +89,9 @@ const BudgetsShow = ({ budget }: { budget: TBudget }) => {
                                         budget.amount[currency] ?? 0,
                                         currency,
                                     )}
+                                    <span className="ml-1 text-xs font-normal text-muted-foreground">
+                                        / mo
+                                    </span>
                                 </p>
                             ))}
                         </div>
