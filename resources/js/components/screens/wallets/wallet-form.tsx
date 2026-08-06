@@ -35,14 +35,14 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
             onSubmit={(e) => {
                 e.preventDefault();
                 if (wallet) {
-                    patch(route('wallets.store'));
+                    patch(route('wallets.update', wallet));
                 } else {
-                    post(route('wallets.update'));
+                    post(route('wallets.store'));
                 }
             }}
             className="space-y-5"
         >
-            <div className="grid gap-2">
+            <div className="space-y-2">
                 <Label htmlFor="name">
                     Name <span className="text-destructive">*</span>
                 </Label>
@@ -57,7 +57,7 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
                 <InputError message={errors.name} />
             </div>
 
-            <div className="grid gap-2">
+            <div className="space-y-2">
                 <Label htmlFor="currency">
                     Currency <span className="text-destructive">*</span>
                 </Label>
@@ -79,7 +79,7 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
                 <InputError message={errors.currency} />
             </div>
 
-            <div className="grid gap-2">
+            <div className="space-y-2">
                 <Label htmlFor="initial_balance">Initial Balance</Label>
                 <NumberInput
                     id="initial_balance"
@@ -97,7 +97,7 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
                 <InputError message={errors.initial_balance} />
             </div>
 
-            <div className="grid gap-2">
+            <div className="space-y-2">
                 <Label>
                     Color <span className="text-destructive">*</span>
                 </Label>
@@ -108,7 +108,7 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
                 <InputError message={errors.color} />
             </div>
 
-            <div className="grid gap-2">
+            <div className="space-y-2">
                 <Label>Icon</Label>
                 <IconPicker
                     value={data.icon}
@@ -117,7 +117,7 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
                 <InputError message={errors.icon} />
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center space-x-2">
                 <Checkbox
                     id="is_default"
                     checked={data.is_default}
@@ -133,7 +133,7 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
                 </Label>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2">
+            <div className="flex items-center justify-end space-x-2 pt-2">
                 <Button
                     variant="outline"
                     type="button"
