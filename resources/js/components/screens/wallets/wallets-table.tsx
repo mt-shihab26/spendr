@@ -5,9 +5,9 @@ import { getCurrencySymbol } from '@/lib/currency';
 import { formatCurrency } from '@/lib/formats';
 
 import { Link } from '@inertiajs/react';
-
 import { Badge } from '@/components/ui/badge';
 import { IconBadge } from '@/components/elements/icon-badge';
+import { ProfitLossBadge } from '@/components/elements/profit-loss-badge';
 import { WalletActions } from '@/components/screens/wallets/wallet-actions';
 import { WalletDeleteDialog } from '@/components/screens/wallets/wallet-delete-dialog';
 
@@ -90,6 +90,11 @@ export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
                                     )}
                                 </span>
                             </div>
+                            <ProfitLossBadge
+                                net={
+                                    (wallet.income ?? 0) - (wallet.expense ?? 0)
+                                }
+                            />
                             <WalletActions
                                 wallet={wallet}
                                 onDelete={setWalletToDelete}

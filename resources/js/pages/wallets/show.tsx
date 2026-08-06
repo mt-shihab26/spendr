@@ -6,7 +6,7 @@ import { getCurrencySymbol } from '@/lib/currency';
 import { getIcon } from '@/lib/icons';
 
 import { InfiniteScroll } from '@inertiajs/react';
-
+import { ProfitLossBadge } from '@/components/elements/profit-loss-badge';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { EditButton } from '@/components/elements/edit-button';
@@ -51,7 +51,9 @@ const WalletsShow = ({
                 </div>
                 <div className="grid gap-4 sm:grid-cols-5">
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Initial Balance</p>
+                        <p className="text-xs text-muted-foreground">
+                            Initial Balance
+                        </p>
                         <p className="mt-1 text-lg font-semibold text-initial-balance tabular-nums">
                             {formatCurrency(
                                 wallet.initial_balance,
@@ -69,7 +71,9 @@ const WalletsShow = ({
                         </p>
                     </div>
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Expenses</p>
+                        <p className="text-xs text-muted-foreground">
+                            Expenses
+                        </p>
                         <p className="mt-1 text-lg font-semibold text-expense tabular-nums">
                             {formatCurrency(
                                 wallet.expense ?? 0,
@@ -98,6 +102,7 @@ const WalletsShow = ({
                         </p>
                     </div>
                 </div>
+                <ProfitLossBadge net={(wallet.income ?? 0) - (wallet.expense ?? 0)} />
                 {transactions.data.length > 0 ? (
                     <InfiniteScroll data="transactions" onlyNext preserveUrl>
                         <TransactionsTable transactions={transactions.data} />
