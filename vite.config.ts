@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import { bunny } from 'laravel-vite-plugin/fonts';
 
 import inertia from '@inertiajs/vite';
 import tailwindcss from '@tailwindcss/vite';
@@ -15,20 +14,11 @@ export default defineConfig({
     },
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.tsx'],
             refresh: true,
-            fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
-                }),
-            ],
+            input: ['resources/css/app.css', 'resources/js/app.tsx'],
         }),
         inertia(),
-        react({
-            babel: {
-                plugins: ['babel-plugin-react-compiler'],
-            },
-        }),
+        react(),
         tailwindcss(),
     ],
 });
