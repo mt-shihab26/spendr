@@ -38,12 +38,11 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
+            'ziggy' => fn () => [...(new Ziggy)->toArray(), 'location' => $request->url()],
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user(),
             ],
-            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-            'ziggy' => fn () => [...(new Ziggy)->toArray(), 'location' => $request->url()],
         ];
     }
 }
