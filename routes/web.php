@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\WellKnownController;
@@ -21,6 +22,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{wallet}/edit', [WalletController::class, 'edit'])->name('wallets.edit');
         Route::patch('/{wallet}', [WalletController::class, 'update'])->name('wallets.update');
         Route::delete('/{wallet}', [WalletController::class, 'destroy'])->name('wallets.destroy');
+    });
+
+    Route::prefix('/categories')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
+        Route::get('/create', [CategoryController::class, 'create'])->name('categories.create');
+        Route::post('/', [CategoryController::class, 'store'])->name('categories.store');
+        Route::get('/{category}', [CategoryController::class, 'show'])->name('categories.show');
+        Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+        Route::patch('/{category}', [CategoryController::class, 'update'])->name('categories.update');
+        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     });
 
     Route::prefix('/settings')->group(function () {
