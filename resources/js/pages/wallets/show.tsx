@@ -7,6 +7,7 @@ import { getIcon } from '@/lib/icons';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { EditButton } from '@/components/elements/edit-button';
+import { BackButton } from '@/components/elements/back-button';
 
 const WalletsShow = ({ wallet }: { wallet: TWallet }) => {
     return (
@@ -33,7 +34,10 @@ const WalletsShow = ({ wallet }: { wallet: TWallet }) => {
                         icon={getIcon(wallet.icon)}
                         color={wallet.color}
                     />
-                    <EditButton href={route('wallets.edit', wallet.id)} />
+                    <div className="flex items-center">
+                        <EditButton href={route('wallets.edit', wallet.id)} />
+                        <BackButton href={route('wallets.index')} />
+                    </div>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                     <div className="border p-4">
