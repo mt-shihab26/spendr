@@ -1,7 +1,10 @@
 import type { TWallet } from '@/types/models';
 
 import { router } from '@inertiajs/react';
-import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
+import {
+    NativeSelect,
+    NativeSelectOption,
+} from '@/components/ui/native-select';
 import { DateRangePicker } from '@/components/elements/date-range-picker';
 
 export const ReportsFilter = ({
@@ -34,7 +37,7 @@ export const ReportsFilter = ({
     };
 
     return (
-        <div className="flex flex-wrap items-start gap-2">
+        <div className="flex items-center justify-between gap-2">
             <DateRangePicker
                 dateFrom={dateFrom}
                 dateTo={dateTo}
@@ -49,7 +52,9 @@ export const ReportsFilter = ({
 
             <NativeSelect
                 value={walletId ?? ''}
-                onChange={(e) => navigate({ wallet_id: e.target.value || null })}
+                onChange={(e) =>
+                    navigate({ wallet_id: e.target.value || null })
+                }
             >
                 <NativeSelectOption value="">All Wallets</NativeSelectOption>
                 {wallets.map((w) => (

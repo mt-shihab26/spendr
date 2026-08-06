@@ -2,6 +2,9 @@ import type { TCurrency } from '@/types/enums';
 import type { TWallet } from '@/types/models';
 
 import { router } from '@inertiajs/react';
+import { getCurrencySymbol } from '@/lib/currency';
+import { formatCurrency } from '@/lib/formats';
+
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { Button } from '@/components/ui/button';
@@ -11,8 +14,6 @@ import { ReportsSummary } from '@/components/screens/reports/reports-summary';
 import { CashFlowChart } from '@/components/screens/reports/cash-flow-chart';
 import { CategoryDonut } from '@/components/screens/reports/category-donut';
 import { MonthlySummaryTable } from '@/components/screens/reports/monthly-summary-table';
-import { getCurrencySymbol } from '@/lib/currency';
-import { formatCurrency } from '@/lib/formats';
 
 type TSummary = {
     balance: number;
@@ -75,13 +76,11 @@ const ReportsIndex = ({
     summary: TSummary;
     date_from: string | null;
     date_to: string | null;
-    currency: TCurrency | null;
+    currency: TCurrency;
     wallet_id: string | null;
     currencies: TCurrency[];
     wallets: TWallet[];
 }) => {
-    const cur: TCurrency = currency ?? 'BDT';
-
     const switchCurrency = (c: string) => {
         router.get(
             route('reports.index'),
@@ -122,7 +121,11 @@ const ReportsIndex = ({
                         <Tabs value={currency} onValueChange={switchCurrency}>
                             <TabsList variant="line">
                                 {currencies.map((c) => (
-                                    <TabsTrigger key={c} value={c}>
+                                    <TabsTrigger
+                                        className="cursor-pointer text-lg"
+                                        key={c}
+                                        value={c}
+                                    >
                                         {getCurrencySymbol(c)} {c}
                                     </TabsTrigger>
                                 ))}
@@ -134,7 +137,7 @@ const ReportsIndex = ({
                     <div className="text-right">
                         <p className="text-xs text-muted-foreground">Balance</p>
                         <p className="text-lg font-semibold text-balance tabular-nums">
-                            {formatCurrency(summary.balance, cur)}
+                            {formatCurrency(summary.balance, currency)}
                         </p>
                     </div>
                 </div>
@@ -142,31 +145,31 @@ const ReportsIndex = ({
                 <ReportsFilter
                     dateFrom={date_from}
                     dateTo={date_to}
-                    currency={cur}
+                    currency={currency}
                     walletId={wallet_id}
                     wallets={wallets}
                 />
 
-                <ReportsSummary summary={summary} currency={cur} />
+                <ReportsSummary summary={summary} currency={currency} />
 
-                <CashFlowChart data={monthly_cash_flow} currency={cur} />
+                <CashFlowChart data={monthly_cash_flow} currency={currency} />
 
                 <div className="grid gap-4 sm:grid-cols-2">
                     <CategoryDonut
                         title="Expenses by Category"
                         data={expense_breakdown}
-                        currency={cur}
+                        currency={currency}
                     />
                     <CategoryDonut
                         title="Income by Category"
                         data={income_breakdown}
-                        currency={cur}
+                        currency={currency}
                     />
                 </div>
 
                 <MonthlySummaryTable
                     rows={monthly_summary}
-                    currency={cur}
+                    currency={currency}
                 />
             </div>
         </AppLayout>
