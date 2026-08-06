@@ -11,7 +11,7 @@ Personal wallet tracker with income & expense management, category management, m
 Managed by Laravel Fortify. Each user owns their wallets, categories, and transactions.
 
 | Column                      | Type         | Constraints        |
-|-----------------------------|--------------|--------------------|
+| --------------------------- | ------------ | ------------------ |
 | `id`                        | bigint       | PK, auto-increment |
 | `name`                      | varchar(255) | not null           |
 | `email`                     | varchar(255) | unique, not null   |
@@ -30,25 +30,27 @@ Managed by Laravel Fortify. Each user owns their wallets, categories, and transa
 
 A user can have multiple wallets (e.g. cash, bank account, credit card). Transactions are always attached to a wallet, and the wallet balance is derived from its initial balance plus all recorded transactions.
 
-| Column            | Type           | Constraints                     |
-|-------------------|----------------|---------------------------------|
-| `id`              | bigint         | PK, auto-increment              |
-| `user_id`         | bigint         | FK → `users.id`, cascade delete |
-| `name`            | varchar(100)   | not null                        |
-| `currency`        | varchar(3)     | not null, default `USD`         |
-| `initial_balance` | decimal(15,2)  | not null, default `0.00`        |
-| `color`           | varchar(7)     | not null, default `#6366f1`     |
-| `icon`            | varchar(50)    | nullable                        |
-| `is_default`      | boolean        | not null, default `false`       |
-| `sort_order`      | unsignedInt    | not null, default `0`           |
-| `created_at`      | timestamp      | nullable                        |
-| `updated_at`      | timestamp      | nullable                        |
+| Column            | Type          | Constraints                     |
+| ----------------- | ------------- | ------------------------------- |
+| `id`              | bigint        | PK, auto-increment              |
+| `user_id`         | bigint        | FK → `users.id`, cascade delete |
+| `name`            | varchar(100)  | not null                        |
+| `currency`        | varchar(3)    | not null, default `USD`         |
+| `initial_balance` | decimal(15,2) | not null, default `0.00`        |
+| `color`           | varchar(7)    | not null, default `#6366f1`     |
+| `icon`            | varchar(50)   | nullable                        |
+| `is_default`      | boolean       | not null, default `false`       |
+| `sort_order`      | unsignedInt   | not null, default `0`           |
+| `created_at`      | timestamp     | nullable                        |
+| `updated_at`      | timestamp     | nullable                        |
 
 **Indexes:**
+
 - `wallets_user_id_index` on `(user_id)`
 - `wallets_user_id_name_unique` unique on `(user_id, name)`
 
 **Notes:**
+
 - Current balance is never stored; it is always computed: `initial_balance + SUM(income) - SUM(expenses)` for that wallet.
 - Only one wallet per user may have `is_default = true`. Enforced at the application layer.
 
@@ -58,25 +60,27 @@ A user can have multiple wallets (e.g. cash, bank account, credit card). Transac
 
 User-defined categories, each scoped to either income or expense so the UI can present the right list when recording a transaction.
 
-| Column       | Type                         | Constraints                     |
-|--------------|------------------------------|---------------------------------|
-| `id`         | bigint                       | PK, auto-increment              |
-| `user_id`    | bigint                       | FK → `users.id`, cascade delete |
-| `name`       | varchar(100)                 | not null                        |
-| `type`       | enum(`income`, `expense`)    | not null                        |
-| `color`      | varchar(7)                   | not null, default `#6366f1`     |
-| `icon`       | varchar(50)                  | nullable                        |
-| `is_default` | boolean                      | not null, default `false`       |
-| `sort_order` | unsignedInt                  | not null, default `0`           |
-| `created_at` | timestamp                    | nullable                        |
-| `updated_at` | timestamp                    | nullable                        |
+| Column       | Type                      | Constraints                     |
+| ------------ | ------------------------- | ------------------------------- |
+| `id`         | bigint                    | PK, auto-increment              |
+| `user_id`    | bigint                    | FK → `users.id`, cascade delete |
+| `name`       | varchar(100)              | not null                        |
+| `type`       | enum(`income`, `expense`) | not null                        |
+| `color`      | varchar(7)                | not null, default `#6366f1`     |
+| `icon`       | varchar(50)               | nullable                        |
+| `is_default` | boolean                   | not null, default `false`       |
+| `sort_order` | unsignedInt               | not null, default `0`           |
+| `created_at` | timestamp                 | nullable                        |
+| `updated_at` | timestamp                 | nullable                        |
 
 **Indexes:**
+
 - `categories_user_id_index` on `(user_id)`
 - `categories_user_id_type_index` on `(user_id, type)` — fast lookup when filtering the category picker by type
 - `categories_user_id_name_unique` unique on `(user_id, name)`
 
 **Notes:**
+
 - `is_default` marks system-seeded categories created on registration. Users may rename but not delete defaults.
 - A category's `type` cannot be changed after transactions reference it.
 
@@ -84,23 +88,24 @@ User-defined categories, each scoped to either income or expense so the UI can p
 
 ### `transactions`
 
-Core table. One row per income or expense entry. Replaces a pure `expenses` table.
+Core table. One row per income or expense entry.
 
-| Column          | Type                      | Constraints                              |
-|-----------------|---------------------------|------------------------------------------|
-| `id`            | bigint                    | PK, auto-increment                       |
-| `user_id`       | bigint                    | FK → `users.id`, cascade delete          |
-| `wallet_id`     | bigint                    | FK → `wallets.id`, restrict delete       |
-| `category_id`   | bigint                    | FK → `categories.id`, restrict delete    |
-| `type`          | enum(`income`, `expense`) | not null                                 |
-| `amount`        | decimal(15,2)             | not null, unsigned (always positive)     |
-| `transacted_at` | date                      | not null                                 |
-| `description`   | varchar(255)              | not null                                 |
-| `notes`         | text                      | nullable                                 |
-| `created_at`    | timestamp                 | nullable                                 |
-| `updated_at`    | timestamp                 | nullable                                 |
+| Column          | Type                      | Constraints                           |
+| --------------- | ------------------------- | ------------------------------------- |
+| `id`            | bigint                    | PK, auto-increment                    |
+| `user_id`       | bigint                    | FK → `users.id`, cascade delete       |
+| `wallet_id`     | bigint                    | FK → `wallets.id`, restrict delete    |
+| `category_id`   | bigint                    | FK → `categories.id`, restrict delete |
+| `type`          | enum(`income`, `expense`) | not null                              |
+| `amount`        | decimal(15,2)             | not null, unsigned (always positive)  |
+| `transacted_at` | date                      | not null                              |
+| `description`   | varchar(255)              | not null                              |
+| `notes`         | text                      | nullable                              |
+| `created_at`    | timestamp                 | nullable                              |
+| `updated_at`    | timestamp                 | nullable                              |
 
 **Indexes:**
+
 - `transactions_user_id_index` on `(user_id)`
 - `transactions_user_id_transacted_at_index` on `(user_id, transacted_at)` — month/date range filtering
 - `transactions_user_id_type_index` on `(user_id, type)` — income vs expense splits
@@ -108,6 +113,7 @@ Core table. One row per income or expense entry. Replaces a pure `expenses` tabl
 - `transactions_wallet_id_index` on `(wallet_id)`
 
 **Notes:**
+
 - `type` must match `category.type` — enforced at the application layer before insert/update.
 - `amount` is always stored as a positive number. The `type` column determines whether it adds to or subtracts from the wallet balance.
 - `wallet_id` and `category_id` use `restrict` on delete; the UI must prompt to reassign before deletion.
@@ -118,19 +124,20 @@ Core table. One row per income or expense entry. Replaces a pure `expenses` tabl
 
 Moves funds between two wallets owned by the same user. Recorded separately from transactions to avoid polluting income/expense totals.
 
-| Column          | Type          | Constraints                             |
-|-----------------|---------------|-----------------------------------------|
-| `id`            | bigint        | PK, auto-increment                      |
-| `user_id`       | bigint        | FK → `users.id`, cascade delete         |
-| `from_wallet_id`| bigint        | FK → `wallets.id`, restrict delete      |
-| `to_wallet_id`  | bigint        | FK → `wallets.id`, restrict delete      |
-| `amount`        | decimal(15,2) | not null, unsigned                      |
-| `transacted_at` | date          | not null                                |
-| `notes`         | text          | nullable                                |
-| `created_at`    | timestamp     | nullable                                |
-| `updated_at`    | timestamp     | nullable                                |
+| Column           | Type          | Constraints                        |
+| ---------------- | ------------- | ---------------------------------- |
+| `id`             | bigint        | PK, auto-increment                 |
+| `user_id`        | bigint        | FK → `users.id`, cascade delete    |
+| `from_wallet_id` | bigint        | FK → `wallets.id`, restrict delete |
+| `to_wallet_id`   | bigint        | FK → `wallets.id`, restrict delete |
+| `amount`         | decimal(15,2) | not null, unsigned                 |
+| `transacted_at`  | date          | not null                           |
+| `notes`          | text          | nullable                           |
+| `created_at`     | timestamp     | nullable                           |
+| `updated_at`     | timestamp     | nullable                           |
 
 **Indexes:**
+
 - `transfers_user_id_index` on `(user_id)`
 - `transfers_user_id_transacted_at_index` on `(user_id, transacted_at)`
 - `transfers_from_wallet_id_index` on `(from_wallet_id)`
@@ -144,16 +151,17 @@ Moves funds between two wallets owned by the same user. Recorded separately from
 
 Monthly spending cap per expense category. Income categories do not have budgets.
 
-| Column        | Type          | Constraints                              |
-|---------------|---------------|------------------------------------------|
-| `id`          | bigint        | PK, auto-increment                       |
-| `user_id`     | bigint        | FK → `users.id`, cascade delete          |
-| `category_id` | bigint        | FK → `categories.id`, cascade delete     |
-| `amount`      | decimal(15,2) | not null, unsigned                       |
-| `created_at`  | timestamp     | nullable                                 |
-| `updated_at`  | timestamp     | nullable                                 |
+| Column        | Type          | Constraints                          |
+| ------------- | ------------- | ------------------------------------ |
+| `id`          | bigint        | PK, auto-increment                   |
+| `user_id`     | bigint        | FK → `users.id`, cascade delete      |
+| `category_id` | bigint        | FK → `categories.id`, cascade delete |
+| `amount`      | decimal(15,2) | not null, unsigned                   |
+| `created_at`  | timestamp     | nullable                             |
+| `updated_at`  | timestamp     | nullable                             |
 
 **Indexes:**
+
 - `budgets_user_id_category_id_unique` unique on `(user_id, category_id)` — one budget per category per user
 
 **Note:** `category_id` must reference a category with `type = expense`. Enforced at application layer.
@@ -246,6 +254,7 @@ ORDER BY total DESC;
 ### Dashboard Overview
 
 Assembled from the above, plus:
+
 - Net worth: sum of all wallet current balances
 - Recent transactions: `ORDER BY transacted_at DESC LIMIT 10`
 - Budget utilisation: joins `budgets` with current-month category totals
@@ -256,15 +265,15 @@ Assembled from the above, plus:
 
 All list and aggregate endpoints accept these optional query parameters:
 
-| Parameter       | Applied to                    | Notes                                       |
-|-----------------|-------------------------------|---------------------------------------------|
-| `wallet_id`     | `transactions`, `transfers`   | Single wallet filter                        |
-| `category_id`   | `transactions`                | Single category filter                      |
-| `type`          | `transactions`                | `income` or `expense`                       |
-| `date_from`     | `transacted_at`               | Inclusive lower bound (`Y-m-d`)             |
-| `date_to`       | `transacted_at`               | Inclusive upper bound (`Y-m-d`)             |
-| `month`         | `transacted_at`               | Shorthand for a full month (`Y-m`)          |
-| `search`        | `transactions.description`    | `LIKE %term%`                               |
+| Parameter     | Applied to                  | Notes                              |
+| ------------- | --------------------------- | ---------------------------------- |
+| `wallet_id`   | `transactions`, `transfers` | Single wallet filter               |
+| `category_id` | `transactions`              | Single category filter             |
+| `type`        | `transactions`              | `income` or `expense`              |
+| `date_from`   | `transacted_at`             | Inclusive lower bound (`Y-m-d`)    |
+| `date_to`     | `transacted_at`             | Inclusive upper bound (`Y-m-d`)    |
+| `month`       | `transacted_at`             | Shorthand for a full month (`Y-m`) |
+| `search`      | `transactions.description`  | `LIKE %term%`                      |
 
 All filters are applied after `user_id = auth()->id()`.
 
@@ -283,13 +292,13 @@ On registration, the following categories and one default wallet are created for
 ### Default Wallet
 
 | Name        | Currency | Initial Balance |
-|-------------|----------|-----------------|
+| ----------- | -------- | --------------- |
 | Main Wallet | USD      | 0.00            |
 
 ### Default Categories — Expense
 
 | Name          | Color     | Icon           |
-|---------------|-----------|----------------|
+| ------------- | --------- | -------------- |
 | Food          | `#f97316` | `utensils`     |
 | Transport     | `#3b82f6` | `car`          |
 | Shopping      | `#a855f7` | `shopping-bag` |
@@ -301,12 +310,12 @@ On registration, the following categories and one default wallet are created for
 
 ### Default Categories — Income
 
-| Name       | Color     | Icon        |
-|------------|-----------|-------------|
-| Salary     | `#22c55e` | `briefcase` |
-| Freelance  | `#14b8a6` | `laptop`    |
+| Name       | Color     | Icon          |
+| ---------- | --------- | ------------- |
+| Salary     | `#22c55e` | `briefcase`   |
+| Freelance  | `#14b8a6` | `laptop`      |
 | Investment | `#eab308` | `trending-up` |
-| Gift       | `#f43f5e` | `gift`      |
-| Other      | `#6b7280` | `ellipsis`  |
+| Gift       | `#f43f5e` | `gift`        |
+| Other      | `#6b7280` | `ellipsis`    |
 
 Seeded via `WalletSeeder` and `CategorySeeder` invoked from `RegisteredUserListener`.
