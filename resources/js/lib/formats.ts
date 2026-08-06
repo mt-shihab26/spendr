@@ -41,3 +41,7 @@ export const formatLocalDateTime = (
 ): string => {
     return date ? format(parseISO(date), pattern) : '';
 };
+
+export const nowUtcIso = (): string => {
+    return new Date().toISOString();
+};
