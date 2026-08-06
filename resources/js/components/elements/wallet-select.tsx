@@ -9,30 +9,41 @@ import {
 
 import type { TWallet } from '@/types/models';
 
+import { IconBadge } from '@/components/elements/icon-badge';
+
 export const WalletSelect = ({
     wallets,
     value,
     onValueChange,
+    disabled = false,
 }: {
     wallets: TWallet[];
     value: string | null;
     onValueChange: (value: string | null) => void;
+    disabled?: boolean;
 }) => {
-    const items = [
-        { label: 'Select wallet', value: null },
-        ...wallets.map((w) => ({ label: w.name, value: w.id })),
-    ];
+    const selected = wallets.find((w) => w.id === value);
 
     return (
-        <Select items={items} value={value} onValueChange={onValueChange}>
+        <Select value={value} onValueChange={onValueChange} disabled={disabled}>
             <SelectTrigger className="w-full">
-                <SelectValue />
+                {selected ? (
+                    <div className="flex items-center gap-2">
+                        <IconBadge icon={selected.icon} color={selected.color} />
+                        {selected.name}
+                    </div>
+                ) : (
+                    <SelectValue placeholder="Select wallet" />
+                )}
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                    {items.map((item) => (
-                        <SelectItem key={item.value} value={item.value}>
-                            {item.label}
+                    {wallets.map((wallet) => (
+                        <SelectItem key={wallet.id} value={wallet.id}>
+                            <div className="flex items-center gap-2">
+                                <IconBadge icon={wallet.icon} color={wallet.color} />
+                                {wallet.name}
+                            </div>
                         </SelectItem>
                     ))}
                 </SelectGroup>

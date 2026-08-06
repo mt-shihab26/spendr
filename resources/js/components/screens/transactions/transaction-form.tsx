@@ -64,6 +64,7 @@ export const TransactionForm = ({
                             category_id: '',
                         }));
                     }}
+                    disabled={!!transaction}
                 />
                 <InputError message={errors.type} />
             </div>
@@ -122,6 +123,7 @@ export const TransactionForm = ({
                     wallets={wallets}
                     value={data.wallet_id}
                     onValueChange={(value) => setData('wallet_id', value)}
+                    disabled={!!transaction}
                 />
                 <InputError message={errors.wallet_id} />
             </div>

@@ -11,14 +11,17 @@ const options: { value: TType; label: string }[] = [
 export const TypePicker = ({
     value,
     onChange,
+    disabled = false,
 }: {
     value: TType;
     onChange: (value: TType) => void;
+    disabled?: boolean;
 }) => {
     return (
         <RadioGroup
             value={value}
             onValueChange={(val) => onChange(val as TType)}
+            disabled={disabled}
             className="flex gap-4"
         >
             {options.map((option) => (

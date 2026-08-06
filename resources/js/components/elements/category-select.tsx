@@ -10,6 +10,8 @@ import {
 import type { TCategory } from '@/types/models';
 import type { TType } from '@/types/enums';
 
+import { IconBadge } from '@/components/elements/icon-badge';
+
 export const CategorySelect = ({
     categories,
     type,
@@ -22,22 +24,28 @@ export const CategorySelect = ({
     onValueChange: (value: string | null) => void;
 }) => {
     const filtered = categories.filter((c) => c.type === type);
-
-    const items = [
-        { label: 'Select category', value: null },
-        ...filtered.map((c) => ({ label: c.name, value: c.id })),
-    ];
+    const selected = filtered.find((c) => c.id === value);
 
     return (
-        <Select items={items} value={value} onValueChange={onValueChange}>
+        <Select value={value} onValueChange={onValueChange}>
             <SelectTrigger className="w-full">
-                <SelectValue />
+                {selected ? (
+                    <div className="flex items-center gap-2">
+                        <IconBadge icon={selected.icon} color={selected.color} />
+                        {selected.name}
+                    </div>
+                ) : (
+                    <SelectValue placeholder="Select category" />
+                )}
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                    {items.map((item) => (
-                        <SelectItem key={item.value} value={item.value}>
-                            {item.label}
+                    {filtered.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                            <div className="flex items-center gap-2">
+                                <IconBadge icon={category.icon} color={category.color} />
+                                {category.name}
+                            </div>
                         </SelectItem>
                     ))}
                 </SelectGroup>
