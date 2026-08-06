@@ -96,7 +96,7 @@ export const TransactionForm = ({
                 </Label>
                 <Input
                     id="transacted_at"
-                    type="date"
+                    type="datetime-local"
                     value={data.transacted_at}
                     onChange={(e) => setData('transacted_at', e.target.value)}
                     required
