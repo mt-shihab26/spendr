@@ -1,12 +1,4 @@
 import {
-    DropdownMenu,
-    DropdownMenuItem,
-    DropdownMenuContent,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-
-import {
     AlertDialog,
     AlertDialogAction,
     AlertDialogCancel,
@@ -24,22 +16,13 @@ import { useState } from 'react';
 import { formatCurrency } from '@/lib/formats';
 import { getIcon } from '@/lib/icons';
 
-import { Link } from '@inertiajs/react';
-import { MoreHorizontal } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { WalletActions } from '@/components/screens/wallets/wallet-actions';
 
 import { CURRENCY_SYMBOLS } from '@/lib/options';
 
 export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
     const [walletToDelete, setWalletToDelete] = useState<TWallet | null>(null);
-
-    const handleDelete = () => {
-        if (!walletToDelete) return;
-        router.delete(route('wallets.destroy', walletToDelete.id), {
-            onSuccess: () => setWalletToDelete(null),
-        });
-    };
 
     return (
         <>
@@ -81,69 +64,13 @@ export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
                                 wallet.currency,
                             )}
                         </span>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger
-                                render={
-                                    <Button variant="ghost" size="icon-xs" />
-                                }
-                            >
-                                <MoreHorizontal />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuItem
-                                    render={
-                                        <Link
-                                            href={route(
-                                                'wallets.show',
-                                                wallet.id,
-                                            )}
-                                        />
-                                    }
-                                >
-                                    View Details
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                    render={
-                                        <Link
-                                            href={route(
-                                                'wallets.edit',
-                                                wallet.id,
-                                            )}
-                                        />
-                                    }
-                                >
-                                    Edit
-                                </DropdownMenuItem>
-                                {!wallet.is_default && (
-                                    <DropdownMenuItem
-                                        onClick={() =>
-                                            router.patch(
-                                                route(
-                                                    'wallets.update',
-                                                    wallet.id,
-                                                ),
-                                                {
-                                                    is_default: true,
-                                                },
-                                            )
-                                        }
-                                    >
-                                        Set as Default
-                                    </DropdownMenuItem>
-                                )}
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                    variant="destructive"
-                                    onClick={() => setWalletToDelete(wallet)}
-                                >
-                                    Delete
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        <WalletActions
+                            wallet={wallet}
+                            onDelete={setWalletToDelete}
+                        />
                     </div>
                 ))}
             </div>
-
             <AlertDialog
                 open={!!walletToDelete}
                 onOpenChange={(open) => !open && setWalletToDelete(null)}
@@ -162,7 +89,16 @@ export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction
                             variant="destructive"
-                            onClick={handleDelete}
+                            onClick={() => {
+                                if (!walletToDelete) return;
+                                router.delete(
+                                    route('wallets.destroy', walletToDelete.id),
+                                    {
+                                        onSuccess: () =>
+                                            setWalletToDelete(null),
+                                    },
+                                );
+                            }}
                         >
                             Delete
                         </AlertDialogAction>
