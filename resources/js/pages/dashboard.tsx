@@ -1,4 +1,4 @@
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
+import { PlaceholderPattern } from '@/components/elements/placeholder-pattern';
 import { AppLayout } from '@/components/layouts/app-layout';
 
 const Dashboard = () => {
