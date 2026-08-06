@@ -14,7 +14,7 @@ export const formatInitial = (fullName: string): string => {
 
 export const formatCurrency = (
     amount: number | string,
-    currency: TCurrency,
+    currency: TCurrency | undefined = 'BDT',
 ): string => {
     const formatted = new Intl.NumberFormat(undefined, {
         style: 'decimal',
@@ -22,5 +22,9 @@ export const formatCurrency = (
         maximumFractionDigits: 2,
     }).format(Number(amount));
 
-    return `${getCurrencySymbol(currency)}${formatted}`;
+    return `${getCurrencySymbol(currency ?? 'BDT')}${formatted}`;
+};
+
+export const toDateInput = (date?: string | null): string => {
+    return date?.slice(0, 10) ?? new Date().toISOString().slice(0, 10);
 };

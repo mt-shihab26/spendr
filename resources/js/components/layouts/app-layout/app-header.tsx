@@ -142,7 +142,9 @@ export const AppHeader = ({
                                             href={item.href}
                                             className={cn(
                                                 navigationMenuTriggerStyle(),
-                                                isCurrentOrParentUrl(item.href) && activeItemStyles,
+                                                isCurrentOrParentUrl(
+                                                    item.href,
+                                                ) && activeItemStyles,
                                                 'h-9 cursor-pointer px-3',
                                             )}
                                         >

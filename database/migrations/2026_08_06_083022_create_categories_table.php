@@ -26,7 +26,7 @@ return new class extends Migration
 
             $table->index('user_id');
             $table->index(['user_id', 'type']);
-            $table->unique(['user_id', 'name']);
+            $table->unique(['user_id', 'name', 'type']);
         });
     }
 

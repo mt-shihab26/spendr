@@ -39,3 +39,21 @@ export type TCategory = {
     created_at: string;
     updated_at: string;
 };
+
+export type TTransaction = {
+    id: string;
+    user_id: string;
+    wallet_id: string;
+    category_id: string;
+    type: TType;
+    amount: number;
+    transacted_at: string;
+    description: string;
+    notes: string | null;
+    deleted_at: string | null;
+    created_at: string;
+    updated_at: string;
+
+    wallet?: TWallet;
+    category?: TCategory;
+};

@@ -4,7 +4,7 @@ import type { TType } from '@/types/enums';
 import { useForm } from '@inertiajs/react';
 
 import { Link } from '@inertiajs/react';
-import { TypePicker } from '@/components/screens/categories/type-picker';
+import { TypePicker } from '@/components/elements/type-picker';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { InputError } from '@/components/elements/input-error';

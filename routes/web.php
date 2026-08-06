@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\WellKnownController;
 use Illuminate\Auth\Middleware\RequirePassword;
@@ -22,6 +23,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{wallet}/edit', [WalletController::class, 'edit'])->name('wallets.edit');
         Route::patch('/{wallet}', [WalletController::class, 'update'])->name('wallets.update');
         Route::delete('/{wallet}', [WalletController::class, 'destroy'])->name('wallets.destroy');
+    });
+
+    Route::prefix('/transactions')->group(function () {
+        Route::get('/', [TransactionController::class, 'index'])->name('transactions.index');
+        Route::get('/create', [TransactionController::class, 'create'])->name('transactions.create');
+        Route::post('/', [TransactionController::class, 'store'])->name('transactions.store');
+        Route::get('/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
+        Route::get('/{transaction}/edit', [TransactionController::class, 'edit'])->name('transactions.edit');
+        Route::patch('/{transaction}', [TransactionController::class, 'update'])->name('transactions.update');
+        Route::delete('/{transaction}', [TransactionController::class, 'destroy'])->name('transactions.destroy');
     });
 
     Route::prefix('/categories')->group(function () {

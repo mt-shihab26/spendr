@@ -32,7 +32,7 @@ export const mainLinks = (): TLink[] => [
     },
     {
         title: 'Transactions',
-        href: '/transactions',
+        href: route('transactions.index'),
         icon: ArrowRightLeft,
     },
     {

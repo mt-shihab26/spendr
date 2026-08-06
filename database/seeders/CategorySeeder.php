@@ -33,7 +33,7 @@ class CategorySeeder extends Seeder
         ['name' => 'Freelance',  'color' => '#14b8a6', 'icon' => 'laptop'],
         ['name' => 'Investment', 'color' => '#eab308', 'icon' => 'trending-up'],
         ['name' => 'Gift',       'color' => '#f43f5e', 'icon' => 'gift'],
-        ['name' => 'Other',      'color' => '#6b7280', 'icon' => 'ellipsis'],
+        ['name' => 'Miscellaneous', 'color' => '#6b7280', 'icon' => 'ellipsis'],
     ];
 
     /**

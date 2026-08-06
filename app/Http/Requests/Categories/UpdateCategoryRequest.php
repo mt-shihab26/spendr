@@ -32,6 +32,7 @@ class UpdateCategoryRequest extends FormRequest
                 'max:100',
                 Rule::unique('categories', 'name')
                     ->where('user_id', $this->user()->id)
+                    ->where('type', $this->input('type'))
                     ->ignore($this->category->id),
             ],
             'type' => ['sometimes', 'required', Rule::enum(Type::class)],

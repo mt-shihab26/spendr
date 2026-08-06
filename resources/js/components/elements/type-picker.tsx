@@ -23,8 +23,14 @@ export const TypePicker = ({
         >
             {options.map((option) => (
                 <div key={option.value} className="flex items-center gap-2">
-                    <RadioGroupItem id={`type-${option.value}`} value={option.value} />
-                    <Label htmlFor={`type-${option.value}`} className="cursor-pointer font-normal">
+                    <RadioGroupItem
+                        id={`type-${option.value}`}
+                        value={option.value}
+                    />
+                    <Label
+                        htmlFor={`type-${option.value}`}
+                        className="cursor-pointer font-normal"
+                    >
                         {option.label}
                     </Label>
                 </div>

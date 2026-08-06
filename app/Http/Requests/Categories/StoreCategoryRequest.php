@@ -29,7 +29,9 @@ class StoreCategoryRequest extends FormRequest
                 'required',
                 'string',
                 'max:100',
-                Rule::unique('categories', 'name')->where('user_id', $this->user()->id),
+                Rule::unique('categories', 'name')
+                    ->where('user_id', $this->user()->id)
+                    ->where('type', $this->input('type')),
             ],
             'type' => ['required', Rule::enum(Type::class)],
             'color' => ['required', 'string', 'max:7'],

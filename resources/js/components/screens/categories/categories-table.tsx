@@ -24,7 +24,10 @@ export const CategoriesTable = ({
                         key={category.id}
                         className="flex items-center gap-3 px-4 py-3"
                     >
-                        <IconBadge icon={category.icon} color={category.color} />
+                        <IconBadge
+                            icon={category.icon}
+                            color={category.color}
+                        />
                         <span className="flex-1 text-xs font-medium">
                             {category.name}
                         </span>
