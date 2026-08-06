@@ -32,7 +32,7 @@ export const CategoryActions = ({
                         <Link href={route('categories.show', category.id)} />
                     }
                 >
-                    View Details
+                    View
                 </DropdownMenuItem>
                 <DropdownMenuItem
                     render={

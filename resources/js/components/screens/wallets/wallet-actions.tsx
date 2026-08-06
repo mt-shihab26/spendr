@@ -32,7 +32,7 @@ export const WalletActions = ({
                 <DropdownMenuItem
                     render={<Link href={route('wallets.show', wallet.id)} />}
                 >
-                    View Details
+                    View
                 </DropdownMenuItem>
                 <DropdownMenuItem
                     render={<Link href={route('wallets.edit', wallet.id)} />}
