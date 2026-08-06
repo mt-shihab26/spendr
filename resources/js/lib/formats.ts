@@ -35,7 +35,7 @@ export const utcToLocalDatetimeInput = (utcDatetime: string): string => {
     return format(parseISO(utcDatetime), "yyyy-MM-dd'T'HH:mm:ss");
 };
 
-export const formatDateTime = (
+export const formatLocalDateTime = (
     date: string | null | undefined,
     pattern = 'MMM d, yyyy h:mm a',
 ): string => {

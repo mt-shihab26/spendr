@@ -1,7 +1,7 @@
 import type { TTransaction } from '@/types/models';
 
 import { useState } from 'react';
-import { formatDateTime } from '@/lib/formats';
+import { formatLocalDateTime } from '@/lib/formats';
 
 import { Badge } from '@/components/ui/badge';
 import { TransactionAmount } from '@/components/elements/transaction-amount';
@@ -36,7 +36,7 @@ export const TransactionsTable = ({
                     ([date, groupedTransactions]) => (
                         <div key={date}>
                             <div className="bg-muted/50 px-4 py-2 text-xs font-medium text-muted-foreground">
-                                {formatDateTime(date, 'EEEE, MMMM d, yyyy')}
+                                {formatLocalDateTime(date, 'EEEE, MMMM d, yyyy')}
                             </div>
                             <div className="divide-y">
                                 {groupedTransactions.map((transaction) => (
@@ -58,7 +58,7 @@ export const TransactionsTable = ({
                                             </span>
                                         </div>
                                         <span className="text-xs text-muted-foreground">
-                                            {formatDateTime(
+                                            {formatLocalDateTime(
                                                 transaction.transacted_at,
                                             )}
                                         </span>
