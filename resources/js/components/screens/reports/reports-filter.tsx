@@ -1,24 +1,19 @@
 import type { TWallet } from '@/types/models';
 
 import { router } from '@inertiajs/react';
-import {
-    NativeSelect,
-    NativeSelectOption,
-} from '@/components/ui/native-select';
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
 import { DateRangePicker } from '@/components/elements/date-range-picker';
 
 export const ReportsFilter = ({
     currency,
     walletId,
     wallets,
-    range,
     dateFrom,
     dateTo,
 }: {
     currency: string | null;
     walletId: string | null;
     wallets: TWallet[];
-    range: string | null;
     dateFrom: string | null;
     dateTo: string | null;
 }) => {
@@ -29,7 +24,6 @@ export const ReportsFilter = ({
                 Object.entries({
                     currency,
                     wallet_id: walletId,
-                    range,
                     date_from: dateFrom,
                     date_to: dateTo,
                     ...params,
@@ -40,28 +34,22 @@ export const ReportsFilter = ({
     };
 
     return (
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-start gap-2">
             <DateRangePicker
-                range={range}
                 dateFrom={dateFrom}
                 dateTo={dateTo}
-                onSelect={(newRange, dates) =>
+                onSelect={(dates) =>
                     navigate({
-                        range: newRange,
                         date_from: dates?.from ?? null,
                         date_to: dates?.to ?? null,
                     })
                 }
-                onClear={() =>
-                    navigate({ range: null, date_from: null, date_to: null })
-                }
+                onClear={() => navigate({ date_from: null, date_to: null })}
             />
 
             <NativeSelect
                 value={walletId ?? ''}
-                onChange={(e) =>
-                    navigate({ wallet_id: e.target.value || null })
-                }
+                onChange={(e) => navigate({ wallet_id: e.target.value || null })}
             >
                 <NativeSelectOption value="">All Wallets</NativeSelectOption>
                 {wallets.map((w) => (

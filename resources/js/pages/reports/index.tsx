@@ -12,6 +12,7 @@ import { CashFlowChart } from '@/components/screens/reports/cash-flow-chart';
 import { CategoryDonut } from '@/components/screens/reports/category-donut';
 import { MonthlySummaryTable } from '@/components/screens/reports/monthly-summary-table';
 import { getCurrencySymbol } from '@/lib/currency';
+import { formatCurrency } from '@/lib/formats';
 
 type TSummary = {
     balance: number;
@@ -60,10 +61,9 @@ const ReportsIndex = ({
     expense_breakdown,
     income_breakdown,
     summary,
-    range,
     date_from,
     date_to,
-    currency,
+    currency = 'BDT',
     wallet_id,
     currencies,
     wallets,
@@ -73,7 +73,6 @@ const ReportsIndex = ({
     expense_breakdown: TCategoryRow[];
     income_breakdown: TCategoryRow[];
     summary: TSummary;
-    range: string | null;
     date_from: string | null;
     date_to: string | null;
     currency: TCurrency | null;
@@ -81,15 +80,12 @@ const ReportsIndex = ({
     currencies: TCurrency[];
     wallets: TWallet[];
 }) => {
-    const cur = currency ?? 'BDT';
-
     const switchCurrency = (c: string) => {
         router.get(
             route('reports.index'),
             Object.fromEntries(
                 Object.entries({
                     currency: c,
-                    range,
                     date_from,
                     date_to,
                 }).filter(([, v]) => v !== null && v !== undefined),
@@ -119,22 +115,29 @@ const ReportsIndex = ({
                     </Button>
                 </div>
 
-                {currencies.length > 1 && (
-                    <Tabs value={cur} onValueChange={switchCurrency}>
-                        <TabsList variant="line">
-                            {currencies.map((c) => (
-                                <TabsTrigger key={c} value={c}>
-                                    {getCurrencySymbol(c)} {c}
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
-                    </Tabs>
-                )}
-
-                <ReportsSummary summary={summary} currency={cur} />
+                <div className="flex items-center justify-between gap-4">
+                    {currencies.length > 1 ? (
+                        <Tabs value={currency} onValueChange={switchCurrency}>
+                            <TabsList variant="line">
+                                {currencies.map((c) => (
+                                    <TabsTrigger key={c} value={c}>
+                                        {getCurrencySymbol(c)} {c}
+                                    </TabsTrigger>
+                                ))}
+                            </TabsList>
+                        </Tabs>
+                    ) : (
+                        <div />
+                    )}
+                    <div className="text-right">
+                        <p className="text-xs text-muted-foreground">Balance</p>
+                        <p className="text-lg font-semibold text-balance tabular-nums">
+                            {formatCurrency(summary.balance, currency)}
+                        </p>
+                    </div>
+                </div>
 
                 <ReportsFilter
-                    range={range}
                     dateFrom={date_from}
                     dateTo={date_to}
                     currency={currency}
@@ -142,22 +145,27 @@ const ReportsIndex = ({
                     wallets={wallets}
                 />
 
-                <CashFlowChart data={monthly_cash_flow} currency={cur} />
+                <ReportsSummary summary={summary} currency={currency} />
+
+                <CashFlowChart data={monthly_cash_flow} currency={currency} />
 
                 <div className="grid gap-4 sm:grid-cols-2">
                     <CategoryDonut
                         title="Expenses by Category"
                         data={expense_breakdown}
-                        currency={cur}
+                        currency={currency}
                     />
                     <CategoryDonut
                         title="Income by Category"
                         data={income_breakdown}
-                        currency={cur}
+                        currency={currency}
                     />
                 </div>
 
-                <MonthlySummaryTable rows={monthly_summary} currency={cur} />
+                <MonthlySummaryTable
+                    rows={monthly_summary}
+                    currency={currency}
+                />
             </div>
         </AppLayout>
     );

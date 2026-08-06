@@ -31,21 +31,19 @@ class ReportsController extends Controller
                 'uuid',
                 Rule::exists('wallets', 'id')->where('user_id', $user->id),
             ],
-            'range' => ['nullable', 'string'],
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date', 'before_or_equal:today'],
         ]);
 
         $currency = $validated['currency'] ?? (in_array('BDT', $currencies) ? 'BDT' : ($currencies[0] ?? null));
         $walletId = $validated['wallet_id'] ?? null;
-        $range = $validated['range'] ?? null;
         $dateFrom = $validated['date_from'] ?? null;
         $dateTo = $validated['date_to'] ?? null;
 
         if ($dateFrom && $dateTo) {
             $startDate = Carbon::parse($dateFrom)->startOfDay()->toDateString();
             $endDate = Carbon::parse($dateTo)->endOfDay()->toDateString();
-        } elseif ($range === 'all_time') {
+        } elseif ($dateFrom === null && $dateTo === null && $request->has('date_from')) {
             $startDate = null;
             $endDate = null;
         } else {
@@ -110,7 +108,6 @@ class ReportsController extends Controller
                 'expenses' => $periodExpense,
                 'net' => $periodIncome - $periodExpense,
             ],
-            'range' => $range,
             'date_from' => $dateFrom,
             'date_to' => $dateTo,
             'currency' => $currency,

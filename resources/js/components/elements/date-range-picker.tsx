@@ -7,12 +7,12 @@ import { CalendarIcon, ChevronDownIcon, CheckIcon, XIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 type TDateRange = { from: string; to: string } | null;
 
 const fmt = (d: Date) => format(d, 'yyyy-MM-dd');
-
 const displayDate = (d: string) => format(new Date(d), 'MMM d, yyyy');
 
 const resolvePreset = (key: string): TDateRange => {
@@ -73,94 +73,79 @@ const PRESETS: { key: string; label: string }[][] = [
     [{ key: 'all_time', label: 'All Time' }],
 ];
 
-const PRESET_LABEL: Record<string, string> = Object.fromEntries(
-    PRESETS.flat().map(({ key, label }) => [key, label]),
-);
-
 export const DateRangePicker = ({
-    range,
     dateFrom,
     dateTo,
     onSelect,
     onClear,
 }: {
-    range: string | null;
     dateFrom: string | null;
     dateTo: string | null;
-    onSelect: (range: string | null, dates: TDateRange) => void;
+    onSelect: (dates: TDateRange) => void;
     onClear: () => void;
 }) => {
     const [open, setOpen] = useState(false);
+    const [activePreset, setActivePreset] = useState<string | null>(null);
     const [pending, setPending] = useState<DateRange | undefined>();
 
-    const hasSelection = !!range || (!!dateFrom && !!dateTo);
+    const hasSelection = !!dateFrom && !!dateTo;
 
-    const triggerLabel = range
-        ? PRESET_LABEL[range]
-        : dateFrom && dateTo
-          ? `${displayDate(dateFrom)} – ${displayDate(dateTo)}`
-          : 'Date range';
+    const triggerLabel =
+        activePreset && hasSelection
+            ? PRESETS.flat().find((p) => p.key === activePreset)?.label ?? 'Date range'
+            : hasSelection
+              ? `${displayDate(dateFrom!)} – ${displayDate(dateTo!)}`
+              : 'Date range';
 
-    // Calendar shows pending range while selecting, otherwise props-derived range
     const calSelected: DateRange | undefined =
         pending ??
-        (dateFrom && dateTo
-            ? { from: new Date(dateFrom), to: new Date(dateTo) }
-            : undefined);
+        (dateFrom && dateTo ? { from: new Date(dateFrom), to: new Date(dateTo) } : undefined);
 
-    // Resolved date string for the selected preset
-    const resolvedDates = range ? resolvePreset(range) : null;
     const dateLabel =
-        resolvedDates?.from && resolvedDates?.to
-            ? resolvedDates.from === resolvedDates.to
-                ? displayDate(resolvedDates.from)
-                : `${displayDate(resolvedDates.from)} – ${displayDate(resolvedDates.to)}`
-            : dateFrom && dateTo && !range
-              ? `${displayDate(dateFrom)} – ${displayDate(dateTo)}`
-              : null;
+        hasSelection
+            ? dateFrom === dateTo
+                ? displayDate(dateFrom!)
+                : `${displayDate(dateFrom!)} – ${displayDate(dateTo!)}`
+            : null;
 
     const handlePreset = (key: string) => {
         const dates = resolvePreset(key);
+        setActivePreset(key);
         setPending(undefined);
-        onSelect(key, dates);
-        setOpen(false);
+        onSelect(dates);
+        if (key !== 'all_time') setOpen(false);
+        else setOpen(false);
     };
 
     const handleCalSelect = (r: DateRange | undefined) => {
         setPending(r);
         if (r?.from && r?.to && r.to > r.from) {
-            onSelect(null, { from: fmt(r.from), to: fmt(r.to) });
+            setActivePreset(null);
+            onSelect({ from: fmt(r.from), to: fmt(r.to) });
             setPending(undefined);
             setOpen(false);
         }
     };
 
-    const handleOpenChange = (o: boolean) => {
-        if (!o) setPending(undefined);
-        setOpen(o);
-    };
-
     const handleClear = () => {
+        setActivePreset(null);
         setPending(undefined);
         onClear();
     };
 
     return (
         <div className="flex items-center gap-1">
-            <Popover open={open} onOpenChange={handleOpenChange}>
+            <Popover open={open} onOpenChange={(o) => { if (!o) setPending(undefined); setOpen(o); }}>
                 <PopoverTrigger
-                    render={
-                        <Button
-                            variant={hasSelection ? 'default' : 'outline'}
-                            size="sm"
-                            className="h-8 gap-1.5 text-xs font-normal"
-                        >
-                            <CalendarIcon className="size-3.5 shrink-0" />
-                            <span className="max-w-48 truncate">{triggerLabel}</span>
-                            <ChevronDownIcon className="size-3 shrink-0 opacity-60" />
-                        </Button>
-                    }
-                />
+                    className={cn(
+                        buttonVariants({ variant: hasSelection ? 'default' : 'outline', size: 'sm' }),
+                        'h-8 max-w-56 gap-1.5 text-xs font-normal',
+                    )}
+                >
+                    <CalendarIcon className="size-3.5 shrink-0" />
+                    <span className="truncate">{triggerLabel}</span>
+                    <ChevronDownIcon className="size-3 shrink-0 opacity-60" />
+                </PopoverTrigger>
                 <PopoverContent align="start" className="w-auto p-0">
                     <div className="flex divide-x">
                         {/* Preset list */}
@@ -174,11 +159,11 @@ export const DateRangePicker = ({
                                             onClick={() => handlePreset(key)}
                                             className={cn(
                                                 'flex w-full items-center justify-between px-3 py-1.5 text-xs hover:bg-muted',
-                                                range === key && 'font-medium text-primary',
+                                                activePreset === key && 'font-medium text-primary',
                                             )}
                                         >
                                             <span>{label}</span>
-                                            {range === key && (
+                                            {activePreset === key && (
                                                 <CheckIcon className="size-3 shrink-0" />
                                             )}
                                         </button>
