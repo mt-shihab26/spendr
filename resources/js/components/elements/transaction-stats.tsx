@@ -12,7 +12,7 @@ export type TStat = {
 
 export const TransactionStats = ({ stats }: { stats: TStat[] }) => {
     return (
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col items-end gap-1">
             {stats.map(({ currency, income, expense }) => {
                 const net = income - expense;
 
