@@ -1,6 +1,3 @@
-import type { DateRange } from 'react-day-picker';
-
-import { useMemo, useState } from 'react';
 import {
     format,
     subDays,
@@ -8,24 +5,44 @@ import {
     startOfMonth,
     subMonths,
 } from 'date-fns';
-import { CalendarIcon, ChevronDownIcon, CheckIcon, XIcon } from 'lucide-react';
 
-import { Calendar } from '@/components/ui/calendar';
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
+
+import type { DateRange } from 'react-day-picker';
+
+import { useMemo, useState } from 'react';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
+import { CalendarIcon, ChevronDownIcon, CheckIcon, XIcon } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { Button } from '@/components/ui/button';
+
 type TDateRange = { from: string; to: string } | null;
+
+type TPresetKey =
+    | 'today'
+    | 'yesterday'
+    | 'last_2_days'
+    | 'this_week'
+    | 'this_month'
+    | 'last_2_months'
+    | 'last_3_months'
+    | 'last_7_days'
+    | 'last_14_days'
+    | 'last_30_days'
+    | 'last_60_days'
+    | 'last_90_days'
+    | 'all_time';
 
 const fmt = (d: Date) => format(d, 'yyyy-MM-dd');
 const displayDate = (d: string) => format(new Date(d), 'MMM d, yyyy');
 
-const PRESETS = [
+const PRESETS: { key: TPresetKey; label: string }[][] = [
     [
         { key: 'today', label: 'Today' },
         { key: 'yesterday', label: 'Yesterday' },
@@ -44,15 +61,10 @@ const PRESETS = [
         { key: 'last_60_days', label: 'Last 60 Days' },
         { key: 'last_90_days', label: 'Last 90 Days' },
     ],
-    [
-        {
-            key: 'all_time',
-            label: 'All Time',
-        },
-    ],
+    [{ key: 'all_time', label: 'All Time' }],
 ];
 
-const resolvePreset = (key: string): TDateRange => {
+const resolvePreset = (key: TPresetKey): TDateRange => {
     const today = new Date();
     switch (key) {
         case 'today':
@@ -109,7 +121,7 @@ export const DateRangePicker = ({
     onClear: () => void;
 }) => {
     const [open, setOpen] = useState(false);
-    const [activePreset, setActivePreset] = useState<string | null>(null);
+    const [activePreset, setActivePreset] = useState<TPresetKey | null>(null);
     const [pending, setPending] = useState<DateRange | undefined>();
 
     const hasSelection = !!dateFrom && !!dateTo;
@@ -146,7 +158,7 @@ export const DateRangePicker = ({
             : `${displayDate(dateFrom!)} – ${displayDate(dateTo!)}`
         : null;
 
-    const handlePreset = (key: string) => {
+    const handlePreset = (key: TPresetKey) => {
         const dates = resolvePreset(key);
         setActivePreset(key);
         setPending(undefined);
