@@ -8,6 +8,7 @@ import {
 import type { TTransaction, TWallet, TCategory } from '@/types/models';
 import type { TType } from '@/types/enums';
 
+import { getCurrencySymbol } from '@/lib/currency';
 import { useForm } from '@inertiajs/react';
 
 import { Link } from '@inertiajs/react';
@@ -20,7 +21,6 @@ import { TypePicker } from '@/components/elements/type-picker';
 import { Textarea } from '@/components/ui/textarea';
 import { WalletSelect } from '@/components/elements/wallet-select';
 import { CategorySelect } from '@/components/elements/category-select';
-import { getCurrencySymbol } from '@/lib/currency';
 
 export const TransactionForm = ({
     transaction,
@@ -32,17 +32,24 @@ export const TransactionForm = ({
     categories: TCategory[];
 }) => {
     const { data, setData, post, patch, processing, errors } = useForm({
-        wallet_id: transaction?.wallet_id ?? null,
+        wallet_id:
+            transaction?.wallet_id ??
+            wallets.find((w) => w.is_default)?.id ??
+            null,
         category_id: transaction?.category_id ?? null,
         type: (transaction?.type ?? 'expense') as TType,
         amount: transaction?.amount ?? 0,
-        transacted_at: transaction?.transacted_at ? normalizeUtcIso(transaction.transacted_at) : nowUtcIso(),
+        transacted_at: transaction?.transacted_at
+            ? normalizeUtcIso(transaction.transacted_at)
+            : nowUtcIso(),
         description: transaction?.description ?? '',
         notes: transaction?.notes ?? '',
     });
 
     const selectedWallet = wallets.find((w) => w.id === data.wallet_id);
-    const currencyPrefix = selectedWallet ? getCurrencySymbol(selectedWallet.currency) : '';
+    const currencyPrefix = selectedWallet
+        ? getCurrencySymbol(selectedWallet.currency)
+        : '';
 
     return (
         <form
