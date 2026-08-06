@@ -42,7 +42,7 @@ export const mainLinks = (): TLink[] => [
     },
     {
         title: 'Categories',
-        href: '/categories',
+        href: route('categories.index'),
         icon: Tag,
     },
     {

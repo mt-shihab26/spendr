@@ -1,4 +1,4 @@
-import type { TCurrency } from '@/types/enums';
+import type { TCurrency, TType } from '@/types/enums';
 
 export type TUser = {
     id: number;
@@ -17,6 +17,20 @@ export type TWallet = {
     name: string;
     currency: TCurrency;
     initial_balance: number;
+    color: string;
+    icon: string | null;
+    is_default: boolean;
+    sort_order: number;
+    deleted_at: string | null;
+    created_at: string;
+    updated_at: string;
+};
+
+export type TCategory = {
+    id: string;
+    user_id: string;
+    name: string;
+    type: TType;
     color: string;
     icon: string | null;
     is_default: boolean;

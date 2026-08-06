@@ -2,10 +2,10 @@ import type { TWallet } from '@/types/models';
 
 import { useState } from 'react';
 import { formatCurrency } from '@/lib/formats';
-import { getIcon } from '@/lib/icons';
 import { getCurrencySymbol } from '@/lib/currency';
 
 import { Badge } from '@/components/ui/badge';
+import { IconBadge } from '@/components/elements/icon-badge';
 import { WalletActions } from '@/components/screens/wallets/wallet-actions';
 import { WalletDeleteDialog } from '@/components/screens/wallets/wallet-delete-dialog';
 
@@ -20,22 +20,7 @@ export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
                         key={wallet.id}
                         className="flex items-center gap-3 px-4 py-3"
                     >
-                        {(() => {
-                            const Icon = getIcon(wallet.icon);
-                            return Icon ? (
-                                <span
-                                    className="flex size-6 shrink-0 items-center justify-center rounded-full"
-                                    style={{ backgroundColor: wallet.color }}
-                                >
-                                    <Icon className="size-3 text-white" />
-                                </span>
-                            ) : (
-                                <span
-                                    className="size-2.5 shrink-0 rounded-full"
-                                    style={{ backgroundColor: wallet.color }}
-                                />
-                            );
-                        })()}
+                        <IconBadge icon={wallet.icon} color={wallet.color} />
                         <span className="flex-1 text-xs font-medium">
                             {wallet.name}
                         </span>
