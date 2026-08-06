@@ -68,9 +68,16 @@ const TransactionsShow = ({ transaction }: { transaction: TTransaction }) => {
                                     color={transaction.category.color}
                                 />
                             )}
-                            <span className="text-sm font-medium">
-                                {transaction.category?.name ?? '—'}
-                            </span>
+                            {transaction.category ? (
+                                <Link
+                                    href={route('categories.show', transaction.category.id)}
+                                    className="text-sm font-medium hover:underline"
+                                >
+                                    {transaction.category.name}
+                                </Link>
+                            ) : (
+                                <span className="text-sm font-medium">—</span>
+                            )}
                         </div>
                     </div>
                     <div className="border p-4">
