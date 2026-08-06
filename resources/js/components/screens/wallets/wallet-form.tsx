@@ -17,7 +17,7 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
     const { data, setData, post, patch, processing, errors } = useForm({
         name: wallet?.name ?? '',
         currency: wallet?.currency ?? 'BDT',
-        initial_balance: wallet?.initial_balance ?? '0.00',
+        initial_balance: wallet?.initial_balance ?? 0,
         color: wallet?.color ?? '#6366f1',
         icon: wallet?.icon ?? '',
         is_default: wallet?.is_default ?? false,
@@ -68,7 +68,7 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
                     name="initial_balance"
                     value={data.initial_balance}
                     onValueChange={({ value }) =>
-                        setData('initial_balance', value)
+                        setData('initial_balance', Number(value))
                     }
                 />
                 <InputError message={errors.initial_balance} />
