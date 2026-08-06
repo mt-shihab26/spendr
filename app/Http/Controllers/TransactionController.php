@@ -21,7 +21,7 @@ class TransactionController extends Controller
             'period' => ['nullable', 'string', Rule::in(['today', 'week', 'month', 'year', 'all'])],
         ]);
 
-        $period = $validated['period'] ?? 'year';
+        $period = $validated['period'] ?? 'week';
 
         $query = $request->user()
             ->transactions()

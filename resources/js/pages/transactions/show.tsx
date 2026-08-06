@@ -1,5 +1,6 @@
 import type { TTransaction } from '@/types/models';
 
+import { formatLocalDateTime } from '@/lib/date';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { EditButton } from '@/components/elements/edit-button';
@@ -29,7 +30,7 @@ const TransactionsShow = ({ transaction }: { transaction: TTransaction }) => {
                 <div className="flex items-start justify-between">
                     <Heading
                         title={transaction.description}
-                        description={transaction.transacted_at}
+                        description={formatLocalDateTime(transaction.transacted_at)}
                     />
                     <div className="flex items-center">
                         <EditButton
