@@ -1,4 +1,4 @@
-import type { TWallet } from '@/types/models';
+import type { TWallet, TTransaction } from '@/types/models';
 
 import { formatCurrency } from '@/lib/formats';
 import { getCurrencySymbol } from '@/lib/currency';
@@ -8,8 +8,15 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { EditButton } from '@/components/elements/edit-button';
 import { BackButton } from '@/components/elements/back-button';
+import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
 
-const WalletsShow = ({ wallet }: { wallet: TWallet }) => {
+const WalletsShow = ({
+    wallet,
+    transactions,
+}: {
+    wallet: TWallet;
+    transactions: TTransaction[];
+}) => {
     return (
         <AppLayout
             title={wallet.name}
@@ -43,34 +50,29 @@ const WalletsShow = ({ wallet }: { wallet: TWallet }) => {
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">Balance</p>
                         <p className="mt-1 text-lg font-semibold tabular-nums">
-                            {formatCurrency(
-                                wallet.initial_balance,
-                                wallet.currency,
-                            )}
+                            {formatCurrency(wallet.initial_balance, wallet.currency)}
                         </p>
                     </div>
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">
-                            Month Income
-                        </p>
+                        <p className="text-xs text-muted-foreground">Income</p>
                         <p className="mt-1 text-lg font-semibold text-green-600 tabular-nums">
-                            {formatCurrency(0, wallet.currency)}
+                            {formatCurrency(wallet.income ?? 0, wallet.currency)}
                         </p>
                     </div>
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">
-                            Month Expenses
-                        </p>
+                        <p className="text-xs text-muted-foreground">Expenses</p>
                         <p className="mt-1 text-lg font-semibold text-red-500 tabular-nums">
-                            {formatCurrency(0, wallet.currency)}
+                            {formatCurrency(wallet.expense ?? 0, wallet.currency)}
                         </p>
                     </div>
                 </div>
-                <div className="border p-4">
-                    <p className="text-xs text-muted-foreground">
-                        No transactions yet.
-                    </p>
-                </div>
+                {transactions.length > 0 ? (
+                    <TransactionsTable transactions={transactions} />
+                ) : (
+                    <div className="border p-4">
+                        <p className="text-xs text-muted-foreground">No transactions yet.</p>
+                    </div>
+                )}
             </div>
         </AppLayout>
     );

@@ -29,7 +29,7 @@ const WalletsIndex = ({
             description="Manage your accounts and balances"
             breadcrumbs={[{ title: 'Wallets', route: 'wallets.index' }]}
         >
-            <div className="flex flex-col gap-8 p-4">
+            <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-center justify-between">
                     <Heading
                         title="Wallets"

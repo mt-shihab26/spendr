@@ -79,8 +79,18 @@ class WalletController extends Controller
     {
         abort_if($wallet->user_id !== $request->user()->id, 403);
 
+        $wallet->loadSum(['transactions as income' => fn ($q) => $q->where('type', Type::Income->value)], 'amount');
+        $wallet->loadSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount');
+
+        $transactions = $wallet->transactions()
+            ->with(['wallet', 'category'])
+            ->orderByDesc('transacted_at')
+            ->orderByDesc('created_at')
+            ->get();
+
         return inertia('wallets/show', [
             'wallet' => $wallet,
+            'transactions' => $transactions,
         ]);
     }
 
