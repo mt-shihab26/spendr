@@ -4,10 +4,19 @@ import type { TWallet } from '@/types/models';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { Button } from '@/components/ui/button';
+import { formatCurrency } from '@/lib/formats';
+import { cn } from '@/lib/utils';
 import { ReportsFilter } from '@/components/screens/reports/reports-filter';
 import { CashFlowChart } from '@/components/screens/reports/cash-flow-chart';
 import { CategoryDonut } from '@/components/screens/reports/category-donut';
 import { MonthlySummaryTable } from '@/components/screens/reports/monthly-summary-table';
+
+type TSummary = {
+    balance: number;
+    income: number;
+    expenses: number;
+    net: number;
+};
 
 type TPeriod = '3m' | '6m' | '12m';
 
@@ -50,6 +59,7 @@ const ReportsIndex = ({
     monthly_summary,
     expense_breakdown,
     income_breakdown,
+    summary,
     period,
     currency,
     wallet_id,
@@ -60,12 +70,14 @@ const ReportsIndex = ({
     monthly_summary: TCashFlowRow[];
     expense_breakdown: TCategoryRow[];
     income_breakdown: TCategoryRow[];
+    summary: TSummary;
     period: TPeriod;
     currency: TCurrency | null;
     wallet_id: string | null;
     currencies: TCurrency[];
     wallets: TWallet[];
 }) => {
+    const cur = cur;
     return (
         <AppLayout
             title="Reports"
@@ -87,6 +99,22 @@ const ReportsIndex = ({
                     </Button>
                 </div>
 
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    {[
+                        { label: 'Balance', value: summary.balance, color: 'text-balance' },
+                        { label: '+', value: summary.income, color: 'text-income' },
+                        { label: '−', value: summary.expenses, color: 'text-expense' },
+                        { label: 'Net', value: summary.net, color: summary.net >= 0 ? 'text-income' : 'text-expense' },
+                    ].map(({ label, value, color }) => (
+                        <div key={label} className="border p-4">
+                            <p className="text-xs text-muted-foreground">{label}</p>
+                            <p className={cn('mt-1 text-lg font-semibold tabular-nums', color)}>
+                                {formatCurrency(value, cur)}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+
                 <ReportsFilter
                     period={period}
                     currency={currency}
@@ -95,22 +123,22 @@ const ReportsIndex = ({
                     wallets={wallets}
                 />
 
-                <CashFlowChart data={monthly_cash_flow} currency={currency ?? 'BDT'} />
+                <CashFlowChart data={monthly_cash_flow} currency={cur} />
 
                 <div className="grid gap-4 sm:grid-cols-2">
                     <CategoryDonut
                         title="Expenses by Category"
                         data={expense_breakdown}
-                        currency={currency ?? 'BDT'}
+                        currency={cur}
                     />
                     <CategoryDonut
                         title="Income by Category"
                         data={income_breakdown}
-                        currency={currency ?? 'BDT'}
+                        currency={cur}
                     />
                 </div>
 
-                <MonthlySummaryTable rows={monthly_summary} currency={currency ?? 'BDT'} />
+                <MonthlySummaryTable rows={monthly_summary} currency={cur} />
             </div>
         </AppLayout>
     );

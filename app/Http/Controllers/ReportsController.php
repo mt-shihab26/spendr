@@ -69,6 +69,22 @@ class ReportsController extends Controller
 
         $transactions = $query->get();
 
+        $walletIds = $wallets->pluck('id');
+        $balanceQuery = $user->transactions()->whereIn('wallet_id', $walletIds);
+        if ($walletId) {
+            $balanceQuery->where('wallet_id', $walletId);
+        }
+
+        $initialBalance = $walletId
+            ? (float) ($wallets->firstWhere('id', $walletId)?->initial_balance ?? 0)
+            : (float) $wallets->sum('initial_balance');
+
+        $allTimeIncome = (float) (clone $balanceQuery)->where('type', 'income')->sum('amount');
+        $allTimeExpense = (float) (clone $balanceQuery)->where('type', 'expense')->sum('amount');
+
+        $periodIncome = (float) $transactions->where('type', 'income')->sum('amount');
+        $periodExpense = (float) $transactions->where('type', 'expense')->sum('amount');
+
         $monthlyCashFlow = $this->computeMonthlyCashFlow($transactions, $startDate, $endDate);
 
         return inertia('reports/index', [
@@ -80,6 +96,12 @@ class ReportsController extends Controller
             'income_breakdown' => $this->computeCategoryBreakdown(
                 $transactions->where('type', 'income')
             ),
+            'summary' => [
+                'balance' => $initialBalance + $allTimeIncome - $allTimeExpense,
+                'income' => $periodIncome,
+                'expenses' => $periodExpense,
+                'net' => $periodIncome - $periodExpense,
+            ],
             'period' => $period,
             'currency' => $currency,
             'wallet_id' => $walletId,
