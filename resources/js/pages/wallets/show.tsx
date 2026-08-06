@@ -50,19 +50,30 @@ const WalletsShow = ({
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">Balance</p>
                         <p className="mt-1 text-lg font-semibold tabular-nums">
-                            {formatCurrency(wallet.initial_balance, wallet.currency)}
+                            {formatCurrency(
+                                wallet.initial_balance,
+                                wallet.currency,
+                            )}
                         </p>
                     </div>
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">Income</p>
                         <p className="mt-1 text-lg font-semibold text-green-600 tabular-nums">
-                            {formatCurrency(wallet.income ?? 0, wallet.currency)}
+                            {formatCurrency(
+                                wallet.income ?? 0,
+                                wallet.currency,
+                            )}
                         </p>
                     </div>
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Expenses</p>
+                        <p className="text-xs text-muted-foreground">
+                            Expenses
+                        </p>
                         <p className="mt-1 text-lg font-semibold text-red-500 tabular-nums">
-                            {formatCurrency(wallet.expense ?? 0, wallet.currency)}
+                            {formatCurrency(
+                                wallet.expense ?? 0,
+                                wallet.currency,
+                            )}
                         </p>
                     </div>
                 </div>
@@ -70,7 +81,9 @@ const WalletsShow = ({
                     <TransactionsTable transactions={transactions} />
                 ) : (
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">No transactions yet.</p>
+                        <p className="text-xs text-muted-foreground">
+                            No transactions yet.
+                        </p>
                     </div>
                 )}
             </div>

@@ -52,7 +52,10 @@ export const TransactionsTable = ({
                                         />
                                         <div className="flex flex-1 flex-col">
                                             <Link
-                                                href={route('transactions.show', transaction.id)}
+                                                href={route(
+                                                    'transactions.show',
+                                                    transaction.id,
+                                                )}
                                                 className="text-xs font-medium hover:underline"
                                             >
                                                 {transaction.description}
@@ -61,10 +64,17 @@ export const TransactionsTable = ({
                                                 {transaction.category?.name} ·{' '}
                                                 {transaction.wallet && (
                                                     <Link
-                                                        href={route('wallets.show', transaction.wallet.id)}
+                                                        href={route(
+                                                            'wallets.show',
+                                                            transaction.wallet
+                                                                .id,
+                                                        )}
                                                         className="hover:underline"
                                                     >
-                                                        {transaction.wallet.name}
+                                                        {
+                                                            transaction.wallet
+                                                                .name
+                                                        }
                                                     </Link>
                                                 )}
                                             </span>

@@ -24,4 +24,3 @@ export const formatCurrency = (
 
     return `${getCurrencySymbol(currency ?? 'BDT')}${formatted}`;
 };
-

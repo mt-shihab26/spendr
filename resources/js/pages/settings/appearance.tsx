@@ -35,15 +35,12 @@ const Appearance = () => {
         >
             <Tabs value={appearance} onValueChange={changeAppearance}>
                 <TabsList>
-                {tabs.map(({ value, icon: Icon, label }) => (
-                    <TabsTrigger
-                        key={value}
-                        value={value}
-                    >
-                        <Icon />
-                        {label}
-                    </TabsTrigger>
-                ))}
+                    {tabs.map(({ value, icon: Icon, label }) => (
+                        <TabsTrigger key={value} value={value}>
+                            <Icon />
+                            {label}
+                        </TabsTrigger>
+                    ))}
                 </TabsList>
             </Tabs>
         </SettingsLayout>

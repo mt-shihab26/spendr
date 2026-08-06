@@ -32,7 +32,9 @@ const TransactionsShow = ({ transaction }: { transaction: TTransaction }) => {
                 <div className="flex items-start justify-between">
                     <Heading
                         title={transaction.description}
-                        description={formatLocalDateTimeLong(transaction.transacted_at)}
+                        description={formatLocalDateTimeLong(
+                            transaction.transacted_at,
+                        )}
                     />
                     <div className="flex items-center">
                         <EditButton
@@ -82,7 +84,10 @@ const TransactionsShow = ({ transaction }: { transaction: TTransaction }) => {
                             )}
                             {transaction.wallet ? (
                                 <Link
-                                    href={route('wallets.show', transaction.wallet.id)}
+                                    href={route(
+                                        'wallets.show',
+                                        transaction.wallet.id,
+                                    )}
                                     className="text-sm font-medium hover:underline"
                                 >
                                     {transaction.wallet.name}
