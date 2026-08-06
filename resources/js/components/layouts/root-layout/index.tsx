@@ -18,7 +18,7 @@ export const RootLayout = ({
     useFlashToast();
 
     return (
-        <TooltipProvider delayDuration={0}>
+        <TooltipProvider delay={0}>
             <Head>
                 <title>{title}</title>
                 <meta name="description" content={description} />

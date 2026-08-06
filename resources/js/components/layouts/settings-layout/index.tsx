@@ -64,17 +64,15 @@ export const SettingsLayout = ({
                                     key={`${item.route}-${index}`}
                                     size="sm"
                                     variant="ghost"
-                                    asChild
+                                    render={<Link href={route(item.route)} />}
                                     className={cn('w-full justify-start', {
                                         'bg-muted': route().current(item.route),
                                     })}
                                 >
-                                    <Link href={route(item.route)}>
-                                        {item.icon && (
-                                            <item.icon className="h-4 w-4" />
-                                        )}
-                                        {item.title}
-                                    </Link>
+                                    {item.icon && (
+                                        <item.icon className="h-4 w-4" />
+                                    )}
+                                    {item.title}
                                 </Button>
                             ))}
                         </nav>
