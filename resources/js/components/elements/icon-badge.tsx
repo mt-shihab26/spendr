@@ -2,12 +2,12 @@ import { getIcon } from '@/lib/icons';
 
 export const IconBadge = ({
     icon,
-    color,
+    color = '#6366f1',
 }: {
-    icon: string | null;
-    color: string;
+    icon: string | null | undefined;
+    color?: string;
 }) => {
-    const Icon = getIcon(icon);
+    const Icon = getIcon(icon ?? null);
 
     return Icon ? (
         <span

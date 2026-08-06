@@ -1,5 +1,7 @@
 import type { TCurrency } from '@/types/enums';
 
+import { format, parseISO } from 'date-fns';
+
 import { getCurrencySymbol } from '@/lib/currency';
 
 export const formatInitial = (fullName: string): string => {
@@ -27,4 +29,11 @@ export const formatCurrency = (
 
 export const toDateInput = (date?: string | null): string => {
     return date?.slice(0, 10) ?? new Date().toISOString().slice(0, 10);
+};
+
+export const formatDateTime = (
+    date: string | null | undefined,
+    pattern = 'MMM d, yyyy h:mm a',
+): string => {
+    return date ? format(parseISO(date), pattern) : '';
 };
