@@ -68,7 +68,7 @@ const ReportsIndex = ({
             breadcrumbs={[{ title: 'Reports', route: 'reports.index' }]}
         >
             <div className="flex flex-col gap-4 p-4">
-                <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                     <Heading
                         title="Reports"
                         description="Analyse your spending and income trends"

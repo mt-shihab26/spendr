@@ -27,8 +27,8 @@ type TCashFlowRow = {
 };
 
 const chartConfig = {
-    income: { label: 'Income', color: '#22c55e' },
-    expenses: { label: 'Expenses', color: '#ef4444' },
+    income: { label: '+', color: '#22c55e' },
+    expenses: { label: '-', color: '#ef4444' },
     net: { label: 'Net', color: '#6366f1' },
 } satisfies ChartConfig;
 
@@ -55,10 +55,24 @@ export const CashFlowChart = ({ data }: { data: TCashFlowRow[] }) => {
                     <ChartTooltip
                         content={
                             <ChartTooltipContent
-                                formatter={(value, name) => [
-                                    formatCurrency(Number(value)),
-                                    name,
-                                ]}
+                                formatter={(value, name, item) => {
+                                    const label = chartConfig[name as keyof typeof chartConfig]?.label ?? String(name);
+                                    const color = (item as any).color ?? (item as any).payload?.fill;
+                                    return (
+                                        <>
+                                            <div
+                                                className="size-2.5 shrink-0 rounded-[2px]"
+                                                style={{ backgroundColor: color }}
+                                            />
+                                            <div className="flex flex-1 items-center justify-between gap-4 leading-none">
+                                                <span className="text-muted-foreground">{label}</span>
+                                                <span className="font-mono font-medium tabular-nums">
+                                                    {formatCurrency(Number(value))}
+                                                </span>
+                                            </div>
+                                        </>
+                                    );
+                                }}
                             />
                         }
                     />

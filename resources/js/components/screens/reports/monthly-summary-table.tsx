@@ -28,10 +28,10 @@ export const MonthlySummaryTable = ({ rows }: { rows: TSummaryRow[] }) => {
                             Month
                         </th>
                         <th className="px-4 py-2 text-right font-medium text-muted-foreground">
-                            Income
+                            +
                         </th>
                         <th className="px-4 py-2 text-right font-medium text-muted-foreground">
-                            Expenses
+                            −
                         </th>
                         <th className="px-4 py-2 text-right font-medium text-muted-foreground">
                             Net
