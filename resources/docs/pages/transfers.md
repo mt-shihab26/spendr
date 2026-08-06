@@ -3,7 +3,7 @@
 **Route prefix:** `/transfers` — `transfers.*`
 **Layout:** `AppLayout`
 
-Moves money between two of the user's wallets. Recorded separately from transactions so income/expense totals stay accurate.
+Moves money between two of the user's wallets. Kept separate from transactions so income/expense totals stay accurate.
 
 ---
 
@@ -12,97 +12,93 @@ Moves money between two of the user's wallets. Recorded separately from transact
 **Route:** `GET /transfers`
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│ Transfers                              [+ New Transfer]   │
-│ Move funds between your wallets                           │
-├──────────────────────────────────────────────────────────┤
-│                                                          │
-│ [Date from ___]  [Date to ___]  [Wallet ▾]               │
-│                                                          │
-│ ┌────────────────────────────────────────────────────┐  │
-│ │ Date    From          To           Amount          │  │
-│ ├────────────────────────────────────────────────────┤  │
-│ │ 05 Aug  Main Wallet → Cash         $200.00    ⋮    │  │
-│ │ 29 Jul  Bank Acc    → Main Wallet  $500.00    ⋮    │  │
-│ │ 15 Jul  Main Wallet → Cash         $100.00    ⋮    │  │
-│ └────────────────────────────────────────────────────┘  │
-│                                                          │
-│              ← 1  2  3 →                                 │
-└──────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│ [Logo] Dashboard Wallets Transactions …          [🔍] [👤 ▾]   │
+├─────────────────────────────────────────────────────────────────┤
+│ Home / Transfers                                                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Transfers                                  [+ New Transfer]   │
+│  Move funds between your wallets                               │
+│                                                                 │
+│  [Date from ___]  [Date to ___]  [Wallet ▾]                    │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Date    From             To              Amount         │   │
+│  ├─────────────────────────────────────────────────────────┤   │
+│  │ 05 Aug  Main Wallet  →  Cash            $200.00     ⋮   │   │
+│  │ 29 Jul  Bank Acc     →  Main Wallet     $500.00     ⋮   │   │
+│  │ 15 Jul  Main Wallet  →  Cash            $100.00     ⋮   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                       ← 1  2  3 →                              │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ### Filter bar
 
-| Control             | Type        | Behaviour                                                    |
-| ------------------- | ----------- | ------------------------------------------------------------ |
-| Date from / Date to | date inputs | inclusive range on `transacted_at`                           |
-| Wallet              | select      | shows transfers where wallet is either source or destination |
+| Control        | Behaviour                                                 |
+| -------------- | --------------------------------------------------------- |
+| Date from / to | Inclusive range on `transacted_at`                        |
+| Wallet         | Shows transfers where the wallet is source or destination |
 
 ### Row actions (⋮)
 
-- Edit
-- Delete
+- Edit → opens Edit modal
+- Delete → confirm dialog
 
 ---
 
 ## Create Transfer — modal
 
-Opened from "[+ New Transfer]" or the Quick-Add FAB.
-
 ```
-┌────────────────────────────────────────┐
-│ New Transfer                      [✕]  │
-│ ───────────────────────────────────    │
-│  Amount *                              │
-│  [$ ___________________________]       │
-│                                        │
-│  From Wallet *                         │
-│  [Select wallet ▾]                     │
-│                                        │
-│  To Wallet *                           │
-│  [Select wallet ▾]                     │
-│  (same wallet as "From" is disabled)   │
-│                                        │
-│  Date *                                │
-│  [06 Aug 2026]  (defaults to today)    │
-│                                        │
-│  Notes                                 │
-│  [________________________________]    │
-│                                        │
-│          [Cancel]  [Save Transfer]     │
-└────────────────────────────────────────┘
+┌───────────────────────────────────────┐
+│ New Transfer                     [✕]  │
+│ ────────────────────────────────────  │
+│ Amount *                              │
+│ [$ ________________________________]  │
+│                                       │
+│ From Wallet *                         │
+│ [Select wallet ▾]                     │
+│                                       │
+│ To Wallet *                           │
+│ [Select wallet ▾]                     │
+│ (same as From is disabled)            │
+│                                       │
+│ Date *                                │
+│ [06 Aug 2026]                         │
+│                                       │
+│ Notes                                 │
+│ [__________________________________]  │
+│                                       │
+│           [Cancel]  [Save Transfer]   │
+└───────────────────────────────────────┘
 ```
 
-### Fields
-
-| Field       | Type        | Rules                           |
-| ----------- | ----------- | ------------------------------- |
-| Amount      | decimal     | required, > 0                   |
-| From Wallet | select      | required; must differ from To   |
-| To Wallet   | select      | required; must differ from From |
-| Date        | date picker | required, defaults to today     |
-| Notes       | textarea    | optional                        |
-
-Selecting the same wallet for both From and To shows an inline error.
+| Field       | Rules                           |
+| ----------- | ------------------------------- |
+| Amount      | required, > 0                   |
+| From Wallet | required; must differ from To   |
+| To Wallet   | required; must differ from From |
+| Date        | required; defaults to today     |
+| Notes       | optional                        |
 
 ---
 
 ## Edit Transfer — modal
 
-Same form as Create, pre-filled. Includes "Delete" button.
+Same form, pre-filled. Includes "Delete" danger button.
 
 ---
 
 ## Delete Confirmation
 
 ```
-┌────────────────────────────────────┐
-│ Delete transfer?                   │
-│ ─────────────────────────────────  │
-│ Main Wallet → Cash, $200.00        │
-│ on 05 Aug 2026                     │
-│ This cannot be undone.             │
-│                                    │
-│            [Cancel]  [Delete]      │
-└────────────────────────────────────┘
+┌───────────────────────────────────────┐
+│ Delete transfer?                      │
+│ ────────────────────────────────────  │
+│ Main Wallet → Cash, $200.00           │
+│ on 05 Aug 2026. Cannot be undone.     │
+│                                       │
+│            [Cancel]  [Delete]         │
+└───────────────────────────────────────┘
 ```

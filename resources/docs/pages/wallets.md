@@ -3,7 +3,7 @@
 **Route prefix:** `/wallets` — `wallets.*`
 **Layout:** `AppLayout`
 
-Users manage multiple wallets (cash, bank, credit card, etc.). Balance is always derived — never stored.
+Users manage multiple wallets (cash, bank account, credit card, etc.). Balance is always derived — never stored directly.
 
 ---
 
@@ -12,37 +12,38 @@ Users manage multiple wallets (cash, bank, credit card, etc.). Balance is always
 **Route:** `GET /wallets`
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│ Wallets                              [+ New Wallet]       │
-│ Manage your accounts and balances                         │
-├──────────────────────────────────────────────────────────┤
-│                                                          │
-│  Net Worth: $4,250.00                                    │
-│                                                          │
-│ ┌──────────────────────────────────────────────────────┐ │
-│ │ ● Main Wallet         USD      [Default]    $2,100   │ │
-│ │   Created 01 Aug 2026          ⋮                     │ │
-│ ├──────────────────────────────────────────────────────┤ │
-│ │ ● Cash                USD                    $350    │ │
-│ │   Created 01 Aug 2026          ⋮                     │ │
-│ ├──────────────────────────────────────────────────────┤ │
-│ │ ● Bank Account        USD                  $1,800    │ │
-│ │   Created 01 Aug 2026          ⋮                     │ │
-│ └──────────────────────────────────────────────────────┘ │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│ [Logo] Dashboard Wallets Transactions …          [🔍] [👤 ▾]   │
+├─────────────────────────────────────────────────────────────────┤
+│ Home / Wallets                                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Wallets                                      [+ New Wallet]   │
+│  Manage your accounts and balances                             │
+│                                                                 │
+│  Net Worth: $4,250.00                                          │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ ● Main Wallet        USD        [Default]     $2,100  ⋮ │   │
+│  ├─────────────────────────────────────────────────────────┤   │
+│  │ ● Cash               USD                       $350   ⋮ │   │
+│  ├─────────────────────────────────────────────────────────┤   │
+│  │ ● Bank Account       USD                     $1,800   ⋮ │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ### Row actions (⋮ menu)
 
-- View Details
-- Edit
-- Set as Default _(hidden if already default)_
-- Delete _(disabled with tooltip if wallet has transactions)_
+- View Details → `wallets.show`
+- Edit → opens Edit modal
+- Set as Default _(hidden when already default)_
+- Delete _(disabled with tooltip when wallet has transactions)_
 
 ### Empty state
 
-Icon + "You have no wallets yet" + "Create your first wallet" button.
+Icon + "No wallets yet" + "Create your first wallet" button.
 
 ---
 
@@ -51,107 +52,90 @@ Icon + "You have no wallets yet" + "Create your first wallet" button.
 **Route:** `GET /wallets/{wallet}`
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│ ← Wallets  /  Main Wallet                                │
-│                                                          │
-│ ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │
-│ │ Balance     │  │ Income      │  │ Expenses    │        │
-│ │ $2,100.00   │  │ $2,100.00   │  │ $1,780.00   │        │
-│ │ (all time)  │  │ (this month)│  │ (this month)│        │
-│ └─────────────┘  └─────────────┘  └─────────────┘       │
-│                                                          │
-│ ┌──────────────────────────────────────────────────────┐ │
-│ │ Transactions                        [Filter ▾] [Edit]│ │
-│ │ ──────────────────────────────────────────────────── │ │
-│ │ [Month picker: Aug 2026 ◀ ▶]   [Type: All ▾]        │ │
-│ │ ──────────────────────────────────────────────────── │ │
-│ │ 06 Aug                                               │ │
-│ │   🛒 Groceries      Food        -$45.00              │ │
-│ │   ☕ Coffee         Food        -$5.50               │ │
-│ │ 01 Aug                                               │ │
-│ │   💼 Salary         Income    +$2,100.00             │ │
-│ │ ──────────────────────────────────────────────────── │ │
-│ │                        [Load more]                   │ │
-│ └──────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│ [Logo] Dashboard Wallets Transactions …          [🔍] [👤 ▾]   │
+├─────────────────────────────────────────────────────────────────┤
+│ Home / Wallets / Main Wallet                                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Main Wallet                                            [Edit]  │
+│                                                                 │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐        │
+│  │ Balance      │   │ Month Income │   │Month Expenses│        │
+│  │ $2,100.00    │   │ $2,100.00    │   │ $1,780.00    │        │
+│  └──────────────┘   └──────────────┘   └──────────────┘        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────┐       │
+│  │ [Aug 2026 ◀ ▶]                     [Type: All ▾]   │       │
+│  │ ─────────────────────────────────────────────────── │       │
+│  │ 06 Aug                                              │       │
+│  │   🛒 Groceries      Food              -$45.00       │       │
+│  │   ☕ Coffee         Food               -$5.50       │       │
+│  │ 01 Aug                                              │       │
+│  │   💼 Salary         Income          +$2,100.00      │       │
+│  │ ─────────────────────────────────────────────────── │       │
+│  │                              [Load more]            │       │
+│  └─────────────────────────────────────────────────────┘       │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### Filters
-
-- Month picker (prev/next arrows, defaults to current month)
-- Type dropdown: All · Income · Expense · Transfer
-
-### Transaction rows
-
-Grouped by date. Each row: category icon · description · category name · amount (colored). Clicking a row opens the edit modal.
+Transactions grouped by date. Month picker + type filter scope the list. Clicking a row opens the Edit Transaction modal.
 
 ---
 
-## Create Wallet — `wallets.create`
-
-**Route:** `GET /wallets/create`
-**Rendered as:** Slide-over panel or full page.
+## Create Wallet — modal
 
 ```
-┌────────────────────────────────────┐
-│ New Wallet                    [✕]  │
-│ ─────────────────────────────────  │
-│ Name *                             │
-│ [___________________________]      │
-│                                    │
-│ Currency *                         │
-│ [USD ▾]                            │
-│                                    │
-│ Initial Balance                    │
-│ [$  0.00________________]          │
-│                                    │
-│ Color                              │
-│ [● ● ● ● ● ● ● ●] (swatches)      │
-│                                    │
-│ Icon                               │
-│ [wallet ▾]                         │
-│                                    │
-│ ☐ Set as default wallet            │
-│                                    │
-│            [Cancel]  [Create Wallet│
-└────────────────────────────────────┘
+┌─────────────────────────────────────┐
+│ New Wallet                     [✕]  │
+│ ──────────────────────────────────  │
+│ Name *                              │
+│ [_________________________________] │
+│                                     │
+│ Currency *                          │
+│ [USD ▾]                             │
+│                                     │
+│ Initial Balance                     │
+│ [$ 0.00___________________________] │
+│                                     │
+│ Color *                             │
+│ [● ● ● ● ● ● ● ●]  (swatches)      │
+│                                     │
+│ Icon                                │
+│ [wallet ▾]                          │
+│                                     │
+│ ☐ Set as default wallet             │
+│                                     │
+│             [Cancel]  [Create]      │
+└─────────────────────────────────────┘
 ```
 
-### Fields
-
-| Field           | Type                | Rules                              |
-| --------------- | ------------------- | ---------------------------------- |
-| Name            | text                | required, max 100, unique per user |
-| Currency        | select (ISO 4217)   | required, default USD              |
-| Initial Balance | decimal             | min 0, default 0                   |
-| Color           | color swatch picker | required                           |
-| Icon            | icon picker         | optional                           |
-| Set as default  | checkbox            | —                                  |
+| Field           | Rules                              |
+| --------------- | ---------------------------------- |
+| Name            | required, max 100, unique per user |
+| Currency        | required, ISO 4217, default USD    |
+| Initial Balance | min 0, default 0                   |
+| Color           | required                           |
+| Icon            | optional                           |
+| Set as default  | unchecked by default               |
 
 ---
 
-## Edit Wallet — `wallets.edit`
+## Edit Wallet — modal
 
-**Route:** `GET /wallets/{wallet}/edit`
-
-Same form as Create, pre-filled. Includes a "Delete Wallet" danger button at the bottom (shown only when no transactions are linked, otherwise disabled with explanation).
+Same form as Create, pre-filled. Includes a "Delete" danger button, disabled with explanation when the wallet has transactions.
 
 ---
 
-## Delete Confirmation Dialog
-
-Triggered from the ⋮ row menu or the Edit page danger button.
+## Delete Confirmation
 
 ```
-┌────────────────────────────────────┐
-│ Delete "Cash"?                     │
-│ ─────────────────────────────────  │
-│ This action cannot be undone.      │
-│ All associated transactions must   │
-│ be reassigned or deleted first.    │
-│                                    │
-│            [Cancel]  [Delete]      │
-└────────────────────────────────────┘
+┌─────────────────────────────────────┐
+│ Delete "Cash"?                      │
+│ ──────────────────────────────────  │
+│ This cannot be undone. Reassign or  │
+│ delete all transactions first.      │
+│                                     │
+│             [Cancel]  [Delete]      │
+└─────────────────────────────────────┘
 ```
-
-If the wallet has transactions, the Delete button is disabled and a message explains why.

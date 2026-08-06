@@ -3,7 +3,7 @@
 **Route prefix:** `/transactions` — `transactions.*`
 **Layout:** `AppLayout`
 
-Full log of all income and expense entries across all wallets. Supports rich filtering and inline editing.
+Full log of all income and expense entries across all wallets.
 
 ---
 
@@ -12,136 +12,112 @@ Full log of all income and expense entries across all wallets. Supports rich fil
 **Route:** `GET /transactions`
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│ Transactions                           [+ New Transaction]    │
-│ All income and expenses                                       │
-├──────────────────────────────────────────────────────────────┤
-│                                                              │
-│ [🔍 Search description…]  [Type ▾]  [Wallet ▾]  [Category ▾]│
-│ [Date from ___]  [Date to ___]               [Clear filters] │
-│                                                              │
-│ ┌────────────────────────────────────────────────────────┐  │
-│ │  Showing 42 transactions  •  Aug 2026           [CSV ↓]│  │
-│ ├──────┬────────────────┬──────────┬─────────┬──────────┤  │
-│ │ Date │ Description    │ Category │ Wallet  │ Amount   │  │
-│ ├──────┴────────────────┴──────────┴─────────┴──────────┤  │
-│ │ 06 Aug                                                 │  │
-│ │  🛒  Groceries         Food       Main       -$45.00   │  │
-│ │  ☕  Coffee            Food       Cash        -$5.50   │  │
-│ │ 01 Aug                                                 │  │
-│ │  💼  Salary            Income     Main    +$2,100.00   │  │
-│ │ 31 Jul                                                 │  │
-│ │  🚌  Bus pass          Transport  Main       -$28.00   │  │
-│ └────────────────────────────────────────────────────────┘  │
-│                                                              │
-│              ← 1  2  3  4  5 →   (pagination)               │
-└──────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│ [Logo] Dashboard Wallets Transactions …          [🔍] [👤 ▾]   │
+├─────────────────────────────────────────────────────────────────┤
+│ Home / Transactions                                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Transactions                          [+ New Transaction]      │
+│  All income and expenses                                        │
+│                                                                 │
+│  [🔍 Search…]  [Type ▾]  [Wallet ▾]  [Category ▾]              │
+│  [Date from ___]  [Date to ___]              [Clear filters]    │
+│                                                                 │
+│  Showing 42 transactions · Aug 2026                  [CSV ↓]   │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ 06 Aug                                                  │   │
+│  │   🛒  Groceries       Food        Main       -$45.00    │   │
+│  │   ☕  Coffee          Food        Cash        -$5.50    │   │
+│  │ 01 Aug                                                  │   │
+│  │   💼  Salary          Income      Main    +$2,100.00    │   │
+│  │ 31 Jul                                                  │   │
+│  │   🚌  Bus pass        Transport   Main       -$28.00    │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                      ← 1  2  3  4  5 →                         │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ### Filter bar
 
-| Control             | Type        | Behaviour                                                   |
-| ------------------- | ----------- | ----------------------------------------------------------- |
-| Search              | text input  | debounced `LIKE %term%` on `description`                    |
-| Type                | select      | All / Income / Expense                                      |
-| Wallet              | select      | populated from user's wallets                               |
-| Category            | select      | populated from user's categories, filtered by selected Type |
-| Date from / Date to | date inputs | inclusive range on `transacted_at`                          |
-| Clear filters       | button      | resets all controls                                         |
+| Control        | Behaviour                                        |
+| -------------- | ------------------------------------------------ |
+| Search         | Debounced `LIKE %term%` on `description`         |
+| Type           | All / Income / Expense                           |
+| Wallet         | User's wallets                                   |
+| Category       | User's categories; narrows when Type is selected |
+| Date from / to | Inclusive range on `transacted_at`               |
+| Clear filters  | Resets all controls                              |
 
-### List rows
-
-Grouped by date header. Each row:
-
-- Category icon (colored circle matching category color)
-- Description
-- Category name
-- Wallet name
-- Amount — green `+$x.xx` for income, red `-$x.xx` for expense
-
-Clicking a row → opens Edit modal (not a new page).
-
-### Export
-
-"CSV ↓" button downloads the currently filtered result set.
+Rows grouped by date. Clicking a row opens the Edit modal.
 
 ---
 
-## Create Transaction — modal or slide-over
+## Create Transaction — modal
 
-Opened from the "[+ New Transaction]" button or the Quick-Add FAB.
+Opened from "[+ New Transaction]" or the Quick-Add FAB.
 
 ```
-┌────────────────────────────────────────┐
-│ New Transaction                   [✕]  │
-│ ───────────────────────────────────    │
-│  Type                                  │
-│  ┌──────────┐  ┌──────────┐           │
-│  │ ● Expense│  │  Income  │           │
-│  └──────────┘  └──────────┘           │
-│                                        │
-│  Amount *                              │
-│  [$ ___________________________]       │
-│                                        │
-│  Description *                         │
-│  [________________________________]    │
-│                                        │
-│  Category *                            │
-│  [Select category ▾]                   │
-│  (filtered to selected Type)           │
-│                                        │
-│  Wallet *                              │
-│  [Main Wallet ▾]  (defaults to default │
-│                    wallet)             │
-│                                        │
-│  Date *                                │
-│  [06 Aug 2026___]  (defaults to today) │
-│                                        │
-│  Notes                                 │
-│  [________________________________]    │
-│  [________________________________]    │
-│                                        │
-│          [Cancel]  [Save Transaction]  │
-└────────────────────────────────────────┘
+┌───────────────────────────────────────┐
+│ New Transaction                  [✕]  │
+│ ────────────────────────────────────  │
+│ Type *                                │
+│ ┌───────────┐  ┌───────────┐         │
+│ │ ● Expense │  │  Income   │         │
+│ └───────────┘  └───────────┘         │
+│                                       │
+│ Amount *                              │
+│ [$ ________________________________]  │
+│                                       │
+│ Description *                         │
+│ [__________________________________]  │
+│                                       │
+│ Category *                            │
+│ [Select category ▾]                   │
+│ (list filtered by selected Type)      │
+│                                       │
+│ Wallet *                              │
+│ [Main Wallet ▾]                       │
+│                                       │
+│ Date *                                │
+│ [06 Aug 2026]                         │
+│                                       │
+│ Notes                                 │
+│ [__________________________________]  │
+│                                       │
+│          [Cancel]  [Save Transaction] │
+└───────────────────────────────────────┘
 ```
 
-### Fields
+| Field       | Rules                                       |
+| ----------- | ------------------------------------------- |
+| Type        | required, default Expense                   |
+| Amount      | required, > 0                               |
+| Description | required, max 255                           |
+| Category    | required; filtered by selected type         |
+| Wallet      | required; defaults to user's default wallet |
+| Date        | required; defaults to today                 |
+| Notes       | optional                                    |
 
-| Field       | Type                      | Rules                                       |
-| ----------- | ------------------------- | ------------------------------------------- |
-| Type        | toggle (Expense / Income) | required, defaults to Expense               |
-| Amount      | decimal input             | required, > 0                               |
-| Description | text                      | required, max 255                           |
-| Category    | select                    | required; list filtered by selected type    |
-| Wallet      | select                    | required; defaults to user's default wallet |
-| Date        | date picker               | required, defaults to today                 |
-| Notes       | textarea                  | optional                                    |
-
-Switching **Type** clears the Category selection and repopulates the dropdown.
-
-### Validation
-
-Inline field-level errors. Submit is disabled until all required fields are valid.
+Switching Type clears Category and reloads the dropdown for the new type.
 
 ---
 
 ## Edit Transaction — modal
 
-Same form as Create, pre-filled. Includes a "Delete" button (danger, bottom-left).
-
-**Route:** `GET /transactions/{transaction}/edit` _(also accessible as a modal)_
+Same form, pre-filled. Includes a "Delete" danger button (bottom-left).
 
 ---
 
 ## Delete Confirmation
 
 ```
-┌────────────────────────────────────┐
-│ Delete transaction?                │
-│ ─────────────────────────────────  │
-│ "Groceries" — $45.00 on 06 Aug     │
-│ This cannot be undone.             │
-│                                    │
-│            [Cancel]  [Delete]      │
-└────────────────────────────────────┘
+┌───────────────────────────────────────┐
+│ Delete transaction?                   │
+│ ────────────────────────────────────  │
+│ "Groceries" — $45.00 on 06 Aug 2026   │
+│ This cannot be undone.                │
+│                                       │
+│            [Cancel]  [Delete]         │
+└───────────────────────────────────────┘
 ```

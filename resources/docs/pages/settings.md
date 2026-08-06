@@ -2,28 +2,31 @@
 
 **Route prefix:** `/settings` — `settings.*`
 **Page files:** `resources/js/pages/settings/*.tsx`
-**Layout:** `SettingsLayout` (wraps `AppLayout` with a settings sidebar)
-
-All settings pages share a two-column layout: a left nav and a right content panel.
+**Layout:** `SettingsLayout` (wraps `AppLayout`; adds a left settings sub-nav within the page content area)
 
 ---
 
-## Settings Shell — `SettingsLayout`
+## Shell
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│ AppLayout header + sidebar                               │
-├──────────────────────────────────────────────────────────┤
-│ Settings                                                 │
-│ Manage your profile and account settings                 │
-│                                                          │
-│ ┌─────────────┬────────────────────────────────────────┐ │
-│ │ [👤 Profile]│                                        │ │
-│ │ [🔒 Security│   PAGE CONTENT (see sections below)   │ │
-│ │ [🎨 Appear.]│                                        │ │
-│ └─────────────┴────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│ [Logo] Dashboard Wallets Transactions …          [🔍] [👤 ▾]   │
+├─────────────────────────────────────────────────────────────────┤
+│ Home / Settings / Profile                                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Settings                                                       │
+│  Manage your profile and account settings                       │
+│                                                                 │
+│  ┌──────────────┬──────────────────────────────────────────┐   │
+│  │ 👤 Profile   │                                          │   │
+│  │ 🔒 Security  │   PAGE CONTENT                           │   │
+│  │ 🎨 Appearance│                                          │   │
+│  └──────────────┴──────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
 ```
+
+The left sub-nav is part of the page content, not the app header.
 
 ---
 
@@ -36,27 +39,24 @@ All settings pages share a two-column layout: a left nav and a right content pan
 │ Profile                                    │
 │ Update your name and email address         │
 │ ──────────────────────────────────────     │
-│  Name *                                    │
-│  [______________________________]          │
+│ Name *                                     │
+│ [______________________________]           │
 │                                            │
-│  Email *                                   │
-│  [______________________________]          │
-│  ⚠ Email not verified. [Resend link]       │
-│  (banner shown only when unverified)       │
+│ Email *                                    │
+│ [______________________________]           │
+│ ⚠ Email not verified. [Resend link]        │
+│ (shown only when unverified)               │
 │                                            │
-│                         [Save changes]     │
+│                          [Save changes]    │
 │                                            │
 │ ─────────────────────────────────────────  │
 │ Delete Account                             │
-│ Permanently delete your account and all   │
-│ associated data.                           │
-│                         [Delete account]  │
+│ Permanently deletes your account and data  │
+│                          [Delete account]  │
 └────────────────────────────────────────────┘
 ```
 
-Saving triggers `PATCH /settings/profile`. On email change the user is shown a verification banner.
-
-"Delete account" opens a confirmation dialog requiring password entry.
+`PATCH /settings/profile`. "Delete account" opens a confirm dialog requiring password entry.
 
 ---
 
@@ -69,44 +69,26 @@ Saving triggers `PATCH /settings/profile`. On email change the user is shown a v
 │ Security                                   │
 │ Password and two-factor authentication     │
 │ ──────────────────────────────────────     │
-│  Change Password                           │
-│  Current password                          │
-│  [______________________________]          │
-│  New password                              │
-│  [______________________________]          │
-│  Confirm new password                      │
-│  [______________________________]          │
-│                         [Update password]  │
+│ Change Password                            │
+│ Current password  [____________________]  │
+│ New password      [____________________]  │
+│ Confirm password  [____________________]  │
+│                         [Update password] │
 │                                            │
 │ ──────────────────────────────────────     │
-│ Two-Factor Authentication                  │
-│                                            │
-│  [Disabled]                                │
-│  ── or when enabled ──                     │
-│  [QR Code + setup key shown on enable]     │
-│  Recovery codes: [Show codes]              │
-│                        [Disable 2FA]       │
+│ Two-Factor Authentication       [Enable]   │
+│ (when enabled: QR code + recovery codes)   │
 │                                            │
 │ ──────────────────────────────────────     │
-│ Passkeys                                   │
-│ Sign in without a password.                │
-│  [+ Add passkey]                           │
-│  MacBook Touch ID   Added 01 Aug  [Remove] │
+│ Passkeys                      [+ Add]      │
+│ MacBook Touch ID  01 Aug 2026  [Remove]    │
 └────────────────────────────────────────────┘
 ```
 
-### Change Password
-
-`PUT /settings/password`. Requires current password.
-
-### Two-Factor Authentication
-
-- **Disabled state:** "Enable" button → shows QR code + setup key → prompts for TOTP code to confirm.
-- **Enabled state:** Shows "Disable" button + "Regenerate recovery codes" + "Show recovery codes" toggle.
-
-### Passkeys
-
-Lists registered passkeys with their device label and date added. "Add passkey" triggers WebAuthn registration. Each passkey has a Remove button.
+- Password change → `PUT /settings/password`
+- 2FA enable flow: show QR + setup key → confirm TOTP code → enabled
+- 2FA enabled state: "Disable" + "Regenerate recovery codes" + "Show codes"
+- Passkeys: WebAuthn registration; each passkey shows device label + date + Remove button
 
 ---
 
@@ -119,13 +101,11 @@ Lists registered passkeys with their device label and date added. "Add passkey" 
 │ Appearance                                 │
 │ Customise how Spendr looks                 │
 │ ──────────────────────────────────────     │
-│  Theme                                     │
-│                                            │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐   │
-│  │ ☀ Light │  │ ● System│  │ ☾ Dark  │   │
-│  └─────────┘  └─────────┘  └─────────┘   │
-│                                            │
+│ Theme                                      │
+│ ┌─────────┐  ┌─────────┐  ┌─────────┐    │
+│ │ ☀ Light │  │ ● System│  │ ☾ Dark  │    │
+│ └─────────┘  └─────────┘  └─────────┘    │
 └────────────────────────────────────────────┘
 ```
 
-Selection is stored client-side (localStorage) and applied via a class on `<html>`. No server round-trip.
+Stored in `localStorage`, applied as a class on `<html>`. No server round-trip.

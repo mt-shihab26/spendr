@@ -1,10 +1,8 @@
 # Auth Screens
 
-**Layout:** `AuthLayout`
+**Layout:** `AuthLayout` (centred card, no header or navigation)
 **Page files:** `resources/js/pages/auth/*.tsx`
 **Managed by:** Laravel Fortify
-
-All auth screens share a centred card layout with the app logo at the top. No sidebar or header.
 
 ---
 
@@ -12,33 +10,26 @@ All auth screens share a centred card layout with the app logo at the top. No si
 
 ```
 ┌───────────────────────────────┐
-│          [Spendr Logo]        │
+│         [Spendr Logo]         │
 │       Sign in to Spendr       │
 │                               │
-│  Email                        │
-│  [______________________]     │
+│ Email                         │
+│ [___________________________] │
 │                               │
-│  Password                     │
-│  [______________________] 👁  │
+│ Password                      │
+│ [___________________________] │
 │                               │
-│  ☐ Remember me   [Forgot?]   │
+│ ☐ Remember me    [Forgot →]   │
 │                               │
-│      [Sign in]                │
+│         [Sign in]             │
 │                               │
-│  Don't have an account?       │
-│  [Register]                   │
+│ Don't have an account?        │
+│         [Register]            │
 │                               │
-│  ── or ──                     │
-│  [Sign in with passkey]       │
+│ ─────── or ───────            │
+│   [Sign in with passkey]      │
 └───────────────────────────────┘
 ```
-
-**Actions**
-
-- Email + password → POST `/login`
-- "Forgot?" link → `/forgot-password`
-- "Register" link → `/register`
-- Passkey sign-in → triggers WebAuthn flow
 
 ---
 
@@ -46,29 +37,29 @@ All auth screens share a centred card layout with the app logo at the top. No si
 
 ```
 ┌───────────────────────────────┐
-│          [Spendr Logo]        │
+│         [Spendr Logo]         │
 │        Create account         │
 │                               │
-│  Name                         │
-│  [______________________]     │
+│ Name                          │
+│ [___________________________] │
 │                               │
-│  Email                        │
-│  [______________________]     │
+│ Email                         │
+│ [___________________________] │
 │                               │
-│  Password                     │
-│  [______________________] 👁  │
+│ Password                      │
+│ [___________________________] │
 │                               │
-│  Confirm Password             │
-│  [______________________] 👁  │
+│ Confirm Password              │
+│ [___________________________] │
 │                               │
-│      [Create account]         │
+│       [Create account]        │
 │                               │
-│  Already have an account?     │
-│  [Sign in]                    │
+│ Already have an account?      │
+│         [Sign in]             │
 └───────────────────────────────┘
 ```
 
-On success → POST `/register` → redirected to `/dashboard`. Default wallet and categories are seeded.
+On success → `POST /register` → `/dashboard`. Default wallet and categories are seeded.
 
 ---
 
@@ -76,18 +67,17 @@ On success → POST `/register` → redirected to `/dashboard`. Default wallet a
 
 ```
 ┌───────────────────────────────┐
-│          [Spendr Logo]        │
+│         [Spendr Logo]         │
 │       Forgot password?        │
 │                               │
-│  Enter your email and we'll   │
-│  send a reset link.           │
+│ Enter your email and we'll    │
+│ send a reset link.            │
 │                               │
-│  Email                        │
-│  [______________________]     │
+│ Email                         │
+│ [___________________________] │
 │                               │
 │      [Send reset link]        │
-│                               │
-│      [Back to login]          │
+│       [Back to login]         │
 └───────────────────────────────┘
 ```
 
@@ -97,19 +87,19 @@ On success → POST `/register` → redirected to `/dashboard`. Default wallet a
 
 ```
 ┌───────────────────────────────┐
-│          [Spendr Logo]        │
+│         [Spendr Logo]         │
 │        Reset password         │
 │                               │
-│  Email                        │
-│  [______________________]     │
+│ Email                         │
+│ [___________________________] │
 │                               │
-│  New Password                 │
-│  [______________________] 👁  │
+│ New Password                  │
+│ [___________________________] │
 │                               │
-│  Confirm Password             │
-│  [______________________] 👁  │
+│ Confirm Password              │
+│ [___________________________] │
 │                               │
-│      [Reset Password]         │
+│       [Reset Password]        │
 └───────────────────────────────┘
 ```
 
@@ -117,26 +107,24 @@ On success → POST `/register` → redirected to `/dashboard`. Default wallet a
 
 ## Two-Factor Challenge — `/two-factor-challenge`
 
-Shown after successful password login when 2FA is enabled.
-
 ```
 ┌───────────────────────────────┐
-│          [Spendr Logo]        │
-│   Two-factor authentication   │
+│         [Spendr Logo]         │
+│  Two-factor authentication    │
 │                               │
-│  Enter the 6-digit code from  │
-│  your authenticator app.      │
+│ Enter the 6-digit code from   │
+│ your authenticator app.       │
 │                               │
-│  Code                         │
-│  [_ _ _ _ _ _]               │
+│ Code                          │
+│ [_ _ _ _ _ _]                 │
 │                               │
-│      [Verify]                 │
+│         [Verify]              │
 │                               │
 │  Use a recovery code instead  │
 └───────────────────────────────┘
 ```
 
-Toggle "Use a recovery code" swaps the 6-digit input for a text field that accepts a recovery code.
+Toggling "Use a recovery code" swaps the input for a plain text field.
 
 ---
 
@@ -144,16 +132,14 @@ Toggle "Use a recovery code" swaps the 6-digit input for a text field that accep
 
 ```
 ┌───────────────────────────────┐
-│          [Spendr Logo]        │
+│         [Spendr Logo]         │
 │      Verify your email        │
 │                               │
-│  We sent a verification link  │
-│  to your email address.       │
-│  Click the link to continue.  │
+│ A verification link has been  │
+│ sent to your email address.   │
 │                               │
 │  [Resend verification email]  │
-│                               │
-│  [Log out]                    │
+│          [Log out]            │
 └───────────────────────────────┘
 ```
 
@@ -161,19 +147,17 @@ Toggle "Use a recovery code" swaps the 6-digit input for a text field that accep
 
 ## Confirm Password — `/confirm-password`
 
-Shown before sensitive actions (e.g. disabling 2FA) when the session has aged.
-
 ```
 ┌───────────────────────────────┐
-│          [Spendr Logo]        │
+│         [Spendr Logo]         │
 │       Confirm password        │
 │                               │
-│  Please re-enter your         │
-│  password to continue.        │
+│ Re-enter your password to     │
+│ continue.                     │
 │                               │
-│  Password                     │
-│  [______________________] 👁  │
+│ Password                      │
+│ [___________________________] │
 │                               │
-│      [Confirm]                │
+│          [Confirm]            │
 └───────────────────────────────┘
 ```

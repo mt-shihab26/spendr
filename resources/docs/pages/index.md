@@ -1,6 +1,6 @@
 # UI Structure — Spendr
 
-Wallet-type personal finance tracker. All screens live inside the `AppLayout` shell (sidebar + header) except auth pages, which use `AuthLayout`.
+Wallet-type personal finance tracker. All authenticated screens share the `AppLayout` shell — a top header with inline nav, no sidebar. Auth pages use `AuthLayout` (centred card, no header).
 
 ---
 
@@ -23,69 +23,61 @@ Wallet-type personal finance tracker. All screens live inside the `AppLayout` sh
 ## Global Shell — `AppLayout`
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  HEADER  [Logo/App name]           [Search]  [User ▾]   │
-├──────────┬──────────────────────────────────────────────┤
-│          │                                              │
-│ SIDEBAR  │   PAGE CONTENT                               │
-│          │                                              │
-│ Dashboard│                                              │
-│ Wallets  │                                              │
-│ Transact │                                              │
-│ Transfers│                                              │
-│ Categories                                              │
-│ Budgets  │                                              │
-│ Reports  │                                              │
-│          │                                              │
-│ ──────── │                                              │
-│ Settings │                                              │
-│          │                                              │
-└──────────┴──────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│ [Logo] Dashboard Wallets Transactions Transfers Categories … [🔍][👤▾] │  ← header (h-16)
+├─────────────────────────────────────────────────────────────────┤
+│ Home / Wallets / Edit                                           │  ← breadcrumb bar (optional, h-12)
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│                      PAGE CONTENT                               │
+│                    (max-w-7xl, centred)                         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### Sidebar nav items
+### Header — left
 
-| Label        | Icon                 | Route                   |
-| ------------ | -------------------- | ----------------------- |
-| Dashboard    | `layout-dashboard`   | `dashboard`             |
-| Wallets      | `wallet`             | `wallets.index`         |
-| Transactions | `arrow-right-left`   | `transactions.index`    |
-| Transfers    | `repeat`             | `transfers.index`       |
-| Categories   | `tag`                | `categories.index`      |
-| Budgets      | `circle-dollar-sign` | `budgets.index`         |
-| Reports      | `chart-bar`          | `reports.index`         |
-| —            | —                    | —                       |
-| Settings     | `settings`           | `settings.profile.edit` |
+| Element   | Behaviour                                                                 |
+| --------- | ------------------------------------------------------------------------- |
+| Logo      | `<Link>` to `dashboard`                                                   |
+| Nav items | Inline `NavigationMenu` links; active item gets a bottom-border underline |
 
-### Header user menu (dropdown)
+Main nav items (desktop):
 
-- User avatar + name
-- Settings
-- Log out
+| Label        | Icon                 | Route                |
+| ------------ | -------------------- | -------------------- |
+| Dashboard    | `layout-grid`        | `dashboard`          |
+| Wallets      | `wallet`             | `wallets.index`      |
+| Transactions | `arrow-right-left`   | `transactions.index` |
+| Transfers    | `repeat`             | `transfers.index`    |
+| Categories   | `tag`                | `categories.index`   |
+| Budgets      | `circle-dollar-sign` | `budgets.index`      |
+| Reports      | `chart-bar`          | `reports.index`      |
 
----
+### Header — right
 
-## Quick-Add Floating Action
+| Element     | Behaviour                                        |
+| ----------- | ------------------------------------------------ |
+| Search `🔍` | Opens a command-palette / search overlay         |
+| User avatar | Dropdown: user name + email · Settings · Log out |
 
-A `+` FAB (floating action button) visible on all app screens. Opens a modal to quickly record a transaction or transfer without navigating away from the current page.
+### Mobile (< lg breakpoint)
 
-```
-                                   ┌──────────────────┐
-                                   │  + Quick Add     │
-              [page content]       │  ─────────────── │
-                                   │  ● Transaction   │
-                                   │  ● Transfer      │
-                              [+]──┘                  │
-                                   └──────────────────┘
-```
+Nav links collapse behind a `☰` hamburger button. Tapping it opens a `Sheet` drawer from the left with all nav items. Right section (search + avatar) stays visible.
+
+### Breadcrumb bar
+
+Rendered below the header only when the page passes more than one breadcrumb. Shows the trail as `Home / Section / Page` with each segment linked.
 
 ---
 
 ## Shared Patterns
 
-- **Empty state** — icon + headline + CTA button whenever a list has no rows.
-- **Skeleton loaders** — pulsing placeholders shown while data loads (deferred props).
-- **Confirm dialog** — used before any destructive action (delete wallet, category, transaction).
+- **Empty state** — icon + headline + CTA button when a list has no rows.
+- **Skeleton loaders** — pulsing placeholders during data load (Inertia deferred props).
+- **Confirm dialog** — required before any destructive action.
 - **Toast notifications** — success/error feedback after form submissions.
-- **Amount display** — always formatted with currency symbol and two decimal places. Income shown in green, expenses in red.
-- **Date display** — `dd MMM yyyy` (e.g. `06 Aug 2026`).
+- **Slide-over / modal** — create and edit forms open as overlays; no full-page navigation for CRUD.
+- **Amount colour** — income always green (`+$x.xx`), expenses always red (`-$x.xx`).
+- **Date format** — `dd MMM yyyy` (e.g. `06 Aug 2026`).
+- **Quick-Add FAB** — `+` floating button visible on all app screens; opens a modal to record a transaction or transfer without leaving the current page.

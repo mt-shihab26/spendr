@@ -3,7 +3,7 @@
 **Route prefix:** `/categories` — `categories.*`
 **Layout:** `AppLayout`
 
-Expense and income categories with color and icon customisation. Categories are typed — each belongs to either income or expense. The type determines which list appears when recording a transaction.
+Income and expense categories with color and icon. The `type` field controls which list appears in the transaction form.
 
 ---
 
@@ -12,119 +12,104 @@ Expense and income categories with color and icon customisation. Categories are 
 **Route:** `GET /categories`
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│ Categories                         [+ New Category]       │
-│ Organise your income and expenses                         │
-├──────────────────────────────────────────────────────────┤
-│                                                          │
-│  [Expense]  [Income]   ← tab switcher                   │
-│                                                          │
-│ ── Expense ──────────────────────────────────────────    │
-│                                                          │
-│ ┌────────────────────────────────────────────────────┐  │
-│ │ ≡  ● Food            $1,246 this month   [Default] │  │
-│ │ ≡  ● Transport         $356 this month   [Default] │  │
-│ │ ≡  ● Shopping          $210 this month            ⋮│  │
-│ │ ≡  ● Entertainment     $120 this month   ⚠ Over   ⋮│  │
-│ │ ≡  ● Health              $0 this month            ⋮│  │
-│ │ ≡  ● Housing             $0 this month   [Default]│  │
-│ │ ≡  ● Education           $0 this month   [Default]│  │
-│ │ ≡  ● Other              $45 this month   [Default]│  │
-│ └────────────────────────────────────────────────────┘  │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│ [Logo] Dashboard Wallets Transactions …          [🔍] [👤 ▾]   │
+├─────────────────────────────────────────────────────────────────┤
+│ Home / Categories                                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Categories                               [+ New Category]     │
+│  Organise your income and expenses                             │
+│                                                                 │
+│  [Expense]   [Income]   ← tab switcher                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ ≡  ● Food            $1,246 this month   [Default]      │   │
+│  │ ≡  ● Transport         $356 this month   [Default]      │   │
+│  │ ≡  ● Shopping          $210 this month              ⋮   │   │
+│  │ ≡  ● Entertainment     $120 this month   ⚠ Over     ⋮   │   │
+│  │ ≡  ● Health              $0 this month              ⋮   │   │
+│  │ ≡  ● Housing             $0 this month   [Default]      │   │
+│  │ ≡  ● Education           $0 this month   [Default]      │   │
+│  │ ≡  ● Other              $45 this month   [Default]      │   │
+│  └─────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ### Tabs
 
-Switching tabs filters the list to expense or income categories. Default tab is Expense.
+Expense / Income. Default tab: Expense.
 
 ### List rows
 
-- `≡` drag handle — reorders `sort_order` via drag-and-drop
-- Colored circle (category color)
-- Category name
-- Spending total for the current month (or income received for income tab)
-- `[Default]` badge — default categories cannot be deleted
-- `⚠ Over` badge — expense categories that have exceeded their budget this month
-- `⋮` row action menu
+- `≡` drag handle — reorders `sort_order`
+- Color dot · name · month total
+- `[Default]` badge — cannot be deleted; lock icon replaces ⋮
+- `⚠ Over` badge — over budget this month
 
 ### Row actions (⋮)
 
-| Action | Condition                                                       |
-| ------ | --------------------------------------------------------------- |
-| Edit   | always                                                          |
-| Delete | only when `is_default = false` AND no transactions reference it |
-
-Default categories show a lock icon instead of `⋮`.
-
-### Empty state (custom categories only)
-
-Shown when the user has not created any custom categories of the selected type.
+| Action | Condition                                             |
+| ------ | ----------------------------------------------------- |
+| Edit   | always                                                |
+| Delete | `is_default = false` AND no transactions reference it |
 
 ---
 
 ## Create Category — modal
 
 ```
-┌─────────────────────────────────────┐
-│ New Category                   [✕]  │
-│ ──────────────────────────────────  │
-│  Type *                             │
-│  ┌──────────┐  ┌──────────┐        │
-│  │ ●Expense │  │  Income  │        │
-│  └──────────┘  └──────────┘        │
-│                                     │
-│  Name *                             │
-│  [_______________________________]  │
-│                                     │
-│  Color *                            │
-│  [● ● ● ● ● ● ● ● ●]  (swatches)   │
-│  or [#______] (hex input)           │
-│                                     │
-│  Icon                               │
-│  [Search icons…]                    │
-│  [🛒][☕][🚌][🏠][💊][🎬][📚][⋯]  │
-│                                     │
-│         [Cancel]  [Create Category] │
-└─────────────────────────────────────┘
+┌──────────────────────────────────────┐
+│ New Category                    [✕]  │
+│ ─────────────────────────────────── │
+│ Type *                               │
+│ ┌───────────┐  ┌───────────┐        │
+│ │ ● Expense │  │  Income   │        │
+│ └───────────┘  └───────────┘        │
+│                                      │
+│ Name *                               │
+│ [__________________________________] │
+│                                      │
+│ Color *                              │
+│ [● ● ● ● ● ● ● ●]  (swatches)       │
+│ or [#______] hex input               │
+│                                      │
+│ Icon                                 │
+│ [🔍 Search icons…]                   │
+│ [🛒][☕][🚌][🏠][💊][🎬][📚][⋯]    │
+│                                      │
+│        [Cancel]  [Create Category]   │
+└──────────────────────────────────────┘
 ```
 
-### Fields
-
-| Field | Type                      | Rules                              |
-| ----- | ------------------------- | ---------------------------------- |
-| Type  | toggle (Expense / Income) | required                           |
-| Name  | text                      | required, max 100, unique per user |
-| Color | swatch picker + hex input | required                           |
-| Icon  | icon search/picker        | optional                           |
+| Field | Rules                              |
+| ----- | ---------------------------------- |
+| Type  | required                           |
+| Name  | required, max 100, unique per user |
+| Color | required                           |
+| Icon  | optional                           |
 
 ---
 
 ## Edit Category — modal
 
-Same form as Create, pre-filled.
-
-**Type field is read-only** when the category has existing transactions (cannot change type after use).
-
-Includes "Delete" button when `is_default = false` and no transactions reference it.
+Same form, pre-filled. **Type is read-only** when the category has existing transactions. Includes "Delete" danger button when deletable.
 
 ---
 
-## Delete Confirmation
+## Delete with Reassign
+
+When the category has transactions, a replacement must be chosen before deletion.
 
 ```
-┌────────────────────────────────────┐
-│ Delete "Shopping"?                 │
-│ ─────────────────────────────────  │
-│ This category has 3 transactions.  │
-│ Reassign them before deleting, or  │
-│ they will be left uncategorised.   │
-│                                    │
-│  Reassign to: [Select category ▾]  │
-│                                    │
-│          [Cancel]  [Delete]        │
-└────────────────────────────────────┘
+┌──────────────────────────────────────┐
+│ Delete "Shopping"?                   │
+│ ─────────────────────────────────── │
+│ 3 transactions reference this        │
+│ category. Reassign them to:          │
+│                                      │
+│ [Select replacement category ▾]      │
+│                                      │
+│       [Cancel]  [Reassign & Delete]  │
+└──────────────────────────────────────┘
 ```
-
-If the category has transactions, the user must choose a replacement category before deletion is allowed.
