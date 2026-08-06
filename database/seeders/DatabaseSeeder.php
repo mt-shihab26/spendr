@@ -14,12 +14,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
         $this->call([
             UserSeeder::class,
             WalletSeeder::class,
             CategorySeeder::class,
             TransactionSeeder::class,
+            TransferSeeder::class,
         ]);
     }
 }
