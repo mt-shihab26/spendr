@@ -3,34 +3,34 @@
 namespace App\Models;
 
 use App\Enums\Type;
-use Database\Factories\CategoryFactory;
+use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
  * @property string $id
  * @property string $user_id
- * @property string $name
+ * @property string $wallet_id
+ * @property string $category_id
  * @property Type $type
- * @property string $color
- * @property string|null $icon
- * @property bool $is_default
- * @property int $sort_order
+ * @property float $amount
+ * @property Carbon $transacted_at
+ * @property string $description
+ * @property string|null $notes
  * @property Carbon|null $deleted_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'type', 'color', 'icon', 'is_default', 'sort_order'])]
-class Category extends Model
+#[Fillable(['wallet_id', 'category_id', 'type', 'amount', 'transacted_at', 'description', 'notes'])]
+class Transaction extends Model
 {
     /**
-     * @use HasFactory<CategoryFactory>
+     * @use HasFactory<TransactionFactory>
      */
     use HasFactory, HasUuids, SoftDeletes;
 
@@ -43,12 +43,13 @@ class Category extends Model
     {
         return [
             'type' => Type::class,
-            'is_default' => 'boolean',
+            'amount' => 'float',
+            'transacted_at' => 'date',
         ];
     }
 
     /**
-     * Get the user that owns the category.
+     * Get the user that owns the transaction.
      *
      * @return BelongsTo<User, $this>
      */
@@ -58,12 +59,22 @@ class Category extends Model
     }
 
     /**
-     * Get the category's transactions.
+     * Get the wallet this transaction belongs to.
      *
-     * @return HasMany<Transaction, $this>
+     * @return BelongsTo<Wallet, $this>
      */
-    public function transactions(): HasMany
+    public function wallet(): BelongsTo
     {
-        return $this->hasMany(Transaction::class);
+        return $this->belongsTo(Wallet::class);
+    }
+
+    /**
+     * Get the category this transaction belongs to.
+     *
+     * @return BelongsTo<Category, $this>
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 }
