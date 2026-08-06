@@ -2,21 +2,15 @@ import {
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
-    type ChartConfig,
 } from '@/components/ui/chart';
 
-import { Cell, Pie, PieChart } from 'recharts';
-
+import type { ChartConfig } from '@/components/ui/chart';
+import type { TCategoryRow } from '@/types/reports';
 import type { TCurrency } from '@/types/enums';
 
 import { formatCurrency } from '@/lib/formats';
 
-type TCategoryRow = {
-    name: string;
-    color: string;
-    total: number;
-    percentage: number;
-};
+import { Cell, Pie, PieChart } from 'recharts';
 
 export const CategoryDonut = ({
     title,

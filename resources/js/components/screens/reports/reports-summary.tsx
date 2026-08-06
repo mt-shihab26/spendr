@@ -1,13 +1,8 @@
 import type { TCurrency } from '@/types/enums';
+import type { TSummary } from '@/types/reports';
 
 import { formatCurrency } from '@/lib/formats';
 import { cn } from '@/lib/utils';
-
-export type TSummary = {
-    income: number;
-    expenses: number;
-    net: number;
-};
 
 export const ReportsSummary = ({
     summary,

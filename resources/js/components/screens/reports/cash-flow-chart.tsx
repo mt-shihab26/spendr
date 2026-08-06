@@ -16,17 +16,9 @@ import {
 
 import type { TCurrency } from '@/types/enums';
 import type { ChartConfig } from '@/components/ui/chart';
+import type { TCashFlowRow } from '@/types/reports';
 
 import { formatCurrency } from '@/lib/formats';
-
-export type TCashFlowRow = {
-    month: string;
-    key: string;
-    income: number;
-    expenses: number;
-    net: number;
-    savings_rate: number | null;
-};
 
 const chartConfig = {
     income: { label: '+', color: '#22c55e' },

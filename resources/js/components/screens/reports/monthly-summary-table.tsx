@@ -1,22 +1,14 @@
 import type { TCurrency } from '@/types/enums';
+import type { TCashFlowRow } from '@/types/reports';
 
 import { formatCurrency } from '@/lib/formats';
 import { cn } from '@/lib/utils';
-
-type TSummaryRow = {
-    month: string;
-    key: string;
-    income: number;
-    expenses: number;
-    net: number;
-    savings_rate: number | null;
-};
 
 export const MonthlySummaryTable = ({
     rows,
     currency,
 }: {
-    rows: TSummaryRow[];
+    rows: TCashFlowRow[];
     currency: TCurrency;
 }) => {
     if (rows.length === 0) {

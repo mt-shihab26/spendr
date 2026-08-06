@@ -1,14 +1,12 @@
 import type { TCurrency } from '@/types/enums';
+import type { TCashFlowRow, TCategoryRow, TSummary } from '@/types/reports';
 import type { TWallet } from '@/types/models';
-import type { TSummary } from '@/components/screens/reports/reports-summary';
-import { type TCashFlowRow } from '@/components/screens/reports/cash-flow-chart';
 
 import { router } from '@inertiajs/react';
 
 import { AppLayout } from '@/components/layouts/app-layout';
 import { DateRangePicker } from '@/components/elements/date-range-picker';
 import { Heading } from '@/components/elements/heading';
-import { Button } from '@/components/ui/button';
 import { ReportsSummary } from '@/components/screens/reports/reports-summary';
 import { CashFlowChart } from '@/components/screens/reports/cash-flow-chart';
 import { CategoryDonut } from '@/components/screens/reports/category-donut';
@@ -18,57 +16,32 @@ import { ShowBalance } from '@/components/elements/show-balance';
 import { WalletSelect } from '@/components/elements/wallet-select';
 import { ExportCSV } from '@/components/screens/reports/export-csv';
 
-type TCategoryRow = {
-    name: string;
-    color: string;
-    total: number;
-    percentage: number;
-};
-
-const exportCsv = (rows: TCashFlowRow[]) => {
-    const header = 'Month,Income,Expenses,Net,Savings Rate\n';
-    const body = rows
-        .map(
-            (r) =>
-                `${r.month},${r.income},${r.expenses},${r.net},${r.savings_rate ?? ''}`,
-        )
-        .join('\n');
-
-    const blob = new Blob([header + body], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'reports.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-};
-
 const ReportsIndex = ({
+    currency = 'BDT',
+    currencies,
+    balance,
+    wallet_id,
+    wallets,
+    summary,
+    date_from,
+    date_to,
     monthly_cash_flow,
     monthly_summary,
     expense_breakdown,
     income_breakdown,
-    summary,
-    date_from,
-    date_to,
-    currency = 'BDT',
-    wallet_id,
-    currencies,
-    wallets,
-    balance,
 }: {
+    currency: TCurrency;
+    currencies: TCurrency[];
+    balance: number;
+    wallet_id: string | null;
+    wallets: TWallet[];
+    date_from: string | null;
+    date_to: string | null;
+    summary: TSummary;
     monthly_cash_flow: TCashFlowRow[];
     monthly_summary: TCashFlowRow[];
     expense_breakdown: TCategoryRow[];
     income_breakdown: TCategoryRow[];
-    summary: TSummary;
-    date_from: string | null;
-    date_to: string | null;
-    currency: TCurrency;
-    wallet_id: string | null;
-    currencies: TCurrency[];
-    wallets: TWallet[];
-    balance: number;
 }) => {
     const navigate = (params: Record<string, string | null>) => {
         router.get(
@@ -150,7 +123,6 @@ const ReportsIndex = ({
                         currency={currency}
                     />
                 </div>
-
                 <MonthlySummaryTable
                     rows={monthly_summary}
                     currency={currency}

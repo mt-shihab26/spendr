@@ -1,7 +1,6 @@
-import type { TCashFlowRow } from '@/components/screens/reports/cash-flow-chart';
+import type { TCashFlowRow } from '@/types/reports';
 
 import { Button } from '@/components/ui/button';
-import { FileSpreadsheet } from 'lucide-react';
 
 const exportCsv = (rows: TCashFlowRow[]) => {
     const header = 'Month,Income,Expenses,Net,Savings Rate\n';
