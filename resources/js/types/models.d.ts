@@ -37,6 +37,7 @@ export type TBudget = {
     user_id: string;
     category_id: string;
     amount: Record<TCurrency, number>;
+    spent?: Partial<Record<TCurrency, number>>;
     deleted_at: string | null;
     created_at: string;
     updated_at: string;
