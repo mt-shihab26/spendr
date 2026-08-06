@@ -24,6 +24,9 @@ return new class extends Migration
             $table->unsignedInteger('sort_order')->default(0);
             $table->softDeletes();
             $table->timestamps();
+
+            $table->index('user_id');
+            $table->unique(['user_id', 'name']);
         });
     }
 
