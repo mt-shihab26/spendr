@@ -3,6 +3,8 @@ import type { TWallet } from '@/types/models';
 import { useState } from 'react';
 import { getCurrencySymbol } from '@/lib/currency';
 
+import { Link } from '@inertiajs/react';
+
 import { Badge } from '@/components/ui/badge';
 import { IconBadge } from '@/components/elements/icon-badge';
 import { TransactionStats } from '@/components/elements/transaction-stats';
@@ -21,9 +23,12 @@ export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
                         className="flex items-center gap-3 px-4 py-3"
                     >
                         <IconBadge icon={wallet.icon} color={wallet.color} />
-                        <span className="flex-1 text-xs font-medium">
+                        <Link
+                            href={route('wallets.show', wallet.id)}
+                            className="flex-1 text-xs font-medium hover:underline"
+                        >
                             {wallet.name}
-                        </span>
+                        </Link>
                         {wallet.is_default && (
                             <Badge variant="secondary">Default</Badge>
                         )}
