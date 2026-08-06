@@ -60,4 +60,14 @@ class User extends Authenticatable implements PasskeyUser
     {
         return $this->hasMany(Wallet::class);
     }
+
+    /**
+     * Get the user's categories.
+     *
+     * @return HasMany<Category, $this>
+     */
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
 }
