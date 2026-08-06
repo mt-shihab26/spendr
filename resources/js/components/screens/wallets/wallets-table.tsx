@@ -29,16 +29,18 @@ export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
                             />
                             <Link
                                 href={route('wallets.show', wallet.id)}
-                                className="flex-1 text-xs font-medium hover:underline"
+                                className="flex-1 text-sm font-medium hover:underline"
                             >
                                 {wallet.name}
                             </Link>
-                            <span className="text-muted-foreground">
+                            <Badge variant="secondary" className="text-xs">
                                 {getCurrencySymbol(wallet.currency)}{' '}
                                 {wallet.currency}
-                            </span>
+                            </Badge>
                             {wallet.is_default && (
-                                <Badge variant="secondary">Default</Badge>
+                                <Badge variant="outline" className="text-xs">
+                                    Default
+                                </Badge>
                             )}
                         </div>
                         <div className="flex items-center gap-4 text-xs">
