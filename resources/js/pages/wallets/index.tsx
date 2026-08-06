@@ -25,6 +25,7 @@ import {
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
+import type { TCurrency } from '@/types/enums';
 import type { TWallet } from '@/types/models';
 
 import { useState } from 'react';
@@ -41,9 +42,13 @@ import { formatCurrency } from '@/lib/formats';
 const WalletsIndex = ({ wallets }: { wallets: TWallet[] }) => {
     const [walletToDelete, setWalletToDelete] = useState<TWallet | null>(null);
 
-    const netWorth = wallets.reduce(
-        (sum, w) => sum + parseFloat(w.initial_balance),
-        0,
+    const netWorthByCurrency = wallets.reduce<Record<TCurrency, number>>(
+        (acc, w) => ({
+            ...acc,
+            [w.currency]:
+                (acc[w.currency] ?? 0) + parseFloat(w.initial_balance),
+        }),
+        {},
     );
 
     const handleDelete = () => {
@@ -93,9 +98,21 @@ const WalletsIndex = ({ wallets }: { wallets: TWallet[] }) => {
                     <>
                         <p className="text-xs text-muted-foreground">
                             Net Worth:{' '}
-                            <span className="font-medium text-foreground">
-                                {formatCurrency(netWorth, wallets[0].currency)}
-                            </span>
+                            {Object.entries(netWorthByCurrency).map(
+                                ([currency, total], index) => (
+                                    <span key={currency}>
+                                        {index > 0 && (
+                                            <span className="mx-1">+</span>
+                                        )}
+                                        <span className="font-medium text-foreground">
+                                            {formatCurrency(
+                                                total,
+                                                currency as TCurrency,
+                                            )}
+                                        </span>
+                                    </span>
+                                ),
+                            )}
                         </p>
 
                         <div className="divide-y border">
