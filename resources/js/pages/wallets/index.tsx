@@ -14,8 +14,15 @@ import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { NetWorth } from '@/components/screens/wallets/net-worth';
 import { WalletsTable } from '@/components/screens/wallets/wallets-table';
+import { TransactionStats } from '@/components/elements/transaction-stats';
 
-const WalletsIndex = ({ wallets }: { wallets: TWallet[] }) => {
+const WalletsIndex = ({
+    wallets,
+    stats,
+}: {
+    wallets: TWallet[];
+    stats: { income: number; expense: number };
+}) => {
     return (
         <AppLayout
             title="Wallets"
@@ -50,7 +57,13 @@ const WalletsIndex = ({ wallets }: { wallets: TWallet[] }) => {
                     </Empty>
                 ) : (
                     <>
-                        <NetWorth wallets={wallets} />
+                        <div className="flex items-center justify-between">
+                            <NetWorth wallets={wallets} />
+                            <TransactionStats
+                                income={stats.income}
+                                expense={stats.expense}
+                            />
+                        </div>
                         <WalletsTable wallets={wallets} />
                     </>
                 )}

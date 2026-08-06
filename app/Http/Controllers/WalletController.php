@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Type;
 use App\Http\Requests\Wallets\StoreWalletRequest;
 use App\Http\Requests\Wallets\UpdateWalletRequest;
 use App\Models\Wallet;
@@ -23,8 +24,18 @@ class WalletController extends Controller
             ->orderBy('created_at')
             ->get();
 
+        $stats = $request->user()
+            ->transactions()
+            ->selectRaw('type, SUM(amount) as total')
+            ->groupBy('type')
+            ->pluck('total', 'type');
+
         return inertia('wallets/index', [
             'wallets' => $wallets,
+            'stats' => [
+                'income' => (float) ($stats[Type::Income->value] ?? 0),
+                'expense' => (float) ($stats[Type::Expense->value] ?? 0),
+            ],
         ]);
     }
 

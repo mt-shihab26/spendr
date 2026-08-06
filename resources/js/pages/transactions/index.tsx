@@ -10,7 +10,7 @@ import type { TTransactionPeriod } from '@/types/utils';
 import type { TTransaction } from '@/types/models';
 
 import { router } from '@inertiajs/react';
-import { formatCurrency } from '@/lib/formats';
+import { TransactionStats } from '@/components/elements/transaction-stats';
 
 import { ArrowRightLeft } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -79,21 +79,10 @@ const TransactionsIndex = ({
                             <TabsTrigger value="all">All</TabsTrigger>
                         </TabsList>
                     </Tabs>
-                    <div className="flex items-center gap-3 text-sm">
-                        <span className="font-medium text-green-600">
-                            +{formatCurrency(stats.income)}
-                        </span>
-                        <span className="text-muted-foreground">·</span>
-                        <span className="font-medium text-red-500">
-                            -{formatCurrency(stats.expense)}
-                        </span>
-                        <span className="text-muted-foreground">·</span>
-                        <span
-                            className={`font-medium ${stats.income - stats.expense >= 0 ? 'text-green-600' : 'text-red-500'}`}
-                        >
-                            {formatCurrency(stats.income - stats.expense)}
-                        </span>
-                    </div>
+                    <TransactionStats
+                        income={stats.income}
+                        expense={stats.expense}
+                    />
                 </div>
                 {transactions.length === 0 ? (
                     <Empty className="border">
