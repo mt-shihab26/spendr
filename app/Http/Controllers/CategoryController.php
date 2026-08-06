@@ -7,6 +7,7 @@ use App\Http\Requests\Categories\UpdateCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -23,6 +24,25 @@ class CategoryController extends Controller
             ->orderBy('sort_order')
             ->orderBy('created_at')
             ->get();
+
+        [$year, $monthNum] = explode('-', now()->format('Y-m'));
+
+        $monthSpending = DB::table('transactions')
+            ->join('wallets', 'transactions.wallet_id', '=', 'wallets.id')
+            ->where('transactions.user_id', $request->user()->id)
+            ->whereYear('transactions.transacted_at', (int) $year)
+            ->whereMonth('transactions.transacted_at', (int) $monthNum)
+            ->whereNull('transactions.deleted_at')
+            ->select('transactions.category_id', 'wallets.currency', DB::raw('SUM(transactions.amount) as total'))
+            ->groupBy('transactions.category_id', 'wallets.currency')
+            ->get()
+            ->groupBy('category_id')
+            ->map(fn ($rows) => $rows->pluck('total', 'currency')->toArray());
+
+        $categories = $categories->map(fn (Category $category) => array_merge(
+            $category->toArray(),
+            ['month_spent' => $monthSpending->get($category->id, [])],
+        ));
 
         return inertia('categories/index', [
             'categories' => $categories,

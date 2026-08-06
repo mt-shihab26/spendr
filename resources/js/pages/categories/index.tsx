@@ -7,14 +7,21 @@ import {
 } from '@/components/ui/empty';
 
 import type { TCategory } from '@/types/models';
+import type { TType } from '@/types/enums';
 
+import { useState } from 'react';
 import { Tag } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CategoriesTable } from '@/components/screens/categories/categories-table';
 
 const CategoriesIndex = ({ categories }: { categories: TCategory[] }) => {
+    const [type, setType] = useState<TType>('expense');
+
+    const filtered = categories.filter((c) => c.type === type);
+
     return (
         <AppLayout
             title="Categories"
@@ -31,16 +38,24 @@ const CategoriesIndex = ({ categories }: { categories: TCategory[] }) => {
                         New Category
                     </NewButton>
                 </div>
-                {categories.length === 0 ? (
+
+                <Tabs value={type} onValueChange={(v) => setType(v as TType)}>
+                    <TabsList>
+                        <TabsTrigger value="expense">Expense</TabsTrigger>
+                        <TabsTrigger value="income">Income</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+
+                {filtered.length === 0 ? (
                     <Empty className="border">
                         <EmptyHeader>
                             <EmptyMedia>
                                 <Tag />
                             </EmptyMedia>
-                            <EmptyTitle>No categories yet</EmptyTitle>
+                            <EmptyTitle>No {type} categories yet</EmptyTitle>
                             <EmptyDescription>
-                                Create your first category to start organising
-                                your transactions.
+                                Create your first {type} category to start
+                                organising your transactions.
                             </EmptyDescription>
                         </EmptyHeader>
                         <NewButton href={route('categories.create')}>
@@ -48,7 +63,7 @@ const CategoriesIndex = ({ categories }: { categories: TCategory[] }) => {
                         </NewButton>
                     </Empty>
                 ) : (
-                    <CategoriesTable categories={categories} />
+                    <CategoriesTable categories={filtered} />
                 )}
             </div>
         </AppLayout>

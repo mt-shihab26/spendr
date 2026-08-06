@@ -1,7 +1,8 @@
 import type { TCategory } from '@/types/models';
 
 import { useState } from 'react';
-import { formatCurrency, formatNumber } from '@/lib/formats';
+import { formatCurrency } from '@/lib/formats';
+import { CURRENCIES_OPTIONS } from '@/lib/currency';
 
 import { Link } from '@inertiajs/react';
 import { Badge } from '@/components/ui/badge';
@@ -9,7 +10,12 @@ import { IconBadge } from '@/components/elements/icon-badge';
 import { CategoryActions } from '@/components/screens/categories/category-actions';
 import { CategoryDeleteDialog } from '@/components/screens/categories/category-delete-dialog';
 
-import { CURRENCIES_OPTIONS } from '@/lib/currency';
+const isOverBudget = (category: TCategory): boolean => {
+    if (!category.budget) return false;
+    return CURRENCIES_OPTIONS.some(
+        (c) => (category.month_spent?.[c] ?? 0) > (category.budget!.amount[c] ?? 0),
+    );
+};
 
 export const CategoriesTable = ({
     categories,
@@ -34,42 +40,27 @@ export const CategoriesTable = ({
                         />
                         <Link
                             href={route('categories.show', category.id)}
-                            className="flex-1 text-xs font-medium hover:underline"
+                            className="flex-1 text-sm font-medium hover:underline"
                         >
                             {category.name}
                         </Link>
-                        <Badge variant="secondary" className="capitalize">
-                            {category.type}
-                        </Badge>
                         {category.is_default && (
                             <Badge variant="secondary">Default</Badge>
                         )}
-                        <span className="text-xs text-muted-foreground tabular-nums">
-                            {category.transactions_count ?? 0} transactions
-                        </span>
-                        <span className="text-xs text-muted-foreground tabular-nums">
-                            {category.type === 'expense' ? 'Spent' : 'Earned'}:{' '}
-                            <span className="font-medium text-foreground">
-                                {formatNumber(category.total_amount ?? 0)}
-                            </span>
-                        </span>
-                        {category.budget && (
-                            <span className="text-xs text-muted-foreground tabular-nums">
-                                Budget:{' '}
-                                {CURRENCIES_OPTIONS.map((currency) => (
-                                    <span
-                                        key={currency}
-                                        className="font-medium text-foreground"
-                                    >
-                                        {formatCurrency(
-                                            category.budget!.amount[currency] ??
-                                                0,
-                                            currency,
-                                        )}
-                                    </span>
-                                ))}
-                            </span>
+                        {isOverBudget(category) && (
+                            <Badge variant="destructive">⚠ Over</Badge>
                         )}
+                        <div className="flex flex-col items-end gap-0.5">
+                            {CURRENCIES_OPTIONS.map((currency) => {
+                                const spent = category.month_spent?.[currency] ?? 0;
+                                return (
+                                    <span key={currency} className="text-xs tabular-nums text-muted-foreground">
+                                        {formatCurrency(spent, currency)}{' '}
+                                        <span className="text-muted-foreground/60">this mo</span>
+                                    </span>
+                                );
+                            })}
+                        </div>
                         <CategoryActions
                             category={category}
                             onDelete={setCategoryToDelete}

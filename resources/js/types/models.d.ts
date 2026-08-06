@@ -56,6 +56,7 @@ export type TCategory = {
     sort_order: number;
     transactions_count: number | null;
     total_amount: number | null;
+    month_spent?: Partial<Record<TCurrency, number>>;
     deleted_at: string | null;
     created_at: string;
     updated_at: string;
