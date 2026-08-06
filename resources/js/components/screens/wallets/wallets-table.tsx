@@ -22,11 +22,14 @@ import type { TWallet } from '@/types/models';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import { formatCurrency } from '@/lib/formats';
+import { getIcon } from '@/lib/icons';
 
 import { Link } from '@inertiajs/react';
 import { MoreHorizontal } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+
+import { CURRENCY_SYMBOLS } from '@/lib/options';
 
 export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
     const [walletToDelete, setWalletToDelete] = useState<TWallet | null>(null);
@@ -46,16 +49,27 @@ export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
                         key={wallet.id}
                         className="flex items-center gap-3 px-4 py-3"
                     >
-                        <span
-                            className="size-2.5 shrink-0 rounded-full"
-                            style={{
-                                backgroundColor: wallet.color,
-                            }}
-                        />
+                        {(() => {
+                            const Icon = getIcon(wallet.icon);
+                            return Icon ? (
+                                <span
+                                    className="flex size-6 shrink-0 items-center justify-center rounded-full"
+                                    style={{ backgroundColor: wallet.color }}
+                                >
+                                    <Icon className="size-3 text-white" />
+                                </span>
+                            ) : (
+                                <span
+                                    className="size-2.5 shrink-0 rounded-full"
+                                    style={{ backgroundColor: wallet.color }}
+                                />
+                            );
+                        })()}
                         <span className="flex-1 text-xs font-medium">
                             {wallet.name}
                         </span>
                         <span className="text-xs text-muted-foreground">
+                            {CURRENCY_SYMBOLS[wallet.currency]}{' '}
                             {wallet.currency}
                         </span>
                         {wallet.is_default && (
