@@ -52,7 +52,7 @@ const WalletsShow = ({
                 <div className="grid gap-4 sm:grid-cols-4">
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">Initial Balance</p>
-                        <p className="mt-1 text-lg font-semibold tabular-nums">
+                        <p className="mt-1 text-lg font-semibold text-initial-balance tabular-nums">
                             {formatCurrency(
                                 wallet.initial_balance,
                                 wallet.currency,
@@ -61,7 +61,7 @@ const WalletsShow = ({
                     </div>
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">Income</p>
-                        <p className="mt-1 text-lg font-semibold text-green-600 tabular-nums">
+                        <p className="mt-1 text-lg font-semibold text-income tabular-nums">
                             {formatCurrency(
                                 wallet.income ?? 0,
                                 wallet.currency,
@@ -70,7 +70,7 @@ const WalletsShow = ({
                     </div>
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">Expenses</p>
-                        <p className="mt-1 text-lg font-semibold text-red-500 tabular-nums">
+                        <p className="mt-1 text-lg font-semibold text-expense tabular-nums">
                             {formatCurrency(
                                 wallet.expense ?? 0,
                                 wallet.currency,
@@ -79,7 +79,7 @@ const WalletsShow = ({
                     </div>
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">Balance</p>
-                        <p className="mt-1 text-lg font-semibold tabular-nums">
+                        <p className="mt-1 text-lg font-semibold text-balance tabular-nums">
                             {formatCurrency(
                                 wallet.initial_balance +
                                     (wallet.income ?? 0) -

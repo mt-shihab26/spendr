@@ -22,16 +22,16 @@ export const TransactionStats = ({ stats }: { stats: TStat[] }) => {
                         className="flex items-center gap-3 text-sm"
                     >
                         <span className="flex items-center gap-1 font-medium">
-                            <Plus className="size-3 text-green-600" />
+                            <Plus className="size-3 text-income" />
                             {formatCurrency(income, currency)}
                         </span>
                         <span className="flex items-center gap-1 font-medium">
-                            <Minus className="size-3 text-red-500" />
+                            <Minus className="size-3 text-expense" />
                             {formatCurrency(expense, currency)}
                         </span>
                         <span className={`flex items-center gap-1 font-medium`}>
                             <Equal
-                                className={`size-3 ${net >= 0 ? 'text-green-600' : 'text-red-500'}`}
+                                className={`size-3 ${net >= 0 ? 'text-income' : 'text-expense'}`}
                             />
                             {formatCurrency(net, currency)}
                         </span>

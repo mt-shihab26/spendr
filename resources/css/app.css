@@ -39,6 +39,10 @@
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
+    --color-income: var(--income);
+    --color-expense: var(--expense);
+    --color-initial-balance: var(--initial-balance);
+    --color-balance: var(--balance);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -72,6 +76,10 @@
     --chart-3: oklch(0.6 0.118 184.704);
     --chart-4: oklch(0.511 0.096 186.391);
     --chart-5: oklch(0.437 0.078 188.216);
+    --income: oklch(0.627 0.194 145.6);
+    --expense: oklch(0.637 0.237 25.3);
+    --initial-balance: oklch(0.623 0.214 255.8);
+    --balance: oklch(0.606 0.25 292.7);
     --radius: 0.625rem;
     --sidebar: oklch(0.987 0.002 197.1);
     --sidebar-foreground: oklch(0.148 0.004 228.8);
@@ -107,6 +115,10 @@
     --chart-3: oklch(0.6 0.118 184.704);
     --chart-4: oklch(0.511 0.096 186.391);
     --chart-5: oklch(0.437 0.078 188.216);
+    --income: oklch(0.696 0.17 145.6);
+    --expense: oklch(0.704 0.191 25.3);
+    --initial-balance: oklch(0.707 0.165 255.8);
+    --balance: oklch(0.702 0.183 292.7);
     --sidebar: oklch(0.218 0.008 223.9);
     --sidebar-foreground: oklch(0.987 0.002 197.1);
     --sidebar-primary: oklch(0.704 0.14 182.503);
