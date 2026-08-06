@@ -1,25 +1,13 @@
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-
 import type { TWallet } from '@/types/models';
 
-import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import { formatCurrency } from '@/lib/formats';
 import { getIcon } from '@/lib/icons';
+import { getCurrencySymbol } from '@/lib/currency';
 
 import { Badge } from '@/components/ui/badge';
 import { WalletActions } from '@/components/screens/wallets/wallet-actions';
-
-import { getCurrencySymbol } from '@/lib/currency';
+import { WalletDeleteDialog } from '@/components/screens/wallets/wallet-delete-dialog';
 
 export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
     const [walletToDelete, setWalletToDelete] = useState<TWallet | null>(null);
@@ -71,40 +59,14 @@ export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
                     </div>
                 ))}
             </div>
-            <AlertDialog
-                open={!!walletToDelete}
-                onOpenChange={(open) => !open && setWalletToDelete(null)}
-            >
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            Delete "{walletToDelete?.name}"?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This cannot be undone. Reassign or delete all
-                            transactions first.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            variant="destructive"
-                            onClick={() => {
-                                if (!walletToDelete) return;
-                                router.delete(
-                                    route('wallets.destroy', walletToDelete.id),
-                                    {
-                                        onSuccess: () =>
-                                            setWalletToDelete(null),
-                                    },
-                                );
-                            }}
-                        >
-                            Delete
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+            {walletToDelete && (
+                <WalletDeleteDialog
+                    wallet={walletToDelete}
+                    open={!!walletToDelete}
+                    onOpenChange={(open) => !open && setWalletToDelete(null)}
+                    onDeleted={() => setWalletToDelete(null)}
+                />
+            )}
         </>
     );
 };

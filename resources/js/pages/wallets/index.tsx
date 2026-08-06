@@ -23,7 +23,7 @@ const WalletsIndex = ({ wallets }: { wallets: TWallet[] }) => {
             breadcrumbs={[{ title: 'Wallets', route: 'wallets.index' }]}
         >
             <div className="flex flex-col gap-4 p-4">
-                <div className="flex items-start justify-between">
+                <div className="flex items-center justify-between">
                     <Heading
                         title="Wallets"
                         description="Manage your accounts and balances"
