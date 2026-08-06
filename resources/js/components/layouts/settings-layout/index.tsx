@@ -1,34 +1,53 @@
 import type { ReactNode } from 'react';
+import type { TBreadcrumb } from '@/types/utils';
 
-import { useCurrentUrl } from '@/hooks/use-current-url';
-import { cn, toUrl } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 import { Link } from '@inertiajs/react';
 import { Heading } from '@/components/elements/heading';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { AppLayout } from '@/components/layouts/app-layout';
+import { Lock, Palette, User } from 'lucide-react';
 
-export const SettingsLayout = ({ children }: { children: ReactNode }) => {
-    const links = [
-        {
-            title: 'Profile',
-            href: route('profile.edit'),
-        },
-        {
-            title: 'Security',
-            href: route('security.edit'),
-        },
-        {
-            title: 'Appearance',
-            href: route('appearance.edit'),
-        },
-    ];
+const links = [
+    {
+        title: 'Profile',
+        route: 'profile.edit',
+        icon: User,
+    },
+    {
+        title: 'Security',
+        route: 'security.edit',
+        icon: Lock,
+    },
+    {
+        title: 'Appearance',
+        route: 'appearance.edit',
+        icon: Palette,
+    },
+];
 
-    const { isCurrentOrParentUrl } = useCurrentUrl();
-
+export const SettingsLayout = ({
+    children,
+    title,
+    description,
+    breadcrumbs,
+}: {
+    children: ReactNode;
+    title: string;
+    description: string;
+    breadcrumbs: TBreadcrumb[];
+}) => {
     return (
-        <AppLayout>
+        <AppLayout
+            title={title}
+            description={description}
+            breadcrumbs={[
+                { title: 'Settings', href: 'profile.edit' },
+                ...breadcrumbs,
+            ]}
+        >
             <div className="px-4 py-6">
                 <Heading
                     title="Settings"
@@ -42,17 +61,15 @@ export const SettingsLayout = ({ children }: { children: ReactNode }) => {
                         >
                             {links.map((item, index) => (
                                 <Button
-                                    key={`${toUrl(item.href)}-${index}`}
+                                    key={`${item.route}-${index}`}
                                     size="sm"
                                     variant="ghost"
                                     asChild
                                     className={cn('w-full justify-start', {
-                                        'bg-muted': isCurrentOrParentUrl(
-                                            item.href,
-                                        ),
+                                        'bg-muted': route().current(item.route),
                                     })}
                                 >
-                                    <Link href={item.href}>
+                                    <Link href={route(item.route)}>
                                         {item.icon && (
                                             <item.icon className="h-4 w-4" />
                                         )}
@@ -68,8 +85,8 @@ export const SettingsLayout = ({ children }: { children: ReactNode }) => {
                             <div className="space-y-6">
                                 <Heading
                                     variant="small"
-                                    title="Appearance settings"
-                                    description="Update the appearance settings for your account"
+                                    title={title}
+                                    description={description}
                                 />
                                 {children}
                             </div>

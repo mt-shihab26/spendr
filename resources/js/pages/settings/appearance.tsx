@@ -1,18 +1,17 @@
-import { Head, setLayoutProps } from '@inertiajs/react';
-import { Heading } from '@/components/elements/heading';
-
 import type { LucideIcon } from 'lucide-react';
-import { Monitor, Moon, Sun } from 'lucide-react';
 import type { HTMLAttributes } from 'react';
 import type { TAppearance } from '@/hooks/use-appearance';
+
 import { useAppearance } from '@/hooks/use-appearance';
 import { cn } from '@/lib/utils';
+
+import { Monitor, Moon, Sun } from 'lucide-react';
 import { SettingsLayout } from '@/components/layouts/settings-layout';
 
-function AppearanceToggleTab({
-    className = '',
+const AppearanceToggleTab = ({
+    className,
     ...props
-}: HTMLAttributes<HTMLDivElement>) {
+}: HTMLAttributes<HTMLDivElement>) => {
     const { appearance, updateAppearance } = useAppearance();
 
     const tabs: { value: TAppearance; icon: LucideIcon; label: string }[] = [
@@ -46,7 +45,7 @@ function AppearanceToggleTab({
             ))}
         </div>
     );
-}
+};
 
 const Appearance = () => {
     return (
