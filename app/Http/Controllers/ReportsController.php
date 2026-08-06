@@ -32,20 +32,30 @@ class ReportsController extends Controller
                 'uuid',
                 Rule::exists('wallets', 'id')->where('user_id', $user->id),
             ],
+            'date_from' => ['nullable', 'date', 'before_or_equal:date_to'],
+            'date_to' => ['nullable', 'date', 'after_or_equal:date_from', 'before_or_equal:today'],
         ]);
 
         $period = $validated['period'] ?? '6m';
         $currency = $validated['currency'] ?? (in_array('BDT', $currencies) ? 'BDT' : ($currencies[0] ?? null));
         $walletId = $validated['wallet_id'] ?? null;
+        $dateFrom = $validated['date_from'] ?? null;
+        $dateTo = $validated['date_to'] ?? null;
 
-        $months = match ($period) {
-            '3m' => 3,
-            '12m' => 12,
-            default => 6,
-        };
-
-        $startDate = now()->subMonths($months)->startOfMonth()->toDateString();
-        $endDate = now()->endOfMonth()->toDateString();
+        if ($dateFrom && $dateTo) {
+            $startDate = Carbon::parse($dateFrom)->startOfDay()->toDateString();
+            $endDate = Carbon::parse($dateTo)->endOfDay()->toDateString();
+        } else {
+            $months = match ($period) {
+                '3m' => 3,
+                '12m' => 12,
+                default => 6,
+            };
+            $startDate = now()->subMonths($months)->startOfMonth()->toDateString();
+            $endDate = now()->endOfMonth()->toDateString();
+            $dateFrom = null;
+            $dateTo = null;
+        }
 
         $wallets = $user->wallets()
             ->when($currency, fn ($q) => $q->where('currency', $currency))
@@ -103,6 +113,8 @@ class ReportsController extends Controller
                 'net' => $periodIncome - $periodExpense,
             ],
             'period' => $period,
+            'date_from' => $dateFrom,
+            'date_to' => $dateTo,
             'currency' => $currency,
             'wallet_id' => $walletId,
             'currencies' => $currencies,

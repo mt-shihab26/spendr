@@ -4,9 +4,8 @@ import type { TWallet } from '@/types/models';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { Button } from '@/components/ui/button';
-import { formatCurrency } from '@/lib/formats';
-import { cn } from '@/lib/utils';
 import { ReportsFilter } from '@/components/screens/reports/reports-filter';
+import { ReportsSummary } from '@/components/screens/reports/reports-summary';
 import { CashFlowChart } from '@/components/screens/reports/cash-flow-chart';
 import { CategoryDonut } from '@/components/screens/reports/category-donut';
 import { MonthlySummaryTable } from '@/components/screens/reports/monthly-summary-table';
@@ -61,6 +60,8 @@ const ReportsIndex = ({
     income_breakdown,
     summary,
     period,
+    date_from,
+    date_to,
     currency,
     wallet_id,
     currencies,
@@ -72,12 +73,15 @@ const ReportsIndex = ({
     income_breakdown: TCategoryRow[];
     summary: TSummary;
     period: TPeriod;
+    date_from: string | null;
+    date_to: string | null;
     currency: TCurrency | null;
     wallet_id: string | null;
     currencies: TCurrency[];
     wallets: TWallet[];
 }) => {
-    const cur = cur;
+    const cur = currency ?? 'BDT';
+
     return (
         <AppLayout
             title="Reports"
@@ -99,24 +103,12 @@ const ReportsIndex = ({
                     </Button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                    {[
-                        { label: 'Balance', value: summary.balance, color: 'text-balance' },
-                        { label: '+', value: summary.income, color: 'text-income' },
-                        { label: '−', value: summary.expenses, color: 'text-expense' },
-                        { label: 'Net', value: summary.net, color: summary.net >= 0 ? 'text-income' : 'text-expense' },
-                    ].map(({ label, value, color }) => (
-                        <div key={label} className="border p-4">
-                            <p className="text-xs text-muted-foreground">{label}</p>
-                            <p className={cn('mt-1 text-lg font-semibold tabular-nums', color)}>
-                                {formatCurrency(value, cur)}
-                            </p>
-                        </div>
-                    ))}
-                </div>
+                <ReportsSummary summary={summary} currency={cur} />
 
                 <ReportsFilter
                     period={period}
+                    dateFrom={date_from}
+                    dateTo={date_to}
                     currency={currency}
                     walletId={wallet_id}
                     currencies={currencies}

@@ -1,0 +1,37 @@
+import type { TCurrency } from '@/types/enums';
+
+import { formatCurrency } from '@/lib/formats';
+import { cn } from '@/lib/utils';
+
+type TSummary = {
+    balance: number;
+    income: number;
+    expenses: number;
+    net: number;
+};
+
+export const ReportsSummary = ({ summary, currency }: { summary: TSummary; currency: TCurrency }) => {
+    const tiles = [
+        { label: 'Balance', value: summary.balance, color: 'text-balance' },
+        { label: '+', value: summary.income, color: 'text-income' },
+        { label: '−', value: summary.expenses, color: 'text-expense' },
+        {
+            label: 'Net',
+            value: summary.net,
+            color: summary.net >= 0 ? 'text-income' : 'text-expense',
+        },
+    ];
+
+    return (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {tiles.map(({ label, value, color }) => (
+                <div key={label} className="border p-4">
+                    <p className="text-xs text-muted-foreground">{label}</p>
+                    <p className={cn('mt-1 text-lg font-semibold tabular-nums', color)}>
+                        {formatCurrency(value, currency)}
+                    </p>
+                </div>
+            ))}
+        </div>
+    );
+};

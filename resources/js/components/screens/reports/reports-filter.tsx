@@ -4,6 +4,7 @@ import type { TWallet } from '@/types/models';
 import { router } from '@inertiajs/react';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
 import { getCurrencySymbol } from '@/lib/currency';
+import { DateRangePicker } from '@/components/screens/reports/date-range-picker';
 
 type TPeriod = '3m' | '6m' | '12m';
 
@@ -19,14 +20,18 @@ export const ReportsFilter = ({
     walletId,
     currencies,
     wallets,
+    dateFrom,
+    dateTo,
 }: {
     period: TPeriod;
     currency: string | null;
     walletId: string | null;
     currencies: string[];
     wallets: TWallet[];
+    dateFrom: string | null;
+    dateTo: string | null;
 }) => {
-    const update = (params: Record<string, string | null>) => {
+    const navigate = (params: Record<string, string | null>) => {
         router.get(
             route('reports.index'),
             Object.fromEntries(
@@ -34,8 +39,10 @@ export const ReportsFilter = ({
                     period,
                     currency,
                     wallet_id: walletId,
+                    date_from: dateFrom,
+                    date_to: dateTo,
                     ...params,
-                }).filter(([, v]) => v !== null),
+                }).filter(([, v]) => v !== null && v !== undefined),
             ),
             { preserveScroll: true, replace: true },
         );
@@ -45,7 +52,7 @@ export const ReportsFilter = ({
         <div className="flex flex-wrap items-center gap-2">
             <NativeSelect
                 value={period}
-                onChange={(e) => update({ period: e.target.value })}
+                onChange={(e) => navigate({ period: e.target.value, date_from: null, date_to: null })}
             >
                 {(Object.keys(PERIOD_LABELS) as TPeriod[]).map((p) => (
                     <NativeSelectOption key={p} value={p}>
@@ -54,11 +61,20 @@ export const ReportsFilter = ({
                 ))}
             </NativeSelect>
 
+            <DateRangePicker
+                dateFrom={dateFrom}
+                dateTo={dateTo}
+                onSelect={({ from, to }) =>
+                    navigate({ date_from: from, date_to: to })
+                }
+                onClear={() => navigate({ date_from: null, date_to: null })}
+            />
+
             {currencies.length > 1 && (
                 <NativeSelect
                     value={currency ?? ''}
                     onChange={(e) =>
-                        update({ currency: e.target.value || null, wallet_id: null })
+                        navigate({ currency: e.target.value || null, wallet_id: null })
                     }
                 >
                     {currencies.map((c) => (
@@ -71,7 +87,7 @@ export const ReportsFilter = ({
 
             <NativeSelect
                 value={walletId ?? ''}
-                onChange={(e) => update({ wallet_id: e.target.value || null })}
+                onChange={(e) => navigate({ wallet_id: e.target.value || null })}
             >
                 <NativeSelectOption value="">All Wallets</NativeSelectOption>
                 {wallets.map((w) => (
