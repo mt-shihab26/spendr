@@ -81,19 +81,11 @@ A `+` button fixed to the bottom-right corner, visible on every authenticated pa
                                      │  + Quick Add         │
                                      │  ────────────────     │
                  [page content]      │  Transaction          │
-                                     │  Transfer             │
                                 [+]──┘                      │
                                      └──────────────────────┘
 ```
 
-Clicking `+` opens a small menu with two options:
-
-| Option      | Navigates to          |
-| ----------- | --------------------- |
-| Transaction | `transactions.create` |
-| Transfer    | `transfers.create`    |
-
-Both are full pages — no modals.
+Clicking `+` opens `transactions.create`:
 
 ---
 

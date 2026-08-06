@@ -1,8 +1,12 @@
 import {
     ArrowRightLeft,
     BookOpen,
+    ChartBar,
+    CircleDollarSign,
     Folder,
     LayoutGrid,
+    Repeat,
+    Tag,
     Wallet,
 } from 'lucide-react';
 
@@ -30,6 +34,27 @@ export const mainLinks = (): TLink[] => [
         title: 'Transactions',
         href: '/transactions',
         icon: ArrowRightLeft,
+    },
+    {
+        title: 'Transfers',
+        href: '/transfers',
+        icon: Repeat,
+    },
+    {
+        title: 'Categories',
+        href: '/categories',
+        icon: Tag,
+    },
+    {
+        title: 'Budgets',
+        href: '/transfers',
+        icon: CircleDollarSign,
+    },
+
+    {
+        title: 'Reports',
+        href: '/reports',
+        icon: ChartBar,
     },
 ];
 
