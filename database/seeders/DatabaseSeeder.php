@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             TransactionSeeder::class,
             TransferSeeder::class,
+            BudgetSeeder::class,
         ]);
     }
 }

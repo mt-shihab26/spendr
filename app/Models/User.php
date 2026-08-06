@@ -90,4 +90,14 @@ class User extends Authenticatable implements PasskeyUser
     {
         return $this->hasMany(Transfer::class);
     }
+
+    /**
+     * Get the user's budgets.
+     *
+     * @return HasMany<Budget, $this>
+     */
+    public function budgets(): HasMany
+    {
+        return $this->hasMany(Budget::class);
+    }
 }

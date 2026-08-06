@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TransactionController;
@@ -54,6 +55,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
         Route::patch('/{category}', [CategoryController::class, 'update'])->name('categories.update');
         Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    });
+
+    Route::prefix('/budgets')->group(function () {
+        Route::get('/', [BudgetController::class, 'index'])->name('budgets.index');
+        Route::get('/create', [BudgetController::class, 'create'])->name('budgets.create');
+        Route::post('/', [BudgetController::class, 'store'])->name('budgets.store');
+        Route::get('/{budget}', [BudgetController::class, 'show'])->name('budgets.show');
+        Route::get('/{budget}/edit', [BudgetController::class, 'edit'])->name('budgets.edit');
+        Route::patch('/{budget}', [BudgetController::class, 'update'])->name('budgets.update');
+        Route::delete('/{budget}', [BudgetController::class, 'destroy'])->name('budgets.destroy');
     });
 
     Route::prefix('/settings')->group(function () {
