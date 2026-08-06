@@ -13,13 +13,13 @@ const WalletsCreate = () => {
             ]}
         >
             <div className="flex flex-col gap-4 p-4">
-                <Heading title="New Wallet" description="Add a new account to track" />
+                <Heading
+                    title="New Wallet"
+                    description="Add a new account to track"
+                />
 
                 <div className="max-w-lg border p-4">
-                    <WalletForm
-                        action={route('wallets.store')}
-                        method="post"
-                    />
+                    <WalletForm action={route('wallets.store')} method="post" />
                 </div>
             </div>
         </AppLayout>

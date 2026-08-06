@@ -6,7 +6,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { InputError } from '@/components/elements/input-error';
 import { Label } from '@/components/ui/label';
-import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
+import {
+    NativeSelect,
+    NativeSelectOption,
+} from '@/components/ui/native-select';
 import { cn } from '@/lib/utils';
 import type { TWallet } from '@/types/models';
 
@@ -141,7 +144,10 @@ export const WalletForm = ({ wallet, action, method }: WalletFormProps) => {
                         setData('is_default', checked === true)
                     }
                 />
-                <Label htmlFor="is_default" className="font-normal cursor-pointer">
+                <Label
+                    htmlFor="is_default"
+                    className="font-normal cursor-pointer"
+                >
                     Set as default wallet
                 </Label>
             </div>

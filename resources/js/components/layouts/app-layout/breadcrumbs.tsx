@@ -35,7 +35,10 @@ export const Breadcrumbs = ({
                                             <BreadcrumbLink
                                                 render={
                                                     <Link
-                                                        href={route(item.route, item.params)}
+                                                        href={route(
+                                                            item.route,
+                                                            item.params,
+                                                        )}
                                                     />
                                                 }
                                             >

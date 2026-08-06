@@ -45,7 +45,10 @@ const WalletsEdit = ({ wallet }: { wallet: TWallet }) => {
             ]}
         >
             <div className="flex flex-col gap-4 p-4">
-                <Heading title="Edit Wallet" description="Update account details" />
+                <Heading
+                    title="Edit Wallet"
+                    description="Update account details"
+                />
 
                 <div className="max-w-lg border p-4">
                     <WalletForm
@@ -75,7 +78,9 @@ const WalletsEdit = ({ wallet }: { wallet: TWallet }) => {
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogCancel>
+                                        Cancel
+                                    </AlertDialogCancel>
                                     <AlertDialogAction
                                         variant="destructive"
                                         onClick={handleDelete}

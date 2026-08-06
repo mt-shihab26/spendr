@@ -39,7 +39,10 @@ const WalletsShow = ({ wallet }: { wallet: TWallet }) => {
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">Balance</p>
                         <p className="mt-1 text-lg font-semibold tabular-nums">
-                            {formatCurrency(wallet.initial_balance, wallet.currency)}
+                            {formatCurrency(
+                                wallet.initial_balance,
+                                wallet.currency,
+                            )}
                         </p>
                     </div>
                     <div className="border p-4">
