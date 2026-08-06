@@ -13,14 +13,14 @@ export const QuickAction = () => {
         <Tooltip>
             <TooltipTrigger
                 className="absolute right-10 bottom-10"
-                render={
-                    <Button
-                        size="icon-lg"
-                        render={<Link href="/transactions/create" />}
-                    />
-                }
+                render={<span />}
             >
-                <PlusIcon className="size-8" />
+                <Button
+                    size="icon-lg"
+                    render={<Link href="/transactions/create" />}
+                >
+                    <PlusIcon className="size-8" />
+                </Button>
             </TooltipTrigger>
             <TooltipContent>Add new Transaction</TooltipContent>
         </Tooltip>
