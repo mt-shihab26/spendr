@@ -31,7 +31,11 @@ export const CategorySelect = ({
             <SelectTrigger className="w-full">
                 {selected ? (
                     <div className="flex items-center gap-2">
-                        <IconBadge icon={selected.icon} color={selected.color} />
+                        <IconBadge
+                            icon={selected.icon}
+                            color={selected.color}
+                            size="sm"
+                        />
                         {selected.name}
                     </div>
                 ) : (
@@ -43,7 +47,11 @@ export const CategorySelect = ({
                     {filtered.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
                             <div className="flex items-center gap-2">
-                                <IconBadge icon={category.icon} color={category.color} />
+                                <IconBadge
+                                    icon={category.icon}
+                                    color={category.color}
+                                    size="sm"
+                                />
                                 {category.name}
                             </div>
                         </SelectItem>

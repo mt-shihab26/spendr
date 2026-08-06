@@ -29,7 +29,11 @@ export const WalletSelect = ({
             <SelectTrigger className="w-full">
                 {selected ? (
                     <div className="flex items-center gap-2">
-                        <IconBadge icon={selected.icon} color={selected.color} />
+                        <IconBadge
+                            icon={selected.icon}
+                            color={selected.color}
+                            size="sm"
+                        />
                         {selected.name}
                     </div>
                 ) : (
@@ -41,7 +45,11 @@ export const WalletSelect = ({
                     {wallets.map((wallet) => (
                         <SelectItem key={wallet.id} value={wallet.id}>
                             <div className="flex items-center gap-2">
-                                <IconBadge icon={wallet.icon} color={wallet.color} />
+                                <IconBadge
+                                    icon={wallet.icon}
+                                    color={wallet.color}
+                                    size="sm"
+                                />
                                 {wallet.name}
                             </div>
                         </SelectItem>
