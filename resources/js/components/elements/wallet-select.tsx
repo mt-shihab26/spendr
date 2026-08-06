@@ -16,11 +16,13 @@ export const WalletSelect = ({
     value,
     onValueChange,
     disabled = false,
+    includeAll,
 }: {
     wallets: TWallet[];
     value: string | null;
     onValueChange: (value: string | null) => void;
     disabled?: boolean;
+    includeAll: boolean;
 }) => {
     const selected = wallets.find((w) => w.id === value);
 
@@ -37,11 +39,19 @@ export const WalletSelect = ({
                         {selected.name}
                     </div>
                 ) : (
-                    <SelectValue placeholder="Select wallet" />
+                    <SelectValue
+                        className={(includeAll && 'text-foreground') || ''}
+                        placeholder={
+                            includeAll ? 'All Wallets' : 'Select wallet'
+                        }
+                    />
                 )}
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
+                    {includeAll && (
+                        <SelectItem value="">All Wallets</SelectItem>
+                    )}
                     {wallets.map((wallet) => (
                         <SelectItem key={wallet.id} value={wallet.id}>
                             <div className="flex items-center gap-2">

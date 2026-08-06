@@ -4,7 +4,6 @@ import { formatCurrency } from '@/lib/formats';
 import { cn } from '@/lib/utils';
 
 export type TSummary = {
-    balance: number;
     income: number;
     expenses: number;
     net: number;

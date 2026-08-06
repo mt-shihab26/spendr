@@ -1,22 +1,25 @@
+import {
+    NativeSelect,
+    NativeSelectOption,
+} from '@/components/ui/native-select';
+
 import type { TCurrency } from '@/types/enums';
 import type { TWallet } from '@/types/models';
+import type { TSummary } from '@/components/screens/reports/reports-summary';
+
+import { router } from '@inertiajs/react';
 
 import { AppLayout } from '@/components/layouts/app-layout';
+import { DateRangePicker } from '@/components/elements/date-range-picker';
 import { Heading } from '@/components/elements/heading';
 import { Button } from '@/components/ui/button';
-import { ReportsFilter } from '@/components/screens/reports/reports-filter';
 import { ReportsSummary } from '@/components/screens/reports/reports-summary';
 import { CashFlowChart } from '@/components/screens/reports/cash-flow-chart';
 import { CategoryDonut } from '@/components/screens/reports/category-donut';
 import { MonthlySummaryTable } from '@/components/screens/reports/monthly-summary-table';
 import { CurrencyTabs } from '@/components/elements/currency-tabs';
 import { ShowBalance } from '@/components/elements/show-balance';
-
-type TSummary = {
-    income: number;
-    expenses: number;
-    net: number;
-};
+import { WalletSelect } from '@/components/elements/wallet-select';
 
 type TCashFlowRow = {
     month: string;
@@ -79,6 +82,25 @@ const ReportsIndex = ({
     wallets: TWallet[];
     balance: number;
 }) => {
+    const navigate = (params: Record<string, string | null>) => {
+        router.get(
+            route('reports.index'),
+            Object.fromEntries(
+                Object.entries({
+                    currency,
+                    wallet_id,
+                    date_from,
+                    date_to,
+                    ...params,
+                }).filter(([, v]) => v !== null && v !== undefined),
+            ),
+            {
+                preserveScroll: true,
+                replace: true,
+            },
+        );
+    };
+
     return (
         <AppLayout
             title="Reports"
@@ -107,15 +129,31 @@ const ReportsIndex = ({
                     />
                     <ShowBalance balance={balance} currency={currency} />
                 </div>
-
-                <ReportsFilter
-                    dateFrom={date_from}
-                    dateTo={date_to}
-                    currency={currency}
-                    walletId={wallet_id}
-                    wallets={wallets}
-                />
-
+                <div className="flex items-center gap-2">
+                    <div>
+                        <WalletSelect
+                            wallets={wallets}
+                            value={wallet_id ?? ''}
+                            includeAll
+                            onValueChange={(wallet_id) =>
+                                navigate({ wallet_id })
+                            }
+                        />
+                    </div>
+                    <DateRangePicker
+                        dateFrom={date_from}
+                        dateTo={date_to}
+                        onClear={() =>
+                            navigate({ date_from: null, date_to: null })
+                        }
+                        onSelect={(dates) =>
+                            navigate({
+                                date_from: dates?.from ?? null,
+                                date_to: dates?.to ?? null,
+                            })
+                        }
+                    />
+                </div>
                 <ReportsSummary summary={summary} currency={currency} />
 
                 <CashFlowChart data={monthly_cash_flow} currency={currency} />
