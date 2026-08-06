@@ -80,6 +80,8 @@ const ReportsIndex = ({
     currencies: TCurrency[];
     wallets: TWallet[];
 }) => {
+    const cur: TCurrency = currency ?? 'BDT';
+
     const switchCurrency = (c: string) => {
         router.get(
             route('reports.index'),
@@ -132,7 +134,7 @@ const ReportsIndex = ({
                     <div className="text-right">
                         <p className="text-xs text-muted-foreground">Balance</p>
                         <p className="text-lg font-semibold text-balance tabular-nums">
-                            {formatCurrency(summary.balance, currency)}
+                            {formatCurrency(summary.balance, cur)}
                         </p>
                     </div>
                 </div>
@@ -140,31 +142,31 @@ const ReportsIndex = ({
                 <ReportsFilter
                     dateFrom={date_from}
                     dateTo={date_to}
-                    currency={currency}
+                    currency={cur}
                     walletId={wallet_id}
                     wallets={wallets}
                 />
 
-                <ReportsSummary summary={summary} currency={currency} />
+                <ReportsSummary summary={summary} currency={cur} />
 
-                <CashFlowChart data={monthly_cash_flow} currency={currency} />
+                <CashFlowChart data={monthly_cash_flow} currency={cur} />
 
                 <div className="grid gap-4 sm:grid-cols-2">
                     <CategoryDonut
                         title="Expenses by Category"
                         data={expense_breakdown}
-                        currency={currency}
+                        currency={cur}
                     />
                     <CategoryDonut
                         title="Income by Category"
                         data={income_breakdown}
-                        currency={currency}
+                        currency={cur}
                     />
                 </div>
 
                 <MonthlySummaryTable
                     rows={monthly_summary}
-                    currency={currency}
+                    currency={cur}
                 />
             </div>
         </AppLayout>
