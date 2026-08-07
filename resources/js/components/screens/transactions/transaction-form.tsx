@@ -8,12 +8,10 @@ import {
 import type { TTransaction, TWallet, TCategory } from '@/types/models';
 import type { TType } from '@/types/enums';
 
-import { useState } from 'react';
 import { getCurrencySymbol } from '@/lib/currency';
 import { useForm } from '@inertiajs/react';
 
 import { Link } from '@inertiajs/react';
-import { Paperclip, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,21 +21,7 @@ import { TypePicker } from '@/components/elements/type-picker';
 import { Textarea } from '@/components/ui/textarea';
 import { WalletSelect } from '@/components/elements/wallet-select';
 import { CategorySelect } from '@/components/elements/category-select';
-import { AttachmentUploader } from './attachment-uploader';
 import { FileAttachments } from './file-attachments';
-
-type UploadedFile = {
-    id: string;
-    name: string;
-    size: number;
-    mime_type: string;
-};
-
-const formatBytes = (bytes: number): string => {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-};
 
 export const TransactionForm = ({
     transaction,
@@ -72,55 +56,6 @@ export const TransactionForm = ({
         notes: transaction?.notes ?? '',
         file_ids: [],
     });
-
-    const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
-    const [uploadError, setUploadError] = useState<string | null>(null);
-    const [uploading, setUploading] = useState(false);
-
-    const uploadFile = async (file: File) => {
-        setUploadError(null);
-        setUploading(true);
-
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-            const csrf =
-                document.querySelector<HTMLMetaElement>(
-                    'meta[name="csrf-token"]',
-                )?.content ?? '';
-
-            const response = await fetch(route('files.store'), {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': csrf,
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-                body: formData,
-            });
-
-            if (!response.ok) {
-                const json = (await response
-                    .json()
-                    .catch(() => ({}))) as { message?: string };
-                setUploadError(json.message ?? 'Upload failed.');
-                return;
-            }
-
-            const uploaded = (await response.json()) as UploadedFile;
-            setUploadedFiles((prev) => [...prev, uploaded]);
-            setData('file_ids', [...data.file_ids, uploaded.id]);
-        } catch {
-            setUploadError('Upload failed. Please try again.');
-        } finally {
-            setUploading(false);
-        }
-    };
-
-    const removeFile = (id: string) => {
-        setUploadedFiles((prev) => prev.filter((f) => f.id !== id));
-        setData('file_ids', data.file_ids.filter((fid) => fid !== id));
-    };
 
     const selectedWallet = wallets.find((w) => w.id === data.wallet_id);
     const currencyPrefix = selectedWallet
@@ -241,53 +176,10 @@ export const TransactionForm = ({
                 <InputError message={errors.notes} />
             </div>
 
-            {transaction && (
-                <FileAttachments transaction={transaction} />
-            )}
-
-            {!transaction && (
-                <div className="space-y-2">
-                    <Label>Attachments</Label>
-
-                    {uploadedFiles.length > 0 && (
-                        <ul className="space-y-2">
-                            {uploadedFiles.map((f) => (
-                                <li
-                                    key={f.id}
-                                    className="flex items-center gap-3 rounded border p-2 text-sm"
-                                >
-                                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded bg-muted">
-                                        <Paperclip className="h-4 w-4 text-muted-foreground" />
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                        <p className="truncate font-medium">
-                                            {f.name}
-                                        </p>
-                                        <p className="text-xs text-muted-foreground">
-                                            {formatBytes(f.size)}
-                                        </p>
-                                    </div>
-                                    <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-8 w-8 flex-shrink-0 text-destructive hover:text-destructive"
-                                        onClick={() => removeFile(f.id)}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-
-                    <AttachmentUploader
-                        onFile={(file) => void uploadFile(file)}
-                        processing={uploading}
-                        error={uploadError ?? undefined}
-                    />
-                </div>
-            )}
+            <FileAttachments
+                transaction={transaction}
+                onFileIdsChange={(ids) => setData('file_ids', ids)}
+            />
 
             <div className="flex items-center justify-end space-x-2 pt-2">
                 <Button
@@ -297,7 +189,7 @@ export const TransactionForm = ({
                 >
                     Cancel
                 </Button>
-                <Button type="submit" disabled={processing || uploading}>
+                <Button type="submit" disabled={processing}>
                     {!transaction ? 'Create Transaction' : 'Save Changes'}
                 </Button>
             </div>

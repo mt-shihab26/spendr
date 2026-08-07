@@ -1,5 +1,6 @@
 import type { TFile, TTransaction } from '@/types/models';
 
+import { useState } from 'react';
 import { useForm } from '@inertiajs/react';
 import { Paperclip, Trash2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,7 +12,7 @@ const formatBytes = (bytes: number): string => {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
 
-const FileRow = ({
+const SavedFileRow = ({
     file,
     readonly,
 }: {
@@ -19,13 +20,6 @@ const FileRow = ({
     readonly: boolean;
 }) => {
     const { delete: destroy, processing } = useForm({});
-
-    const handleDelete = () => {
-        if (!confirm(`Remove "${file.name}"?`)) {
-            return;
-        }
-        destroy(route('files.destroy', file.id));
-    };
 
     const isImage = file.mime_type.startsWith('image/');
 
@@ -63,7 +57,10 @@ const FileRow = ({
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-destructive hover:text-destructive"
-                        onClick={handleDelete}
+                        onClick={() => {
+                            if (!confirm(`Remove "${file.name}"?`)) return;
+                            destroy(route('files.destroy', file.id));
+                        }}
                         disabled={processing}
                     >
                         <Trash2 className="h-4 w-4" />
@@ -74,55 +71,146 @@ const FileRow = ({
     );
 };
 
+type PendingFile = { id: string; name: string; size: number };
+
 export const FileAttachments = ({
     transaction,
     readonly = false,
+    onFileIdsChange,
 }: {
-    transaction: TTransaction;
+    transaction?: TTransaction;
     readonly?: boolean;
+    onFileIdsChange?: (ids: string[]) => void;
 }) => {
-    const files = transaction.files ?? [];
+    const savedFiles = transaction?.files ?? [];
+
+    const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
+    const [uploadError, setUploadError] = useState<string | null>(null);
+    const [uploading, setUploading] = useState(false);
 
     const { setData, post, processing, errors, reset } = useForm<{
         file: File | null;
     }>({ file: null });
 
-    const upload = (file: File) => {
+    const uploadForTransaction = (file: File) => {
         setData('file', file);
-        post(route('transactions.files.store', transaction.id), {
+        post(route('transactions.files.store', transaction!.id), {
             forceFormData: true,
             onSuccess: () => reset(),
         });
     };
+
+    const preUpload = async (file: File) => {
+        setUploadError(null);
+        setUploading(true);
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const csrf =
+                document.querySelector<HTMLMetaElement>(
+                    'meta[name="csrf-token"]',
+                )?.content ?? '';
+
+            const response = await fetch(route('files.store'), {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrf,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: formData,
+            });
+
+            if (!response.ok) {
+                const json = (await response
+                    .json()
+                    .catch(() => ({}))) as { message?: string };
+                setUploadError(json.message ?? 'Upload failed.');
+                return;
+            }
+
+            const uploaded = (await response.json()) as PendingFile & {
+                mime_type: string;
+            };
+            const next = [...pendingFiles, uploaded];
+            setPendingFiles(next);
+            onFileIdsChange?.(next.map((f) => f.id));
+        } catch {
+            setUploadError('Upload failed. Please try again.');
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const removePending = (id: string) => {
+        const next = pendingFiles.filter((f) => f.id !== id);
+        setPendingFiles(next);
+        onFileIdsChange?.(next.map((f) => f.id));
+    };
+
+    const isUploading = uploading || processing;
 
     return (
         <div className="border p-4">
             <div className="mb-3 flex items-center gap-2">
                 <Paperclip className="h-4 w-4 text-muted-foreground" />
                 <p className="text-sm font-medium">
-                    Attachments ({files.length})
+                    Attachments ({savedFiles.length + pendingFiles.length})
                 </p>
             </div>
 
-            {files.length > 0 ? (
-                <ul className={readonly ? 'space-y-2' : 'mb-4 space-y-2'}>
-                    {files.map((file) => (
-                        <FileRow key={file.id} file={file} readonly={readonly} />
+            {savedFiles.length === 0 && pendingFiles.length === 0 && readonly && (
+                <p className="text-sm text-muted-foreground">No attachments.</p>
+            )}
+
+            {savedFiles.length > 0 && (
+                <ul className={pendingFiles.length > 0 || !readonly ? 'mb-3 space-y-2' : 'space-y-2'}>
+                    {savedFiles.map((file) => (
+                        <SavedFileRow
+                            key={file.id}
+                            file={file}
+                            readonly={readonly}
+                        />
                     ))}
                 </ul>
-            ) : (
-                readonly && (
-                    <p className="text-sm text-muted-foreground">
-                        No attachments.
-                    </p>
-                )
+            )}
+
+            {pendingFiles.length > 0 && (
+                <ul className="mb-3 space-y-2">
+                    {pendingFiles.map((f) => (
+                        <li
+                            key={f.id}
+                            className="flex items-center gap-3 rounded border p-2 text-sm"
+                        >
+                            <div className="flex h-10 w-10 items-center justify-center rounded bg-muted">
+                                <Paperclip className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                                <p className="truncate font-medium">{f.name}</p>
+                                <p className="text-xs text-muted-foreground">
+                                    {formatBytes(f.size)}
+                                </p>
+                            </div>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-destructive hover:text-destructive"
+                                onClick={() => removePending(f.id)}
+                            >
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        </li>
+                    ))}
+                </ul>
             )}
 
             {!readonly && (
                 <AttachmentUploader
-                    onFile={upload}
-                    processing={processing}
-                    error={errors.file}
+                    onFile={transaction ? uploadForTransaction : (f) => void preUpload(f)}
+                    processing={isUploading}
+                    error={errors.file ?? uploadError ?? undefined}
                 />
             )}
         </div>
