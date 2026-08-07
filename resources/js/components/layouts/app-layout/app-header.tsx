@@ -26,7 +26,7 @@ import {
 
 import type { TBreadcrumb } from '@/types/utils';
 
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn, toUrl } from '@/lib/utils';
@@ -35,6 +35,7 @@ import { mainLinks, rightLinks } from '@/lib/links';
 
 import { Link } from '@inertiajs/react';
 import { Menu, Search } from 'lucide-react';
+import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { AppLogoIcon } from '@/components/icons/app-logo-icon';
@@ -53,6 +54,8 @@ export const AppHeader = ({
 }) => {
     const { isCurrentOrParentUrl } = useCurrentUrl();
     const { user } = usePage().props.auth;
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     return (
         <>
@@ -164,13 +167,36 @@ export const AppHeader = ({
 
                     <div className="ml-auto flex items-center space-x-2">
                         <div className="relative flex items-center space-x-1">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="group h-9 w-9 cursor-pointer"
-                            >
-                                <Search className="size-5! opacity-80 group-hover:opacity-100" />
-                            </Button>
+                            {searchOpen ? (
+                                <form
+                                    onSubmit={(e) => {
+                                        e.preventDefault();
+                                        router.get(route('search'), { q: searchQuery });
+                                        setSearchOpen(false);
+                                    }}
+                                    className="flex items-center gap-1"
+                                >
+                                    <input
+                                        autoFocus
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        onBlur={() => { if (!searchQuery) setSearchOpen(false); }}
+                                        onKeyDown={(e) => e.key === 'Escape' && setSearchOpen(false)}
+                                        placeholder="Search…"
+                                        className="h-8 w-40 border border-input bg-background px-2 text-xs outline-none focus:ring-1 focus:ring-ring"
+                                    />
+                                </form>
+                            ) : (
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="group h-9 w-9 cursor-pointer"
+                                    onClick={() => setSearchOpen(true)}
+                                >
+                                    <Search className="size-5! opacity-80 group-hover:opacity-100" />
+                                </Button>
+                            )}
                             <div className="ml-1 hidden gap-1 lg:flex">
                                 {rightLinks().map((item) => (
                                     <Tooltip key={item.title}>
