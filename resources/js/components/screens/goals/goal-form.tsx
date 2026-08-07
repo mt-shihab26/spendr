@@ -80,7 +80,7 @@ export const GoalForm = ({ goal }: { goal?: TGoal }) => {
                     <Label htmlFor="currency">Currency</Label>
                     <Select
                         value={data.currency}
-                        onValueChange={(v) => setData('currency', v)}
+                        onValueChange={(v) => setData('currency', v ?? '')}
                     >
                         <SelectTrigger id="currency">
                             <SelectValue />

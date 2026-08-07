@@ -91,7 +91,7 @@ export const TransactionsTable = ({
                     <div className="flex flex-1 items-center gap-2">
                         {categories && categories.length > 0 && (
                             <div className="flex items-center gap-1">
-                                <Select value={reassignCategory} onValueChange={setReassignCategory}>
+                                <Select value={reassignCategory} onValueChange={(v) => setReassignCategory(v ?? '')}>
                                     <SelectTrigger className="h-7 w-40 text-xs">
                                         <SelectValue placeholder="Reassign category" />
                                     </SelectTrigger>

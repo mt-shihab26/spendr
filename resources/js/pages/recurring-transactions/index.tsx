@@ -109,7 +109,7 @@ const RecurringTransactionsIndex = ({
                                                     <IconBadge
                                                         icon={r.category.icon}
                                                         color={r.category.color}
-                                                        className="h-5 w-5"
+                                                        size="sm"
                                                     />
                                                 )}
                                                 <Link

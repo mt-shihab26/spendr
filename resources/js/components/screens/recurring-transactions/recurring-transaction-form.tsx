@@ -84,7 +84,7 @@ export const RecurringTransactionForm = ({
                     <Select
                         value={data.type}
                         onValueChange={(v) => {
-                            setData('type', v);
+                            setData('type', v ?? '');
                             setData('category_id', '');
                         }}
                     >
@@ -118,7 +118,7 @@ export const RecurringTransactionForm = ({
                 <Label htmlFor="wallet_id">Wallet</Label>
                 <Select
                     value={data.wallet_id}
-                    onValueChange={(v) => setData('wallet_id', v)}
+                    onValueChange={(v) => setData('wallet_id', v ?? '')}
                 >
                     <SelectTrigger id="wallet_id">
                         <SelectValue placeholder="Select wallet" />
@@ -130,7 +130,7 @@ export const RecurringTransactionForm = ({
                                     <IconBadge
                                         icon={w.icon}
                                         color={w.color}
-                                        className="h-4 w-4"
+                                        size="sm"
                                     />
                                     {w.name}
                                 </div>
@@ -145,7 +145,7 @@ export const RecurringTransactionForm = ({
                 <Label htmlFor="category_id">Category (optional)</Label>
                 <Select
                     value={data.category_id}
-                    onValueChange={(v) => setData('category_id', v)}
+                    onValueChange={(v) => setData('category_id', v ?? '')}
                 >
                     <SelectTrigger id="category_id">
                         <SelectValue placeholder="No category" />
@@ -157,7 +157,7 @@ export const RecurringTransactionForm = ({
                                     <IconBadge
                                         icon={c.icon}
                                         color={c.color}
-                                        className="h-4 w-4"
+                                        size="sm"
                                     />
                                     {c.name}
                                 </div>
@@ -173,7 +173,7 @@ export const RecurringTransactionForm = ({
                     <Label htmlFor="frequency">Frequency</Label>
                     <Select
                         value={data.frequency}
-                        onValueChange={(v) => setData('frequency', v)}
+                        onValueChange={(v) => setData('frequency', v ?? '')}
                     >
                         <SelectTrigger id="frequency">
                             <SelectValue />

@@ -167,7 +167,7 @@ const TransactionsImport = ({
                         <div className="grid grid-cols-2 gap-3 border-t pt-3">
                             <div className="flex flex-col gap-1">
                                 <label className="text-xs font-medium">Default type</label>
-                                <Select value={data.default_type} onValueChange={(v) => setData('default_type', v)}>
+                                <Select value={data.default_type} onValueChange={(v) => setData('default_type', v ?? '')}>
                                     <SelectTrigger className="h-8 text-xs">
                                         <SelectValue />
                                     </SelectTrigger>
