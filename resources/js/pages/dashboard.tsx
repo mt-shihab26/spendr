@@ -153,7 +153,15 @@ const Dashboard = ({
                 <div className="grid gap-4 md:grid-cols-2">
                     {/* Wallets Panel */}
                     <div className="border p-4">
-                        <p className="mb-3 text-sm font-medium">Wallets</p>
+                        <div className="mb-3 flex items-center justify-between">
+                            <p className="text-sm font-medium">Wallets</p>
+                            <Link
+                                href={route('wallets.index')}
+                                className="text-xs text-muted-foreground hover:underline"
+                            >
+                                All Wallets →
+                            </Link>
+                        </div>
                         {wallets.length === 0 ? (
                             <div className="flex flex-col items-center gap-3 py-6 text-center">
                                 <p className="text-xs text-muted-foreground">
@@ -194,20 +202,6 @@ const Dashboard = ({
                                             </span>
                                         </div>
                                     ))}
-                                </div>
-                                <div className="mt-2 flex items-center justify-between border-t pt-2">
-                                    <span className="text-xs font-medium">Total</span>
-                                    <span className="text-xs font-semibold tabular-nums">
-                                        {formatCurrency(net_worth, displayCurrency)}
-                                    </span>
-                                </div>
-                                <div className="mt-3 text-right">
-                                    <Link
-                                        href={route('wallets.index')}
-                                        className="text-xs text-muted-foreground hover:underline"
-                                    >
-                                        All Wallets →
-                                    </Link>
                                 </div>
                             </>
                         )}
