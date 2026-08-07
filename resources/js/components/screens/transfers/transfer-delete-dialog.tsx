@@ -14,6 +14,8 @@ import type { TTransfer } from '@/types/models';
 import type { ReactElement } from 'react';
 
 import { router } from '@inertiajs/react';
+import { formatLocalDateLong } from '@/lib/date';
+import { formatCurrency } from '@/lib/formats';
 
 export const TransferDeleteDialog = ({
     transfer,
@@ -39,9 +41,11 @@ export const TransferDeleteDialog = ({
             {trigger && <AlertDialogTrigger render={trigger} />}
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Delete this transfer?</AlertDialogTitle>
+                    <AlertDialogTitle>Delete transfer?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        This cannot be undone.
+                        {transfer.from_wallet?.name} → {transfer.to_wallet?.name},{' '}
+                        {formatCurrency(transfer.amount, transfer.from_wallet?.currency)}{' '}
+                        on {formatLocalDateLong(transfer.transacted_at)}. Cannot be undone.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

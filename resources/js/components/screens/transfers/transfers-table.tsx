@@ -5,7 +5,7 @@ import { formatLocalDateLong, formatLocalDateTime } from '@/lib/date';
 import { formatCurrency } from '@/lib/formats';
 
 import { Link } from '@inertiajs/react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronRight } from 'lucide-react';
 import { IconBadge } from '@/components/elements/icon-badge';
 import { TransferActions } from '@/components/screens/transfers/transfer-actions';
 import { TransferDeleteDialog } from '@/components/screens/transfers/transfer-delete-dialog';
@@ -116,6 +116,12 @@ export const TransfersTable = ({ transfers }: { transfers: TTransfer[] }) => {
                                             transfer={transfer}
                                             onDelete={setToDelete}
                                         />
+                                        <Link
+                                            href={route('transfers.edit', transfer.id)}
+                                            className="text-muted-foreground hover:text-foreground"
+                                        >
+                                            <ChevronRight className="size-4" />
+                                        </Link>
                                     </div>
                                 ))}
                             </div>

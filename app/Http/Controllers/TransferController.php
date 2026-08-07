@@ -7,7 +7,6 @@ use App\Http\Requests\Transfers\UpdateTransferRequest;
 use App\Models\Transfer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class TransferController extends Controller
@@ -17,17 +16,38 @@ class TransferController extends Controller
      */
     public function index(Request $request): Response
     {
-        $transfers = Inertia::scroll(
-            $request->user()
-                ->transfers()
-                ->with(['fromWallet', 'toWallet'])
-                ->orderByDesc('transacted_at')
-                ->orderByDesc('created_at')
-                ->paginate(20)
-        );
+        $wallets = $request->user()->wallets()->orderBy('sort_order')->get();
+
+        $query = $request->user()
+            ->transfers()
+            ->with(['fromWallet', 'toWallet'])
+            ->orderByDesc('transacted_at')
+            ->orderByDesc('created_at');
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('transacted_at', '>=', $request->input('date_from'));
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('transacted_at', '<=', $request->input('date_to'));
+        }
+
+        if ($request->filled('wallet_id')) {
+            $walletId = $request->input('wallet_id');
+            $query->where(function ($q) use ($walletId): void {
+                $q->where('from_wallet_id', $walletId)
+                    ->orWhere('to_wallet_id', $walletId);
+            });
+        }
 
         return inertia('transfers/index', [
-            'transfers' => $transfers,
+            'transfers' => $query->paginate(20)->withQueryString(),
+            'wallets' => $wallets,
+            'filters' => [
+                'date_from' => $request->input('date_from'),
+                'date_to' => $request->input('date_to'),
+                'wallet_id' => $request->input('wallet_id'),
+            ],
         ]);
     }
 
@@ -51,7 +71,7 @@ class TransferController extends Controller
         $transfer = $request->user()->transfers()->create($request->validated());
 
         return redirect()
-            ->route('transfers.show', $transfer)
+            ->route('transfers.index')
             ->with('success', 'Transfer created.');
     }
 
