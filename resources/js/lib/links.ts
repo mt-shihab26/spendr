@@ -4,6 +4,7 @@ import {
     CircleDollarSign,
     Folder,
     LayoutGrid,
+    RefreshCw,
     Repeat,
     Tag,
     Target,
@@ -54,6 +55,11 @@ export const mainLinks = (): TLink[] => [
         title: 'Goals',
         href: route('goals.index'),
         icon: Target,
+    },
+    {
+        title: 'Recurring',
+        href: route('recurring-transactions.index'),
+        icon: RefreshCw,
     },
     {
         title: 'Reports',

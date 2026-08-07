@@ -3,6 +3,7 @@
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\RecurringTransactionController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileController;
@@ -88,6 +89,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{budget}/edit', [BudgetController::class, 'edit'])->name('budgets.edit');
         Route::patch('/{budget}', [BudgetController::class, 'update'])->name('budgets.update');
         Route::delete('/{budget}', [BudgetController::class, 'destroy'])->name('budgets.destroy');
+    });
+
+    Route::prefix('/recurring-transactions')->group(function () {
+        Route::get('/', [RecurringTransactionController::class, 'index'])->name('recurring-transactions.index');
+        Route::get('/create', [RecurringTransactionController::class, 'create'])->name('recurring-transactions.create');
+        Route::post('/', [RecurringTransactionController::class, 'store'])->name('recurring-transactions.store');
+        Route::get('/{recurringTransaction}', [RecurringTransactionController::class, 'show'])->name('recurring-transactions.show');
+        Route::get('/{recurringTransaction}/edit', [RecurringTransactionController::class, 'edit'])->name('recurring-transactions.edit');
+        Route::patch('/{recurringTransaction}', [RecurringTransactionController::class, 'update'])->name('recurring-transactions.update');
+        Route::delete('/{recurringTransaction}', [RecurringTransactionController::class, 'destroy'])->name('recurring-transactions.destroy');
     });
 
     Route::prefix('/goals')->group(function () {

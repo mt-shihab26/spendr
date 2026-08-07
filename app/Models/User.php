@@ -110,4 +110,14 @@ class User extends Authenticatable implements PasskeyUser
     {
         return $this->hasMany(Goal::class);
     }
+
+    /**
+     * Get the user's recurring transactions.
+     *
+     * @return HasMany<RecurringTransaction, $this>
+     */
+    public function recurringTransactions(): HasMany
+    {
+        return $this->hasMany(RecurringTransaction::class);
+    }
 }

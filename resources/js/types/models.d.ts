@@ -99,6 +99,27 @@ export type TTransaction = {
     files?: TFile[];
 };
 
+export type TRecurringTransaction = {
+    id: string;
+    user_id: string;
+    wallet_id: string;
+    category_id: string | null;
+    type: TType;
+    amount: number;
+    description: string;
+    notes: string | null;
+    frequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
+    next_due_at: string;
+    last_run_at: string | null;
+    is_active: boolean;
+    deleted_at: string | null;
+    created_at: string;
+    updated_at: string;
+
+    wallet?: TWallet;
+    category?: TCategory | null;
+};
+
 export type TGoal = {
     id: string;
     user_id: string;
