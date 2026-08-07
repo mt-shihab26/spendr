@@ -1,19 +1,13 @@
-import logoFullLight from '@/assets/logo-full-light.svg';
-import logoFullDark from '@/assets/logo-full-dark.svg';
+import { usePage } from '@inertiajs/react';
 
 export const AppLogo = () => {
+    const { name } = usePage().props;
+
     return (
         <>
-            <img
-                src={logoFullLight}
-                alt="Spendr"
-                className="h-8 w-auto dark:hidden"
-            />
-            <img
-                src={logoFullDark}
-                alt="Spendr"
-                className="hidden h-8 w-auto dark:block"
-            />
+            <div className="font-mono text-[23px] font-bold tracking-[-0.3px] text-primary">
+                {name}
+            </div>
         </>
     );
 };
