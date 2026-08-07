@@ -1,5 +1,4 @@
 <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Main body -->
     <path
         d="M8 5
        H27
@@ -22,15 +21,14 @@
         stroke-linejoin="round"
     />
 
-    <!-- Payment dot -->
     <circle cx="34.5" cy="20" r="2.5" fill="#0D9488" />
 
-    <!-- Three lines -->
+    <!-- Four lines -->
     <line
         x1="8"
-        y1="17"
+        y1="16"
         x2="25"
-        y2="17"
+        y2="16"
         stroke="#0D9488"
         stroke-width="2"
         stroke-linecap="round"
@@ -38,9 +36,9 @@
 
     <line
         x1="8"
-        y1="21"
+        y1="19.5"
         x2="25"
-        y2="21"
+        y2="19.5"
         stroke="#0D9488"
         stroke-width="2"
         stroke-linecap="round"
@@ -48,9 +46,19 @@
 
     <line
         x1="8"
-        y1="25"
+        y1="23"
+        x2="25"
+        y2="23"
+        stroke="#0D9488"
+        stroke-width="2"
+        stroke-linecap="round"
+    />
+
+    <line
+        x1="8"
+        y1="26.5"
         x2="20"
-        y2="25"
+        y2="26.5"
         stroke="#0D9488"
         stroke-width="2"
         stroke-linecap="round"
