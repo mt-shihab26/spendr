@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TransactionController;
@@ -16,7 +17,7 @@ Route::inertia('/', 'welcome')->name('home');
 Route::get('.well-known/passkey-endpoints', [WellKnownController::class, 'passkeyEndpoints'])->name('well-known.passkeys');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('/dashboard', 'dashboard')->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('/wallets')->group(function () {
         Route::get('/', [WalletController::class, 'index'])->name('wallets.index');
