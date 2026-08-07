@@ -21,11 +21,11 @@ export const TransactionsTable = ({
 
     const transactionsByDate = transactions.reduce<Map<string, TTransaction[]>>(
         (groups, transaction) => {
-            const transactionsForDate =
-                groups.get(transaction.transacted_at) ?? [];
+            const dateKey = transaction.transacted_at.substring(0, 10);
+            const transactionsForDate = groups.get(dateKey) ?? [];
 
             transactionsForDate.push(transaction);
-            groups.set(transaction.transacted_at, transactionsForDate);
+            groups.set(dateKey, transactionsForDate);
 
             return groups;
         },
