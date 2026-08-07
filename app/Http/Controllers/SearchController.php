@@ -25,6 +25,8 @@ class SearchController extends Controller
                 'wallets' => [],
                 'transfers' => [],
                 'categories' => [],
+                'goals' => [],
+                'recurring' => [],
             ]);
         }
 
@@ -60,12 +62,30 @@ class SearchController extends Controller
             ->limit(5)
             ->get();
 
+        $goals = $user->goals()
+            ->where(function ($q) use ($like) {
+                $q->where('name', 'like', $like)
+                    ->orWhere('description', 'like', $like);
+            })
+            ->orderBy('name')
+            ->limit(5)
+            ->get();
+
+        $recurring = $user->recurringTransactions()
+            ->with(['wallet', 'category'])
+            ->where('description', 'like', $like)
+            ->orderBy('next_due_at')
+            ->limit(5)
+            ->get();
+
         return inertia('search', [
             'query' => $query,
             'transactions' => $transactions,
             'wallets' => $wallets,
             'transfers' => $transfers,
             'categories' => $categories,
+            'goals' => $goals,
+            'recurring' => $recurring,
         ]);
     }
 }

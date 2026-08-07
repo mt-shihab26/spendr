@@ -1,9 +1,9 @@
-import type { TCategory, TTransaction, TWallet } from '@/types/models';
+import type { TCategory, TGoal, TRecurringTransaction, TTransaction, TWallet } from '@/types/models';
 import type { TCategoryRow } from '@/types/reports';
 import type { TCurrency } from '@/types/enums';
 
 import { Link } from '@inertiajs/react';
-import { ArrowDown, ArrowUp, Minus, TriangleAlert } from 'lucide-react';
+import { ArrowDown, ArrowUp, Minus, RefreshCw, Target, TriangleAlert } from 'lucide-react';
 
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
@@ -91,6 +91,8 @@ const Dashboard = ({
     spending_by_category,
     recent_transactions,
     budgets,
+    upcoming_recurring,
+    goals,
 }: {
     currency_stats: TCurrencyStat[];
     primary_currency: TCurrency | null;
@@ -98,6 +100,8 @@ const Dashboard = ({
     spending_by_category: TCategoryRow[];
     recent_transactions: TTransaction[];
     budgets: TBudgetStatus[];
+    upcoming_recurring: TRecurringTransaction[];
+    goals: TGoal[];
 }) => {
     const displayCurrency = primary_currency ?? 'BDT';
 
@@ -282,6 +286,98 @@ const Dashboard = ({
                                 );
                             })}
                         </div>
+                    </div>
+                )}
+
+                {/* Goals + Upcoming Recurring */}
+                {(goals.length > 0 || upcoming_recurring.length > 0) && (
+                    <div className="grid gap-4 md:grid-cols-2">
+                        {/* Goals */}
+                        {goals.length > 0 && (
+                            <div>
+                                <div className="mb-2 flex items-center justify-between">
+                                    <p className="text-sm font-medium">Goals</p>
+                                    <Link
+                                        href={route('goals.index')}
+                                        className="text-xs text-muted-foreground hover:underline"
+                                    >
+                                        All Goals →
+                                    </Link>
+                                </div>
+                                <div className="divide-y border">
+                                    {goals.map((goal) => {
+                                        const pct = goal.progress_percentage ?? 0;
+                                        return (
+                                            <Link
+                                                key={goal.id}
+                                                href={route('goals.show', goal.id)}
+                                                className="block px-4 py-3 hover:bg-muted/50"
+                                            >
+                                                <div className="mb-1.5 flex items-center justify-between">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <div
+                                                            className="flex size-5 items-center justify-center rounded-full"
+                                                            style={{ backgroundColor: goal.color + '20', color: goal.color }}
+                                                        >
+                                                            <Target className="size-3" />
+                                                        </div>
+                                                        <span className="text-xs font-medium">{goal.name}</span>
+                                                    </div>
+                                                    <span className="text-xs tabular-nums text-muted-foreground">
+                                                        {pct.toFixed(0)}%
+                                                    </span>
+                                                </div>
+                                                <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                                                    <div
+                                                        className="h-full rounded-full transition-all"
+                                                        style={{ width: `${Math.min(100, pct)}%`, backgroundColor: goal.color }}
+                                                    />
+                                                </div>
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Upcoming Recurring */}
+                        {upcoming_recurring.length > 0 && (
+                            <div>
+                                <div className="mb-2 flex items-center justify-between">
+                                    <p className="text-sm font-medium">Upcoming Recurring</p>
+                                    <Link
+                                        href={route('recurring-transactions.index')}
+                                        className="text-xs text-muted-foreground hover:underline"
+                                    >
+                                        All Recurring →
+                                    </Link>
+                                </div>
+                                <div className="divide-y border">
+                                    {upcoming_recurring.map((r) => (
+                                        <Link
+                                            key={r.id}
+                                            href={route('recurring-transactions.show', r.id)}
+                                            className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50"
+                                        >
+                                            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-muted">
+                                                <RefreshCw className="size-3 text-muted-foreground" />
+                                            </span>
+                                            <div className="flex flex-1 flex-col">
+                                                <span className="text-xs font-medium">{r.description}</span>
+                                                <span className="text-xs capitalize text-muted-foreground">
+                                                    {r.frequency} · due {r.next_due_at}
+                                                </span>
+                                            </div>
+                                            <span className="text-xs font-semibold tabular-nums">
+                                                {r.wallet
+                                                    ? formatCurrency(r.amount, r.wallet.currency)
+                                                    : r.amount.toFixed(2)}
+                                            </span>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

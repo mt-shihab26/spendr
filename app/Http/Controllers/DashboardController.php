@@ -72,6 +72,21 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
+        $upcomingRecurring = $user->recurringTransactions()
+            ->with(['wallet', 'category'])
+            ->where('is_active', true)
+            ->orderBy('next_due_at')
+            ->limit(5)
+            ->get();
+
+        $goals = $user->goals()
+            ->orderByRaw('(current_amount / target_amount) ASC')
+            ->limit(4)
+            ->get()
+            ->map(fn ($goal) => array_merge($goal->toArray(), [
+                'progress_percentage' => $goal->progressPercentage(),
+            ]));
+
         return inertia('dashboard', [
             'currency_stats' => $currencyStats,
             'primary_currency' => $primaryCurrency,
@@ -83,6 +98,8 @@ class DashboardController extends Controller
             'budgets' => $primaryCurrency
                 ? $this->getBudgetStatus($user->id, $primaryCurrency, $year, $monthNum)
                 : [],
+            'upcoming_recurring' => $upcomingRecurring,
+            'goals' => $goals,
         ]);
     }
 

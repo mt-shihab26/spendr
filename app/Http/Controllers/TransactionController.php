@@ -289,7 +289,7 @@ class TransactionController extends Controller
     /**
      * Import transactions from a CSV file.
      */
-    public function import(Request $request): RedirectResponse
+    public function import(Request $request, BudgetAlertService $alerts): RedirectResponse
     {
         $validated = $request->validate([
             'file' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
@@ -317,6 +317,7 @@ class TransactionController extends Controller
         $firstRow = true;
         $imported = 0;
         $skipped = 0;
+        $importedTransactions = [];
 
         $categories = $request->user()->categories()->get()->keyBy(fn ($c) => strtolower($c->name));
 
@@ -369,7 +370,7 @@ class TransactionController extends Controller
                 }
             }
 
-            $request->user()->transactions()->create([
+            $transaction = $request->user()->transactions()->create([
                 'wallet_id' => $wallet->id,
                 'category_id' => $categoryId,
                 'type' => $type,
@@ -379,10 +380,16 @@ class TransactionController extends Controller
                 'notes' => null,
             ]);
 
+            $transaction->setRelation('wallet', $wallet);
+            $importedTransactions[] = $transaction;
             $imported++;
         }
 
         fclose($handle);
+
+        foreach ($importedTransactions as $transaction) {
+            $alerts->checkAfterTransaction($transaction);
+        }
 
         return redirect()
             ->route('transactions.index')

@@ -20,25 +20,8 @@ class WalletController extends Controller
      */
     public function index(Request $request): Response
     {
-        $user = $request->user();
-
-        $allCurrencies = $user->wallets()
-            ->distinct()
-            ->orderBy('currency')
-            ->pluck('currency')
-            ->map(fn ($c) => $c instanceof \BackedEnum ? $c->value : (string) $c)
-            ->all();
-
-        $validated = $request->validate([
-            'currency' => ['nullable', 'string'],
-        ]);
-
-        $requestedCurrency = $validated['currency'] ?? null;
-        $currency = ($requestedCurrency && in_array($requestedCurrency, $allCurrencies))
-            ? $requestedCurrency
-            : null;
-
-        $allWallets = $user->wallets()
+        $wallets = $request->user()
+            ->wallets()
             ->withStats()
             ->withCount('transactions')
             ->orderBy('sort_order')
@@ -49,14 +32,10 @@ class WalletController extends Controller
                 $wallet->setAttribute('balance', $wallet->currentBalance());
             });
 
-        $wallets = $currency
-            ? $allWallets->filter(fn ($w) => $w->currency->value === $currency)->values()
-            : $allWallets;
-
-        $stats = $allWallets
+        $stats = $wallets
             ->groupBy(fn (Wallet $wallet) => $wallet->currency->value)
-            ->map(fn ($group, string $cur) => [
-                'currency' => $cur,
+            ->map(fn ($group, string $currency) => [
+                'currency' => $currency,
                 'initial_balance' => round((float) $group->sum('initial_balance'), 2),
                 'income' => round((float) $group->sum('income'), 2),
                 'expense' => round((float) $group->sum('expense'), 2),
@@ -70,8 +49,6 @@ class WalletController extends Controller
         return inertia('wallets/index', [
             'wallets' => $wallets,
             'stats' => $stats,
-            'currencies' => $allCurrencies,
-            'currency' => $currency,
         ]);
     }
 
