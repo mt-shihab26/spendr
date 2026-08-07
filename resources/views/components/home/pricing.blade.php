@@ -1,5 +1,5 @@
 <section id="pricing" class="py-24 bg-accent/30">
-    <div class="mx-auto max-w-6xl px-6">
+    <div class="mx-auto max-w-7xl px-4">
         <div class="mb-16 text-center">
             <p class="mb-3 text-sm font-medium text-primary uppercase tracking-wider">Pricing</p>
             <h2 class="mb-4 text-3xl font-bold tracking-tight text-foreground lg:text-4xl">

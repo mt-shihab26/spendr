@@ -1,5 +1,5 @@
 <footer class="border-t border-border py-12">
-    <div class="mx-auto max-w-6xl px-6">
+    <div class="mx-auto max-w-7xl px-4">
         <div class="flex flex-col items-center justify-between gap-6 md:flex-row">
             <div>
                 <a href="{{ route('home') }}" class="text-lg font-bold tracking-tight text-foreground">

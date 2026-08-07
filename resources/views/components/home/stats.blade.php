@@ -1,5 +1,5 @@
 <section class="border-y border-border py-16">
-    <div class="mx-auto max-w-6xl px-6">
+    <div class="mx-auto max-w-7xl px-4">
         <div class="grid grid-cols-2 gap-8 lg:grid-cols-4">
             @foreach ([
                 ['value' => 'Unlimited', 'label' => 'Wallets & accounts'],

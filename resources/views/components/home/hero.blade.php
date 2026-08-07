@@ -5,7 +5,7 @@
     {{-- Glow --}}
     <div class="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl"></div>
 
-    <div class="relative mx-auto max-w-6xl px-6 text-center">
+    <div class="relative mx-auto max-w-7xl px-4 text-center">
         <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-accent px-4 py-1.5 text-xs text-muted-foreground">
             <span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
             Personal finance, simplified

@@ -1,5 +1,5 @@
 <section class="py-24">
-    <div class="mx-auto max-w-6xl px-6">
+    <div class="mx-auto max-w-7xl px-4">
         <div class="relative overflow-hidden rounded-2xl bg-primary px-8 py-16 text-center">
             {{-- Background pattern --}}
             <div class="pointer-events-none absolute inset-0 [background-image:linear-gradient(to_right,oklch(1_0_0/0.05)_1px,transparent_1px),linear-gradient(to_bottom,oklch(1_0_0/0.05)_1px,transparent_1px)] [background-size:32px_32px]"></div>

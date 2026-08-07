@@ -10,14 +10,12 @@ import type { TUser } from '@/types/models';
 import { router } from '@inertiajs/react';
 
 import { Link } from '@inertiajs/react';
-import { LogOut, Settings } from 'lucide-react';
+import { Home, LogOut, Settings } from 'lucide-react';
 import { UserInfo } from '@/components/layouts/app-layout/user-info';
 
 import { useCallback } from 'react';
 
-type TCleanupFn = () => void;
-
-const useMobileNavigation2 = (): TCleanupFn => {
+const useMobileNavigation = () => {
     return useCallback(() => {
         // Remove pointer-events style from body...
         document.body.style.removeProperty('pointer-events');
@@ -25,7 +23,7 @@ const useMobileNavigation2 = (): TCleanupFn => {
 };
 
 export const UserMenuContent = ({ user }: { user: TUser }) => {
-    const cleanup = useMobileNavigation2();
+    const cleanup = useMobileNavigation();
 
     const handleLogout = () => {
         cleanup();
@@ -43,6 +41,17 @@ export const UserMenuContent = ({ user }: { user: TUser }) => {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
+                <DropdownMenuItem
+                    render={
+                        <a
+                            className="block w-full cursor-pointer"
+                            href={route('home')}
+                        />
+                    }
+                >
+                    <Home className="mr-2" />
+                    Home
+                </DropdownMenuItem>
                 <DropdownMenuItem
                     render={
                         <Link

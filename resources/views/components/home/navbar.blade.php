@@ -1,5 +1,5 @@
 <nav class="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
-    <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
             <span class="text-2xl font-bold tracking-tight text-foreground">
                 spendr<span class="text-primary">.</span>
