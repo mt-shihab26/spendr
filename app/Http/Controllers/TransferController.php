@@ -7,6 +7,7 @@ use App\Http\Requests\Transfers\UpdateTransferRequest;
 use App\Models\Transfer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Response;
 
 class TransferController extends Controller
@@ -41,7 +42,7 @@ class TransferController extends Controller
         }
 
         return inertia('transfers/index', [
-            'transfers' => $query->paginate(20)->withQueryString(),
+            'transfers' => Inertia::scroll($query->paginate(20)),
             'wallets' => $wallets,
             'filters' => [
                 'date_from' => $request->input('date_from'),
