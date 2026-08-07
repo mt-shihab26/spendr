@@ -10,10 +10,10 @@
 
             <div class="flex items-center gap-6 text-sm text-muted-foreground">
                 <a href="#features" class="transition-colors hover:text-foreground">Features</a>
-                <a href="#how-it-works" class="transition-colors hover:text-foreground">How it works</a>
+                <a href="#guide" class="transition-colors hover:text-foreground">Guide</a>
                 @guest
                     <a href="{{ route('login') }}" class="transition-colors hover:text-foreground">Sign in</a>
-                    <a href="{{ route('register') }}" class="transition-colors hover:text-foreground">Get started</a>
+                    <a href="{{ route('register') }}" class="transition-colors hover:text-foreground">Start free trial</a>
                 @endguest
             </div>
 

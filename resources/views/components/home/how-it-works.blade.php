@@ -1,9 +1,9 @@
-<section id="how-it-works" class="py-24 bg-accent/30">
+<section id="guide" class="py-24 bg-accent/30">
     <div class="mx-auto max-w-6xl px-6">
         <div class="mb-16 text-center">
             <p class="mb-3 text-sm font-medium text-primary uppercase tracking-wider">How it works</p>
             <h2 class="mb-4 text-3xl font-bold tracking-tight text-foreground lg:text-4xl">
-                Get started in minutes
+                Start free trial
             </h2>
             <p class="mx-auto max-w-xl text-muted-foreground">
                 No complex setup. No imports needed. Start tracking your finances right away.
