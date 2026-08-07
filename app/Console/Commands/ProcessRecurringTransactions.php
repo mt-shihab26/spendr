@@ -27,6 +27,10 @@ class ProcessRecurringTransactions extends Command
         $processed = 0;
 
         foreach ($due as $recurring) {
+            if (! $recurring->user) {
+                continue;
+            }
+
             DB::transaction(function () use ($recurring, &$processed) {
                 $recurring->user->transactions()->create([
                     'wallet_id' => $recurring->wallet_id,

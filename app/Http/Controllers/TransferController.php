@@ -7,6 +7,7 @@ use App\Http\Requests\Transfers\UpdateTransferRequest;
 use App\Models\Transfer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -22,7 +23,7 @@ class TransferController extends Controller
         $validated = $request->validate([
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
-            'wallet_id' => ['nullable', 'uuid', 'exists:wallets,id'],
+            'wallet_id' => ['nullable', 'uuid', Rule::exists('wallets', 'id')->where('user_id', $request->user()->id)],
         ]);
 
         $query = $request->user()

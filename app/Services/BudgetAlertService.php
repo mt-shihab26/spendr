@@ -12,16 +12,16 @@ class BudgetAlertService
 {
     /**
      * Check budget thresholds after a transaction is saved and send alerts if needed.
+     *
+     * @return void
      */
-    public function checkAfterTransaction(Transaction $transaction): void
+    public function checkAfterTransaction(Transaction $transaction, User $user): void
     {
         if ($transaction->type !== Type::Expense) {
             return;
         }
 
-        $user = User::find($transaction->user_id);
-
-        if (! $user || ! $transaction->category_id) {
+        if (! $transaction->category_id) {
             return;
         }
 

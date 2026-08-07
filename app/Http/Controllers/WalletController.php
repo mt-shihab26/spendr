@@ -174,7 +174,20 @@ class WalletController extends Controller
     {
         abort_if($wallet->user_id !== $request->user()->id, 403);
 
-        $wallet->delete();
+        DB::transaction(function () use ($request, $wallet) {
+            $wasDefault = $wallet->is_default;
+
+            $wallet->delete();
+
+            if ($wasDefault) {
+                $request->user()
+                    ->wallets()
+                    ->orderBy('sort_order')
+                    ->orderBy('created_at')
+                    ->first()
+                    ?->update(['is_default' => true]);
+            }
+        });
 
         return redirect()
             ->route('wallets.index')

@@ -183,7 +183,7 @@ class TransactionController extends Controller
         $transaction = $request->user()->transactions()->create($request->validated());
 
         $transaction->load('wallet');
-        $alerts->checkAfterTransaction($transaction);
+        $alerts->checkAfterTransaction($transaction, $request->user());
 
         return redirect()
             ->route('transactions.show', $transaction)
@@ -231,7 +231,7 @@ class TransactionController extends Controller
         $transaction->update($request->validated());
 
         $transaction->load('wallet');
-        $alerts->checkAfterTransaction($transaction);
+        $alerts->checkAfterTransaction($transaction, $request->user());
 
         return redirect()
             ->back()
@@ -262,14 +262,14 @@ class TransactionController extends Controller
             'ids.*' => ['required', 'uuid'],
         ]);
 
-        Transaction::query()
+        $deleted = Transaction::query()
             ->where('user_id', $request->user()->id)
             ->whereIn('id', $validated['ids'])
             ->delete();
 
         return redirect()
             ->back()
-            ->with('success', count($validated['ids']).' transactions deleted.');
+            ->with('success', $deleted.' transactions deleted.');
     }
 
     /**
@@ -312,7 +312,7 @@ class TransactionController extends Controller
             'skip_header' => ['boolean'],
         ]);
 
-        $wallet = Wallet::find($validated['wallet_id']);
+        $wallet = $request->user()->wallets()->findOrFail($validated['wallet_id']);
         $handle = fopen($request->file('file')->getPathname(), 'r');
         $firstRow = true;
         $imported = 0;
@@ -387,8 +387,9 @@ class TransactionController extends Controller
 
         fclose($handle);
 
+        $importUser = $request->user();
         foreach ($importedTransactions as $transaction) {
-            $alerts->checkAfterTransaction($transaction);
+            $alerts->checkAfterTransaction($transaction, $importUser);
         }
 
         return redirect()
@@ -411,13 +412,13 @@ class TransactionController extends Controller
             ],
         ]);
 
-        Transaction::query()
+        $updated = Transaction::query()
             ->where('user_id', $request->user()->id)
             ->whereIn('id', $validated['ids'])
             ->update(['category_id' => $validated['category_id']]);
 
         return redirect()
             ->back()
-            ->with('success', count($validated['ids']).' transactions updated.');
+            ->with('success', $updated.' transactions updated.');
     }
 }
