@@ -15,13 +15,15 @@
   <g clip-path="url(#clip)">
     <rect width="40" height="40" fill="url(#bg)"/>
     <rect width="40" height="22" fill="url(#shine)"/>
-    <line x1="20" y1="6.5" x2="20" y2="11.5" stroke="white" stroke-width="3" stroke-linecap="round"/>
     <path
-      d="M27 14C27 11 24 9.5 20 9.5C16 9.5 13 11.5 13 14.5C13 17.5 17 19 20 20.5C23 22 27 23.5 27 26.5C27 30 24 31.5 20 31.5C16 31.5 13 29.5 13 27"
+      d="M7 11 L27 11 C30 11 31 12.5 31 15 L31 17.5 L34 17.5 C35.5 17.5 36 18.5 36 20 L36 22 C36 23.5 35.5 24.5 34 24.5 L31 24.5 L31 28 C31 30 29.5 31 27.5 31 L7 31 C4.5 31 4 29.5 4 28 L4 14 C4 12 5.5 11 7 11 Z"
+      fill="white"
+      fill-opacity="0.18"
       stroke="white"
-      stroke-width="3"
-      stroke-linecap="round"
+      stroke-width="2"
     />
-    <line x1="20" y1="28.5" x2="20" y2="33.5" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="33.5" cy="21" r="2" fill="white"/>
+    <line x1="8" y1="19.5" x2="23" y2="19.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="8" y1="24" x2="18" y2="24" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.5"/>
   </g>
 </svg>
