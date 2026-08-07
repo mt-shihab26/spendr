@@ -6,6 +6,7 @@ import {
     LayoutGrid,
     Repeat,
     Tag,
+    Target,
     Wallet,
 } from 'lucide-react';
 
@@ -49,7 +50,11 @@ export const mainLinks = (): TLink[] => [
         href: route('budgets.index'),
         icon: CircleDollarSign,
     },
-
+    {
+        title: 'Goals',
+        href: route('goals.index'),
+        icon: Target,
+    },
     {
         title: 'Reports',
         href: route('reports.index'),

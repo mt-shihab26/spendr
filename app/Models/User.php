@@ -100,4 +100,14 @@ class User extends Authenticatable implements PasskeyUser
     {
         return $this->hasMany(Budget::class);
     }
+
+    /**
+     * Get the user's financial goals.
+     *
+     * @return HasMany<Goal, $this>
+     */
+    public function goals(): HasMany
+    {
+        return $this->hasMany(Goal::class);
+    }
 }

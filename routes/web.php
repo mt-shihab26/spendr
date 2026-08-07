@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\GoalController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
@@ -87,6 +88,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{budget}/edit', [BudgetController::class, 'edit'])->name('budgets.edit');
         Route::patch('/{budget}', [BudgetController::class, 'update'])->name('budgets.update');
         Route::delete('/{budget}', [BudgetController::class, 'destroy'])->name('budgets.destroy');
+    });
+
+    Route::prefix('/goals')->group(function () {
+        Route::get('/', [GoalController::class, 'index'])->name('goals.index');
+        Route::get('/create', [GoalController::class, 'create'])->name('goals.create');
+        Route::post('/', [GoalController::class, 'store'])->name('goals.store');
+        Route::get('/{goal}', [GoalController::class, 'show'])->name('goals.show');
+        Route::get('/{goal}/edit', [GoalController::class, 'edit'])->name('goals.edit');
+        Route::patch('/{goal}', [GoalController::class, 'update'])->name('goals.update');
+        Route::delete('/{goal}', [GoalController::class, 'destroy'])->name('goals.destroy');
     });
 
     Route::prefix('/reports')->group(function () {

@@ -99,6 +99,23 @@ export type TTransaction = {
     files?: TFile[];
 };
 
+export type TGoal = {
+    id: string;
+    user_id: string;
+    name: string;
+    description: string | null;
+    currency: TCurrency;
+    target_amount: number;
+    current_amount: number;
+    progress_percentage?: number;
+    target_date: string | null;
+    icon: string | null;
+    color: string;
+    deleted_at: string | null;
+    created_at: string;
+    updated_at: string;
+};
+
 export type TTransfer = {
     id: string;
     user_id: string;

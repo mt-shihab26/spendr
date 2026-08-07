@@ -1,0 +1,166 @@
+import type { TGoal } from '@/types/models';
+
+import { useForm } from '@inertiajs/react';
+import { CURRENCIES_OPTIONS } from '@/lib/currency';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { InputError } from '@/components/elements/input-error';
+
+type TGoalFormData = {
+    name: string;
+    description: string;
+    currency: string;
+    target_amount: string;
+    current_amount: string;
+    target_date: string;
+    icon: string;
+    color: string;
+};
+
+export const GoalForm = ({ goal }: { goal?: TGoal }) => {
+    const { data, setData, post, patch, processing, errors } =
+        useForm<TGoalFormData>({
+            name: goal?.name ?? '',
+            description: goal?.description ?? '',
+            currency: goal?.currency ?? 'BDT',
+            target_amount: goal?.target_amount?.toString() ?? '',
+            current_amount: goal?.current_amount?.toString() ?? '0',
+            target_date: goal?.target_date ?? '',
+            icon: goal?.icon ?? '',
+            color: goal?.color ?? '#6366f1',
+        });
+
+    const submit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (goal) {
+            patch(route('goals.update', goal.id));
+        } else {
+            post(route('goals.store'));
+        }
+    };
+
+    return (
+        <form onSubmit={submit} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                    id="name"
+                    value={data.name}
+                    onChange={(e) => setData('name', e.target.value)}
+                    placeholder="Emergency fund"
+                />
+                <InputError message={errors.name} />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+                <Label htmlFor="description">Description (optional)</Label>
+                <Textarea
+                    id="description"
+                    value={data.description}
+                    onChange={(e) => setData('description', e.target.value)}
+                    placeholder="What is this goal for?"
+                    rows={2}
+                />
+                <InputError message={errors.description} />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="currency">Currency</Label>
+                    <Select
+                        value={data.currency}
+                        onValueChange={(v) => setData('currency', v)}
+                    >
+                        <SelectTrigger id="currency">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {CURRENCIES_OPTIONS.map((c) => (
+                                <SelectItem key={c} value={c}>
+                                    {c}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <InputError message={errors.currency} />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="color">Color</Label>
+                    <Input
+                        id="color"
+                        type="color"
+                        value={data.color}
+                        onChange={(e) => setData('color', e.target.value)}
+                        className="h-10 cursor-pointer p-1"
+                    />
+                    <InputError message={errors.color} />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="target_amount">Target Amount</Label>
+                    <Input
+                        id="target_amount"
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        value={data.target_amount}
+                        onChange={(e) =>
+                            setData('target_amount', e.target.value)
+                        }
+                        placeholder="10000.00"
+                    />
+                    <InputError message={errors.target_amount} />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="current_amount">Current Amount</Label>
+                    <Input
+                        id="current_amount"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={data.current_amount}
+                        onChange={(e) =>
+                            setData('current_amount', e.target.value)
+                        }
+                        placeholder="0.00"
+                    />
+                    <InputError message={errors.current_amount} />
+                </div>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+                <Label htmlFor="target_date">Target Date (optional)</Label>
+                <Input
+                    id="target_date"
+                    type="date"
+                    value={data.target_date}
+                    onChange={(e) => setData('target_date', e.target.value)}
+                />
+                <InputError message={errors.target_date} />
+            </div>
+
+            <Button type="submit" disabled={processing} className="w-full">
+                {processing
+                    ? 'Saving...'
+                    : goal
+                      ? 'Update Goal'
+                      : 'Create Goal'}
+            </Button>
+        </form>
+    );
+};
