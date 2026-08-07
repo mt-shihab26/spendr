@@ -6,6 +6,8 @@ use App\Models\File;
 use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileController extends Controller
 {
@@ -37,12 +39,12 @@ class FileController extends Controller
     /**
      * Serve a private file.
      */
-    public function show(Request $request, File $file): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function show(Request $request, File $file): StreamedResponse
     {
         abort_if($file->user_id !== $request->user()->id, 403);
 
-        return \Illuminate\Support\Facades\Storage::disk('private')->streamDownload(
-            fn () => print(\Illuminate\Support\Facades\Storage::disk('private')->get($file->path) ?? ''),
+        return Storage::disk('private')->streamDownload(
+            fn () => print (Storage::disk('private')->get($file->path) ?? ''),
             $file->name,
             ['Content-Type' => $file->mime_type],
         );
@@ -55,7 +57,7 @@ class FileController extends Controller
     {
         abort_if($file->user_id !== $request->user()->id, 403);
 
-        \Illuminate\Support\Facades\Storage::disk('private')->delete($file->path);
+        Storage::disk('private')->delete($file->path);
         $file->delete();
 
         return redirect()->back()->with('success', 'File removed.');
