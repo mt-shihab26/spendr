@@ -8,12 +8,12 @@ import {
 import type { TTransaction, TWallet, TCategory } from '@/types/models';
 import type { TType } from '@/types/enums';
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { getCurrencySymbol } from '@/lib/currency';
 import { useForm } from '@inertiajs/react';
 
 import { Link } from '@inertiajs/react';
-import { Paperclip, Trash2, Upload } from 'lucide-react';
+import { Paperclip, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,6 +23,7 @@ import { TypePicker } from '@/components/elements/type-picker';
 import { Textarea } from '@/components/ui/textarea';
 import { WalletSelect } from '@/components/elements/wallet-select';
 import { CategorySelect } from '@/components/elements/category-select';
+import { AttachmentUploader } from './attachment-uploader';
 
 type UploadedFile = {
     id: string;
@@ -71,11 +72,9 @@ export const TransactionForm = ({
         file_ids: [],
     });
 
-    const fileInputRef = useRef<HTMLInputElement>(null);
     const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
     const [uploadError, setUploadError] = useState<string | null>(null);
     const [uploading, setUploading] = useState(false);
-    const [dragOver, setDragOver] = useState(false);
 
     const uploadFile = async (file: File) => {
         setUploadError(null);
@@ -85,9 +84,10 @@ export const TransactionForm = ({
         formData.append('file', file);
 
         try {
-            const csrf = document.querySelector<HTMLMetaElement>(
-                'meta[name="csrf-token"]',
-            )?.content ?? '';
+            const csrf =
+                document.querySelector<HTMLMetaElement>(
+                    'meta[name="csrf-token"]',
+                )?.content ?? '';
 
             const response = await fetch(route('files.store'), {
                 method: 'POST',
@@ -99,21 +99,20 @@ export const TransactionForm = ({
             });
 
             if (!response.ok) {
-                const json = await response.json().catch(() => ({})) as { message?: string };
+                const json = (await response
+                    .json()
+                    .catch(() => ({}))) as { message?: string };
                 setUploadError(json.message ?? 'Upload failed.');
                 return;
             }
 
-            const uploaded = await response.json() as UploadedFile;
+            const uploaded = (await response.json()) as UploadedFile;
             setUploadedFiles((prev) => [...prev, uploaded]);
             setData('file_ids', [...data.file_ids, uploaded.id]);
         } catch {
             setUploadError('Upload failed. Please try again.');
         } finally {
             setUploading(false);
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
         }
     };
 
@@ -277,53 +276,11 @@ export const TransactionForm = ({
                         </ul>
                     )}
 
-                    <div
-                        className={`flex cursor-pointer flex-col items-center gap-2 rounded border-2 border-dashed p-4 transition-colors ${
-                            dragOver
-                                ? 'border-primary bg-primary/5'
-                                : 'border-muted-foreground/20 hover:border-muted-foreground/40'
-                        }`}
-                        onClick={() => fileInputRef.current?.click()}
-                        onDragOver={(e) => {
-                            e.preventDefault();
-                            setDragOver(true);
-                        }}
-                        onDragLeave={() => setDragOver(false)}
-                        onDrop={(e) => {
-                            e.preventDefault();
-                            setDragOver(false);
-                            const file = e.dataTransfer.files?.[0];
-                            if (file) {
-                                void uploadFile(file);
-                            }
-                        }}
-                    >
-                        <Upload className="h-5 w-5 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground">
-                            {uploading
-                                ? 'Uploading...'
-                                : 'Click or drag a file to attach'}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                            JPG, PNG, PDF, WEBP up to 10 MB
-                        </p>
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            className="hidden"
-                            accept=".jpg,.jpeg,.png,.gif,.pdf,.webp"
-                            onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                    void uploadFile(file);
-                                }
-                            }}
-                        />
-                    </div>
-
-                    {uploadError && (
-                        <p className="text-sm text-destructive">{uploadError}</p>
-                    )}
+                    <AttachmentUploader
+                        onFile={(file) => void uploadFile(file)}
+                        processing={uploading}
+                        error={uploadError ?? undefined}
+                    />
                 </div>
             )}
 

@@ -115,7 +115,7 @@ const TransactionsShow = ({ transaction }: { transaction: TTransaction }) => {
                         <p className="mt-1 text-sm">{transaction.notes}</p>
                     </div>
                 )}
-                <FileAttachments transaction={transaction} />
+                <FileAttachments transaction={transaction} readonly />
             </div>
         </AppLayout>
     );

@@ -22,7 +22,7 @@ class FileController extends Controller
         ]);
 
         $uploaded = $request->file('file');
-        $path = $uploaded->store("attachments/{$request->user()->id}", 'private');
+        $path = $uploaded->store("attachments/{$request->user()->id}", 'local');
 
         $file = File::create([
             'user_id' => $request->user()->id,
@@ -52,7 +52,7 @@ class FileController extends Controller
         ]);
 
         $uploaded = $request->file('file');
-        $path = $uploaded->store("attachments/{$request->user()->id}", 'private');
+        $path = $uploaded->store("attachments/{$request->user()->id}", 'local');
 
         $transaction->files()->create([
             'user_id' => $request->user()->id,
@@ -73,7 +73,7 @@ class FileController extends Controller
         abort_if($file->user_id !== $request->user()->id, 403);
 
         return response()->streamDownload(
-            fn () => print (Storage::disk('private')->get($file->path) ?? ''),
+            fn () => print (Storage::disk('local')->get($file->path) ?? ''),
             $file->name,
             ['Content-Type' => $file->mime_type],
         );
@@ -86,7 +86,7 @@ class FileController extends Controller
     {
         abort_if($file->user_id !== $request->user()->id, 403);
 
-        Storage::disk('private')->delete($file->path);
+        Storage::disk('local')->delete($file->path);
         $file->delete();
 
         return redirect()->back()->with('success', 'File removed.');
