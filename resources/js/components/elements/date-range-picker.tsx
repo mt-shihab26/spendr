@@ -184,7 +184,7 @@ export const DateRangePicker = ({
     };
 
     return (
-        <div className="flex items-center gap-1">
+        <div className="flex w-full items-center gap-1">
             <Popover
                 open={open}
                 onOpenChange={(o) => {
@@ -198,7 +198,7 @@ export const DateRangePicker = ({
                             variant: hasSelection ? 'default' : 'outline',
                             size: 'sm',
                         }),
-                        'h-8 max-w-56 gap-1.5 text-xs font-normal',
+                        'h-8 w-full gap-1.5 text-xs font-normal',
                     )}
                 >
                     <CalendarIcon className="size-3.5 shrink-0" />

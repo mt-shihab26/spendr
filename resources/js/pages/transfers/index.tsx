@@ -10,6 +10,7 @@ import type { TPaginated } from '@/types/utils';
 import type { TTransfer, TWallet } from '@/types/models';
 
 import { router } from '@inertiajs/react';
+
 import { InfiniteScroll } from '@inertiajs/react';
 import { Repeat } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -58,28 +59,30 @@ const TransfersIndex = ({
                         New Transfer
                     </NewButton>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                    <DateRangePicker
-                        dateFrom={filters.date_from}
-                        dateTo={filters.date_to}
-                        onSelect={(dates) =>
-                            navigate({
-                                date_from: dates?.from ?? null,
-                                date_to: dates?.to ?? null,
-                            })
-                        }
-                        onClear={() =>
-                            navigate({ date_from: null, date_to: null })
-                        }
-                    />
-                    <div className="w-48">
+                <div className="flex items-center gap-2">
+                    <div>
                         <WalletSelect
                             wallets={wallets}
                             value={filters.wallet_id}
+                            includeAll
                             onValueChange={(value) =>
                                 navigate({ wallet_id: value || null })
                             }
-                            includeAll
+                        />
+                    </div>
+                    <div>
+                        <DateRangePicker
+                            dateFrom={filters.date_from}
+                            dateTo={filters.date_to}
+                            onClear={() =>
+                                navigate({ date_from: null, date_to: null })
+                            }
+                            onSelect={(dates) =>
+                                navigate({
+                                    date_from: dates?.from ?? null,
+                                    date_to: dates?.to ?? null,
+                                })
+                            }
                         />
                     </div>
                 </div>
