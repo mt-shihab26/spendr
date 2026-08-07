@@ -25,7 +25,12 @@ const TransfersEdit = ({
                     route: 'transfers.index',
                 },
                 {
-                    title: 'Edit Transfer',
+                    title: 'Transfer',
+                    route: 'transfers.show',
+                    params: { transfer: transfer.id },
+                },
+                {
+                    title: 'Edit',
                     route: 'transfers.edit',
                     params: { transfer: transfer.id },
                 },
