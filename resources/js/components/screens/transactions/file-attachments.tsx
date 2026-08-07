@@ -88,7 +88,9 @@ export const FileAttachments = ({
     const transactionUpload = useForm<{ file: File | null }>({ file: null });
 
     // For pre-uploading (create flow) — returns JSON with file id/name/size
-    const preUpload = useHttp<{ file: File | null }, PendingFile>({ file: null });
+    const preUpload = useHttp<{ file: File | null }, PendingFile>({
+        file: null,
+    });
 
     const handleFile = (file: File) => {
         if (transaction) {
@@ -126,14 +128,19 @@ export const FileAttachments = ({
 
     return (
         <div className="space-y-3">
-            <div className="flex items-center gap-2">
-                <Paperclip className="h-4 w-4 text-muted-foreground" />
-                <p className="text-sm font-medium">Attachments ({total})</p>
-            </div>
-
-            {savedFiles.length === 0 && pendingFiles.length === 0 && readonly && (
-                <p className="text-sm text-muted-foreground">No attachments.</p>
+            {readonly && (
+                <div className="flex items-center gap-2">
+                    <Paperclip className="h-4 w-4 text-muted-foreground" />
+                    <p className="text-sm font-medium">Attachments ({total})</p>
+                </div>
             )}
+            {savedFiles.length === 0 &&
+                pendingFiles.length === 0 &&
+                readonly && (
+                    <p className="text-sm text-muted-foreground">
+                        No attachments.
+                    </p>
+                )}
 
             {savedFiles.length > 0 && (
                 <ul className="space-y-2">
