@@ -140,7 +140,8 @@ class TransactionController extends Controller
     {
         $query = Transaction::query()
             ->where('transactions.user_id', $request->user()->id)
-            ->with(['wallet', 'category']);
+            ->with(['wallet', 'category'])
+            ->withCount('files');
 
         if (! empty($validated['search'])) {
             $query->where('description', 'like', '%'.$validated['search'].'%');

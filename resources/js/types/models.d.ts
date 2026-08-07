@@ -94,6 +94,8 @@ export type TTransaction = {
     created_at: string;
     updated_at: string;
 
+    files_count?: number;
+
     wallet?: TWallet;
     category?: TCategory;
     files?: TFile[];

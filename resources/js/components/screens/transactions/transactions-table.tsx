@@ -5,7 +5,7 @@ import { router } from '@inertiajs/react';
 import { formatLocalDateLong, formatLocalDateTime } from '@/lib/date';
 
 import { Link } from '@inertiajs/react';
-import { ChevronRight, Trash2, Tag } from 'lucide-react';
+import { ChevronRight, Trash2, Tag, Paperclip } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -249,6 +249,12 @@ export const TransactionsTable = ({
                                             transaction={transaction}
                                             className="text-xs font-semibold"
                                         />
+                                        {!!transaction.files_count && (
+                                            <span className="flex items-center gap-0.5 text-xs text-muted-foreground">
+                                                <Paperclip className="size-3" />
+                                                {transaction.files_count}
+                                            </span>
+                                        )}
                                         <TransactionActions
                                             transaction={transaction}
                                             onDelete={setToDelete}

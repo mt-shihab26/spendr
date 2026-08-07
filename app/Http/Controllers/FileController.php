@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileController extends Controller
@@ -22,12 +23,18 @@ class FileController extends Controller
         ]);
 
         $uploaded = $request->file('file');
-        $path = $uploaded->store("attachments/{$request->user()->id}", 'local');
+        $uuid = (string) Str::uuid();
+        $extension = $uploaded->getClientOriginalExtension();
+        $directory = File::resolveDirectory($request->user()->id, null);
+        $filename = File::resolveFilename($uuid, $extension);
+
+        Storage::disk('local')->putFileAs($directory, $uploaded, $filename);
 
         $file = File::create([
+            'id' => $uuid,
             'user_id' => $request->user()->id,
             'name' => $uploaded->getClientOriginalName(),
-            'path' => $path,
+            'path' => $directory.'/'.$filename,
             'mime_type' => $uploaded->getMimeType() ?? 'application/octet-stream',
             'size' => $uploaded->getSize(),
         ]);
@@ -52,12 +59,18 @@ class FileController extends Controller
         ]);
 
         $uploaded = $request->file('file');
-        $path = $uploaded->store("attachments/{$request->user()->id}", 'local');
+        $uuid = (string) Str::uuid();
+        $extension = $uploaded->getClientOriginalExtension();
+        $directory = File::resolveDirectory($request->user()->id, Transaction::class);
+        $filename = File::resolveFilename($uuid, $extension);
+
+        Storage::disk('local')->putFileAs($directory, $uploaded, $filename);
 
         $transaction->files()->create([
+            'id' => $uuid,
             'user_id' => $request->user()->id,
             'name' => $uploaded->getClientOriginalName(),
-            'path' => $path,
+            'path' => $directory.'/'.$filename,
             'mime_type' => $uploaded->getMimeType() ?? 'application/octet-stream',
             'size' => $uploaded->getSize(),
         ]);
