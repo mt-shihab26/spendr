@@ -14,6 +14,16 @@ import { Button } from '@/components/ui/button';
 
 import { formatCurrency } from '@/lib/formats';
 
+type TCurrencyStat = {
+    currency: TCurrency;
+    balance: number;
+    month_income: number;
+    month_expense: number;
+    prev_month_income: number;
+    prev_month_expense: number;
+    net_worth_delta: number;
+};
+
 type TBudgetStatus = {
     id: string;
     category: TCategory;
@@ -50,13 +60,7 @@ const PctChange = ({ current, prev }: { current: number; prev: number }) => {
     );
 };
 
-const NetWorthDelta = ({
-    delta,
-    currency,
-}: {
-    delta: number;
-    currency: TCurrency;
-}) => {
+const BalanceDelta = ({ delta, currency }: { delta: number; currency: TCurrency }) => {
     if (delta > 0) {
         return (
             <span className="flex items-center gap-0.5 text-xs text-income">
@@ -81,31 +85,21 @@ const NetWorthDelta = ({
 };
 
 const Dashboard = ({
-    currency,
-    net_worth,
-    net_worth_delta,
-    month_income,
-    month_expense,
-    prev_month_income,
-    prev_month_expense,
+    currency_stats,
+    primary_currency,
     wallets,
     spending_by_category,
     recent_transactions,
     budgets,
 }: {
-    currency: TCurrency | null;
-    net_worth: number;
-    net_worth_delta: number;
-    month_income: number;
-    month_expense: number;
-    prev_month_income: number;
-    prev_month_expense: number;
+    currency_stats: TCurrencyStat[];
+    primary_currency: TCurrency | null;
     wallets: TWallet[];
     spending_by_category: TCategoryRow[];
     recent_transactions: TTransaction[];
     budgets: TBudgetStatus[];
 }) => {
-    const displayCurrency = currency ?? 'BDT';
+    const displayCurrency = primary_currency ?? 'BDT';
 
     return (
         <AppLayout
@@ -124,30 +118,39 @@ const Dashboard = ({
                     </NewButton>
                 </div>
 
-                {/* Summary Cards */}
-                <div className="grid gap-4 md:grid-cols-3">
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Balance</p>
-                        <p className="mt-1 text-lg font-semibold tabular-nums">
-                            {formatCurrency(net_worth, displayCurrency)}
-                        </p>
-                        <NetWorthDelta delta={net_worth_delta} currency={displayCurrency} />
+                {/* Summary Cards — one row per currency */}
+                {currency_stats.map((stat) => (
+                    <div key={stat.currency}>
+                        {currency_stats.length > 1 && (
+                            <p className="mb-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                                {stat.currency}
+                            </p>
+                        )}
+                        <div className="grid gap-4 md:grid-cols-3">
+                            <div className="border p-4">
+                                <p className="text-xs text-muted-foreground">Balance</p>
+                                <p className="mt-1 text-lg font-semibold tabular-nums">
+                                    {formatCurrency(stat.balance, stat.currency)}
+                                </p>
+                                <BalanceDelta delta={stat.net_worth_delta} currency={stat.currency} />
+                            </div>
+                            <div className="border p-4">
+                                <p className="text-xs text-muted-foreground">This Month Income</p>
+                                <p className="mt-1 text-lg font-semibold text-income tabular-nums">
+                                    {formatCurrency(stat.month_income, stat.currency)}
+                                </p>
+                                <PctChange current={stat.month_income} prev={stat.prev_month_income} />
+                            </div>
+                            <div className="border p-4">
+                                <p className="text-xs text-muted-foreground">This Month Expenses</p>
+                                <p className="mt-1 text-lg font-semibold text-expense tabular-nums">
+                                    {formatCurrency(stat.month_expense, stat.currency)}
+                                </p>
+                                <PctChange current={stat.month_expense} prev={stat.prev_month_expense} />
+                            </div>
+                        </div>
                     </div>
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">This Month Income</p>
-                        <p className="mt-1 text-lg font-semibold text-income tabular-nums">
-                            {formatCurrency(month_income, displayCurrency)}
-                        </p>
-                        <PctChange current={month_income} prev={prev_month_income} />
-                    </div>
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">This Month Expenses</p>
-                        <p className="mt-1 text-lg font-semibold text-expense tabular-nums">
-                            {formatCurrency(month_expense, displayCurrency)}
-                        </p>
-                        <PctChange current={month_expense} prev={prev_month_expense} />
-                    </div>
-                </div>
+                ))}
 
                 {/* Wallets + Spending by Category */}
                 <div className="grid gap-4 md:grid-cols-2">
@@ -164,46 +167,31 @@ const Dashboard = ({
                         </div>
                         {wallets.length === 0 ? (
                             <div className="flex flex-col items-center gap-3 py-6 text-center">
-                                <p className="text-xs text-muted-foreground">
-                                    No wallets yet.
-                                </p>
+                                <p className="text-xs text-muted-foreground">No wallets yet.</p>
                                 <Button
                                     size="sm"
                                     nativeButton={false}
-                                    render={
-                                        <Link href={route('wallets.create')} />
-                                    }
+                                    render={<Link href={route('wallets.create')} />}
                                 >
                                     Create your first wallet
                                 </Button>
                             </div>
                         ) : (
-                            <>
-                                <div className="divide-y">
-                                    {wallets.map((wallet) => (
-                                        <div
-                                            key={wallet.id}
-                                            className="flex items-center gap-2 py-2"
-                                        >
-                                            <span
-                                                className="size-2 shrink-0 rounded-full"
-                                                style={{
-                                                    backgroundColor: wallet.color,
-                                                }}
-                                            />
-                                            <span className="flex-1 truncate text-xs">
-                                                {wallet.name}
-                                            </span>
-                                            <span className="shrink-0 text-xs font-medium tabular-nums">
-                                                {formatCurrency(
-                                                    wallet.balance ?? 0,
-                                                    wallet.currency,
-                                                )}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </>
+                            <div className="divide-y">
+                                {wallets.map((wallet) => (
+                                    <div key={wallet.id} className="flex items-center gap-2 py-2">
+                                        <span
+                                            className="size-2 shrink-0 rounded-full"
+                                            style={{ backgroundColor: wallet.color }}
+                                        />
+                                        <span className="flex-1 truncate text-xs">{wallet.name}</span>
+                                        <span className="shrink-0 text-xs text-muted-foreground">{wallet.currency}</span>
+                                        <span className="shrink-0 text-xs font-medium tabular-nums">
+                                            {formatCurrency(wallet.balance ?? 0, wallet.currency)}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
                         )}
                     </div>
 
@@ -238,9 +226,7 @@ const Dashboard = ({
                     </div>
                     {recent_transactions.length === 0 ? (
                         <div className="border p-4">
-                            <p className="text-xs text-muted-foreground">
-                                No transactions yet.
-                            </p>
+                            <p className="text-xs text-muted-foreground">No transactions yet.</p>
                         </div>
                     ) : (
                         <TransactionsTable transactions={recent_transactions} />
@@ -262,12 +248,10 @@ const Dashboard = ({
                         <div className="divide-y border">
                             {budgets.map((item) => {
                                 const isOver = item.spent > item.budget_amount;
-                                const pct = item.budget_amount > 0
-                                    ? Math.min(
-                                          (item.spent / item.budget_amount) * 100,
-                                          100,
-                                      )
-                                    : 0;
+                                const pct =
+                                    item.budget_amount > 0
+                                        ? Math.min((item.spent / item.budget_amount) * 100, 100)
+                                        : 0;
 
                                 return (
                                     <div key={item.id} className="px-4 py-3">
@@ -284,8 +268,7 @@ const Dashboard = ({
                                                 )}
                                             </div>
                                             <span className="text-xs tabular-nums text-muted-foreground">
-                                                {formatCurrency(item.spent, displayCurrency)}{' '}
-                                                /{' '}
+                                                {formatCurrency(item.spent, displayCurrency)} /{' '}
                                                 {formatCurrency(item.budget_amount, displayCurrency)}
                                             </span>
                                         </div>

@@ -4,6 +4,7 @@ use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransferController;
@@ -18,6 +19,7 @@ Route::get('.well-known/passkey-endpoints', [WellKnownController::class, 'passke
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/search', [SearchController::class, 'index'])->name('search');
 
     Route::prefix('/wallets')->group(function () {
         Route::get('/', [WalletController::class, 'index'])->name('wallets.index');
@@ -32,6 +34,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('/transactions')->group(function () {
         Route::get('/', [TransactionController::class, 'index'])->name('transactions.index');
         Route::get('/export', [TransactionController::class, 'export'])->name('transactions.export');
+        Route::get('/import', [TransactionController::class, 'importForm'])->name('transactions.import');
+        Route::post('/import', [TransactionController::class, 'import'])->name('transactions.import.store');
+        Route::delete('/bulk', [TransactionController::class, 'bulkDestroy'])->name('transactions.bulk-destroy');
+        Route::patch('/bulk/reassign', [TransactionController::class, 'bulkReassign'])->name('transactions.bulk-reassign');
         Route::get('/create', [TransactionController::class, 'create'])->name('transactions.create');
         Route::post('/', [TransactionController::class, 'store'])->name('transactions.store');
         Route::get('/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
