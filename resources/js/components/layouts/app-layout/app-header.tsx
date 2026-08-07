@@ -6,8 +6,11 @@ import {
 
 import {
     NavigationMenu,
+    NavigationMenuContent,
     NavigationMenuItem,
     NavigationMenuList,
+    NavigationMenuTrigger,
+    navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 
 import {
@@ -26,16 +29,16 @@ import {
 
 import type { TBreadcrumb } from '@/types/utils';
 import type { TInAppNotification } from '@/types/global';
+import type { TNavEntry, TLink } from '@/lib/links';
 
 import { router, usePage } from '@inertiajs/react';
-import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn, toUrl } from '@/lib/utils';
 import { formatInitial } from '@/lib/formats';
-import { mainLinks, rightLinks } from '@/lib/links';
+import { navEntries, rightLinks } from '@/lib/links';
 
 import { Link } from '@inertiajs/react';
-import { Menu, Search, Bell } from 'lucide-react';
+import { Bell, Menu, Search } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -158,6 +161,37 @@ const NotificationBell = ({
     );
 };
 
+const DropdownLink = ({
+    link,
+    isActive,
+    onClick,
+}: {
+    link: TLink;
+    isActive: boolean;
+    onClick?: () => void;
+}) => (
+    <Link
+        href={link.href}
+        onClick={onClick}
+        className={cn(
+            'flex items-start gap-3 rounded p-2.5 text-xs transition-colors hover:bg-muted',
+            isActive && 'bg-muted',
+        )}
+    >
+        {link.icon && (
+            <link.icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+        )}
+        <div>
+            <p className="font-medium">{link.title}</p>
+            {link.description && (
+                <p className="mt-0.5 text-muted-foreground">
+                    {link.description}
+                </p>
+            )}
+        </div>
+    </Link>
+);
+
 export const AppHeader = ({
     breadcrumbs = [],
 }: {
@@ -165,9 +199,12 @@ export const AppHeader = ({
 }) => {
     const { isCurrentOrParentUrl } = useCurrentUrl();
     const { user } = usePage().props.auth;
-    const notifications = (usePage().props.notifications ?? []) as TInAppNotification[];
+    const notifications = (usePage().props.notifications ??
+        []) as TInAppNotification[];
     const [searchOpen, setSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+
+    const entries = navEntries();
 
     return (
         <>
@@ -199,19 +236,50 @@ export const AppHeader = ({
                                 </SheetHeader>
                                 <div className="flex h-full flex-1 flex-col space-y-4 p-4">
                                     <div className="flex h-full flex-col justify-between text-sm">
-                                        <div className="flex flex-col space-y-4">
-                                            {mainLinks().map((item) => (
-                                                <Link
-                                                    key={item.title}
-                                                    href={item.href}
-                                                    className="flex items-center space-x-2 font-medium"
-                                                >
-                                                    {item.icon && (
-                                                        <item.icon className="h-5 w-5" />
-                                                    )}
-                                                    <span>{item.title}</span>
-                                                </Link>
-                                            ))}
+                                        <div className="flex flex-col space-y-1">
+                                            {entries.map((entry) => {
+                                                if (entry.type === 'link') {
+                                                    return (
+                                                        <Link
+                                                            key={entry.title}
+                                                            href={entry.href}
+                                                            className={cn(
+                                                                'flex items-center gap-2 rounded p-2 text-sm font-medium hover:bg-muted',
+                                                                isCurrentOrParentUrl(entry.href) && 'bg-muted',
+                                                            )}
+                                                        >
+                                                            {entry.icon && (
+                                                                <entry.icon className="h-4 w-4" />
+                                                            )}
+                                                            {entry.title}
+                                                        </Link>
+                                                    );
+                                                }
+                                                return (
+                                                    <div key={entry.title}>
+                                                        <p className="mb-1 px-2 pt-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                                            {entry.title}
+                                                        </p>
+                                                        {entry.links.map(
+                                                            (link) => (
+                                                                <Link
+                                                                    key={link.title}
+                                                                    href={link.href}
+                                                                    className={cn(
+                                                                        'flex items-center gap-2 rounded p-2 text-sm font-medium hover:bg-muted',
+                                                                        isCurrentOrParentUrl(link.href) && 'bg-muted',
+                                                                    )}
+                                                                >
+                                                                    {link.icon && (
+                                                                        <link.icon className="h-4 w-4" />
+                                                                    )}
+                                                                    {link.title}
+                                                                </Link>
+                                                            ),
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
 
                                         <div className="flex flex-col space-y-4">
@@ -245,34 +313,74 @@ export const AppHeader = ({
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="ml-6 hidden h-full items-center space-x-6 lg:flex">
+                    <div className="ml-6 hidden h-full items-center lg:flex">
                         <NavigationMenu className="flex h-full items-stretch">
-                            <NavigationMenuList className="flex h-full items-stretch space-x-2">
-                                {mainLinks().map((item, index) => (
-                                    <NavigationMenuItem
-                                        key={index}
-                                        className="relative flex h-full items-center"
-                                    >
-                                        <Link
-                                            href={item.href}
-                                            className={cn(
-                                                navigationMenuTriggerStyle(),
-                                                isCurrentOrParentUrl(
-                                                    item.href,
-                                                ) && activeItemStyles,
-                                                'h-9 cursor-pointer px-3',
-                                            )}
+                            <NavigationMenuList className="flex h-full items-stretch space-x-1">
+                                {entries.map((entry) => {
+                                    if (entry.type === 'link') {
+                                        const isActive = isCurrentOrParentUrl(entry.href);
+                                        return (
+                                            <NavigationMenuItem
+                                                key={entry.title}
+                                                className="relative flex h-full items-center"
+                                            >
+                                                <Link
+                                                    href={entry.href}
+                                                    className={cn(
+                                                        navigationMenuTriggerStyle(),
+                                                        isActive && activeItemStyles,
+                                                        'h-9 cursor-pointer px-3',
+                                                    )}
+                                                >
+                                                    {entry.icon && (
+                                                        <entry.icon className="mr-1.5 h-4 w-4" />
+                                                    )}
+                                                    {entry.title}
+                                                </Link>
+                                                {isActive && (
+                                                    <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white" />
+                                                )}
+                                            </NavigationMenuItem>
+                                        );
+                                    }
+
+                                    const isGroupActive = entry.links.some((l) =>
+                                        isCurrentOrParentUrl(l.href),
+                                    );
+
+                                    return (
+                                        <NavigationMenuItem
+                                            key={entry.title}
+                                            className="relative flex h-full items-center"
                                         >
-                                            {item.icon && (
-                                                <item.icon className="mr-2 h-4 w-4" />
+                                            <NavigationMenuTrigger
+                                                className={cn(
+                                                    'h-9 px-3',
+                                                    isGroupActive && activeItemStyles,
+                                                )}
+                                            >
+                                                {entry.icon && (
+                                                    <entry.icon className="mr-1.5 h-4 w-4" />
+                                                )}
+                                                {entry.title}
+                                            </NavigationMenuTrigger>
+                                            <NavigationMenuContent>
+                                                <div className="grid w-56 gap-0.5 p-2">
+                                                    {entry.links.map((link) => (
+                                                        <DropdownLink
+                                                            key={link.title}
+                                                            link={link}
+                                                            isActive={isCurrentOrParentUrl(link.href)}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </NavigationMenuContent>
+                                            {isGroupActive && (
+                                                <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white" />
                                             )}
-                                            {item.title}
-                                        </Link>
-                                        {isCurrentOrParentUrl(item.href) && (
-                                            <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
-                                        )}
-                                    </NavigationMenuItem>
-                                ))}
+                                        </NavigationMenuItem>
+                                    );
+                                })}
                             </NavigationMenuList>
                         </NavigationMenu>
                     </div>
@@ -283,7 +391,9 @@ export const AppHeader = ({
                                 <form
                                     onSubmit={(e) => {
                                         e.preventDefault();
-                                        router.get(route('search'), { q: searchQuery });
+                                        router.get(route('search'), {
+                                            q: searchQuery,
+                                        });
                                         setSearchOpen(false);
                                     }}
                                     className="flex items-center gap-1"
@@ -292,9 +402,17 @@ export const AppHeader = ({
                                         autoFocus
                                         type="text"
                                         value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        onBlur={() => { if (!searchQuery) setSearchOpen(false); }}
-                                        onKeyDown={(e) => e.key === 'Escape' && setSearchOpen(false)}
+                                        onChange={(e) =>
+                                            setSearchQuery(e.target.value)
+                                        }
+                                        onBlur={() => {
+                                            if (!searchQuery)
+                                                setSearchOpen(false);
+                                        }}
+                                        onKeyDown={(e) =>
+                                            e.key === 'Escape' &&
+                                            setSearchOpen(false)
+                                        }
                                         placeholder="Search…"
                                         className="h-8 w-40 border border-input bg-background px-2 text-xs outline-none focus:ring-1 focus:ring-ring"
                                     />
