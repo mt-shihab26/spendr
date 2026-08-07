@@ -1,7 +1,7 @@
 <nav class="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
     <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
-            <span class="text-xl font-bold tracking-tight text-foreground">
+            <span class="text-2xl font-bold tracking-tight text-foreground">
                 spendr<span class="text-primary">.</span>
             </span>
         </a>
@@ -61,7 +61,6 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                     </svg>
                 </x-ui.button>
-            @endauth
             @endauth
         </div>
     </div>
