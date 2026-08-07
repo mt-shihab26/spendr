@@ -117,7 +117,10 @@ export const TransfersTable = ({ transfers }: { transfers: TTransfer[] }) => {
                                             onDelete={setToDelete}
                                         />
                                         <Link
-                                            href={route('transfers.edit', transfer.id)}
+                                            href={route(
+                                                'transfers.edit',
+                                                transfer.id,
+                                            )}
                                             className="text-muted-foreground hover:text-foreground"
                                         >
                                             <ChevronRight className="size-4" />

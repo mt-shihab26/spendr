@@ -26,7 +26,10 @@ const GoalCard = ({ goal }: { goal: TGoal }) => {
                 <div className="flex items-center gap-2">
                     <div
                         className="flex h-8 w-8 items-center justify-center rounded-full"
-                        style={{ backgroundColor: goal.color + '20', color: goal.color }}
+                        style={{
+                            backgroundColor: goal.color + '20',
+                            color: goal.color,
+                        }}
                     >
                         <Target className="h-4 w-4" />
                     </div>
@@ -50,7 +53,8 @@ const GoalCard = ({ goal }: { goal: TGoal }) => {
             <div className="space-y-1">
                 <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">
-                        {formatCurrency(goal.current_amount, goal.currency)} saved
+                        {formatCurrency(goal.current_amount, goal.currency)}{' '}
+                        saved
                     </span>
                     <span className="font-medium">
                         {percentage.toFixed(0)}%
@@ -72,7 +76,8 @@ const GoalCard = ({ goal }: { goal: TGoal }) => {
                             : 'Goal reached!'}
                     </span>
                     <span>
-                        Target: {formatCurrency(goal.target_amount, goal.currency)}
+                        Target:{' '}
+                        {formatCurrency(goal.target_amount, goal.currency)}
                     </span>
                 </div>
             </div>

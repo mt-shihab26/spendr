@@ -1,9 +1,22 @@
-import type { TCategory, TGoal, TRecurringTransaction, TTransaction, TWallet } from '@/types/models';
+import type {
+    TCategory,
+    TGoal,
+    TRecurringTransaction,
+    TTransaction,
+    TWallet,
+} from '@/types/models';
 import type { TCategoryRow } from '@/types/reports';
 import type { TCurrency } from '@/types/enums';
 
 import { Link } from '@inertiajs/react';
-import { ArrowDown, ArrowUp, Minus, RefreshCw, Target, TriangleAlert } from 'lucide-react';
+import {
+    ArrowDown,
+    ArrowUp,
+    Minus,
+    RefreshCw,
+    Target,
+    TriangleAlert,
+} from 'lucide-react';
 
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
@@ -60,11 +73,18 @@ const PctChange = ({ current, prev }: { current: number; prev: number }) => {
     );
 };
 
-const BalanceDelta = ({ delta, currency }: { delta: number; currency: TCurrency }) => {
+const BalanceDelta = ({
+    delta,
+    currency,
+}: {
+    delta: number;
+    currency: TCurrency;
+}) => {
     if (delta > 0) {
         return (
             <span className="flex items-center gap-0.5 text-xs text-income">
-                <ArrowUp className="size-3" />+{formatCurrency(delta, currency)} vs last month
+                <ArrowUp className="size-3" />+{formatCurrency(delta, currency)}{' '}
+                vs last month
             </span>
         );
     }
@@ -126,31 +146,55 @@ const Dashboard = ({
                 {currency_stats.map((stat) => (
                     <div key={stat.currency}>
                         {currency_stats.length > 1 && (
-                            <p className="mb-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                            <p className="mb-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 {stat.currency}
                             </p>
                         )}
                         <div className="grid gap-4 md:grid-cols-3">
                             <div className="border p-4">
-                                <p className="text-xs text-muted-foreground">Balance</p>
+                                <p className="text-xs text-muted-foreground">
+                                    Balance
+                                </p>
                                 <p className="mt-1 text-lg font-semibold tabular-nums">
-                                    {formatCurrency(stat.balance, stat.currency)}
+                                    {formatCurrency(
+                                        stat.balance,
+                                        stat.currency,
+                                    )}
                                 </p>
-                                <BalanceDelta delta={stat.net_worth_delta} currency={stat.currency} />
+                                <BalanceDelta
+                                    delta={stat.net_worth_delta}
+                                    currency={stat.currency}
+                                />
                             </div>
                             <div className="border p-4">
-                                <p className="text-xs text-muted-foreground">This Month Income</p>
+                                <p className="text-xs text-muted-foreground">
+                                    This Month Income
+                                </p>
                                 <p className="mt-1 text-lg font-semibold text-income tabular-nums">
-                                    {formatCurrency(stat.month_income, stat.currency)}
+                                    {formatCurrency(
+                                        stat.month_income,
+                                        stat.currency,
+                                    )}
                                 </p>
-                                <PctChange current={stat.month_income} prev={stat.prev_month_income} />
+                                <PctChange
+                                    current={stat.month_income}
+                                    prev={stat.prev_month_income}
+                                />
                             </div>
                             <div className="border p-4">
-                                <p className="text-xs text-muted-foreground">This Month Expenses</p>
-                                <p className="mt-1 text-lg font-semibold text-expense tabular-nums">
-                                    {formatCurrency(stat.month_expense, stat.currency)}
+                                <p className="text-xs text-muted-foreground">
+                                    This Month Expenses
                                 </p>
-                                <PctChange current={stat.month_expense} prev={stat.prev_month_expense} />
+                                <p className="mt-1 text-lg font-semibold text-expense tabular-nums">
+                                    {formatCurrency(
+                                        stat.month_expense,
+                                        stat.currency,
+                                    )}
+                                </p>
+                                <PctChange
+                                    current={stat.month_expense}
+                                    prev={stat.prev_month_expense}
+                                />
                             </div>
                         </div>
                     </div>
@@ -171,11 +215,15 @@ const Dashboard = ({
                         </div>
                         {wallets.length === 0 ? (
                             <div className="flex flex-col items-center gap-3 py-6 text-center">
-                                <p className="text-xs text-muted-foreground">No wallets yet.</p>
+                                <p className="text-xs text-muted-foreground">
+                                    No wallets yet.
+                                </p>
                                 <Button
                                     size="sm"
                                     nativeButton={false}
-                                    render={<Link href={route('wallets.create')} />}
+                                    render={
+                                        <Link href={route('wallets.create')} />
+                                    }
                                 >
                                     Create your first wallet
                                 </Button>
@@ -183,15 +231,27 @@ const Dashboard = ({
                         ) : (
                             <div className="divide-y">
                                 {wallets.map((wallet) => (
-                                    <div key={wallet.id} className="flex items-center gap-2 py-2">
+                                    <div
+                                        key={wallet.id}
+                                        className="flex items-center gap-2 py-2"
+                                    >
                                         <span
                                             className="size-2 shrink-0 rounded-full"
-                                            style={{ backgroundColor: wallet.color }}
+                                            style={{
+                                                backgroundColor: wallet.color,
+                                            }}
                                         />
-                                        <span className="flex-1 truncate text-xs">{wallet.name}</span>
-                                        <span className="shrink-0 text-xs text-muted-foreground">{wallet.currency}</span>
+                                        <span className="flex-1 truncate text-xs">
+                                            {wallet.name}
+                                        </span>
+                                        <span className="shrink-0 text-xs text-muted-foreground">
+                                            {wallet.currency}
+                                        </span>
                                         <span className="shrink-0 text-xs font-medium tabular-nums">
-                                            {formatCurrency(wallet.balance ?? 0, wallet.currency)}
+                                            {formatCurrency(
+                                                wallet.balance ?? 0,
+                                                wallet.currency,
+                                            )}
                                         </span>
                                     </div>
                                 ))}
@@ -220,7 +280,9 @@ const Dashboard = ({
                 {/* Recent Transactions */}
                 <div>
                     <div className="mb-2 flex items-center justify-between">
-                        <p className="text-sm font-medium">Recent Transactions</p>
+                        <p className="text-sm font-medium">
+                            Recent Transactions
+                        </p>
                         <Link
                             href={route('transactions.index')}
                             className="text-xs text-muted-foreground hover:underline"
@@ -230,7 +292,9 @@ const Dashboard = ({
                     </div>
                     {recent_transactions.length === 0 ? (
                         <div className="border p-4">
-                            <p className="text-xs text-muted-foreground">No transactions yet.</p>
+                            <p className="text-xs text-muted-foreground">
+                                No transactions yet.
+                            </p>
                         </div>
                     ) : (
                         <TransactionsTable transactions={recent_transactions} />
@@ -254,7 +318,12 @@ const Dashboard = ({
                                 const isOver = item.spent > item.budget_amount;
                                 const pct =
                                     item.budget_amount > 0
-                                        ? Math.min((item.spent / item.budget_amount) * 100, 100)
+                                        ? Math.min(
+                                              (item.spent /
+                                                  item.budget_amount) *
+                                                  100,
+                                              100,
+                                          )
                                         : 0;
 
                                 return (
@@ -271,9 +340,16 @@ const Dashboard = ({
                                                     </span>
                                                 )}
                                             </div>
-                                            <span className="text-xs tabular-nums text-muted-foreground">
-                                                {formatCurrency(item.spent, displayCurrency)} /{' '}
-                                                {formatCurrency(item.budget_amount, displayCurrency)}
+                                            <span className="text-xs text-muted-foreground tabular-nums">
+                                                {formatCurrency(
+                                                    item.spent,
+                                                    displayCurrency,
+                                                )}{' '}
+                                                /{' '}
+                                                {formatCurrency(
+                                                    item.budget_amount,
+                                                    displayCurrency,
+                                                )}
                                             </span>
                                         </div>
                                         <div className="h-1.5 overflow-hidden rounded-full bg-muted">
@@ -306,31 +382,46 @@ const Dashboard = ({
                                 </div>
                                 <div className="divide-y border">
                                     {goals.map((goal) => {
-                                        const pct = goal.progress_percentage ?? 0;
+                                        const pct =
+                                            goal.progress_percentage ?? 0;
                                         return (
                                             <Link
                                                 key={goal.id}
-                                                href={route('goals.show', goal.id)}
+                                                href={route(
+                                                    'goals.show',
+                                                    goal.id,
+                                                )}
                                                 className="block px-4 py-3 hover:bg-muted/50"
                                             >
                                                 <div className="mb-1.5 flex items-center justify-between">
                                                     <div className="flex items-center gap-1.5">
                                                         <div
                                                             className="flex size-5 items-center justify-center rounded-full"
-                                                            style={{ backgroundColor: goal.color + '20', color: goal.color }}
+                                                            style={{
+                                                                backgroundColor:
+                                                                    goal.color +
+                                                                    '20',
+                                                                color: goal.color,
+                                                            }}
                                                         >
                                                             <Target className="size-3" />
                                                         </div>
-                                                        <span className="text-xs font-medium">{goal.name}</span>
+                                                        <span className="text-xs font-medium">
+                                                            {goal.name}
+                                                        </span>
                                                     </div>
-                                                    <span className="text-xs tabular-nums text-muted-foreground">
+                                                    <span className="text-xs text-muted-foreground tabular-nums">
                                                         {pct.toFixed(0)}%
                                                     </span>
                                                 </div>
                                                 <div className="h-1.5 overflow-hidden rounded-full bg-muted">
                                                     <div
                                                         className="h-full rounded-full transition-all"
-                                                        style={{ width: `${Math.min(100, pct)}%`, backgroundColor: goal.color }}
+                                                        style={{
+                                                            width: `${Math.min(100, pct)}%`,
+                                                            backgroundColor:
+                                                                goal.color,
+                                                        }}
                                                     />
                                                 </div>
                                             </Link>
@@ -344,9 +435,13 @@ const Dashboard = ({
                         {upcoming_recurring.length > 0 && (
                             <div>
                                 <div className="mb-2 flex items-center justify-between">
-                                    <p className="text-sm font-medium">Upcoming Recurring</p>
+                                    <p className="text-sm font-medium">
+                                        Upcoming Recurring
+                                    </p>
                                     <Link
-                                        href={route('recurring-transactions.index')}
+                                        href={route(
+                                            'recurring-transactions.index',
+                                        )}
                                         className="text-xs text-muted-foreground hover:underline"
                                     >
                                         All Recurring →
@@ -356,21 +451,30 @@ const Dashboard = ({
                                     {upcoming_recurring.map((r) => (
                                         <Link
                                             key={r.id}
-                                            href={route('recurring-transactions.show', r.id)}
+                                            href={route(
+                                                'recurring-transactions.show',
+                                                r.id,
+                                            )}
                                             className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50"
                                         >
                                             <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-muted">
                                                 <RefreshCw className="size-3 text-muted-foreground" />
                                             </span>
                                             <div className="flex flex-1 flex-col">
-                                                <span className="text-xs font-medium">{r.description}</span>
-                                                <span className="text-xs capitalize text-muted-foreground">
-                                                    {r.frequency} · due {r.next_due_at}
+                                                <span className="text-xs font-medium">
+                                                    {r.description}
+                                                </span>
+                                                <span className="text-xs text-muted-foreground capitalize">
+                                                    {r.frequency} · due{' '}
+                                                    {r.next_due_at}
                                                 </span>
                                             </div>
                                             <span className="text-xs font-semibold tabular-nums">
                                                 {r.wallet
-                                                    ? formatCurrency(r.amount, r.wallet.currency)
+                                                    ? formatCurrency(
+                                                          r.amount,
+                                                          r.wallet.currency,
+                                                      )
                                                     : r.amount.toFixed(2)}
                                             </span>
                                         </Link>

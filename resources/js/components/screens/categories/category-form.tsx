@@ -54,11 +54,14 @@ export const CategoryForm = ({ category }: { category?: TCategory }) => {
                 <TypePicker
                     value={data.type}
                     onChange={(type) => setData('type', type)}
-                    disabled={!!category && (category.transactions_count ?? 0) > 0}
+                    disabled={
+                        !!category && (category.transactions_count ?? 0) > 0
+                    }
                 />
                 {!!category && (category.transactions_count ?? 0) > 0 && (
                     <p className="text-xs text-muted-foreground">
-                        Type cannot be changed while the category has transactions.
+                        Type cannot be changed while the category has
+                        transactions.
                     </p>
                 )}
                 <InputError message={errors.type} />

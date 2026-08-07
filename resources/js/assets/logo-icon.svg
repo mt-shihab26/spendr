@@ -1,12 +1,54 @@
-<svg viewBox="2.8 9.8 35 22.4" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path
-    d="M7 11 L27 11 C30 11 31 12.5 31 15 L31 17.5 L34 17.5 C35.5 17.5 36 18.5 36 20 L36 22 C36 23.5 35.5 24.5 34 24.5 L31 24.5 L31 28 C31 30 29.5 31 27.5 31 L7 31 C4.5 31 4 29.5 4 28 L4 14 C4 12 5.5 11 7 11 Z"
-    fill="none"
-    stroke="#0D9488"
-    stroke-width="2"
-    stroke-linejoin="round"
-  />
-  <circle cx="33.5" cy="21" r="2" fill="#0D9488"/>
-  <line x1="8" y1="19.5" x2="23" y2="19.5" stroke="#0D9488" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="8" y1="24" x2="18" y2="24" stroke="#0D9488" stroke-width="1.5" stroke-linecap="round"/>
+<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+        d="M8 6
+       H27
+       C30.3 6 32 7.7 32 11
+       V14
+       H34
+       C36.2 14 37 15.8 37 18
+       V22
+       C37 24.2 36.2 26 34 26
+       H32
+       V29
+       C32 32.3 30.3 34 27 34
+       H8
+       C5.3 34 3 32.3 3 29
+       V11
+       C3 7.7 5.3 6 8 6 Z"
+        fill="none"
+        stroke="#0D9488"
+        stroke-width="2"
+        stroke-linejoin="round"
+    />
+
+    <circle cx="34" cy="20" r="2" fill="#0D9488" />
+    <line
+        x1="8"
+        y1="17"
+        x2="24"
+        y2="17"
+        stroke="#0D9488"
+        stroke-width="1.5"
+        stroke-linecap="round"
+    />
+
+    <line
+        x1="8"
+        y1="21"
+        x2="24"
+        y2="21"
+        stroke="#0D9488"
+        stroke-width="1.5"
+        stroke-linecap="round"
+    />
+
+    <line
+        x1="8"
+        y1="25"
+        x2="19"
+        y2="25"
+        stroke="#0D9488"
+        stroke-width="1.5"
+        stroke-linecap="round"
+    />
 </svg>

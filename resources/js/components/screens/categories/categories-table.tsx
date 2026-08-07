@@ -14,7 +14,9 @@ import { CategoryDeleteDialog } from '@/components/screens/categories/category-d
 const isOverBudget = (category: TCategory): boolean => {
     if (!category.budget) return false;
     return CURRENCIES_OPTIONS.some(
-        (c) => (category.month_spent?.[c] ?? 0) > (category.budget!.amount[c] ?? 0),
+        (c) =>
+            (category.month_spent?.[c] ?? 0) >
+            (category.budget!.amount[c] ?? 0),
     );
 };
 
@@ -56,11 +58,17 @@ export const CategoriesTable = ({
                         </span>
                         <div className="flex flex-col items-end gap-0.5">
                             {CURRENCIES_OPTIONS.map((currency) => {
-                                const spent = category.month_spent?.[currency] ?? 0;
+                                const spent =
+                                    category.month_spent?.[currency] ?? 0;
                                 return (
-                                    <span key={currency} className="text-xs tabular-nums text-muted-foreground">
+                                    <span
+                                        key={currency}
+                                        className="text-xs text-muted-foreground tabular-nums"
+                                    >
                                         {formatCurrency(spent, currency)}{' '}
-                                        <span className="text-muted-foreground/60">this mo</span>
+                                        <span className="text-muted-foreground/60">
+                                            this mo
+                                        </span>
                                     </span>
                                 );
                             })}

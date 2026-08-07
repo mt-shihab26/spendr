@@ -1,9 +1,6 @@
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 
-import {
-    ChartContainer,
-    ChartTooltip,
-} from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
 
 import type { TCurrency } from '@/types/enums';
 import type { ChartConfig } from '@/components/ui/chart';
@@ -34,11 +31,28 @@ export const NetWorthChart = ({
         <div className="border p-4">
             <p className="mb-4 text-sm font-medium">Net Worth Over Time</p>
             <ChartContainer config={chartConfig} className="h-48 w-full">
-                <AreaChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
+                <AreaChart
+                    data={data}
+                    margin={{ top: 4, right: 8, bottom: 0, left: 0 }}
+                >
                     <defs>
-                        <linearGradient id="netWorthGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#6366f1" stopOpacity={0.15} />
-                            <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                        <linearGradient
+                            id="netWorthGradient"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                        >
+                            <stop
+                                offset="5%"
+                                stopColor="#6366f1"
+                                stopOpacity={0.15}
+                            />
+                            <stop
+                                offset="95%"
+                                stopColor="#6366f1"
+                                stopOpacity={0}
+                            />
                         </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -62,7 +76,10 @@ export const NetWorthChart = ({
                                 <div className="rounded-none border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
                                     <p className="mb-1 font-medium">{label}</p>
                                     <p className="font-mono tabular-nums">
-                                        {formatCurrency(Number(payload[0]?.value), currency)}
+                                        {formatCurrency(
+                                            Number(payload[0]?.value),
+                                            currency,
+                                        )}
                                     </p>
                                 </div>
                             );

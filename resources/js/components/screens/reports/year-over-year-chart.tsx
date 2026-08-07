@@ -1,10 +1,4 @@
-import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    XAxis,
-    YAxis,
-} from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 import {
     ChartContainer,
@@ -58,7 +52,10 @@ export const YearOverYearChart = ({
                 Year-over-Year ({prevYear} vs {thisYear})
             </p>
             <ChartContainer config={chartConfig} className="h-64 w-full">
-                <BarChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
+                <BarChart
+                    data={data}
+                    margin={{ top: 4, right: 8, bottom: 0, left: 0 }}
+                >
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis
                         dataKey="month"
@@ -81,17 +78,30 @@ export const YearOverYearChart = ({
                                     <p className="font-medium">{label}</p>
                                     <div className="grid gap-1">
                                         {payload.map((p, i) => (
-                                            <div key={i} className="flex items-center gap-2">
+                                            <div
+                                                key={i}
+                                                className="flex items-center gap-2"
+                                            >
                                                 <div
                                                     className="size-2.5 shrink-0 rounded-xs"
-                                                    style={{ backgroundColor: p.color }}
+                                                    style={{
+                                                        backgroundColor:
+                                                            p.color,
+                                                    }}
                                                 />
                                                 <div className="flex flex-1 items-center justify-between gap-4">
                                                     <span className="text-muted-foreground">
-                                                        {chartConfig[p.dataKey as keyof typeof chartConfig]?.label}
+                                                        {
+                                                            chartConfig[
+                                                                p.dataKey as keyof typeof chartConfig
+                                                            ]?.label
+                                                        }
                                                     </span>
                                                     <span className="font-mono tabular-nums">
-                                                        {formatCurrency(Number(p.value), currency)}
+                                                        {formatCurrency(
+                                                            Number(p.value),
+                                                            currency,
+                                                        )}
                                                     </span>
                                                 </div>
                                             </div>
@@ -102,10 +112,30 @@ export const YearOverYearChart = ({
                         }}
                     />
                     <ChartLegend content={<ChartLegendContent />} />
-                    <Bar dataKey="prev_income" fill="var(--color-prev_income)" radius={[2, 2, 0, 0]} maxBarSize={16} />
-                    <Bar dataKey="prev_expenses" fill="var(--color-prev_expenses)" radius={[2, 2, 0, 0]} maxBarSize={16} />
-                    <Bar dataKey="current_income" fill="var(--color-current_income)" radius={[2, 2, 0, 0]} maxBarSize={16} />
-                    <Bar dataKey="current_expenses" fill="var(--color-current_expenses)" radius={[2, 2, 0, 0]} maxBarSize={16} />
+                    <Bar
+                        dataKey="prev_income"
+                        fill="var(--color-prev_income)"
+                        radius={[2, 2, 0, 0]}
+                        maxBarSize={16}
+                    />
+                    <Bar
+                        dataKey="prev_expenses"
+                        fill="var(--color-prev_expenses)"
+                        radius={[2, 2, 0, 0]}
+                        maxBarSize={16}
+                    />
+                    <Bar
+                        dataKey="current_income"
+                        fill="var(--color-current_income)"
+                        radius={[2, 2, 0, 0]}
+                        maxBarSize={16}
+                    />
+                    <Bar
+                        dataKey="current_expenses"
+                        fill="var(--color-current_expenses)"
+                        radius={[2, 2, 0, 0]}
+                        maxBarSize={16}
+                    />
                 </BarChart>
             </ChartContainer>
         </div>

@@ -27,7 +27,9 @@ export const CategorySelect = ({
     disabled?: boolean;
     includeAll?: boolean;
 }) => {
-    const filtered = type ? categories.filter((c) => c.type === type) : categories;
+    const filtered = type
+        ? categories.filter((c) => c.type === type)
+        : categories;
     const selected = filtered.find((c) => c.id === value);
 
     return (
@@ -44,7 +46,9 @@ export const CategorySelect = ({
                     </div>
                 ) : (
                     <SelectValue
-                        placeholder={includeAll ? 'All Categories' : 'Select category'}
+                        placeholder={
+                            includeAll ? 'All Categories' : 'Select category'
+                        }
                     />
                 )}
             </SelectTrigger>

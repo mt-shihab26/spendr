@@ -29,7 +29,7 @@ const Section = ({
     children: React.ReactNode;
 }) => (
     <div>
-        <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <p className="mb-1 text-xs font-medium tracking-wide text-muted-foreground uppercase">
             {title}
         </p>
         <div className="divide-y border">{children}</div>
@@ -62,7 +62,11 @@ const Search = ({
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const q = inputRef.current?.value ?? '';
-        router.get(route('search'), { q }, { preserveScroll: true, replace: true });
+        router.get(
+            route('search'),
+            { q },
+            { preserveScroll: true, replace: true },
+        );
     };
 
     const totalResults =
@@ -97,8 +101,8 @@ const Search = ({
 
                 {query && (
                     <p className="text-xs text-muted-foreground">
-                        {totalResults} result{totalResults !== 1 ? 's' : ''}{' '}
-                        for &quot;{query}&quot;
+                        {totalResults} result{totalResults !== 1 ? 's' : ''} for
+                        &quot;{query}&quot;
                     </p>
                 )}
 
@@ -152,7 +156,9 @@ const Search = ({
                                 >
                                     <span
                                         className="flex size-8 shrink-0 items-center justify-center rounded-full"
-                                        style={{ backgroundColor: wallet.color }}
+                                        style={{
+                                            backgroundColor: wallet.color,
+                                        }}
                                     >
                                         {Icon && (
                                             <Icon className="size-4 text-white" />
@@ -184,7 +190,9 @@ const Search = ({
                                         {transfer.to_wallet?.name}
                                     </span>
                                     <span className="text-xs text-muted-foreground">
-                                        {formatLocalDate(transfer.transacted_at)}
+                                        {formatLocalDate(
+                                            transfer.transacted_at,
+                                        )}
                                         {transfer.notes &&
                                             ` · ${transfer.notes}`}
                                     </span>
@@ -212,7 +220,9 @@ const Search = ({
                                 >
                                     <span
                                         className="flex size-8 shrink-0 items-center justify-center rounded-full"
-                                        style={{ backgroundColor: category.color }}
+                                        style={{
+                                            backgroundColor: category.color,
+                                        }}
                                     >
                                         {Icon && (
                                             <Icon className="size-4 text-white" />
@@ -221,7 +231,7 @@ const Search = ({
                                     <span className="flex-1 text-xs font-medium">
                                         {category.name}
                                     </span>
-                                    <span className="text-xs capitalize text-muted-foreground">
+                                    <span className="text-xs text-muted-foreground capitalize">
                                         {category.type}
                                     </span>
                                 </Link>
@@ -279,7 +289,10 @@ const Search = ({
                         {recurring.map((r) => (
                             <Link
                                 key={r.id}
-                                href={route('recurring-transactions.show', r.id)}
+                                href={route(
+                                    'recurring-transactions.show',
+                                    r.id,
+                                )}
                                 className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50"
                             >
                                 <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted">
@@ -289,7 +302,7 @@ const Search = ({
                                     <span className="text-xs font-medium">
                                         {r.description}
                                     </span>
-                                    <span className="text-xs capitalize text-muted-foreground">
+                                    <span className="text-xs text-muted-foreground capitalize">
                                         {r.frequency} · next {r.next_due_at}
                                     </span>
                                 </div>

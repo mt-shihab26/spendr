@@ -132,7 +132,10 @@ const TransactionsIndex = ({
                     <Select
                         value={filters.type}
                         onValueChange={(value) =>
-                            navigate({ type: value as TTransactionType, category_id: null })
+                            navigate({
+                                type: value as TTransactionType,
+                                category_id: null,
+                            })
                         }
                     >
                         <SelectTrigger className="w-32">

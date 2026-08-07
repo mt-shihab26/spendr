@@ -130,7 +130,7 @@ const RecurringTransactionsIndex = ({
                                             {FREQUENCY_LABELS[r.frequency] ??
                                                 r.frequency}
                                         </td>
-                                        <td className="px-3 py-2.5 tabular-nums text-muted-foreground">
+                                        <td className="px-3 py-2.5 text-muted-foreground tabular-nums">
                                             {r.next_due_at}
                                         </td>
                                         <td className="px-3 py-2.5 text-right tabular-nums">

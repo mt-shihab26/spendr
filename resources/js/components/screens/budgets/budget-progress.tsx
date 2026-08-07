@@ -26,7 +26,7 @@ export const BudgetProgress = ({
                         </span>
                         <div className="flex-1">
                             <div className="mb-1 flex justify-between text-xs">
-                                <span className="tabular-nums text-muted-foreground">
+                                <span className="text-muted-foreground tabular-nums">
                                     {formatCurrency(spentAmt, currency)} spent
                                 </span>
                                 <span
@@ -38,7 +38,10 @@ export const BudgetProgress = ({
                                     )}
                                 >
                                     {remaining < 0 ? '−' : ''}
-                                    {formatCurrency(Math.abs(remaining), currency)}{' '}
+                                    {formatCurrency(
+                                        Math.abs(remaining),
+                                        currency,
+                                    )}{' '}
                                     {remaining >= 0 ? 'left' : 'over'}
                                 </span>
                             </div>

@@ -52,7 +52,12 @@ export const TransactionsTable = ({
     };
 
     const handleBulkDelete = () => {
-        if (!confirm(`Delete ${selected.size} transactions? This cannot be undone.`)) return;
+        if (
+            !confirm(
+                `Delete ${selected.size} transactions? This cannot be undone.`,
+            )
+        )
+            return;
         router.delete(route('transactions.bulk-destroy'), {
             data: { ids: Array.from(selected) },
             onSuccess: () => setSelected(new Set()),
@@ -61,15 +66,19 @@ export const TransactionsTable = ({
 
     const handleBulkReassign = () => {
         if (!reassignCategory) return;
-        router.patch(route('transactions.bulk-reassign'), {
-            ids: Array.from(selected),
-            category_id: reassignCategory,
-        }, {
-            onSuccess: () => {
-                setSelected(new Set());
-                setReassignCategory('');
+        router.patch(
+            route('transactions.bulk-reassign'),
+            {
+                ids: Array.from(selected),
+                category_id: reassignCategory,
             },
-        });
+            {
+                onSuccess: () => {
+                    setSelected(new Set());
+                    setReassignCategory('');
+                },
+            },
+        );
     };
 
     const transactionsByDate = transactions.reduce<Map<string, TTransaction[]>>(
@@ -87,29 +96,51 @@ export const TransactionsTable = ({
         <>
             {selectable && selected.size > 0 && (
                 <div className="flex items-center gap-2 border border-primary/30 bg-primary/5 px-4 py-2">
-                    <span className="text-xs font-medium">{selected.size} selected</span>
+                    <span className="text-xs font-medium">
+                        {selected.size} selected
+                    </span>
                     <div className="flex flex-1 items-center gap-2">
                         {categories && categories.length > 0 && (
                             <div className="flex items-center gap-1">
-                                <Select value={reassignCategory} onValueChange={(v) => setReassignCategory(v ?? '')}>
+                                <Select
+                                    value={reassignCategory}
+                                    onValueChange={(v) =>
+                                        setReassignCategory(v ?? '')
+                                    }
+                                >
                                     <SelectTrigger className="h-7 w-40 text-xs">
                                         <SelectValue placeholder="Reassign category" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {categories.map((c) => (
-                                            <SelectItem key={c.id} value={c.id} className="text-xs">
+                                            <SelectItem
+                                                key={c.id}
+                                                value={c.id}
+                                                className="text-xs"
+                                            >
                                                 {c.name}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                <Button size="sm" variant="outline" className="h-7 text-xs" onClick={handleBulkReassign} disabled={!reassignCategory}>
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="h-7 text-xs"
+                                    onClick={handleBulkReassign}
+                                    disabled={!reassignCategory}
+                                >
                                     <Tag className="size-3" />
                                     Apply
                                 </Button>
                             </div>
                         )}
-                        <Button size="sm" variant="destructive" className="h-7 text-xs ml-auto" onClick={handleBulkDelete}>
+                        <Button
+                            size="sm"
+                            variant="destructive"
+                            className="ml-auto h-7 text-xs"
+                            onClick={handleBulkDelete}
+                        >
                             <Trash2 className="size-3" />
                             Delete {selected.size}
                         </Button>
@@ -142,8 +173,12 @@ export const TransactionsTable = ({
                                     >
                                         {selectable && (
                                             <Checkbox
-                                                checked={selected.has(transaction.id)}
-                                                onCheckedChange={() => toggle(transaction.id)}
+                                                checked={selected.has(
+                                                    transaction.id,
+                                                )}
+                                                onCheckedChange={() =>
+                                                    toggle(transaction.id)
+                                                }
                                             />
                                         )}
                                         <IconBadge
@@ -152,7 +187,10 @@ export const TransactionsTable = ({
                                         />
                                         <div className="flex flex-1 flex-col">
                                             <Link
-                                                href={route('transactions.show', transaction.id)}
+                                                href={route(
+                                                    'transactions.show',
+                                                    transaction.id,
+                                                )}
                                                 className="text-xs font-medium hover:underline"
                                             >
                                                 {transaction.description}
@@ -160,19 +198,33 @@ export const TransactionsTable = ({
                                             <span className="text-xs text-muted-foreground">
                                                 {transaction.category ? (
                                                     <Link
-                                                        href={route('categories.show', transaction.category.id)}
+                                                        href={route(
+                                                            'categories.show',
+                                                            transaction.category
+                                                                .id,
+                                                        )}
                                                         className="hover:underline"
                                                     >
-                                                        {transaction.category.name}
+                                                        {
+                                                            transaction.category
+                                                                .name
+                                                        }
                                                     </Link>
                                                 ) : null}
                                                 {' · '}
                                                 {transaction.wallet && (
                                                     <Link
-                                                        href={route('wallets.show', transaction.wallet.id)}
+                                                        href={route(
+                                                            'wallets.show',
+                                                            transaction.wallet
+                                                                .id,
+                                                        )}
                                                         className="hover:underline"
                                                     >
-                                                        {transaction.wallet.name}
+                                                        {
+                                                            transaction.wallet
+                                                                .name
+                                                        }
                                                     </Link>
                                                 )}
                                             </span>
@@ -183,9 +235,14 @@ export const TransactionsTable = ({
                                             )}
                                         </div>
                                         <span className="text-xs text-muted-foreground">
-                                            {formatLocalDateTime(transaction.transacted_at)}
+                                            {formatLocalDateTime(
+                                                transaction.transacted_at,
+                                            )}
                                         </span>
-                                        <Badge variant="secondary" className="capitalize">
+                                        <Badge
+                                            variant="secondary"
+                                            className="capitalize"
+                                        >
                                             {transaction.type}
                                         </Badge>
                                         <TransactionAmount
@@ -197,7 +254,10 @@ export const TransactionsTable = ({
                                             onDelete={setToDelete}
                                         />
                                         <Link
-                                            href={route('transactions.edit', transaction.id)}
+                                            href={route(
+                                                'transactions.edit',
+                                                transaction.id,
+                                            )}
                                             className="text-muted-foreground hover:text-foreground"
                                         >
                                             <ChevronRight className="size-4" />

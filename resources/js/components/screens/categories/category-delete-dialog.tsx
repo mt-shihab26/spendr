@@ -34,7 +34,9 @@ export const CategoryDeleteDialog = ({
 }) => {
     const [replacementId, setReplacementId] = useState<string | null>(null);
     const hasTransactions = (category.transactions_count ?? 0) > 0;
-    const replacementCandidates = categories.filter((c) => c.id !== category.id);
+    const replacementCandidates = categories.filter(
+        (c) => c.id !== category.id,
+    );
 
     const handleDelete = () => {
         router.delete(route('categories.destroy', category.id), {
@@ -55,7 +57,9 @@ export const CategoryDeleteDialog = ({
                         {hasTransactions ? (
                             <>
                                 {category.transactions_count} transaction
-                                {category.transactions_count !== 1 ? 's' : ''}{' '}
+                                {category.transactions_count !== 1
+                                    ? 's'
+                                    : ''}{' '}
                                 reference this category. Reassign them to:
                             </>
                         ) : (

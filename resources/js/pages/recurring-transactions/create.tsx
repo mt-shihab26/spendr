@@ -33,9 +33,7 @@ const RecurringTransactionsCreate = ({
                         title="New Recurring Transaction"
                         description="Set up a transaction that posts automatically on a schedule"
                     />
-                    <BackButton
-                        href={route('recurring-transactions.index')}
-                    />
+                    <BackButton href={route('recurring-transactions.index')} />
                 </div>
                 <div className="mx-auto w-full max-w-lg border p-4">
                     <RecurringTransactionForm

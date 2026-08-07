@@ -30,9 +30,7 @@ const GoalsEdit = ({ goal }: { goal: TGoal }) => {
                         title={`Edit: ${goal.name}`}
                         description="Update your savings goal"
                     />
-                    <BackButton
-                        href={route('goals.show', goal.id)}
-                    />
+                    <BackButton href={route('goals.show', goal.id)} />
                 </div>
                 <div className="mx-auto w-full max-w-lg border p-4">
                     <GoalForm goal={goal} />

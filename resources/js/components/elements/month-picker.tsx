@@ -1,4 +1,11 @@
-import { format, addMonths, subMonths, parseISO, setYear, getYear } from 'date-fns';
+import {
+    format,
+    addMonths,
+    subMonths,
+    parseISO,
+    setYear,
+    getYear,
+} from 'date-fns';
 import { router } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';

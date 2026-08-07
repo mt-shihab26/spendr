@@ -9,13 +9,7 @@ import { IconBadge } from '@/components/elements/icon-badge';
 import { MonthPicker } from '@/components/elements/month-picker';
 import { BudgetProgress } from '@/components/screens/budgets/budget-progress';
 
-const BudgetsShow = ({
-    budget,
-    month,
-}: {
-    budget: TBudget;
-    month: string;
-}) => {
+const BudgetsShow = ({ budget, month }: { budget: TBudget; month: string }) => {
     return (
         <AppLayout
             title={budget.category?.name ?? 'Budget'}
@@ -44,11 +38,16 @@ const BudgetsShow = ({
                     </div>
                 </div>
 
-                <MonthPicker month={month} href={route('budgets.show', budget.id)} />
+                <MonthPicker
+                    month={month}
+                    href={route('budgets.show', budget.id)}
+                />
 
                 <div className="grid gap-4 sm:grid-cols-2">
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Category</p>
+                        <p className="text-xs text-muted-foreground">
+                            Category
+                        </p>
                         <div className="mt-1 flex items-center gap-2">
                             {budget.category && (
                                 <IconBadge
@@ -59,16 +58,21 @@ const BudgetsShow = ({
                             <div className="flex flex-col gap-1">
                                 {budget.category ? (
                                     <Link
-                                        href={route('categories.show', budget.category.id)}
+                                        href={route(
+                                            'categories.show',
+                                            budget.category.id,
+                                        )}
                                         className="text-sm font-medium hover:underline"
                                     >
                                         {budget.category.name}
                                     </Link>
                                 ) : (
-                                    <span className="text-sm font-medium">—</span>
+                                    <span className="text-sm font-medium">
+                                        —
+                                    </span>
                                 )}
                                 {budget.category?.type && (
-                                    <span className="text-xs capitalize text-muted-foreground">
+                                    <span className="text-xs text-muted-foreground capitalize">
                                         {budget.category.type}
                                     </span>
                                 )}
@@ -77,8 +81,13 @@ const BudgetsShow = ({
                     </div>
 
                     <div className="border p-4">
-                        <p className="mb-3 text-xs text-muted-foreground">Progress</p>
-                        <BudgetProgress amount={budget.amount} spent={budget.spent} />
+                        <p className="mb-3 text-xs text-muted-foreground">
+                            Progress
+                        </p>
+                        <BudgetProgress
+                            amount={budget.amount}
+                            spent={budget.spent}
+                        />
                     </div>
                 </div>
             </div>

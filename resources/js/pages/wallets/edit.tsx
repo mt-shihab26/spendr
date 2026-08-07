@@ -63,7 +63,8 @@ const WalletsEdit = ({ wallet }: { wallet: TWallet }) => {
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        Reassign or delete all transactions first.
+                                        Reassign or delete all transactions
+                                        first.
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>

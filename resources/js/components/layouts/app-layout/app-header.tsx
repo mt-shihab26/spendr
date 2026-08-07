@@ -68,7 +68,7 @@ const NotificationBell = ({
             >
                 <Bell className="size-5! opacity-80 group-hover:opacity-100" />
                 {notifications.length > 0 && (
-                    <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-white">
+                    <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-white">
                         {notifications.length > 9 ? '9+' : notifications.length}
                     </span>
                 )}
@@ -245,7 +245,9 @@ export const AppHeader = ({
                                                             href={entry.href}
                                                             className={cn(
                                                                 'flex items-center gap-2 rounded p-2 text-sm font-medium hover:bg-muted',
-                                                                isCurrentOrParentUrl(entry.href) && 'bg-muted',
+                                                                isCurrentOrParentUrl(
+                                                                    entry.href,
+                                                                ) && 'bg-muted',
                                                             )}
                                                         >
                                                             {entry.icon && (
@@ -257,17 +259,24 @@ export const AppHeader = ({
                                                 }
                                                 return (
                                                     <div key={entry.title}>
-                                                        <p className="mb-1 px-2 pt-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                                        <p className="mb-1 px-2 pt-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                                                             {entry.title}
                                                         </p>
                                                         {entry.links.map(
                                                             (link) => (
                                                                 <Link
-                                                                    key={link.title}
-                                                                    href={link.href}
+                                                                    key={
+                                                                        link.title
+                                                                    }
+                                                                    href={
+                                                                        link.href
+                                                                    }
                                                                     className={cn(
                                                                         'flex items-center gap-2 rounded p-2 text-sm font-medium hover:bg-muted',
-                                                                        isCurrentOrParentUrl(link.href) && 'bg-muted',
+                                                                        isCurrentOrParentUrl(
+                                                                            link.href,
+                                                                        ) &&
+                                                                            'bg-muted',
                                                                     )}
                                                                 >
                                                                     {link.icon && (
@@ -318,7 +327,9 @@ export const AppHeader = ({
                             <NavigationMenuList className="flex h-full items-stretch space-x-1">
                                 {entries.map((entry) => {
                                     if (entry.type === 'link') {
-                                        const isActive = isCurrentOrParentUrl(entry.href);
+                                        const isActive = isCurrentOrParentUrl(
+                                            entry.href,
+                                        );
                                         return (
                                             <NavigationMenuItem
                                                 key={entry.title}
@@ -328,7 +339,8 @@ export const AppHeader = ({
                                                     href={entry.href}
                                                     className={cn(
                                                         navigationMenuTriggerStyle(),
-                                                        isActive && activeItemStyles,
+                                                        isActive &&
+                                                            activeItemStyles,
                                                         'h-9 cursor-pointer px-3',
                                                     )}
                                                 >
@@ -344,8 +356,8 @@ export const AppHeader = ({
                                         );
                                     }
 
-                                    const isGroupActive = entry.links.some((l) =>
-                                        isCurrentOrParentUrl(l.href),
+                                    const isGroupActive = entry.links.some(
+                                        (l) => isCurrentOrParentUrl(l.href),
                                     );
 
                                     return (
@@ -356,7 +368,8 @@ export const AppHeader = ({
                                             <NavigationMenuTrigger
                                                 className={cn(
                                                     'h-9 px-3',
-                                                    isGroupActive && activeItemStyles,
+                                                    isGroupActive &&
+                                                        activeItemStyles,
                                                 )}
                                             >
                                                 {entry.icon && (
@@ -370,7 +383,9 @@ export const AppHeader = ({
                                                         <DropdownLink
                                                             key={link.title}
                                                             link={link}
-                                                            isActive={isCurrentOrParentUrl(link.href)}
+                                                            isActive={isCurrentOrParentUrl(
+                                                                link.href,
+                                                            )}
                                                         />
                                                     ))}
                                                 </div>

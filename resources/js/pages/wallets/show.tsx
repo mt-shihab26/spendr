@@ -68,19 +68,32 @@ const WalletsShow = ({
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">Balance</p>
                         <p className="mt-1 text-lg font-semibold text-balance tabular-nums">
-                            {formatCurrency(wallet.balance ?? 0, wallet.currency)}
+                            {formatCurrency(
+                                wallet.balance ?? 0,
+                                wallet.currency,
+                            )}
                         </p>
                     </div>
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Month Income</p>
+                        <p className="text-xs text-muted-foreground">
+                            Month Income
+                        </p>
                         <p className="mt-1 text-lg font-semibold text-income tabular-nums">
-                            {formatCurrency(wallet.month_income ?? 0, wallet.currency)}
+                            {formatCurrency(
+                                wallet.month_income ?? 0,
+                                wallet.currency,
+                            )}
                         </p>
                     </div>
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Month Expenses</p>
+                        <p className="text-xs text-muted-foreground">
+                            Month Expenses
+                        </p>
                         <p className="mt-1 text-lg font-semibold text-expense tabular-nums">
-                            {formatCurrency(wallet.month_expense ?? 0, wallet.currency)}
+                            {formatCurrency(
+                                wallet.month_expense ?? 0,
+                                wallet.currency,
+                            )}
                         </p>
                     </div>
                 </div>

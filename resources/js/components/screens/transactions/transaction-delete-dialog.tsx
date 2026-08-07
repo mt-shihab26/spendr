@@ -44,8 +44,12 @@ export const TransactionDeleteDialog = ({
                     <AlertDialogTitle>Delete transaction?</AlertDialogTitle>
                     <AlertDialogDescription>
                         "{transaction.description}" —{' '}
-                        {formatCurrency(transaction.amount, transaction.wallet?.currency)}{' '}
-                        on {formatLocalDateLong(transaction.transacted_at)}. This cannot be undone.
+                        {formatCurrency(
+                            transaction.amount,
+                            transaction.wallet?.currency,
+                        )}{' '}
+                        on {formatLocalDateLong(transaction.transacted_at)}.
+                        This cannot be undone.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

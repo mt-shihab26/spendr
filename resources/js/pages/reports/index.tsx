@@ -1,5 +1,11 @@
 import type { TCurrency } from '@/types/enums';
-import type { TCashFlowRow, TCategoryRow, TSummary, TNetWorthRow, TYearOverYearRow } from '@/types/reports';
+import type {
+    TCashFlowRow,
+    TCategoryRow,
+    TSummary,
+    TNetWorthRow,
+    TYearOverYearRow,
+} from '@/types/reports';
 import type { TWallet } from '@/types/models';
 
 import { router } from '@inertiajs/react';
@@ -130,8 +136,14 @@ const ReportsIndex = ({
                     />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                    <NetWorthChart data={net_worth_history} currency={currency} />
-                    <YearOverYearChart data={year_over_year} currency={currency} />
+                    <NetWorthChart
+                        data={net_worth_history}
+                        currency={currency}
+                    />
+                    <YearOverYearChart
+                        data={year_over_year}
+                        currency={currency}
+                    />
                 </div>
                 <MonthlySummaryTable
                     rows={monthly_summary}

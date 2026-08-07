@@ -77,18 +77,28 @@ const TransactionsImport = ({
                     <BackButton href={route('transactions.index')} />
                 </div>
 
-                <form onSubmit={handleSubmit} className="mx-auto w-full max-w-lg">
+                <form
+                    onSubmit={handleSubmit}
+                    className="mx-auto w-full max-w-lg"
+                >
                     <div className="flex flex-col gap-4 border p-4">
-
                         <div className="flex flex-col gap-1">
-                            <label className="text-xs font-medium">CSV File</label>
+                            <label className="text-xs font-medium">
+                                CSV File
+                            </label>
                             <input
                                 type="file"
                                 accept=".csv,.txt"
-                                onChange={(e) => setData('file', e.target.files?.[0] ?? null)}
+                                onChange={(e) =>
+                                    setData('file', e.target.files?.[0] ?? null)
+                                }
                                 className="text-xs"
                             />
-                            {errors.file && <p className="text-xs text-destructive">{errors.file}</p>}
+                            {errors.file && (
+                                <p className="text-xs text-destructive">
+                                    {errors.file}
+                                </p>
+                            )}
                         </div>
 
                         <div className="flex items-center gap-2">
@@ -96,69 +106,110 @@ const TransactionsImport = ({
                                 type="checkbox"
                                 id="skip_header"
                                 checked={data.skip_header}
-                                onChange={(e) => setData('skip_header', e.target.checked)}
+                                onChange={(e) =>
+                                    setData('skip_header', e.target.checked)
+                                }
                             />
-                            <label htmlFor="skip_header" className="text-xs">First row is header (use column names)</label>
+                            <label htmlFor="skip_header" className="text-xs">
+                                First row is header (use column names)
+                            </label>
                         </div>
 
                         <div className="flex flex-col gap-1">
-                            <label className="text-xs font-medium">Wallet</label>
+                            <label className="text-xs font-medium">
+                                Wallet
+                            </label>
                             <WalletSelect
                                 wallets={wallets}
                                 value={data.wallet_id}
-                                onValueChange={(v) => setData('wallet_id', v ?? '')}
+                                onValueChange={(v) =>
+                                    setData('wallet_id', v ?? '')
+                                }
                             />
-                            {errors.wallet_id && <p className="text-xs text-destructive">{errors.wallet_id}</p>}
+                            {errors.wallet_id && (
+                                <p className="text-xs text-destructive">
+                                    {errors.wallet_id}
+                                </p>
+                            )}
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
                             <div className="flex flex-col gap-1">
-                                <label className="text-xs font-medium">Date column</label>
+                                <label className="text-xs font-medium">
+                                    Date column
+                                </label>
                                 <input
                                     type="text"
-                                    placeholder={data.skip_header ? 'Column name' : '0'}
+                                    placeholder={
+                                        data.skip_header ? 'Column name' : '0'
+                                    }
                                     value={data.col_date}
-                                    onChange={(e) => setData('col_date', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('col_date', e.target.value)
+                                    }
                                     className="border border-input bg-background px-2 py-1 text-xs outline-none focus:ring-1 focus:ring-ring"
                                 />
                             </div>
                             <div className="flex flex-col gap-1">
-                                <label className="text-xs font-medium">Description column</label>
+                                <label className="text-xs font-medium">
+                                    Description column
+                                </label>
                                 <input
                                     type="text"
-                                    placeholder={data.skip_header ? 'Column name' : '1'}
+                                    placeholder={
+                                        data.skip_header ? 'Column name' : '1'
+                                    }
                                     value={data.col_description}
-                                    onChange={(e) => setData('col_description', e.target.value)}
+                                    onChange={(e) =>
+                                        setData(
+                                            'col_description',
+                                            e.target.value,
+                                        )
+                                    }
                                     className="border border-input bg-background px-2 py-1 text-xs outline-none focus:ring-1 focus:ring-ring"
                                 />
                             </div>
                             <div className="flex flex-col gap-1">
-                                <label className="text-xs font-medium">Amount column</label>
+                                <label className="text-xs font-medium">
+                                    Amount column
+                                </label>
                                 <input
                                     type="text"
-                                    placeholder={data.skip_header ? 'Column name' : '2'}
+                                    placeholder={
+                                        data.skip_header ? 'Column name' : '2'
+                                    }
                                     value={data.col_amount}
-                                    onChange={(e) => setData('col_amount', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('col_amount', e.target.value)
+                                    }
                                     className="border border-input bg-background px-2 py-1 text-xs outline-none focus:ring-1 focus:ring-ring"
                                 />
                             </div>
                             <div className="flex flex-col gap-1">
-                                <label className="text-xs font-medium">Type column (optional)</label>
+                                <label className="text-xs font-medium">
+                                    Type column (optional)
+                                </label>
                                 <input
                                     type="text"
                                     placeholder="income/expense column"
                                     value={data.col_type}
-                                    onChange={(e) => setData('col_type', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('col_type', e.target.value)
+                                    }
                                     className="border border-input bg-background px-2 py-1 text-xs outline-none focus:ring-1 focus:ring-ring"
                                 />
                             </div>
                             <div className="flex flex-col gap-1">
-                                <label className="text-xs font-medium">Category column (optional)</label>
+                                <label className="text-xs font-medium">
+                                    Category column (optional)
+                                </label>
                                 <input
                                     type="text"
                                     placeholder="category name column"
                                     value={data.col_category}
-                                    onChange={(e) => setData('col_category', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('col_category', e.target.value)
+                                    }
                                     className="border border-input bg-background px-2 py-1 text-xs outline-none focus:ring-1 focus:ring-ring"
                                 />
                             </div>
@@ -166,33 +217,52 @@ const TransactionsImport = ({
 
                         <div className="grid grid-cols-2 gap-3 border-t pt-3">
                             <div className="flex flex-col gap-1">
-                                <label className="text-xs font-medium">Default type</label>
-                                <Select value={data.default_type} onValueChange={(v) => setData('default_type', v ?? '')}>
+                                <label className="text-xs font-medium">
+                                    Default type
+                                </label>
+                                <Select
+                                    value={data.default_type}
+                                    onValueChange={(v) =>
+                                        setData('default_type', v ?? '')
+                                    }
+                                >
                                     <SelectTrigger className="h-8 text-xs">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="expense">Expense</SelectItem>
-                                        <SelectItem value="income">Income</SelectItem>
+                                        <SelectItem value="expense">
+                                            Expense
+                                        </SelectItem>
+                                        <SelectItem value="income">
+                                            Income
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div className="flex flex-col gap-1">
-                                <label className="text-xs font-medium">Default category</label>
+                                <label className="text-xs font-medium">
+                                    Default category
+                                </label>
                                 <CategorySelect
                                     categories={categories}
                                     value={data.default_category_id}
-                                    onValueChange={(v) => setData('default_category_id', v ?? '')}
+                                    onValueChange={(v) =>
+                                        setData('default_category_id', v ?? '')
+                                    }
                                 />
                             </div>
                         </div>
 
                         <p className="text-xs text-muted-foreground">
-                            Amounts are always treated as positive. Currency symbols are stripped automatically.
-                            Rows with blank description or zero amount are skipped.
+                            Amounts are always treated as positive. Currency
+                            symbols are stripped automatically. Rows with blank
+                            description or zero amount are skipped.
                         </p>
 
-                        <Button type="submit" disabled={processing || !data.file}>
+                        <Button
+                            type="submit"
+                            disabled={processing || !data.file}
+                        >
                             {processing ? 'Importing…' : 'Import'}
                         </Button>
                     </div>

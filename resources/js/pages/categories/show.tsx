@@ -55,14 +55,18 @@ const CategoriesShow = ({
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                     <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Transactions</p>
+                        <p className="text-xs text-muted-foreground">
+                            Transactions
+                        </p>
                         <p className="mt-1 text-lg font-semibold tabular-nums">
                             {category.transactions_count ?? 0}
                         </p>
                     </div>
                     {category.budget ? (
                         <div className="border p-4">
-                            <p className="text-xs text-muted-foreground">Budget</p>
+                            <p className="text-xs text-muted-foreground">
+                                Budget
+                            </p>
                             <Link
                                 href={route('budgets.show', category.budget.id)}
                                 className="mt-1 text-sm font-medium hover:underline"
@@ -72,7 +76,9 @@ const CategoriesShow = ({
                         </div>
                     ) : category.type === 'expense' ? (
                         <div className="border p-4">
-                            <p className="text-xs text-muted-foreground">Budget</p>
+                            <p className="text-xs text-muted-foreground">
+                                Budget
+                            </p>
                             <Link
                                 href={route('budgets.create')}
                                 className="mt-1 text-sm font-medium hover:underline"

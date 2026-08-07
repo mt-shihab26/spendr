@@ -43,9 +43,14 @@ export const TransferDeleteDialog = ({
                 <AlertDialogHeader>
                     <AlertDialogTitle>Delete transfer?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        {transfer.from_wallet?.name} → {transfer.to_wallet?.name},{' '}
-                        {formatCurrency(transfer.amount, transfer.from_wallet?.currency)}{' '}
-                        on {formatLocalDateLong(transfer.transacted_at)}. Cannot be undone.
+                        {transfer.from_wallet?.name} →{' '}
+                        {transfer.to_wallet?.name},{' '}
+                        {formatCurrency(
+                            transfer.amount,
+                            transfer.from_wallet?.currency,
+                        )}{' '}
+                        on {formatLocalDateLong(transfer.transacted_at)}. Cannot
+                        be undone.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
