@@ -20,9 +20,9 @@ import type { TTransaction, TWallet, TCategory } from '@/types/models';
 import type { TStat } from '@/components/elements/currency-stats';
 
 import { useEffect, useState } from 'react';
-import { router } from '@inertiajs/react';
+import { router, Link } from '@inertiajs/react';
 import { InfiniteScroll } from '@inertiajs/react';
-import { ArrowRightLeft, Download, X } from 'lucide-react';
+import { ArrowRightLeft, Download, ListChecks, Upload, X } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
@@ -57,6 +57,7 @@ const TransactionsIndex = ({
     stats: TStat[];
 }) => {
     const [search, setSearch] = useState(filters.search ?? '');
+    const [bulkMode, setBulkMode] = useState(false);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -198,13 +199,29 @@ const TransactionsIndex = ({
                     <p className="text-xs text-muted-foreground">
                         Showing {transactions.total} transactions
                     </p>
-                    <a
-                        href={exportUrl}
-                        className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-                    >
-                        <Download className="size-3" />
-                        CSV
-                    </a>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setBulkMode((v) => !v)}
+                            className={`flex items-center gap-1 text-xs hover:text-foreground ${bulkMode ? 'text-foreground' : 'text-muted-foreground'}`}
+                        >
+                            <ListChecks className="size-3" />
+                            {bulkMode ? 'Exit bulk' : 'Bulk select'}
+                        </button>
+                        <Link
+                            href={route('transactions.import')}
+                            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                        >
+                            <Upload className="size-3" />
+                            Import
+                        </Link>
+                        <a
+                            href={exportUrl}
+                            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                        >
+                            <Download className="size-3" />
+                            CSV
+                        </a>
+                    </div>
                 </div>
 
                 {transactions.data.length === 0 ? (
@@ -225,7 +242,11 @@ const TransactionsIndex = ({
                     </Empty>
                 ) : (
                     <InfiniteScroll data="transactions" onlyNext preserveUrl>
-                        <TransactionsTable transactions={transactions.data} />
+                        <TransactionsTable
+                            transactions={transactions.data}
+                            categories={categories}
+                            selectable={bulkMode}
+                        />
                     </InfiniteScroll>
                 )}
             </div>

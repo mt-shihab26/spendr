@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Enums\Type;
 use App\Http\Requests\Transactions\StoreTransactionRequest;
 use App\Http\Requests\Transactions\UpdateTransactionRequest;
+use App\Models\Category;
 use App\Models\Transaction;
+use App\Models\Wallet;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -240,5 +243,167 @@ class TransactionController extends Controller
         return redirect()
             ->route('transactions.index')
             ->with('success', 'Transaction deleted.');
+    }
+
+    /**
+     * Bulk delete transactions belonging to the authenticated user.
+     */
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['required', 'uuid'],
+        ]);
+
+        Transaction::query()
+            ->where('user_id', $request->user()->id)
+            ->whereIn('id', $validated['ids'])
+            ->delete();
+
+        return redirect()
+            ->back()
+            ->with('success', count($validated['ids']).' transactions deleted.');
+    }
+
+    /**
+     * Show CSV import form.
+     */
+    public function importForm(Request $request): Response
+    {
+        $wallets = $request->user()->wallets()->orderBy('sort_order')->get();
+        $categories = $request->user()->categories()->orderBy('sort_order')->get();
+
+        return inertia('transactions/import', [
+            'wallets' => $wallets,
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
+     * Import transactions from a CSV file.
+     */
+    public function import(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'file' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
+            'wallet_id' => [
+                'required',
+                'uuid',
+                Rule::exists('wallets', 'id')->where('user_id', $request->user()->id),
+            ],
+            'col_date' => ['required', 'string'],
+            'col_description' => ['required', 'string'],
+            'col_amount' => ['required', 'string'],
+            'col_type' => ['nullable', 'string'],
+            'col_category' => ['nullable', 'string'],
+            'default_type' => ['nullable', 'string', Rule::in(['income', 'expense'])],
+            'default_category_id' => [
+                'nullable',
+                'uuid',
+                Rule::exists('categories', 'id')->where('user_id', $request->user()->id),
+            ],
+            'skip_header' => ['boolean'],
+        ]);
+
+        $wallet = Wallet::find($validated['wallet_id']);
+        $handle = fopen($request->file('file')->getPathname(), 'r');
+        $firstRow = true;
+        $imported = 0;
+        $skipped = 0;
+
+        $categories = $request->user()->categories()->get()->keyBy(fn ($c) => strtolower($c->name));
+
+        while (($row = fgetcsv($handle)) !== false) {
+            if ($firstRow && $validated['skip_header']) {
+                $headers = array_map('trim', $row);
+                $firstRow = false;
+                continue;
+            }
+            $firstRow = false;
+
+            if (isset($headers)) {
+                $row = array_combine($headers, array_pad($row, count($headers), ''));
+                $dateVal = trim($row[$validated['col_date']] ?? '');
+                $descVal = trim($row[$validated['col_description']] ?? '');
+                $amountVal = trim($row[$validated['col_amount']] ?? '');
+                $typeVal = $validated['col_type'] ? trim($row[$validated['col_type']] ?? '') : null;
+                $catVal = $validated['col_category'] ? trim($row[$validated['col_category']] ?? '') : null;
+            } else {
+                $cols = array_values($row);
+                $dateVal = trim($cols[(int) $validated['col_date']] ?? '');
+                $descVal = trim($cols[(int) $validated['col_description']] ?? '');
+                $amountVal = trim($cols[(int) $validated['col_amount']] ?? '');
+                $typeVal = $validated['col_type'] !== null ? trim($cols[(int) $validated['col_type']] ?? '') : null;
+                $catVal = $validated['col_category'] !== null ? trim($cols[(int) $validated['col_category']] ?? '') : null;
+            }
+
+            try {
+                $date = Carbon::parse($dateVal);
+                $amount = abs((float) str_replace([',', '$', '€', '£', '৳'], '', $amountVal));
+            } catch (\Exception) {
+                $skipped++;
+                continue;
+            }
+
+            if ($amount <= 0 || $descVal === '') {
+                $skipped++;
+                continue;
+            }
+
+            $type = $typeVal
+                ? (str_contains(strtolower($typeVal), 'income') ? 'income' : 'expense')
+                : ($validated['default_type'] ?? 'expense');
+
+            $categoryId = $validated['default_category_id'];
+            if ($catVal) {
+                $matched = $categories->get(strtolower($catVal));
+                if ($matched) {
+                    $categoryId = $matched->id;
+                }
+            }
+
+            $request->user()->transactions()->create([
+                'wallet_id' => $wallet->id,
+                'category_id' => $categoryId,
+                'type' => $type,
+                'amount' => $amount,
+                'description' => mb_substr($descVal, 0, 255),
+                'transacted_at' => $date->toDateTimeString(),
+                'notes' => null,
+            ]);
+
+            $imported++;
+        }
+
+        fclose($handle);
+
+        return redirect()
+            ->route('transactions.index')
+            ->with('success', "{$imported} transactions imported, {$skipped} skipped.");
+    }
+
+    /**
+     * Bulk reassign category for transactions belonging to the authenticated user.
+     */
+    public function bulkReassign(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['required', 'uuid'],
+            'category_id' => [
+                'required',
+                'uuid',
+                Rule::exists('categories', 'id')->where('user_id', $request->user()->id),
+            ],
+        ]);
+
+        Transaction::query()
+            ->where('user_id', $request->user()->id)
+            ->whereIn('id', $validated['ids'])
+            ->update(['category_id' => $validated['category_id']]);
+
+        return redirect()
+            ->back()
+            ->with('success', count($validated['ids']).' transactions updated.');
     }
 }
