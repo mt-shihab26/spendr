@@ -14,6 +14,8 @@ import type { TTransaction } from '@/types/models';
 import type { ReactElement } from 'react';
 
 import { router } from '@inertiajs/react';
+import { formatLocalDateLong } from '@/lib/date';
+import { formatCurrency } from '@/lib/formats';
 
 export const TransactionDeleteDialog = ({
     transaction,
@@ -39,11 +41,11 @@ export const TransactionDeleteDialog = ({
             {trigger && <AlertDialogTrigger render={trigger} />}
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>
-                        Delete "{transaction.description}"?
-                    </AlertDialogTitle>
+                    <AlertDialogTitle>Delete transaction?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        This cannot be undone.
+                        "{transaction.description}" —{' '}
+                        {formatCurrency(transaction.amount, transaction.wallet?.currency)}{' '}
+                        on {formatLocalDateLong(transaction.transacted_at)}. This cannot be undone.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

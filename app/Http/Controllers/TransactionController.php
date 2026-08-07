@@ -6,11 +6,13 @@ use App\Enums\Type;
 use App\Http\Requests\Transactions\StoreTransactionRequest;
 use App\Http\Requests\Transactions\UpdateTransactionRequest;
 use App\Models\Transaction;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TransactionController extends Controller
 {
@@ -21,34 +23,23 @@ class TransactionController extends Controller
     {
         $validated = $request->validate([
             'type' => ['nullable', 'string', Rule::in(['income', 'expense', 'all'])],
-            'period' => ['nullable', 'string', Rule::in(['today', 'week', 'month', 'year', 'all'])],
+            'search' => ['nullable', 'string', 'max:100'],
+            'wallet_id' => ['nullable', 'uuid', 'exists:wallets,id'],
+            'category_id' => ['nullable', 'uuid', 'exists:categories,id'],
+            'date_from' => ['nullable', 'date'],
+            'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
         ]);
 
         $type = $validated['type'] ?? 'all';
-        $period = $validated['period'] ?? 'month';
 
-        $query = $request->user()
-            ->transactions()
-            ->with(['wallet', 'category']);
+        $wallets = $request->user()->wallets()->orderBy('sort_order')->get();
+        $categories = $request->user()->categories()->orderBy('sort_order')->get();
 
-        if ($period !== 'all') {
-            $now = now();
-
-            $startDate = match ($period) {
-                'today' => $now->startOfDay(),
-                'week' => $now->startOfWeek(),
-                'month' => $now->startOfMonth(),
-                default => $now->startOfYear(),
-            };
-
-            $query
-                ->whereDate('transacted_at', '>=', $startDate->toDateString())
-                ->whereDate('transacted_at', '<=', $now->toDateString());
-        }
+        $baseQuery = $this->buildQuery($request, $validated);
 
         $transactionsQuery = $type !== 'all'
-            ? (clone $query)->where('type', $type)
-            : clone $query;
+            ? (clone $baseQuery)->where('type', $type)
+            : clone $baseQuery;
 
         $transactions = Inertia::scroll(
             $transactionsQuery
@@ -57,7 +48,7 @@ class TransactionController extends Controller
                 ->paginate(20)
         );
 
-        $stats = (clone $query)
+        $stats = (clone $baseQuery)
             ->join('wallets', 'transactions.wallet_id', '=', 'wallets.id')
             ->selectRaw('wallets.currency, transactions.type, SUM(transactions.amount) as total')
             ->groupBy('wallets.currency', 'transactions.type')
@@ -74,10 +65,96 @@ class TransactionController extends Controller
 
         return inertia('transactions/index', [
             'transactions' => $transactions,
-            'period' => $period,
-            'type' => $type,
+            'wallets' => $wallets,
+            'categories' => $categories,
+            'filters' => [
+                'type' => $type,
+                'search' => $validated['search'] ?? null,
+                'wallet_id' => $validated['wallet_id'] ?? null,
+                'category_id' => $validated['category_id'] ?? null,
+                'date_from' => $validated['date_from'] ?? null,
+                'date_to' => $validated['date_to'] ?? null,
+            ],
             'stats' => $stats,
         ]);
+    }
+
+    /**
+     * Export filtered transactions as CSV.
+     */
+    public function export(Request $request): StreamedResponse
+    {
+        $validated = $request->validate([
+            'type' => ['nullable', 'string', Rule::in(['income', 'expense', 'all'])],
+            'search' => ['nullable', 'string', 'max:100'],
+            'wallet_id' => ['nullable', 'uuid', 'exists:wallets,id'],
+            'category_id' => ['nullable', 'uuid', 'exists:categories,id'],
+            'date_from' => ['nullable', 'date'],
+            'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
+        ]);
+
+        $type = $validated['type'] ?? 'all';
+
+        $query = $this->buildQuery($request, $validated);
+
+        if ($type !== 'all') {
+            $query->where('type', $type);
+        }
+
+        $query->orderByDesc('transacted_at')->orderByDesc('created_at');
+
+        return response()->streamDownload(function () use ($query): void {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['Date', 'Description', 'Type', 'Amount', 'Category', 'Wallet', 'Notes']);
+
+            foreach ($query->cursor() as $transaction) {
+                fputcsv($handle, [
+                    $transaction->transacted_at,
+                    $transaction->description,
+                    $transaction->type instanceof Type ? $transaction->type->value : $transaction->type,
+                    $transaction->amount,
+                    $transaction->category?->name,
+                    $transaction->wallet?->name,
+                    $transaction->notes,
+                ]);
+            }
+
+            fclose($handle);
+        }, 'transactions.csv', ['Content-Type' => 'text/csv']);
+    }
+
+    /**
+     * Build the base transaction query with filters applied.
+     *
+     * @param  array<string, mixed>  $validated
+     */
+    private function buildQuery(Request $request, array $validated): Builder
+    {
+        $query = Transaction::query()
+            ->where('transactions.user_id', $request->user()->id)
+            ->with(['wallet', 'category']);
+
+        if (! empty($validated['search'])) {
+            $query->where('description', 'like', '%'.$validated['search'].'%');
+        }
+
+        if (! empty($validated['wallet_id'])) {
+            $query->where('wallet_id', $validated['wallet_id']);
+        }
+
+        if (! empty($validated['category_id'])) {
+            $query->where('category_id', $validated['category_id']);
+        }
+
+        if (! empty($validated['date_from'])) {
+            $query->whereDate('transacted_at', '>=', $validated['date_from']);
+        }
+
+        if (! empty($validated['date_to'])) {
+            $query->whereDate('transacted_at', '<=', $validated['date_to']);
+        }
+
+        return $query;
     }
 
     /**

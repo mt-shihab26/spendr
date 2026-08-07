@@ -27,12 +27,7 @@ const TransactionsEdit = ({
                     route: 'transactions.index',
                 },
                 {
-                    title: transaction.description,
-                    route: 'transactions.show',
-                    params: { transaction: transaction.id },
-                },
-                {
-                    title: 'Edit',
+                    title: 'Edit Transaction',
                     route: 'transactions.edit',
                     params: { transaction: transaction.id },
                 },

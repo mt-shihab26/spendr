@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { formatLocalDateLong, formatLocalDateTime } from '@/lib/date';
 
 import { Link } from '@inertiajs/react';
+import { ChevronRight } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { TransactionAmount } from '@/components/elements/transaction-amount';
@@ -118,6 +119,12 @@ export const TransactionsTable = ({
                                             transaction={transaction}
                                             onDelete={setToDelete}
                                         />
+                                        <Link
+                                            href={route('transactions.edit', transaction.id)}
+                                            className="text-muted-foreground hover:text-foreground"
+                                        >
+                                            <ChevronRight className="size-4" />
+                                        </Link>
                                     </div>
                                 ))}
                             </div>

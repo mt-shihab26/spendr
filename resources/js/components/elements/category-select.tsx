@@ -18,14 +18,16 @@ export const CategorySelect = ({
     value,
     onValueChange,
     disabled = false,
+    includeAll,
 }: {
     categories: TCategory[];
-    type: TType;
+    type?: TType;
     value: string | null;
     onValueChange: (value: string | null) => void;
     disabled?: boolean;
+    includeAll?: boolean;
 }) => {
-    const filtered = categories.filter((c) => c.type === type);
+    const filtered = type ? categories.filter((c) => c.type === type) : categories;
     const selected = filtered.find((c) => c.id === value);
 
     return (
@@ -41,11 +43,16 @@ export const CategorySelect = ({
                         {selected.name}
                     </div>
                 ) : (
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue
+                        placeholder={includeAll ? 'All Categories' : 'Select category'}
+                    />
                 )}
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
+                    {includeAll && (
+                        <SelectItem value="">All Categories</SelectItem>
+                    )}
                     {filtered.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
                             <div className="flex items-center gap-2">

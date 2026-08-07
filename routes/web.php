@@ -30,6 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('/transactions')->group(function () {
         Route::get('/', [TransactionController::class, 'index'])->name('transactions.index');
+        Route::get('/export', [TransactionController::class, 'export'])->name('transactions.export');
         Route::get('/create', [TransactionController::class, 'create'])->name('transactions.create');
         Route::post('/', [TransactionController::class, 'store'])->name('transactions.store');
         Route::get('/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
