@@ -1,5 +1,5 @@
 import type { TCurrency } from '@/types/enums';
-import type { TCashFlowRow, TCategoryRow, TSummary } from '@/types/reports';
+import type { TCashFlowRow, TCategoryRow, TSummary, TNetWorthRow, TYearOverYearRow } from '@/types/reports';
 import type { TWallet } from '@/types/models';
 
 import { router } from '@inertiajs/react';
@@ -11,6 +11,8 @@ import { ReportsSummary } from '@/components/screens/reports/reports-summary';
 import { CashFlowChart } from '@/components/screens/reports/cash-flow-chart';
 import { CategoryDonut } from '@/components/screens/reports/category-donut';
 import { MonthlySummaryTable } from '@/components/screens/reports/monthly-summary-table';
+import { NetWorthChart } from '@/components/screens/reports/net-worth-chart';
+import { YearOverYearChart } from '@/components/screens/reports/year-over-year-chart';
 import { CurrencyTabs } from '@/components/elements/currency-tabs';
 import { ShowBalance } from '@/components/elements/show-balance';
 import { WalletSelect } from '@/components/elements/wallet-select';
@@ -29,6 +31,8 @@ const ReportsIndex = ({
     monthly_summary,
     expense_breakdown,
     income_breakdown,
+    net_worth_history,
+    year_over_year,
 }: {
     currency: TCurrency;
     currencies: TCurrency[];
@@ -42,6 +46,8 @@ const ReportsIndex = ({
     monthly_summary: TCashFlowRow[];
     expense_breakdown: TCategoryRow[];
     income_breakdown: TCategoryRow[];
+    net_worth_history: TNetWorthRow[];
+    year_over_year: TYearOverYearRow[];
 }) => {
     const navigate = (params: Record<string, string | null>) => {
         router.get(
@@ -122,6 +128,10 @@ const ReportsIndex = ({
                         data={income_breakdown}
                         currency={currency}
                     />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                    <NetWorthChart data={net_worth_history} currency={currency} />
+                    <YearOverYearChart data={year_over_year} currency={currency} />
                 </div>
                 <MonthlySummaryTable
                     rows={monthly_summary}

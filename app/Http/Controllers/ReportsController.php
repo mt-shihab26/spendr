@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -93,6 +94,12 @@ class ReportsController extends Controller
 
         $monthlyCashFlow = $this->computeMonthlyCashFlow($transactions, $startDate, $endDate);
 
+        $allTimeTransactions = $user->transactions()
+            ->with('category')
+            ->when($currency, fn ($q) => $q->whereHas('wallet', fn ($q) => $q->where('currency', $currency)))
+            ->when($walletId, fn ($q) => $q->where('wallet_id', $walletId))
+            ->get();
+
         return inertia('reports/index', [
             'currencies' => $currencies,
             'balance' => $initialBalance + $allTimeIncome - $allTimeExpense,
@@ -109,6 +116,8 @@ class ReportsController extends Controller
                 'expenses' => $periodExpense,
                 'net' => $periodIncome - $periodExpense,
             ],
+            'net_worth_history' => $this->computeNetWorthHistory($allTimeTransactions, $initialBalance),
+            'year_over_year' => $this->computeYearOverYear($allTimeTransactions),
             'date_from' => $dateFrom,
             'date_to' => $dateTo,
             'currency' => $currency,
@@ -162,6 +171,83 @@ class ReportsController extends Controller
         }
 
         return $result;
+    }
+
+    /**
+     * Compute cumulative net worth per month from the beginning of transaction history.
+     *
+     * @param  Collection<int, Transaction>  $transactions
+     * @return array<int, array{month: string, key: string, net_worth: float}>
+     */
+    private function computeNetWorthHistory(Collection $transactions, float $initialBalance): array
+    {
+        if ($transactions->isEmpty()) {
+            return [];
+        }
+
+        $byMonth = $transactions->groupBy(
+            fn ($t) => Carbon::parse($t->transacted_at)->format('Y-m')
+        );
+
+        $earliest = Carbon::parse($transactions->min('transacted_at'))->startOfMonth();
+        $latest = Carbon::parse($transactions->max('transacted_at'))->startOfMonth();
+
+        $result = [];
+        $cumulative = $initialBalance;
+        $current = $earliest->copy();
+
+        while ($current->lte($latest)) {
+            $key = $current->format('Y-m');
+            $monthTransactions = $byMonth->get($key, collect());
+
+            $cumulative += (float) $monthTransactions->where('type', 'income')->sum('amount');
+            $cumulative -= (float) $monthTransactions->where('type', 'expense')->sum('amount');
+
+            $result[] = [
+                'month' => $current->format('M Y'),
+                'key' => $key,
+                'net_worth' => round($cumulative, 2),
+            ];
+
+            $current = $current->addMonth();
+        }
+
+        return $result;
+    }
+
+    /**
+     * Compute year-over-year monthly income and expenses for current vs previous year.
+     *
+     * @param  Collection<int, Transaction>  $transactions
+     * @return array<int, array{month: string, current_income: float, current_expenses: float, prev_income: float, prev_expenses: float}>
+     */
+    private function computeYearOverYear(Collection $transactions): array
+    {
+        $currentYear = now()->year;
+        $prevYear = $currentYear - 1;
+
+        $byMonthYear = $transactions->groupBy(
+            fn ($t) => Carbon::parse($t->transacted_at)->format('Y-m')
+        );
+
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        return collect($months)->map(function ($month, $index) use ($byMonthYear, $currentYear, $prevYear) {
+            $num = str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT);
+            $currentKey = "{$currentYear}-{$num}";
+            $prevKey = "{$prevYear}-{$num}";
+
+            $current = $byMonthYear->get($currentKey, collect());
+            $prev = $byMonthYear->get($prevKey, collect());
+
+            return [
+                'month' => $month,
+                'current_income' => (float) $current->where('type', 'income')->sum('amount'),
+                'current_expenses' => (float) $current->where('type', 'expense')->sum('amount'),
+                'prev_income' => (float) $prev->where('type', 'income')->sum('amount'),
+                'prev_expenses' => (float) $prev->where('type', 'expense')->sum('amount'),
+            ];
+        })->all();
     }
 
     /**

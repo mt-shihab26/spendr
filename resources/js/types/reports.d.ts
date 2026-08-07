@@ -19,3 +19,17 @@ export type TCategoryRow = {
     total: number;
     percentage: number;
 };
+
+export type TNetWorthRow = {
+    month: string;
+    key: string;
+    net_worth: number;
+};
+
+export type TYearOverYearRow = {
+    month: string;
+    current_income: number;
+    current_expenses: number;
+    prev_income: number;
+    prev_expenses: number;
+};
