@@ -16,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
         with:
-          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -50,4 +50,3 @@ jobs:
         with:
           commit_message: fix code style
           commit_options: '--no-verify'
-          token: ${{ secrets.GITHUB_TOKEN }}
