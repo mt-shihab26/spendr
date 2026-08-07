@@ -2,7 +2,6 @@
 
 use App\Enums\Type;
 use App\Models\User;
-use App\Models\Wallet;
 use Laravel\Fortify\Features;
 
 beforeEach(function () {

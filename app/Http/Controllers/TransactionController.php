@@ -8,7 +8,6 @@ use App\Http\Requests\Transactions\UpdateTransactionRequest;
 use App\Models\Category;
 use App\Models\File;
 use App\Models\Transaction;
-use App\Models\Wallet;
 use App\Services\BudgetAlertService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -344,8 +343,9 @@ class TransactionController extends Controller
 
         while (($row = fgetcsv($handle)) !== false) {
             if ($firstRow && $validated['skip_header']) {
-                $headers = array_map(fn (string|null $v) => trim($v ?? ''), $row);
+                $headers = array_map(fn (?string $v) => trim($v ?? ''), $row);
                 $firstRow = false;
+
                 continue;
             }
             $firstRow = false;
@@ -371,11 +371,13 @@ class TransactionController extends Controller
                 $amount = abs((float) str_replace([',', '$', '€', '£', '৳'], '', $amountVal));
             } catch (\Exception) {
                 $skipped++;
+
                 continue;
             }
 
             if ($amount <= 0 || $descVal === '') {
                 $skipped++;
+
                 continue;
             }
 

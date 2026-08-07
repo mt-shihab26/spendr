@@ -11,13 +11,7 @@ class BudgetAlert extends Notification
     use Queueable;
 
     /**
-     * @param  string  $categoryName
-     * @param  string  $currency
-     * @param  float  $spent
-     * @param  float  $budgetAmount
-     * @param  int  $percentage
      * @param  int  $threshold  80 or 100
-     * @param  string  $budgetId
      * @param  string  $month  Y-m format
      */
     public function __construct(

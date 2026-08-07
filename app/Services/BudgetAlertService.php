@@ -12,8 +12,6 @@ class BudgetAlertService
 {
     /**
      * Check budget thresholds after a transaction is saved and send alerts if needed.
-     *
-     * @return void
      */
     public function checkAfterTransaction(Transaction $transaction, User $user): void
     {
