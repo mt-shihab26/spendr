@@ -3,6 +3,7 @@
 namespace App\Actions\Auth;
 
 use App\Concerns\ValidationRules;
+use App\Enums\Currency;
 use App\Enums\Type;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
@@ -33,9 +34,26 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $input['password'],
         ]);
 
+        $this->createDefaultWallet($user);
         $this->createDefaultCategories($user);
 
         return $user;
+    }
+
+    /**
+     * Create the default "Money Bag" wallet for a new user.
+     */
+    private function createDefaultWallet(User $user): void
+    {
+        $user->wallets()->create([
+            'name' => 'Money Bagg',
+            'currency' => Currency::BDT,
+            'initial_balance' => 0,
+            'color' => '#22c55e',
+            'icon' => 'Wallet',
+            'is_default' => true,
+            'sort_order' => 0,
+        ]);
     }
 
     /**
