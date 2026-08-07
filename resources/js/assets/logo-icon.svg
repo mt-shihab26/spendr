@@ -1,54 +1,58 @@
 <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Main body -->
     <path
-        d="M8 6
+        d="M8 5
        H27
-       C30.3 6 32 7.7 32 11
-       V14
+       C30.8 5 33 7.2 33 11
+       V13.5
        H34
-       C36.2 14 37 15.8 37 18
+       C36.8 13.5 38 15.2 38 18
        V22
-       C37 24.2 36.2 26 34 26
-       H32
+       C38 24.8 36.8 26.5 34 26.5
+       H33
        V29
-       C32 32.3 30.3 34 27 34
+       C33 32.8 30.8 35 27 35
        H8
-       C5.3 34 3 32.3 3 29
+       C4.8 35 2 32.8 2 29
        V11
-       C3 7.7 5.3 6 8 6 Z"
+       C2 7.2 4.8 5 8 5 Z"
         fill="none"
         stroke="#0D9488"
-        stroke-width="2"
+        stroke-width="2.5"
         stroke-linejoin="round"
     />
 
-    <circle cx="34" cy="20" r="2" fill="#0D9488" />
+    <!-- Payment dot -->
+    <circle cx="34.5" cy="20" r="2.5" fill="#0D9488" />
+
+    <!-- Three lines -->
     <line
         x1="8"
         y1="17"
-        x2="24"
+        x2="25"
         y2="17"
         stroke="#0D9488"
-        stroke-width="1.5"
+        stroke-width="2"
         stroke-linecap="round"
     />
 
     <line
         x1="8"
         y1="21"
-        x2="24"
+        x2="25"
         y2="21"
         stroke="#0D9488"
-        stroke-width="1.5"
+        stroke-width="2"
         stroke-linecap="round"
     />
 
     <line
         x1="8"
         y1="25"
-        x2="19"
+        x2="20"
         y2="25"
         stroke="#0D9488"
-        stroke-width="1.5"
+        stroke-width="2"
         stroke-linecap="round"
     />
 </svg>
