@@ -64,6 +64,7 @@ export const SettingsLayout = ({
                                     key={`${item.route}-${index}`}
                                     size="sm"
                                     variant="ghost"
+                                    nativeButton={false}
                                     render={<Link href={route(item.route)} />}
                                     className={cn('w-full justify-start', {
                                         'bg-muted': route().current(item.route),

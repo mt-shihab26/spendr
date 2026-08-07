@@ -1,0 +1,132 @@
+import type { LucideIcon } from 'lucide-react';
+
+import {
+    // Finance
+    Wallet,
+    CreditCard,
+    Banknote,
+    PiggyBank,
+    Receipt,
+    BadgePercent,
+    // Food & Dining
+    Utensils,
+    Coffee,
+    Pizza,
+    Apple,
+    Wine,
+    ShoppingCart,
+    // Transport
+    Car,
+    Plane,
+    Bus,
+    Train,
+    Bike,
+    Fuel,
+    // Shopping
+    ShoppingBag,
+    Shirt,
+    Tag,
+    Gift,
+    Package,
+    // Home & Utilities
+    Home,
+    Zap,
+    Flame,
+    Droplets,
+    Lightbulb,
+    Wifi,
+    Wrench,
+    Building2,
+    // Health & Fitness
+    Heart,
+    Dumbbell,
+    Pill,
+    Stethoscope,
+    // Entertainment
+    Music,
+    Film,
+    Tv,
+    Gamepad2,
+    Headphones,
+    // Education
+    BookOpen,
+    GraduationCap,
+    // Tech
+    Smartphone,
+    Laptop,
+    Cpu,
+    Watch,
+    // Personal & Work
+    Baby,
+    PawPrint,
+    Scissors,
+    Briefcase,
+    // Other
+    Star,
+    Shield,
+} from 'lucide-react';
+
+const ICON_MAP: Record<string, LucideIcon> = {
+    Wallet,
+    CreditCard,
+    Banknote,
+    PiggyBank,
+    Receipt,
+    BadgePercent,
+    Utensils,
+    Coffee,
+    Pizza,
+    Apple,
+    Wine,
+    ShoppingCart,
+    Car,
+    Plane,
+    Bus,
+    Train,
+    Bike,
+    Fuel,
+    ShoppingBag,
+    Shirt,
+    Tag,
+    Gift,
+    Package,
+    Home,
+    Zap,
+    Flame,
+    Droplets,
+    Lightbulb,
+    Wifi,
+    Wrench,
+    Building2,
+    Heart,
+    Dumbbell,
+    Pill,
+    Stethoscope,
+    Music,
+    Film,
+    Tv,
+    Gamepad2,
+    Headphones,
+    BookOpen,
+    GraduationCap,
+    Smartphone,
+    Laptop,
+    Cpu,
+    Watch,
+    Baby,
+    PawPrint,
+    Scissors,
+    Briefcase,
+    Star,
+    Shield,
+};
+
+export const iconOptions = Object.keys(ICON_MAP).map((name) => ({
+    value: name,
+    label: name,
+    icon: ICON_MAP[name],
+}));
+
+export const getIcon = (name: string | null): LucideIcon | null => {
+    return name ? (ICON_MAP[name] ?? null) : null;
+};

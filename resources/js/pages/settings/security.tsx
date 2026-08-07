@@ -25,7 +25,9 @@ const Security = (
         <SettingsLayout
             title="Security settings"
             description="Manage your password and account security"
-            breadcrumbs={[{ title: 'Security', route: 'settings.security.edit' }]}
+            breadcrumbs={[
+                { title: 'Security', route: 'settings.security.edit' },
+            ]}
         >
             <Form
                 action={route('settings.password.update')}
@@ -104,6 +106,7 @@ const Security = (
 
                         <div className="flex items-center gap-4">
                             <Button
+                                type="submit"
                                 disabled={processing}
                                 data-test="update-password-button"
                             >

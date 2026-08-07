@@ -1,28 +1,489 @@
-import { PlaceholderPattern } from '@/components/elements/placeholder-pattern';
-import { AppLayout } from '@/components/layouts/app-layout';
+import type {
+    TCategory,
+    TGoal,
+    TRecurringTransaction,
+    TTransaction,
+    TWallet,
+} from '@/types/models';
+import type { TCategoryRow } from '@/types/reports';
+import type { TCurrency } from '@/types/enums';
 
-const Dashboard = () => {
+import { Link } from '@inertiajs/react';
+import {
+    ArrowDown,
+    ArrowUp,
+    Minus,
+    RefreshCw,
+    Target,
+    TriangleAlert,
+} from 'lucide-react';
+
+import { AppLayout } from '@/components/layouts/app-layout';
+import { Heading } from '@/components/elements/heading';
+import { NewButton } from '@/components/elements/new-button';
+import { CategoryDonut } from '@/components/screens/reports/category-donut';
+import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
+import { Button } from '@/components/ui/button';
+
+import { formatCurrency } from '@/lib/formats';
+
+type TCurrencyStat = {
+    currency: TCurrency;
+    balance: number;
+    month_income: number;
+    month_expense: number;
+    prev_month_income: number;
+    prev_month_expense: number;
+    net_worth_delta: number;
+};
+
+type TBudgetStatus = {
+    id: string;
+    category: TCategory;
+    budget_amount: number;
+    spent: number;
+};
+
+const PctChange = ({ current, prev }: { current: number; prev: number }) => {
+    if (prev === 0) return null;
+    const pct = ((current - prev) / prev) * 100;
+    const abs = Math.abs(pct).toFixed(1);
+
+    if (pct > 0) {
+        return (
+            <span className="flex items-center gap-0.5 text-xs text-income">
+                <ArrowUp className="size-3" />
+                {abs}% vs last month
+            </span>
+        );
+    }
+    if (pct < 0) {
+        return (
+            <span className="flex items-center gap-0.5 text-xs text-expense">
+                <ArrowDown className="size-3" />
+                {abs}% vs last month
+            </span>
+        );
+    }
+    return (
+        <span className="flex items-center gap-0.5 text-xs text-muted-foreground">
+            <Minus className="size-3" />
+            No change vs last month
+        </span>
+    );
+};
+
+const BalanceDelta = ({
+    delta,
+    currency,
+}: {
+    delta: number;
+    currency: TCurrency;
+}) => {
+    if (delta > 0) {
+        return (
+            <span className="flex items-center gap-0.5 text-xs text-income">
+                <ArrowUp className="size-3" />+{formatCurrency(delta, currency)}{' '}
+                vs last month
+            </span>
+        );
+    }
+    if (delta < 0) {
+        return (
+            <span className="flex items-center gap-0.5 text-xs text-expense">
+                <ArrowDown className="size-3" />
+                {formatCurrency(delta, currency)} vs last month
+            </span>
+        );
+    }
+    return (
+        <span className="flex items-center gap-0.5 text-xs text-muted-foreground">
+            <Minus className="size-3" />
+            No change vs last month
+        </span>
+    );
+};
+
+const Dashboard = ({
+    currency_stats,
+    primary_currency,
+    wallets,
+    spending_by_category,
+    recent_transactions,
+    budgets,
+    upcoming_recurring,
+    goals,
+}: {
+    currency_stats: TCurrencyStat[];
+    primary_currency: TCurrency | null;
+    wallets: TWallet[];
+    spending_by_category: TCategoryRow[];
+    recent_transactions: TTransaction[];
+    budgets: TBudgetStatus[];
+    upcoming_recurring: TRecurringTransaction[];
+    goals: TGoal[];
+}) => {
+    const displayCurrency = primary_currency ?? 'BDT';
+
     return (
         <AppLayout
             title="Dashboard"
             description="Overview of your account"
             breadcrumbs={[{ title: 'Dashboard', route: 'dashboard' }]}
         >
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+            <div className="flex flex-col gap-4 p-4">
+                <div className="flex items-start justify-between">
+                    <Heading
+                        title="Dashboard"
+                        description="Overview of your account"
+                    />
+                    <NewButton href={route('transactions.create')}>
+                        Add Transaction
+                    </NewButton>
+                </div>
+
+                {/* Summary Cards — one row per currency */}
+                {currency_stats.map((stat) => (
+                    <div key={stat.currency}>
+                        {currency_stats.length > 1 && (
+                            <p className="mb-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                                {stat.currency}
+                            </p>
+                        )}
+                        <div className="grid gap-4 md:grid-cols-3">
+                            <div className="border p-4">
+                                <p className="text-xs text-muted-foreground">
+                                    Balance
+                                </p>
+                                <p className="mt-1 text-lg font-semibold tabular-nums">
+                                    {formatCurrency(
+                                        stat.balance,
+                                        stat.currency,
+                                    )}
+                                </p>
+                                <BalanceDelta
+                                    delta={stat.net_worth_delta}
+                                    currency={stat.currency}
+                                />
+                            </div>
+                            <div className="border p-4">
+                                <p className="text-xs text-muted-foreground">
+                                    This Month Income
+                                </p>
+                                <p className="mt-1 text-lg font-semibold text-income tabular-nums">
+                                    {formatCurrency(
+                                        stat.month_income,
+                                        stat.currency,
+                                    )}
+                                </p>
+                                <PctChange
+                                    current={stat.month_income}
+                                    prev={stat.prev_month_income}
+                                />
+                            </div>
+                            <div className="border p-4">
+                                <p className="text-xs text-muted-foreground">
+                                    This Month Expenses
+                                </p>
+                                <p className="mt-1 text-lg font-semibold text-expense tabular-nums">
+                                    {formatCurrency(
+                                        stat.month_expense,
+                                        stat.currency,
+                                    )}
+                                </p>
+                                <PctChange
+                                    current={stat.month_expense}
+                                    prev={stat.prev_month_expense}
+                                />
+                            </div>
+                        </div>
                     </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+                ))}
+
+                {/* Wallets + Spending by Category */}
+                <div className="grid gap-4 md:grid-cols-2">
+                    {/* Wallets Panel */}
+                    <div className="border p-4">
+                        <div className="mb-3 flex items-center justify-between">
+                            <p className="text-sm font-medium">Wallets</p>
+                            <Link
+                                href={route('wallets.index')}
+                                className="text-xs text-muted-foreground hover:underline"
+                            >
+                                All Wallets →
+                            </Link>
+                        </div>
+                        {wallets.length === 0 ? (
+                            <div className="flex flex-col items-center gap-3 py-6 text-center">
+                                <p className="text-xs text-muted-foreground">
+                                    No wallets yet.
+                                </p>
+                                <Button
+                                    size="sm"
+                                    nativeButton={false}
+                                    render={
+                                        <Link href={route('wallets.create')} />
+                                    }
+                                >
+                                    Create your first wallet
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="divide-y">
+                                {wallets.map((wallet) => (
+                                    <div
+                                        key={wallet.id}
+                                        className="flex items-center gap-2 py-2"
+                                    >
+                                        <span
+                                            className="size-2 shrink-0 rounded-full"
+                                            style={{
+                                                backgroundColor: wallet.color,
+                                            }}
+                                        />
+                                        <span className="flex-1 truncate text-xs">
+                                            {wallet.name}
+                                        </span>
+                                        <span className="shrink-0 text-xs text-muted-foreground">
+                                            {wallet.currency}
+                                        </span>
+                                        <span className="shrink-0 text-xs font-medium tabular-nums">
+                                            {formatCurrency(
+                                                wallet.balance ?? 0,
+                                                wallet.currency,
+                                            )}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+
+                    {/* Spending by Category */}
+                    <div className="flex flex-col gap-2">
+                        <CategoryDonut
+                            title="Spending by Category"
+                            data={spending_by_category}
+                            currency={displayCurrency}
+                        />
+                        <div className="text-right">
+                            <Link
+                                href={route('reports.index')}
+                                className="text-xs text-muted-foreground hover:underline"
+                            >
+                                View Full Report →
+                            </Link>
+                        </div>
                     </div>
                 </div>
-                <div className="relative min-h-screen flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+
+                {/* Recent Transactions */}
+                <div>
+                    <div className="mb-2 flex items-center justify-between">
+                        <p className="text-sm font-medium">
+                            Recent Transactions
+                        </p>
+                        <Link
+                            href={route('transactions.index')}
+                            className="text-xs text-muted-foreground hover:underline"
+                        >
+                            View All →
+                        </Link>
+                    </div>
+                    {recent_transactions.length === 0 ? (
+                        <div className="border p-4">
+                            <p className="text-xs text-muted-foreground">
+                                No transactions yet.
+                            </p>
+                        </div>
+                    ) : (
+                        <TransactionsTable transactions={recent_transactions} />
+                    )}
                 </div>
+
+                {/* Budget Status */}
+                {budgets.length > 0 && (
+                    <div>
+                        <div className="mb-2 flex items-center justify-between">
+                            <p className="text-sm font-medium">Budget Status</p>
+                            <Link
+                                href={route('budgets.index')}
+                                className="text-xs text-muted-foreground hover:underline"
+                            >
+                                Manage Budgets →
+                            </Link>
+                        </div>
+                        <div className="divide-y border">
+                            {budgets.map((item) => {
+                                const isOver = item.spent > item.budget_amount;
+                                const pct =
+                                    item.budget_amount > 0
+                                        ? Math.min(
+                                              (item.spent /
+                                                  item.budget_amount) *
+                                                  100,
+                                              100,
+                                          )
+                                        : 0;
+
+                                return (
+                                    <div key={item.id} className="px-4 py-3">
+                                        <div className="mb-1.5 flex items-center justify-between">
+                                            <div className="flex items-center gap-1.5">
+                                                <span className="text-xs font-medium">
+                                                    {item.category.name}
+                                                </span>
+                                                {isOver && (
+                                                    <span className="flex items-center gap-0.5 text-xs text-destructive">
+                                                        <TriangleAlert className="size-3" />
+                                                        Over
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <span className="text-xs text-muted-foreground tabular-nums">
+                                                {formatCurrency(
+                                                    item.spent,
+                                                    displayCurrency,
+                                                )}{' '}
+                                                /{' '}
+                                                {formatCurrency(
+                                                    item.budget_amount,
+                                                    displayCurrency,
+                                                )}
+                                            </span>
+                                        </div>
+                                        <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                                            <div
+                                                className={`h-full rounded-full transition-all ${isOver ? 'bg-destructive' : 'bg-primary'}`}
+                                                style={{ width: `${pct}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+
+                {/* Goals + Upcoming Recurring */}
+                {(goals.length > 0 || upcoming_recurring.length > 0) && (
+                    <div className="grid gap-4 md:grid-cols-2">
+                        {/* Goals */}
+                        {goals.length > 0 && (
+                            <div>
+                                <div className="mb-2 flex items-center justify-between">
+                                    <p className="text-sm font-medium">Goals</p>
+                                    <Link
+                                        href={route('goals.index')}
+                                        className="text-xs text-muted-foreground hover:underline"
+                                    >
+                                        All Goals →
+                                    </Link>
+                                </div>
+                                <div className="divide-y border">
+                                    {goals.map((goal) => {
+                                        const pct =
+                                            goal.progress_percentage ?? 0;
+                                        return (
+                                            <Link
+                                                key={goal.id}
+                                                href={route(
+                                                    'goals.show',
+                                                    goal.id,
+                                                )}
+                                                className="block px-4 py-3 hover:bg-muted/50"
+                                            >
+                                                <div className="mb-1.5 flex items-center justify-between">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <div
+                                                            className="flex size-5 items-center justify-center rounded-full"
+                                                            style={{
+                                                                backgroundColor:
+                                                                    goal.color +
+                                                                    '20',
+                                                                color: goal.color,
+                                                            }}
+                                                        >
+                                                            <Target className="size-3" />
+                                                        </div>
+                                                        <span className="text-xs font-medium">
+                                                            {goal.name}
+                                                        </span>
+                                                    </div>
+                                                    <span className="text-xs text-muted-foreground tabular-nums">
+                                                        {pct.toFixed(0)}%
+                                                    </span>
+                                                </div>
+                                                <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                                                    <div
+                                                        className="h-full rounded-full transition-all"
+                                                        style={{
+                                                            width: `${Math.min(100, pct)}%`,
+                                                            backgroundColor:
+                                                                goal.color,
+                                                        }}
+                                                    />
+                                                </div>
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Upcoming Recurring */}
+                        {upcoming_recurring.length > 0 && (
+                            <div>
+                                <div className="mb-2 flex items-center justify-between">
+                                    <p className="text-sm font-medium">
+                                        Upcoming Recurring
+                                    </p>
+                                    <Link
+                                        href={route(
+                                            'recurring-transactions.index',
+                                        )}
+                                        className="text-xs text-muted-foreground hover:underline"
+                                    >
+                                        All Recurring →
+                                    </Link>
+                                </div>
+                                <div className="divide-y border">
+                                    {upcoming_recurring.map((r) => (
+                                        <Link
+                                            key={r.id}
+                                            href={route(
+                                                'recurring-transactions.show',
+                                                r.id,
+                                            )}
+                                            className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50"
+                                        >
+                                            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-muted">
+                                                <RefreshCw className="size-3 text-muted-foreground" />
+                                            </span>
+                                            <div className="flex flex-1 flex-col">
+                                                <span className="text-xs font-medium">
+                                                    {r.description}
+                                                </span>
+                                                <span className="text-xs text-muted-foreground capitalize">
+                                                    {r.frequency} · due{' '}
+                                                    {r.next_due_at}
+                                                </span>
+                                            </div>
+                                            <span className="text-xs font-semibold tabular-nums">
+                                                {r.wallet
+                                                    ? formatCurrency(
+                                                          r.amount,
+                                                          r.wallet.currency,
+                                                      )
+                                                    : r.amount.toFixed(2)}
+                                            </span>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </AppLayout>
     );

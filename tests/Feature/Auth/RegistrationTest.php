@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\Type;
+use App\Models\User;
 use Laravel\Fortify\Features;
 
 beforeEach(function () {
@@ -22,4 +24,38 @@ test('new users can register', function () {
 
     $this->assertAuthenticated();
     $response->assertRedirect(route('dashboard', absolute: false));
+});
+
+test('default categories are created when a new user registers', function () {
+    $this->post(route('register.store'), [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ]);
+
+    $user = User::where('email', 'test@example.com')->firstOrFail();
+
+    $expectedExpense = count(config('seeds.expense_categories'));
+    $expectedIncome = count(config('seeds.income_categories'));
+
+    expect($user->categories()->where('type', Type::Expense)->count())->toBe($expectedExpense)
+        ->and($user->categories()->where('type', Type::Income)->count())->toBe($expectedIncome)
+        ->and($user->categories()->where('is_default', true)->count())->toBe($expectedExpense + $expectedIncome);
+});
+
+test('default Money Bag wallet is created when a new user registers', function () {
+    $this->post(route('register.store'), [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ]);
+
+    $user = User::where('email', 'test@example.com')->firstOrFail();
+    $wallet = $user->wallets()->where('is_default', true)->first();
+
+    expect($wallet)->not->toBeNull()
+        ->and($wallet->name)->toBe('Money Bagg')
+        ->and($wallet->is_default)->toBeTrue();
 });

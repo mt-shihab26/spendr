@@ -1,17 +1,13 @@
 import type { LucideIcon } from 'lucide-react';
-import type { HTMLAttributes } from 'react';
 import type { TAppearance } from '@/hooks/use-appearance';
 
 import { useAppearance } from '@/hooks/use-appearance';
-import { cn } from '@/lib/utils';
 
 import { Monitor, Moon, Sun } from 'lucide-react';
 import { SettingsLayout } from '@/components/layouts/settings-layout';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const AppearanceToggleTab = ({
-    className,
-    ...props
-}: HTMLAttributes<HTMLDivElement>) => {
+const Appearance = () => {
     const { appearance, updateAppearance } = useAppearance();
 
     const tabs: { value: TAppearance; icon: LucideIcon; label: string }[] = [
@@ -20,34 +16,12 @@ const AppearanceToggleTab = ({
         { value: 'system', icon: Monitor, label: 'System' },
     ];
 
-    return (
-        <div
-            className={cn(
-                'inline-flex gap-1 rounded-lg bg-neutral-100 p-1 dark:bg-neutral-800',
-                className,
-            )}
-            {...props}
-        >
-            {tabs.map(({ value, icon: Icon, label }) => (
-                <button
-                    key={value}
-                    onClick={() => updateAppearance(value)}
-                    className={cn(
-                        'flex items-center rounded-md px-3.5 py-1.5 transition-colors',
-                        appearance === value
-                            ? 'bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100'
-                            : 'text-neutral-500 hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60',
-                    )}
-                >
-                    <Icon className="-ml-1 h-4 w-4" />
-                    <span className="ml-1.5 text-sm">{label}</span>
-                </button>
-            ))}
-        </div>
-    );
-};
+    const changeAppearance = (value: string | null) => {
+        if (value === 'light' || value === 'dark' || value === 'system') {
+            updateAppearance(value);
+        }
+    };
 
-const Appearance = () => {
     return (
         <SettingsLayout
             title="Appearance settings"
@@ -59,7 +33,16 @@ const Appearance = () => {
                 },
             ]}
         >
-            <AppearanceToggleTab />
+            <Tabs value={appearance} onValueChange={changeAppearance}>
+                <TabsList>
+                    {tabs.map(({ value, icon: Icon, label }) => (
+                        <TabsTrigger key={value} value={value}>
+                            <Icon />
+                            {label}
+                        </TabsTrigger>
+                    ))}
+                </TabsList>
+            </Tabs>
         </SettingsLayout>
     );
 };
