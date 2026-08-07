@@ -19,7 +19,11 @@ class BudgetController extends Controller
      */
     public function index(Request $request): Response
     {
-        $month = $request->input('month', now()->format('Y-m'));
+        $validated = $request->validate([
+            'month' => ['nullable', 'date_format:Y-m'],
+        ]);
+
+        $month = $validated['month'] ?? now()->format('Y-m');
 
         $budgets = $request->user()
             ->budgets()
@@ -75,7 +79,11 @@ class BudgetController extends Controller
     {
         abort_if($budget->user_id !== $request->user()->id, 403);
 
-        $month = $request->input('month', now()->format('Y-m'));
+        $validated = $request->validate([
+            'month' => ['nullable', 'date_format:Y-m'],
+        ]);
+
+        $month = $validated['month'] ?? now()->format('Y-m');
 
         $budget->load('category');
 

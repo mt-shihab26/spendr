@@ -19,22 +19,28 @@ class TransferController extends Controller
     {
         $wallets = $request->user()->wallets()->orderBy('sort_order')->get();
 
+        $validated = $request->validate([
+            'date_from' => ['nullable', 'date'],
+            'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
+            'wallet_id' => ['nullable', 'uuid', 'exists:wallets,id'],
+        ]);
+
         $query = $request->user()
             ->transfers()
             ->with(['fromWallet', 'toWallet'])
             ->orderByDesc('transacted_at')
             ->orderByDesc('created_at');
 
-        if ($request->filled('date_from')) {
-            $query->whereDate('transacted_at', '>=', $request->input('date_from'));
+        if (! empty($validated['date_from'])) {
+            $query->whereDate('transacted_at', '>=', $validated['date_from']);
         }
 
-        if ($request->filled('date_to')) {
-            $query->whereDate('transacted_at', '<=', $request->input('date_to'));
+        if (! empty($validated['date_to'])) {
+            $query->whereDate('transacted_at', '<=', $validated['date_to']);
         }
 
-        if ($request->filled('wallet_id')) {
-            $walletId = $request->input('wallet_id');
+        if (! empty($validated['wallet_id'])) {
+            $walletId = $validated['wallet_id'];
             $query->where(function ($q) use ($walletId): void {
                 $q->where('from_wallet_id', $walletId)
                     ->orWhere('to_wallet_id', $walletId);
@@ -45,9 +51,9 @@ class TransferController extends Controller
             'transfers' => Inertia::scroll($query->paginate(20)),
             'wallets' => $wallets,
             'filters' => [
-                'date_from' => $request->input('date_from'),
-                'date_to' => $request->input('date_to'),
-                'wallet_id' => $request->input('wallet_id'),
+                'date_from' => $validated['date_from'] ?? null,
+                'date_to' => $validated['date_to'] ?? null,
+                'wallet_id' => $validated['wallet_id'] ?? null,
             ],
         ]);
     }
