@@ -3,6 +3,7 @@
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SettingController;
@@ -20,6 +21,12 @@ Route::get('.well-known/passkey-endpoints', [WellKnownController::class, 'passke
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/search', [SearchController::class, 'index'])->name('search');
+
+    Route::prefix('/files')->group(function () {
+        Route::get('/{file}', [FileController::class, 'show'])->name('files.show');
+        Route::delete('/{file}', [FileController::class, 'destroy'])->name('files.destroy');
+    });
+    Route::post('/transactions/{transaction}/files', [FileController::class, 'storeForTransaction'])->name('transactions.files.store');
 
     Route::prefix('/wallets')->group(function () {
         Route::get('/', [WalletController::class, 'index'])->name('wallets.index');

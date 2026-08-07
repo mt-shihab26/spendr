@@ -67,6 +67,19 @@ export type TCategory = {
     budget?: TBudget | null;
 };
 
+export type TFile = {
+    id: string;
+    user_id: string;
+    fileable_type: string;
+    fileable_id: string;
+    name: string;
+    path: string;
+    mime_type: string;
+    size: number;
+    created_at: string;
+    updated_at: string;
+};
+
 export type TTransaction = {
     id: string;
     user_id: string;
@@ -83,6 +96,7 @@ export type TTransaction = {
 
     wallet?: TWallet;
     category?: TCategory;
+    files?: TFile[];
 };
 
 export type TTransfer = {
