@@ -50,3 +50,4 @@ jobs:
         with:
           commit_message: fix code style
           commit_options: '--no-verify'
+          token: ${{ secrets.GITHUB_TOKEN }}
