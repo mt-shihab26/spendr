@@ -83,7 +83,7 @@ class ReportsController extends Controller
         }
 
         $initialBalance = $walletId
-            ? (float) ($wallets->firstWhere('id', $walletId)?->initial_balance ?? 0)
+            ? (float) $wallets->firstWhere('id', $walletId)->initial_balance
             : (float) $wallets->sum('initial_balance');
 
         $allTimeIncome = (float) (clone $balanceQuery)->where('type', 'income')->sum('amount');
@@ -267,8 +267,8 @@ class ReportsController extends Controller
         $byCategory = $transactions
             ->groupBy('category_id')
             ->map(fn ($group) => [
-                'name' => $group->first()->category?->name ?? 'Unknown',
-                'color' => $group->first()->category?->color ?? '#6b7280',
+                'name' => $group->first()->category->name ?? 'Unknown',
+                'color' => $group->first()->category->color ?? '#6b7280',
                 'total' => (float) $group->sum('amount'),
             ])
             ->sortByDesc('total')

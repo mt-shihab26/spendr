@@ -83,6 +83,8 @@ class Category extends Model
 
     /**
      * Eager-load transaction count, total amount, and budget. Use on collection queries to avoid N+1.
+     *
+     * @param  Builder<Category>  $query
      */
     public function scopeWithStats(Builder $query): void
     {

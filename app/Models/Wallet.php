@@ -97,6 +97,8 @@ class Wallet extends Model
 
     /**
      * Eager-load all four aggregate sums. Use on collection queries to avoid N+1.
+     *
+     * @param  Builder<Wallet>  $query
      */
     public function scopeWithStats(Builder $query): void
     {

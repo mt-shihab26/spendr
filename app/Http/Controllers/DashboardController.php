@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\Type;
 use App\Models\Budget;
 use App\Models\Transaction;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -32,13 +33,13 @@ class DashboardController extends Controller
             ->each(fn ($w) => $w->setAttribute('balance', $w->currentBalance()));
 
         $currencies = $allWallets
-            ->groupBy(fn ($w) => $w->currency->value)
-            ->keys()
+            ->map(fn (Wallet $w) => $w->currency->value)
+            ->unique()
             ->sort()
             ->values()
             ->all();
 
-        $primaryCurrency = in_array('BDT', $currencies) ? 'BDT' : ($currencies[0] ?? null);
+        $primaryCurrency = in_array('BDT', $currencies, true) ? 'BDT' : ($currencies[0] ?? null);
 
         $currencyStats = collect($currencies)->map(function (string $currency) use ($allWallets, $user, $year, $monthNum, $prevYear, $prevMonthNum) {
             $wallets = $allWallets->filter(fn ($w) => $w->currency->value === $currency);
@@ -153,8 +154,8 @@ class DashboardController extends Controller
         $byCategory = $transactions
             ->groupBy('category_id')
             ->map(fn ($group) => [
-                'name' => $group->first()->category?->name ?? 'Unknown',
-                'color' => $group->first()->category?->color ?? '#6b7280',
+                'name' => $group->first()->category->name ?? 'Unknown',
+                'color' => $group->first()->category->color ?? '#6b7280',
                 'total' => (float) $group->sum('amount'),
             ])
             ->sortByDesc('total')

@@ -60,10 +60,10 @@ class TransactionController extends Controller
             ->groupBy('currency')
             ->map(fn ($rows, $currency) => [
                 'currency' => $currency,
-                'income' => (float) ($rows->firstWhere('type', Type::Income->value)?->total ?? 0),
-                'expense' => (float) ($rows->firstWhere('type', Type::Expense->value)?->total ?? 0),
-                'net' => (float) ($rows->firstWhere('type', Type::Income->value)?->total ?? 0)
-                    - (float) ($rows->firstWhere('type', Type::Expense->value)?->total ?? 0),
+                'income' => (float) $rows->where('type', Type::Income->value)->sum('total'),
+                'expense' => (float) $rows->where('type', Type::Expense->value)->sum('total'),
+                'net' => (float) $rows->where('type', Type::Income->value)->sum('total')
+                    - (float) $rows->where('type', Type::Expense->value)->sum('total'),
             ])
             ->values();
 
@@ -109,13 +109,16 @@ class TransactionController extends Controller
 
         return response()->streamDownload(function () use ($query): void {
             $handle = fopen('php://output', 'w');
+            if ($handle === false) {
+                return;
+            }
             fputcsv($handle, ['Date', 'Description', 'Type', 'Amount', 'Category', 'Wallet', 'Notes']);
 
             foreach ($query->cursor() as $transaction) {
                 fputcsv($handle, [
                     $transaction->transacted_at,
                     $transaction->description,
-                    $transaction->type instanceof Type ? $transaction->type->value : $transaction->type,
+                    $transaction->type->value,
                     $transaction->amount,
                     $transaction->category?->name,
                     $transaction->wallet?->name,
@@ -131,6 +134,7 @@ class TransactionController extends Controller
      * Build the base transaction query with filters applied.
      *
      * @param  array<string, mixed>  $validated
+     * @return Builder<Transaction>
      */
     private function buildQuery(Request $request, array $validated): Builder
     {
@@ -312,8 +316,11 @@ class TransactionController extends Controller
             'skip_header' => ['boolean'],
         ]);
 
-        $wallet = $request->user()->wallets()->findOrFail($validated['wallet_id']);
+        $wallet = $request->user()->wallets()->where('id', $validated['wallet_id'])->firstOrFail();
         $handle = fopen($request->file('file')->getPathname(), 'r');
+        if ($handle === false) {
+            return redirect()->route('transactions.index')->withErrors(['file' => 'Could not open the uploaded file.']);
+        }
         $firstRow = true;
         $imported = 0;
         $skipped = 0;
@@ -323,7 +330,7 @@ class TransactionController extends Controller
 
         while (($row = fgetcsv($handle)) !== false) {
             if ($firstRow && $validated['skip_header']) {
-                $headers = array_map('trim', $row);
+                $headers = array_map(fn (string|null $v) => trim($v ?? ''), $row);
                 $firstRow = false;
                 continue;
             }
@@ -337,7 +344,7 @@ class TransactionController extends Controller
                 $typeVal = $validated['col_type'] ? trim($row[$validated['col_type']] ?? '') : null;
                 $catVal = $validated['col_category'] ? trim($row[$validated['col_category']] ?? '') : null;
             } else {
-                $cols = array_values($row);
+                $cols = $row;
                 $dateVal = trim($cols[(int) $validated['col_date']] ?? '');
                 $descVal = trim($cols[(int) $validated['col_description']] ?? '');
                 $amountVal = trim($cols[(int) $validated['col_amount']] ?? '');

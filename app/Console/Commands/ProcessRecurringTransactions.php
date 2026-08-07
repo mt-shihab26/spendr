@@ -6,6 +6,7 @@ use App\Models\RecurringTransaction;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 #[Signature('app:process-recurring-transactions')]
@@ -43,7 +44,7 @@ class ProcessRecurringTransactions extends Command
                 ]);
 
                 $recurring->advanceNextDue();
-                $recurring->last_run_at = now();
+                $recurring->last_run_at = Carbon::now();
                 $recurring->save();
 
                 $processed++;

@@ -31,7 +31,7 @@ class BudgetController extends Controller
             ->orderBy('created_at')
             ->get();
 
-        $spending = $this->getSpending($request->user()->id, $month);
+        $spending = $this->getSpendingByCategory($request->user()->id, $month);
 
         $budgets = $budgets->map(fn (Budget $budget) => array_merge(
             $budget->toArray(),
@@ -87,7 +87,7 @@ class BudgetController extends Controller
 
         $budget->load('category');
 
-        $spending = $this->getSpending($request->user()->id, $month, $budget->category_id);
+        $spending = $this->getCategorySpending($request->user()->id, $month, $budget->category_id);
 
         return inertia('budgets/show', [
             'budget' => array_merge($budget->toArray(), ['spent' => $spending]),
@@ -143,37 +143,56 @@ class BudgetController extends Controller
     }
 
     /**
-     * Get per-currency spending for the given month, grouped by category_id.
-     * When $categoryId is provided, returns a flat currency => total array for that single category.
+     * Get per-currency spending for the given month grouped by category_id.
      *
-     * @return Collection<string, array<string, float>>|array<string, float>
+     * @return Collection<string, non-empty-array<string, float>>
      */
-    private function getSpending(string $userId, string $month, ?string $categoryId = null): Collection|array
+    private function getSpendingByCategory(string $userId, string $month): Collection
     {
         [$year, $monthNum] = explode('-', $month);
 
-        $query = DB::table('transactions')
+        $rows = DB::table('transactions')
             ->join('wallets', 'transactions.wallet_id', '=', 'wallets.id')
             ->where('transactions.user_id', $userId)
             ->where('transactions.type', Type::Expense->value)
             ->whereYear('transactions.transacted_at', (int) $year)
             ->whereMonth('transactions.transacted_at', (int) $monthNum)
-            ->whereNull('transactions.deleted_at');
-
-        if ($categoryId !== null) {
-            return $query
-                ->where('transactions.category_id', $categoryId)
-                ->select('wallets.currency', DB::raw('SUM(transactions.amount) as total'))
-                ->groupBy('wallets.currency')
-                ->pluck('total', 'currency')
-                ->toArray();
-        }
-
-        return $query
+            ->whereNull('transactions.deleted_at')
             ->select('transactions.category_id', 'wallets.currency', DB::raw('SUM(transactions.amount) as total'))
             ->groupBy('transactions.category_id', 'wallets.currency')
-            ->get()
-            ->groupBy('category_id')
-            ->map(fn ($rows) => $rows->pluck('total', 'currency')->toArray());
+            ->get();
+
+        $result = [];
+        foreach ($rows as $row) {
+            if (is_string($row->category_id) && is_string($row->currency)) {
+                $result[$row->category_id][$row->currency] = (float) $row->total;
+            }
+        }
+
+        return collect($result);
+    }
+
+    /**
+     * Get per-currency spending for a single category in the given month.
+     *
+     * @return array<string, float>
+     */
+    private function getCategorySpending(string $userId, string $month, string $categoryId): array
+    {
+        [$year, $monthNum] = explode('-', $month);
+
+        return DB::table('transactions')
+            ->join('wallets', 'transactions.wallet_id', '=', 'wallets.id')
+            ->where('transactions.user_id', $userId)
+            ->where('transactions.category_id', $categoryId)
+            ->where('transactions.type', Type::Expense->value)
+            ->whereYear('transactions.transacted_at', (int) $year)
+            ->whereMonth('transactions.transacted_at', (int) $monthNum)
+            ->whereNull('transactions.deleted_at')
+            ->select('wallets.currency', DB::raw('SUM(transactions.amount) as total'))
+            ->groupBy('wallets.currency')
+            ->pluck('total', 'currency')
+            ->map(fn ($v) => (float) $v)
+            ->all();
     }
 }

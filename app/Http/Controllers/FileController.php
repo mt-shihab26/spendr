@@ -43,7 +43,7 @@ class FileController extends Controller
     {
         abort_if($file->user_id !== $request->user()->id, 403);
 
-        return Storage::disk('private')->streamDownload(
+        return response()->streamDownload(
             fn () => print (Storage::disk('private')->get($file->path) ?? ''),
             $file->name,
             ['Content-Type' => $file->mime_type],
