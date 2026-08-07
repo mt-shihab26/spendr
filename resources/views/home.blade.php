@@ -19,18 +19,15 @@
         @vite(['resources/css/app.css'])
     </head>
     <body class="bg-background font-mono text-foreground antialiased">
-
         <x-home.navbar />
-
         <main>
             <x-home.hero />
             <x-home.stats />
             <x-home.features />
             <x-home.how-it-works />
+            <x-home.pricing />
             <x-home.cta />
         </main>
-
         <x-home.footer />
-
     </body>
 </html>

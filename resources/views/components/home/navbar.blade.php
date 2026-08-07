@@ -8,7 +8,8 @@
 
         <div class="hidden items-center gap-8 md:flex">
             <a href="#features" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Features</a>
-            <a href="#how-it-works" class="text-sm text-muted-foreground transition-colors hover:text-foreground">How it works</a>
+            <a href="#how-it-works" class="text-sm text-muted-foreground transition-colors hover:text-foreground">How</a>
+            <a href="#pricing" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Pricing</a>
         </div>
 
         <div class="flex items-center gap-3">
