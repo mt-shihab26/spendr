@@ -12,8 +12,8 @@ use Illuminate\Support\Carbon;
 /**
  * @property string $id
  * @property string $user_id
- * @property string $fileable_type
- * @property string $fileable_id
+ * @property string|null $fileable_type
+ * @property string|null $fileable_id
  * @property string $name
  * @property string $path
  * @property string $mime_type

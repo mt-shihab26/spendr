@@ -41,6 +41,8 @@ class StoreTransactionRequest extends FormRequest
             'transacted_at' => ['required', new DateTimeFormat],
             'description' => ['required', 'string', 'max:255'],
             'notes' => ['nullable', 'string'],
+            'file_ids' => ['nullable', 'array'],
+            'file_ids.*' => ['uuid', 'exists:files,id'],
         ];
     }
 }

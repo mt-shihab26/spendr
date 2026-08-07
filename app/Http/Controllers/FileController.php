@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use App\Models\Transaction;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -11,6 +12,34 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileController extends Controller
 {
+    /**
+     * Pre-upload a file and return its ID for later association.
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'max:10240', 'mimes:jpg,jpeg,png,gif,pdf,webp'],
+        ]);
+
+        $uploaded = $request->file('file');
+        $path = $uploaded->store("attachments/{$request->user()->id}", 'private');
+
+        $file = File::create([
+            'user_id' => $request->user()->id,
+            'name' => $uploaded->getClientOriginalName(),
+            'path' => $path,
+            'mime_type' => $uploaded->getMimeType() ?? 'application/octet-stream',
+            'size' => $uploaded->getSize(),
+        ]);
+
+        return response()->json([
+            'id' => $file->id,
+            'name' => $file->name,
+            'size' => $file->size,
+            'mime_type' => $file->mime_type,
+        ], 201);
+    }
+
     /**
      * Attach a file to a transaction.
      */

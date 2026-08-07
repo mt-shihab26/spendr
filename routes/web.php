@@ -31,6 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::prefix('/files')->group(function () {
+        Route::post('/', [FileController::class, 'store'])->name('files.store');
         Route::get('/{file}', [FileController::class, 'show'])->name('files.show');
         Route::delete('/{file}', [FileController::class, 'destroy'])->name('files.destroy');
     });

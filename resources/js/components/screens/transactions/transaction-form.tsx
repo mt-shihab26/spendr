@@ -8,10 +8,12 @@ import {
 import type { TTransaction, TWallet, TCategory } from '@/types/models';
 import type { TType } from '@/types/enums';
 
+import { useRef, useState } from 'react';
 import { getCurrencySymbol } from '@/lib/currency';
 import { useForm } from '@inertiajs/react';
 
 import { Link } from '@inertiajs/react';
+import { Paperclip, Trash2, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,6 +24,19 @@ import { Textarea } from '@/components/ui/textarea';
 import { WalletSelect } from '@/components/elements/wallet-select';
 import { CategorySelect } from '@/components/elements/category-select';
 
+type UploadedFile = {
+    id: string;
+    name: string;
+    size: number;
+    mime_type: string;
+};
+
+const formatBytes = (bytes: number): string => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
 export const TransactionForm = ({
     transaction,
     wallets,
@@ -31,7 +46,16 @@ export const TransactionForm = ({
     wallets: TWallet[];
     categories: TCategory[];
 }) => {
-    const { data, setData, post, patch, processing, errors } = useForm({
+    const { data, setData, post, patch, processing, errors } = useForm<{
+        wallet_id: string | null;
+        category_id: string | null;
+        type: TType;
+        amount: number;
+        transacted_at: string;
+        description: string;
+        notes: string;
+        file_ids: string[];
+    }>({
         wallet_id:
             transaction?.wallet_id ??
             wallets.find((w) => w.is_default)?.id ??
@@ -44,7 +68,59 @@ export const TransactionForm = ({
             : nowUtcIso(),
         description: transaction?.description ?? '',
         notes: transaction?.notes ?? '',
+        file_ids: [],
     });
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+    const [uploadError, setUploadError] = useState<string | null>(null);
+    const [uploading, setUploading] = useState(false);
+    const [dragOver, setDragOver] = useState(false);
+
+    const uploadFile = async (file: File) => {
+        setUploadError(null);
+        setUploading(true);
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const csrf = document.querySelector<HTMLMetaElement>(
+                'meta[name="csrf-token"]',
+            )?.content ?? '';
+
+            const response = await fetch(route('files.store'), {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrf,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: formData,
+            });
+
+            if (!response.ok) {
+                const json = await response.json().catch(() => ({})) as { message?: string };
+                setUploadError(json.message ?? 'Upload failed.');
+                return;
+            }
+
+            const uploaded = await response.json() as UploadedFile;
+            setUploadedFiles((prev) => [...prev, uploaded]);
+            setData('file_ids', [...data.file_ids, uploaded.id]);
+        } catch {
+            setUploadError('Upload failed. Please try again.');
+        } finally {
+            setUploading(false);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
+
+    const removeFile = (id: string) => {
+        setUploadedFiles((prev) => prev.filter((f) => f.id !== id));
+        setData('file_ids', data.file_ids.filter((fid) => fid !== id));
+    };
 
     const selectedWallet = wallets.find((w) => w.id === data.wallet_id);
     const currencyPrefix = selectedWallet
@@ -165,6 +241,92 @@ export const TransactionForm = ({
                 <InputError message={errors.notes} />
             </div>
 
+            {!transaction && (
+                <div className="space-y-2">
+                    <Label>Attachments</Label>
+
+                    {uploadedFiles.length > 0 && (
+                        <ul className="space-y-2">
+                            {uploadedFiles.map((f) => (
+                                <li
+                                    key={f.id}
+                                    className="flex items-center gap-3 rounded border p-2 text-sm"
+                                >
+                                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded bg-muted">
+                                        <Paperclip className="h-4 w-4 text-muted-foreground" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="truncate font-medium">
+                                            {f.name}
+                                        </p>
+                                        <p className="text-xs text-muted-foreground">
+                                            {formatBytes(f.size)}
+                                        </p>
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-8 w-8 flex-shrink-0 text-destructive hover:text-destructive"
+                                        onClick={() => removeFile(f.id)}
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+
+                    <div
+                        className={`flex cursor-pointer flex-col items-center gap-2 rounded border-2 border-dashed p-4 transition-colors ${
+                            dragOver
+                                ? 'border-primary bg-primary/5'
+                                : 'border-muted-foreground/20 hover:border-muted-foreground/40'
+                        }`}
+                        onClick={() => fileInputRef.current?.click()}
+                        onDragOver={(e) => {
+                            e.preventDefault();
+                            setDragOver(true);
+                        }}
+                        onDragLeave={() => setDragOver(false)}
+                        onDrop={(e) => {
+                            e.preventDefault();
+                            setDragOver(false);
+                            const file = e.dataTransfer.files?.[0];
+                            if (file) {
+                                void uploadFile(file);
+                            }
+                        }}
+                    >
+                        <Upload className="h-5 w-5 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">
+                            {uploading
+                                ? 'Uploading...'
+                                : 'Click or drag a file to attach'}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                            JPG, PNG, PDF, WEBP up to 10 MB
+                        </p>
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            className="hidden"
+                            accept=".jpg,.jpeg,.png,.gif,.pdf,.webp"
+                            onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                    void uploadFile(file);
+                                }
+                            }}
+                        />
+                    </div>
+
+                    {uploadError && (
+                        <p className="text-sm text-destructive">{uploadError}</p>
+                    )}
+                </div>
+            )}
+
             <div className="flex items-center justify-end space-x-2 pt-2">
                 <Button
                     variant="outline"
@@ -173,7 +335,7 @@ export const TransactionForm = ({
                 >
                     Cancel
                 </Button>
-                <Button type="submit" disabled={processing}>
+                <Button type="submit" disabled={processing || uploading}>
                     {!transaction ? 'Create Transaction' : 'Save Changes'}
                 </Button>
             </div>

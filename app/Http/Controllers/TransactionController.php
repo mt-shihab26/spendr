@@ -6,6 +6,7 @@ use App\Enums\Type;
 use App\Http\Requests\Transactions\StoreTransactionRequest;
 use App\Http\Requests\Transactions\UpdateTransactionRequest;
 use App\Models\Category;
+use App\Models\File;
 use App\Models\Transaction;
 use App\Models\Wallet;
 use App\Services\BudgetAlertService;
@@ -184,7 +185,19 @@ class TransactionController extends Controller
      */
     public function store(StoreTransactionRequest $request, BudgetAlertService $alerts): RedirectResponse
     {
-        $transaction = $request->user()->transactions()->create($request->validated());
+        $transaction = $request->user()->transactions()->create($request->safe()->except('file_ids'));
+
+        $fileIds = $request->safe()->input('file_ids', []);
+        if (! empty($fileIds)) {
+            File::query()
+                ->where('user_id', $request->user()->id)
+                ->whereIn('id', $fileIds)
+                ->whereNull('fileable_type')
+                ->update([
+                    'fileable_type' => Transaction::class,
+                    'fileable_id' => $transaction->id,
+                ]);
+        }
 
         $transaction->load('wallet');
         $alerts->checkAfterTransaction($transaction, $request->user());
@@ -215,6 +228,7 @@ class TransactionController extends Controller
     {
         abort_if($transaction->user_id !== $request->user()->id, 403);
 
+        $transaction->load('files');
         $wallets = $request->user()->wallets()->orderBy('sort_order')->get();
         $categories = $request->user()->categories()->orderBy('sort_order')->get();
 
