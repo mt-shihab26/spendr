@@ -9,9 +9,7 @@
                 One plan. Everything included. No surprises.
             </p>
             <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
+                <x-icons.clock class="h-4 w-4" />
                 30-day free trial &mdash; no credit card required
             </div>
         </div>
@@ -29,16 +27,12 @@
                 @auth
                     <x-ui.button size="lg" href="{{ route('dashboard') }}">
                         Go to dashboard
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
-                        </svg>
+                        <x-icons.squares-2x2 class="h-4 w-4" />
                     </x-ui.button>
                 @else
                     <x-ui.button size="lg" href="{{ route('register') }}">
                         Start free trial
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                        </svg>
+                        <x-icons.arrow-right class="h-4 w-4" />
                     </x-ui.button>
                 @endauth
             </div>
@@ -57,10 +51,7 @@
                     'File attachments on transactions',
                 ] as $feature)
                     <li class="flex items-center gap-3 text-sm text-muted-foreground">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                             stroke-width="2" stroke="currentColor" class="h-4 w-4 shrink-0 text-primary">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                        </svg>
+                        <x-icons.check class="h-4 w-4 shrink-0 text-primary" stroke-width="2" />
                         {{ $feature }}
                     </li>
                 @endforeach

@@ -16,50 +16,32 @@
             {{-- Theme switcher --}}
             <button id="theme-toggle" type="button" aria-label="Toggle theme"
                     class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
-                {{-- Sun icon (shown in dark mode) --}}
-                <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                     stroke-width="1.5" stroke="currentColor" class="hidden h-4 w-4">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
-                </svg>
-                {{-- Moon icon (shown in light mode) --}}
-                <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                     stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
-                </svg>
+                <x-icons.sun id="icon-sun" class="hidden h-4 w-4" />
+                <x-icons.moon id="icon-moon" class="h-4 w-4" />
             </button>
 
             @auth
                 <x-ui.button href="{{ route('dashboard') }}">
                     Dashboard
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
-                    </svg>
+                    <x-icons.squares-2x2 class="h-4 w-4" />
                 </x-ui.button>
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-ui.button variant="outline" type="submit">
                         Sign out
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
-                        </svg>
+                        <x-icons.logout class="h-4 w-4" />
                     </x-ui.button>
                 </form>
             @else
                 <x-ui.button variant="outline" href="{{ route('login') }}">
                     Sign in
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
-                    </svg>
+                    <x-icons.login class="h-4 w-4" />
                 </x-ui.button>
 
                 <x-ui.button href="{{ route('register') }}">
                     Start free trial
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                    </svg>
+                    <x-icons.arrow-right class="h-4 w-4" />
                 </x-ui.button>
             @endauth
         </div>
@@ -73,25 +55,25 @@
         const moonIcon = document.getElementById('icon-moon');
         const html = document.documentElement;
 
-        function applyTheme(isDark) {
-            if (isDark) {
-                html.classList.add('dark');
-                sunIcon.classList.remove('hidden');
-                moonIcon.classList.add('hidden');
-            } else {
-                html.classList.remove('dark');
-                sunIcon.classList.add('hidden');
-                moonIcon.classList.remove('hidden');
-            }
+        function setCookie(value) {
+            document.cookie = 'appearance=' + value + ';path=/;max-age=' + (365 * 24 * 60 * 60) + ';SameSite=Lax';
         }
 
-        applyTheme(localStorage.getItem('theme') === 'dark');
+        function syncIcons(isDark) {
+            sunIcon.classList.toggle('hidden', !isDark);
+            moonIcon.classList.toggle('hidden', isDark);
+        }
+
+        syncIcons(html.classList.contains('dark'));
 
         toggle.addEventListener('click', function () {
             const isDark = html.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'light' : 'dark');
-            applyTheme(!isDark);
+            const newMode = isDark ? 'light' : 'dark';
+            html.classList.toggle('dark', !isDark);
+            html.style.colorScheme = !isDark ? 'dark' : 'light';
+            localStorage.setItem('appearance', newMode);
+            setCookie(newMode);
+            syncIcons(!isDark);
         });
     })();
-
 </script>

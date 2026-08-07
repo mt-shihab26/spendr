@@ -16,30 +16,13 @@
             <div class="absolute top-8 left-2/3 right-0 hidden h-px bg-border lg:block"></div>
 
             @foreach ([
-                [
-                    'step' => '01',
-                    'title' => 'Add your wallets',
-                    'desc' => 'Connect your accounts — checking, savings, credit cards, or cash. Set a starting balance and you\'re ready.',
-                    'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />',
-                ],
-                [
-                    'step' => '02',
-                    'title' => 'Log your transactions',
-                    'desc' => 'Record expenses and income manually or import from a CSV. Organize with categories and add notes or receipts.',
-                    'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />',
-                ],
-                [
-                    'step' => '03',
-                    'title' => 'Reach your goals',
-                    'desc' => 'Set budgets to control spending, create savings goals, and use reports to understand where your money goes.',
-                    'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />',
-                ],
+                ['step' => '01', 'icon' => 'inbox-stack', 'title' => 'Add your wallets',       'desc' => 'Connect your accounts — checking, savings, credit cards, or cash. Set a starting balance and you\'re ready.'],
+                ['step' => '02', 'icon' => 'plus',        'title' => 'Log your transactions',  'desc' => 'Record expenses and income manually or import from a CSV. Organize with categories and add notes or receipts.'],
+                ['step' => '03', 'icon' => 'check',       'title' => 'Reach your goals',       'desc' => 'Set budgets to control spending, create savings goals, and use reports to understand where your money goes.'],
             ] as $step)
                 <div class="relative flex flex-col items-center text-center">
                     <div class="relative mb-6 flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary bg-background">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 text-primary">
-                            {!! $step['icon'] !!}
-                        </svg>
+                        <x-dynamic-component :component="'icons.' . $step['icon']" class="h-6 w-6 text-primary" />
                         <span class="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                             {{ substr($step['step'], 1) }}
                         </span>

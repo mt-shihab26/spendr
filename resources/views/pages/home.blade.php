@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,14 +7,18 @@
         <meta name="description" content="Track spending, set budgets, and reach your savings goals with Spendr.">
         <script>
             (function () {
-                if (localStorage.getItem('theme') === 'dark') {
-                    document.documentElement.classList.add('dark');
+                const appearance = '{{ $appearance ?? "system" }}';
+                if (appearance === 'system') {
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (prefersDark) {
+                        document.documentElement.classList.add('dark');
+                    }
                 }
             })();
         </script>
         <style>
             html { background-color: oklch(1 0 0); }
-            html.dark { background-color: oklch(0.148 0.004 228.8); }
+            html.dark { background-color: oklch(0.145 0 0); }
         </style>
         @vite(['resources/css/app.css'])
     </head>
