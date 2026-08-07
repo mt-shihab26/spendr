@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/sheet';
 
 import type { TBreadcrumb } from '@/types/utils';
+import type { TInAppNotification } from '@/types/global';
 
 import { router, usePage } from '@inertiajs/react';
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
@@ -34,7 +35,7 @@ import { formatInitial } from '@/lib/formats';
 import { mainLinks, rightLinks } from '@/lib/links';
 
 import { Link } from '@inertiajs/react';
-import { Menu, Search } from 'lucide-react';
+import { Menu, Search, Bell } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -47,6 +48,116 @@ import { AppLogo } from './app-logo';
 const activeItemStyles =
     'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
 
+const NotificationBell = ({
+    notifications,
+}: {
+    notifications: TInAppNotification[];
+}) => {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <div className="relative">
+            <Button
+                variant="ghost"
+                size="icon"
+                className="group relative h-9 w-9 cursor-pointer"
+                onClick={() => setOpen((v) => !v)}
+            >
+                <Bell className="size-5! opacity-80 group-hover:opacity-100" />
+                {notifications.length > 0 && (
+                    <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-white">
+                        {notifications.length > 9 ? '9+' : notifications.length}
+                    </span>
+                )}
+            </Button>
+
+            {open && (
+                <>
+                    <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => setOpen(false)}
+                    />
+                    <div className="absolute right-0 z-50 mt-1 w-80 rounded border bg-popover shadow-md">
+                        <div className="flex items-center justify-between border-b px-3 py-2">
+                            <span className="text-sm font-medium">
+                                Notifications
+                            </span>
+                            {notifications.length > 0 && (
+                                <button
+                                    className="text-xs text-muted-foreground hover:underline"
+                                    onClick={() => {
+                                        router.patch(
+                                            route('notifications.read-all'),
+                                        );
+                                        setOpen(false);
+                                    }}
+                                >
+                                    Mark all read
+                                </button>
+                            )}
+                        </div>
+                        {notifications.length === 0 ? (
+                            <p className="px-3 py-4 text-center text-sm text-muted-foreground">
+                                No new notifications
+                            </p>
+                        ) : (
+                            <ul className="max-h-80 overflow-y-auto">
+                                {notifications.map((n) => (
+                                    <li
+                                        key={n.id}
+                                        className="border-b last:border-0"
+                                    >
+                                        <div className="flex items-start justify-between gap-2 px-3 py-2.5">
+                                            <div className="min-w-0 flex-1">
+                                                <p className="text-xs font-medium">
+                                                    {n.data.threshold >= 100
+                                                        ? `Budget exceeded: ${n.data.category}`
+                                                        : `Budget at ${n.data.threshold}%: ${n.data.category}`}
+                                                </p>
+                                                <p className="mt-0.5 text-xs text-muted-foreground">
+                                                    {n.data.currency}{' '}
+                                                    {n.data.spent.toFixed(2)} /{' '}
+                                                    {n.data.budget.toFixed(2)} •{' '}
+                                                    {n.data.month}
+                                                </p>
+                                                <Link
+                                                    href={route(
+                                                        'budgets.show',
+                                                        n.data.budget_id,
+                                                    )}
+                                                    className="mt-1 text-xs text-primary hover:underline"
+                                                    onClick={() =>
+                                                        setOpen(false)
+                                                    }
+                                                >
+                                                    View budget →
+                                                </Link>
+                                            </div>
+                                            <button
+                                                className="shrink-0 text-xs text-muted-foreground hover:underline"
+                                                onClick={() => {
+                                                    router.patch(
+                                                        route(
+                                                            'notifications.read',
+                                                            n.id,
+                                                        ),
+                                                    );
+                                                }}
+                                            >
+                                                Dismiss
+                                            </button>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                </>
+            )}
+        </div>
+    );
+};
+
 export const AppHeader = ({
     breadcrumbs = [],
 }: {
@@ -54,6 +165,7 @@ export const AppHeader = ({
 }) => {
     const { isCurrentOrParentUrl } = useCurrentUrl();
     const { user } = usePage().props.auth;
+    const notifications = (usePage().props.notifications ?? []) as TInAppNotification[];
     const [searchOpen, setSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -222,6 +334,7 @@ export const AppHeader = ({
                                 ))}
                             </div>
                         </div>
+                        <NotificationBell notifications={notifications} />
                         <DropdownMenu>
                             <DropdownMenuTrigger
                                 render={

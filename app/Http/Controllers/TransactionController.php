@@ -8,6 +8,7 @@ use App\Http\Requests\Transactions\UpdateTransactionRequest;
 use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\Wallet;
+use App\Services\BudgetAlertService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -177,9 +178,12 @@ class TransactionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTransactionRequest $request): RedirectResponse
+    public function store(StoreTransactionRequest $request, BudgetAlertService $alerts): RedirectResponse
     {
         $transaction = $request->user()->transactions()->create($request->validated());
+
+        $transaction->load('wallet');
+        $alerts->checkAfterTransaction($transaction);
 
         return redirect()
             ->route('transactions.show', $transaction)
@@ -193,7 +197,7 @@ class TransactionController extends Controller
     {
         abort_if($transaction->user_id !== $request->user()->id, 403);
 
-        $transaction->load(['wallet', 'category']);
+        $transaction->load(['wallet', 'category', 'files']);
 
         return inertia('transactions/show', [
             'transaction' => $transaction,
@@ -220,11 +224,14 @@ class TransactionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTransactionRequest $request, Transaction $transaction): RedirectResponse
+    public function update(UpdateTransactionRequest $request, Transaction $transaction, BudgetAlertService $alerts): RedirectResponse
     {
         abort_if($transaction->user_id !== $request->user()->id, 403);
 
         $transaction->update($request->validated());
+
+        $transaction->load('wallet');
+        $alerts->checkAfterTransaction($transaction);
 
         return redirect()
             ->back()
