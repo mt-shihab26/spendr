@@ -8,6 +8,7 @@ import {
 
 import type { TWallet } from '@/types/models';
 import type { TStat } from '@/components/elements/currency-stats';
+import type { TCurrency } from '@/types/enums';
 
 import { Wallet } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -15,13 +16,18 @@ import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { WalletsTable } from '@/components/screens/wallets/wallets-table';
 import { CurrencyStats } from '@/components/elements/currency-stats';
+import { CurrencyTabs } from '@/components/elements/currency-tabs';
 
 const WalletsIndex = ({
     wallets,
     stats,
+    currencies,
+    currency,
 }: {
     wallets: TWallet[];
     stats: TStat[];
+    currencies: TCurrency[];
+    currency: TCurrency | null;
 }) => {
     return (
         <AppLayout
@@ -39,6 +45,13 @@ const WalletsIndex = ({
                         New Wallet
                     </NewButton>
                 </div>
+                {currencies.length > 1 && (
+                    <CurrencyTabs
+                        href={route('wallets.index')}
+                        currency={currency ?? (currencies[0] ?? 'BDT')}
+                        currencies={currencies}
+                    />
+                )}
                 {wallets.length === 0 ? (
                     <Empty className="border">
                         <EmptyHeader>
