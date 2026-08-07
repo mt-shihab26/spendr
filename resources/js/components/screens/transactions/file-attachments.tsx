@@ -1,7 +1,7 @@
 import type { TFile, TTransaction } from '@/types/models';
 
 import { useState } from 'react';
-import { useForm } from '@inertiajs/react';
+import { useForm, useHttp } from '@inertiajs/react';
 import { Paperclip, Trash2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AttachmentUploader } from './attachment-uploader';
@@ -20,7 +20,6 @@ const SavedFileRow = ({
     readonly: boolean;
 }) => {
     const { delete: destroy, processing } = useForm({});
-
     const isImage = file.mime_type.startsWith('image/');
 
     return (
@@ -83,63 +82,34 @@ export const FileAttachments = ({
     onFileIdsChange?: (ids: string[]) => void;
 }) => {
     const savedFiles = transaction?.files ?? [];
-
     const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
-    const [uploadError, setUploadError] = useState<string | null>(null);
-    const [uploading, setUploading] = useState(false);
 
-    const { setData, post, processing, errors, reset } = useForm<{
-        file: File | null;
-    }>({ file: null });
+    // For uploading directly to an existing transaction
+    const transactionUpload = useForm<{ file: File | null }>({ file: null });
 
-    const uploadForTransaction = (file: File) => {
-        setData('file', file);
-        post(route('transactions.files.store', transaction!.id), {
-            forceFormData: true,
-            onSuccess: () => reset(),
-        });
-    };
+    // For pre-uploading (create flow) — returns JSON with file id/name/size
+    const preUpload = useHttp<{ file: File | null }, PendingFile>({ file: null });
 
-    const preUpload = async (file: File) => {
-        setUploadError(null);
-        setUploading(true);
-
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-            const csrf =
-                document.querySelector<HTMLMetaElement>(
-                    'meta[name="csrf-token"]',
-                )?.content ?? '';
-
-            const response = await fetch(route('files.store'), {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': csrf,
-                    'X-Requested-With': 'XMLHttpRequest',
+    const handleFile = (file: File) => {
+        if (transaction) {
+            transactionUpload.setData('file', file);
+            transactionUpload.post(
+                route('transactions.files.store', transaction.id),
+                {
+                    forceFormData: true,
+                    onSuccess: () => transactionUpload.reset(),
                 },
-                body: formData,
-            });
-
-            if (!response.ok) {
-                const json = (await response
-                    .json()
-                    .catch(() => ({}))) as { message?: string };
-                setUploadError(json.message ?? 'Upload failed.');
-                return;
-            }
-
-            const uploaded = (await response.json()) as PendingFile & {
-                mime_type: string;
-            };
-            const next = [...pendingFiles, uploaded];
-            setPendingFiles(next);
-            onFileIdsChange?.(next.map((f) => f.id));
-        } catch {
-            setUploadError('Upload failed. Please try again.');
-        } finally {
-            setUploading(false);
+            );
+        } else {
+            preUpload.setData('file', file);
+            preUpload
+                .post(route('files.store'))
+                .then((uploaded) => {
+                    const next = [...pendingFiles, uploaded];
+                    setPendingFiles(next);
+                    onFileIdsChange?.(next.map((f) => f.id));
+                })
+                .catch(() => {});
         }
     };
 
@@ -149,15 +119,16 @@ export const FileAttachments = ({
         onFileIdsChange?.(next.map((f) => f.id));
     };
 
-    const isUploading = uploading || processing;
+    const uploading = transactionUpload.processing || preUpload.processing;
+    const uploadError =
+        transactionUpload.errors.file ?? preUpload.errors.file ?? undefined;
+    const total = savedFiles.length + pendingFiles.length;
 
     return (
-        <div className="border p-4">
-            <div className="mb-3 flex items-center gap-2">
+        <div className="space-y-3">
+            <div className="flex items-center gap-2">
                 <Paperclip className="h-4 w-4 text-muted-foreground" />
-                <p className="text-sm font-medium">
-                    Attachments ({savedFiles.length + pendingFiles.length})
-                </p>
+                <p className="text-sm font-medium">Attachments ({total})</p>
             </div>
 
             {savedFiles.length === 0 && pendingFiles.length === 0 && readonly && (
@@ -165,7 +136,7 @@ export const FileAttachments = ({
             )}
 
             {savedFiles.length > 0 && (
-                <ul className={pendingFiles.length > 0 || !readonly ? 'mb-3 space-y-2' : 'space-y-2'}>
+                <ul className="space-y-2">
                     {savedFiles.map((file) => (
                         <SavedFileRow
                             key={file.id}
@@ -177,7 +148,7 @@ export const FileAttachments = ({
             )}
 
             {pendingFiles.length > 0 && (
-                <ul className="mb-3 space-y-2">
+                <ul className="space-y-2">
                     {pendingFiles.map((f) => (
                         <li
                             key={f.id}
@@ -208,9 +179,9 @@ export const FileAttachments = ({
 
             {!readonly && (
                 <AttachmentUploader
-                    onFile={transaction ? uploadForTransaction : (f) => void preUpload(f)}
-                    processing={isUploading}
-                    error={errors.file ?? uploadError ?? undefined}
+                    onFile={handleFile}
+                    processing={uploading}
+                    error={uploadError}
                 />
             )}
         </div>

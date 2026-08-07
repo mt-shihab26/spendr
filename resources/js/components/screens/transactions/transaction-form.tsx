@@ -176,10 +176,14 @@ export const TransactionForm = ({
                 <InputError message={errors.notes} />
             </div>
 
-            <FileAttachments
-                transaction={transaction}
-                onFileIdsChange={(ids) => setData('file_ids', ids)}
-            />
+            <div className="space-y-2">
+                <Label>Attachments</Label>
+                <FileAttachments
+                    transaction={transaction}
+                    onFileIdsChange={(ids) => setData('file_ids', ids)}
+                />
+                <InputError message={errors.file_ids} />
+            </div>
 
             <div className="flex items-center justify-end space-x-2 pt-2">
                 <Button
