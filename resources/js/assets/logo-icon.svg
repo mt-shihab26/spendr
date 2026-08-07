@@ -1,64 +1,58 @@
 <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
-        d="M8 5
+        d="M8 3
        H27
-       C30.8 5 33 7.2 33 11
-       V13.5
+       C33 3 37 7 37 12
+       V14
        H34
-       C36.8 13.5 38 15.2 38 18
+       C31.8 14 30 15.8 30 18
        V22
-       C38 24.8 36.8 26.5 34 26.5
-       H33
-       V29
-       C33 32.8 30.8 35 27 35
+       C30 24.2 31.8 26 34 26
+       H37
+       V28
+       C37 33 33 37 27 37
        H8
-       C4.8 35 2 32.8 2 29
-       V11
-       C2 7.2 4.8 5 8 5 Z"
+       C4.5 37 3 34.5 3 31
+       V9
+       C3 5.5 4.5 3 8 3 Z"
         fill="none"
         stroke="#0D9488"
         stroke-width="2.5"
         stroke-linejoin="round"
     />
-
     <circle cx="34.5" cy="20" r="2.5" fill="#0D9488" />
-
-    <!-- Four lines -->
     <line
         x1="8"
-        y1="16"
+        y1="14"
         x2="25"
-        y2="16"
+        y2="14"
         stroke="#0D9488"
         stroke-width="2"
         stroke-linecap="round"
     />
-
     <line
         x1="8"
-        y1="19.5"
+        y1="18"
         x2="25"
-        y2="19.5"
+        y2="18"
         stroke="#0D9488"
         stroke-width="2"
         stroke-linecap="round"
     />
-
     <line
         x1="8"
-        y1="23"
+        y1="22"
         x2="25"
-        y2="23"
+        y2="22"
         stroke="#0D9488"
         stroke-width="2"
         stroke-linecap="round"
     />
-
     <line
         x1="8"
-        y1="26.5"
+        y1="26"
         x2="20"
-        y2="26.5"
+        y2="26"
         stroke="#0D9488"
         stroke-width="2"
         stroke-linecap="round"
