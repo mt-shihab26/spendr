@@ -21,9 +21,9 @@
                 ['step' => '03', 'icon' => 'check',       'title' => 'Reach your goals',       'desc' => 'Set budgets to control spending, create savings goals, and use reports to understand where your money goes.'],
             ] as $step)
                 <div class="relative flex flex-col items-center text-center">
-                    <div class="relative mb-6 flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary bg-background">
+                    <div class="relative mb-6 flex h-16 w-16 items-center justify-center border-2 border-primary bg-background">
                         <x-dynamic-component :component="'icons.' . $step['icon']" class="h-6 w-6 text-primary" />
-                        <span class="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                        <span class="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center bg-primary text-xs font-bold text-primary-foreground">
                             {{ substr($step['step'], 1) }}
                         </span>
                     </div>

@@ -82,7 +82,7 @@
     --initial-balance: oklch(0.623 0.214 255.8);
     --net: oklch(0.666 0.179 58.3);
     --balance: oklch(0.606 0.25 292.7);
-    --radius: 0.625rem;
+    --radius: 0rem;
     --sidebar: oklch(0.987 0.002 197.1);
     --sidebar-foreground: oklch(0.148 0.004 228.8);
     --sidebar-primary: oklch(0.6 0.118 184.704);

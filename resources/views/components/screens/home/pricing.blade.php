@@ -8,7 +8,7 @@
             <p class="mx-auto max-w-xl text-muted-foreground">
                 One plan. Everything included. No surprises.
             </p>
-            <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary">
+            <div class="mt-4 inline-flex items-center gap-2 border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary">
                 <x-icons.clock class="h-4 w-4" />
                 30-day free trial &mdash; no credit card required
             </div>

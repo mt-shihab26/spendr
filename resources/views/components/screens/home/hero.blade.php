@@ -6,7 +6,7 @@
     <div class="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl"></div>
 
     <div class="relative mx-auto max-w-7xl px-4 text-center">
-        <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-accent px-4 py-1.5 text-xs text-muted-foreground">
+        <div class="mb-6 inline-flex items-center gap-2 border border-border bg-accent px-4 py-1.5 text-xs text-muted-foreground">
             <span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
             Personal finance, simplified
         </div>
@@ -39,7 +39,7 @@
         </div>
 
         {{-- Dashboard preview --}}
-        <div class="mt-16 overflow-hidden rounded-xl border border-border bg-card shadow-2xl shadow-black/10 dark:shadow-black/40">
+        <div class="mt-16 overflow-hidden border border-border bg-card shadow-2xl shadow-black/10 dark:shadow-black/40">
             <div class="flex items-center gap-1.5 border-b border-border px-4 py-3">
                 <span class="h-3 w-3 rounded-full bg-destructive/50"></span>
                 <span class="h-3 w-3 rounded-full bg-yellow-400/50"></span>
@@ -54,7 +54,7 @@
                         ['label' => 'Income', 'value' => '$4,200.00', 'sub' => 'This month', 'color' => 'text-[oklch(0.627_0.194_145.6)]'],
                         ['label' => 'Expenses', 'value' => '$1,890.50', 'sub' => 'This month', 'color' => 'text-destructive'],
                     ] as $stat)
-                        <div class="rounded-lg border border-border bg-background p-4">
+                        <div class="border border-border bg-background p-4">
                             <p class="mb-1 text-xs text-muted-foreground">{{ $stat['label'] }}</p>
                             <p class="text-xl font-bold {{ $stat['color'] }}">{{ $stat['value'] }}</p>
                             <p class="mt-1 text-xs text-muted-foreground">{{ $stat['sub'] }}</p>
@@ -63,7 +63,7 @@
                 </div>
 
                 {{-- Transaction list preview --}}
-                <div class="col-span-3 rounded-lg border border-border bg-background p-4">
+                <div class="col-span-3 border border-border bg-background p-4">
                     <p class="mb-3 text-xs font-medium text-muted-foreground uppercase tracking-wide">Recent transactions</p>
                     <div class="space-y-3">
                         @foreach ([
@@ -87,7 +87,7 @@
                 </div>
 
                 {{-- Budget progress --}}
-                <div class="hidden rounded-lg border border-border bg-background p-4 lg:block">
+                <div class="hidden border border-border bg-background p-4 lg:block">
                     <p class="mb-3 text-xs font-medium text-muted-foreground uppercase tracking-wide">Budget</p>
                     <div class="space-y-3">
                         @foreach ([

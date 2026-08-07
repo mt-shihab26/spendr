@@ -19,8 +19,8 @@
                 ['icon' => 'arrow-path',        'title' => 'Recurring Transactions',   'desc' => 'Set up subscriptions and regular payments once. Spendr auto-logs them so your records stay accurate without manual entry.'],
                 ['icon' => 'chart-pie',         'title' => 'Visual Reports',           'desc' => 'Interactive charts showing spending patterns, income trends, and net worth over time. Export your data any time.'],
             ] as $feature)
-                <div class="group rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20">
-                    <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                <div class="group border border-border bg-card p-6 transition-shadow hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20">
+                    <div class="mb-4 flex h-10 w-10 items-center justify-center bg-primary/10">
                         <x-dynamic-component :component="'icons.' . $feature['icon']" class="h-5 w-5 text-primary" />
                     </div>
                     <h3 class="mb-2 font-semibold text-foreground">{{ $feature['title'] }}</h3>

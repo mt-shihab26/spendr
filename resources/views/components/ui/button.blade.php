@@ -15,10 +15,10 @@
     ];
 
     $sizes = [
-        'default' => 'h-9 px-4 text-sm rounded-md',
-        'sm'      => 'h-8 px-3 text-xs rounded-md',
-        'lg'      => 'h-11 px-6 text-sm rounded-md',
-        'icon'    => 'size-9 rounded-md',
+        'default' => 'h-9 px-4 text-sm rounded-none',
+        'sm'      => 'h-8 px-3 text-xs rounded-none',
+        'lg'      => 'h-11 px-6 text-sm rounded-none',
+        'icon'    => 'size-9 rounded-none',
     ];
 
     $classes = implode(' ', array_filter([
