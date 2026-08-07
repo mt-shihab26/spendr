@@ -7,8 +7,16 @@ import { WalletForm } from '@/components/screens/wallets/wallet-form';
 import { WalletDeleteDialog } from '@/components/screens/wallets/wallet-delete-dialog';
 import { BackButton } from '@/components/elements/back-button';
 import { Button } from '@/components/ui/button';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 const WalletsEdit = ({ wallet }: { wallet: TWallet }) => {
+    const hasTransactions = (wallet.transactions_count ?? 0) > 0;
+
     return (
         <AppLayout
             title="Edit Wallet"
@@ -41,15 +49,35 @@ const WalletsEdit = ({ wallet }: { wallet: TWallet }) => {
                 <div className="mx-auto w-full max-w-lg border p-4">
                     <WalletForm wallet={wallet} />
                     <div className="mt-6 border-t pt-4">
-                        <WalletDeleteDialog
-                            wallet={wallet}
-                            trigger={
-                                <Button variant="destructive" size="sm">
-                                    <Trash2 />
-                                    Delete Wallet
-                                </Button>
-                            }
-                        />
+                        {hasTransactions ? (
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger render={<span />}>
+                                        <Button
+                                            variant="destructive"
+                                            size="sm"
+                                            disabled
+                                        >
+                                            <Trash2 />
+                                            Delete Wallet
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        Reassign or delete all transactions first.
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        ) : (
+                            <WalletDeleteDialog
+                                wallet={wallet}
+                                trigger={
+                                    <Button variant="destructive" size="sm">
+                                        <Trash2 />
+                                        Delete Wallet
+                                    </Button>
+                                }
+                            />
+                        )}
                     </div>
                 </div>
             </div>

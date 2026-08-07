@@ -27,6 +27,9 @@ export type TWallet = {
     transfers_in: number | null;
     net: number | null;
     balance: number | null;
+    transactions_count?: number | null;
+    month_income?: number | null;
+    month_expense?: number | null;
     deleted_at: string | null;
     created_at: string;
     updated_at: string;

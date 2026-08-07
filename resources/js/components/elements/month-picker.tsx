@@ -6,16 +6,18 @@ import { Button } from '@/components/ui/button';
 export const MonthPicker = ({
     month,
     href,
+    extraParams = {},
 }: {
     month: string;
     href: string;
+    extraParams?: Record<string, string>;
 }) => {
     const date = parseISO(`${month}-01`);
 
     const navigate = (newDate: Date) => {
         router.get(
             href,
-            { month: format(newDate, 'yyyy-MM') },
+            { ...extraParams, month: format(newDate, 'yyyy-MM') },
             { preserveScroll: true, replace: true },
         );
     };

@@ -50,11 +50,18 @@ export const SetDefaultItem = ({ onClick }: { onClick: () => void }) => (
     </DropdownMenuItem>
 );
 
-export const DeleteItem = ({ onClick }: { onClick: () => void }) => (
+export const DeleteItem = ({
+    onClick,
+    disabled,
+}: {
+    onClick: () => void;
+    disabled?: boolean;
+}) => (
     <DropdownMenuItem
         variant="destructive"
         className="text-destructive!"
         onClick={onClick}
+        disabled={disabled}
     >
         <Trash2 />
         Delete

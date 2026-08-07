@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Type;
 use App\Http\Requests\Wallets\StoreWalletRequest;
 use App\Http\Requests\Wallets\UpdateWalletRequest;
 use App\Models\Wallet;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,6 +23,7 @@ class WalletController extends Controller
         $wallets = $request->user()
             ->wallets()
             ->withStats()
+            ->withCount('transactions')
             ->orderBy('sort_order')
             ->orderBy('created_at')
             ->get()
@@ -82,19 +85,51 @@ class WalletController extends Controller
     {
         abort_if($wallet->user_id !== $request->user()->id, 403);
 
+        $validated = $request->validate([
+            'month' => ['nullable', 'date_format:Y-m'],
+            'type' => ['nullable', 'string', Rule::in(['income', 'expense', 'all'])],
+        ]);
+
+        $month = $validated['month'] ?? now()->format('Y-m');
+        $type = $validated['type'] ?? 'all';
+
         $wallet->loadStats();
 
-        $transactions = Inertia::scroll(
-            $wallet->transactions()
-                ->with(['wallet', 'category'])
-                ->orderByDesc('transacted_at')
-                ->orderByDesc('created_at')
-                ->paginate(20)
-        );
+        [$year, $monthNum] = explode('-', $month);
+
+        $monthIncome = $wallet->transactions()
+            ->where('type', Type::Income->value)
+            ->whereYear('transacted_at', (int) $year)
+            ->whereMonth('transacted_at', (int) $monthNum)
+            ->sum('amount');
+
+        $monthExpense = $wallet->transactions()
+            ->where('type', Type::Expense->value)
+            ->whereYear('transacted_at', (int) $year)
+            ->whereMonth('transacted_at', (int) $monthNum)
+            ->sum('amount');
+
+        $wallet->setAttribute('month_income', (float) $monthIncome);
+        $wallet->setAttribute('month_expense', (float) $monthExpense);
+
+        $txQuery = $wallet->transactions()
+            ->with(['wallet', 'category'])
+            ->whereYear('transacted_at', (int) $year)
+            ->whereMonth('transacted_at', (int) $monthNum)
+            ->orderByDesc('transacted_at')
+            ->orderByDesc('created_at');
+
+        if ($type !== 'all') {
+            $txQuery->where('type', $type);
+        }
+
+        $transactions = Inertia::scroll($txQuery->paginate(20));
 
         return inertia('wallets/show', [
             'wallet' => $wallet,
             'transactions' => $transactions,
+            'month' => $month,
+            'type' => $type,
         ]);
     }
 
@@ -104,6 +139,8 @@ class WalletController extends Controller
     public function edit(Request $request, Wallet $wallet): Response
     {
         abort_if($wallet->user_id !== $request->user()->id, 403);
+
+        $wallet->loadCount('transactions');
 
         return inertia('wallets/edit', [
             'wallet' => $wallet,
