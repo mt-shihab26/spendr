@@ -1,7 +1,12 @@
-import { format, addMonths, subMonths, parseISO } from 'date-fns';
+import { format, addMonths, subMonths, parseISO, setYear, getYear } from 'date-fns';
 import { router } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
 
 export const MonthPicker = ({
     month,
@@ -13,6 +18,9 @@ export const MonthPicker = ({
     extraParams?: Record<string, string>;
 }) => {
     const date = parseISO(`${month}-01`);
+    const currentYear = getYear(date);
+    const thisYear = new Date().getFullYear();
+    const years = Array.from({ length: 11 }, (_, i) => thisYear - 5 + i);
 
     const navigate = (newDate: Date) => {
         router.get(
@@ -32,9 +40,37 @@ export const MonthPicker = ({
             >
                 <ChevronLeft className="size-4" />
             </Button>
-            <span className="min-w-24 text-center text-sm font-medium">
-                {format(date, 'MMM yyyy')}
-            </span>
+
+            <Popover>
+                <PopoverTrigger
+                    render={
+                        <Button
+                            variant="outline"
+                            className="min-w-24 px-3 text-sm font-medium"
+                        />
+                    }
+                >
+                    {format(date, 'MMM yyyy')}
+                </PopoverTrigger>
+                <PopoverContent className="w-48 p-2">
+                    <div className="grid grid-cols-3 gap-1">
+                        {years.map((year) => (
+                            <button
+                                key={year}
+                                onClick={() => navigate(setYear(date, year))}
+                                className={`rounded px-2 py-1 text-xs transition-colors hover:bg-accent ${
+                                    year === currentYear
+                                        ? 'bg-primary text-primary-foreground'
+                                        : ''
+                                }`}
+                            >
+                                {year}
+                            </button>
+                        ))}
+                    </div>
+                </PopoverContent>
+            </Popover>
+
             <Button
                 variant="outline"
                 size="icon"
