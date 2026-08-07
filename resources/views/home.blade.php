@@ -19,16 +19,16 @@
         @vite(['resources/css/app.css'])
     </head>
     <body class="bg-background font-mono text-foreground antialiased">
-        <x-home.navbar />
+        <x-screens.home.navbar />
         <main>
-            <x-home.hero />
-            <x-home.stats />
-            <x-home.features />
-            <x-home.how-it-works />
-            <x-home.pricing />
-            <x-home.cta />
+            <x-screens.home.hero />
+            <x-screens.home.stats />
+            <x-screens.home.features />
+            <x-screens.home.how-it-works />
+            <x-screens.home.pricing />
+            <x-screens.home.cta />
         </main>
-        <x-home.footer />
+        <x-screens.home.footer />
 
         <script>
             (function () {

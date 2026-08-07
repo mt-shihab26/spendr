@@ -1,4 +1,4 @@
-import logoIcon from '@/assets/logo-icon.svg';
+import logoIcon from '@assets/logo-icon.svg';
 
 export const AppLogoIcon = ({
     className,
