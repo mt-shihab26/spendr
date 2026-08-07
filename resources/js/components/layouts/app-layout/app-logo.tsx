@@ -1,18 +1,5 @@
-import { usePage } from '@inertiajs/react';
-
-import { AppLogoIcon } from '@/components/icons/app-logo-icon';
+import logoFull from '@/assets/logo-full.svg';
 
 export const AppLogo = () => {
-    const { name } = usePage().props;
-
-    return (
-        <>
-            <AppLogoIcon className="size-8 rounded-md" />
-            <div className="ml-1 grid flex-1 text-left text-sm">
-                <span className="mb-0.5 truncate leading-tight font-semibold">
-                    {name}
-                </span>
-            </div>
-        </>
-    );
+    return <img src={logoFull} alt="Spendr" className="h-8 w-auto" />;
 };
