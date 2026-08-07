@@ -7,9 +7,9 @@
         </a>
 
         <div class="hidden items-center gap-8 md:flex">
-            <a href="#features" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Features</a>
-            <a href="#guide" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Guide</a>
-            <a href="#pricing" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Pricing</a>
+            <a href="#features" data-section="features" class="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground">Features</a>
+            <a href="#guide" data-section="guide" class="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground">Guide</a>
+            <a href="#pricing" data-section="pricing" class="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground">Pricing</a>
         </div>
 
         <div class="flex items-center gap-3">
@@ -93,4 +93,5 @@
             applyTheme(!isDark);
         });
     })();
+
 </script>
