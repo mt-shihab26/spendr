@@ -7,7 +7,6 @@ import { BackButton } from '@/components/elements/back-button';
 import { Button } from '@/components/ui/button';
 import { TransactionForm } from '@/components/screens/transactions/transaction-form';
 import { TransactionDeleteDialog } from '@/components/screens/transactions/transaction-delete-dialog';
-import { FileAttachments } from '@/components/screens/transactions/file-attachments';
 
 const TransactionsEdit = ({
     transaction,
@@ -57,7 +56,6 @@ const TransactionsEdit = ({
                             categories={categories}
                         />
                     </div>
-                    <FileAttachments transaction={transaction} />
                     <div className="border-t pt-4">
                         <TransactionDeleteDialog
                             transaction={transaction}

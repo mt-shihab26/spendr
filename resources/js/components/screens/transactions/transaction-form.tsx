@@ -24,6 +24,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { WalletSelect } from '@/components/elements/wallet-select';
 import { CategorySelect } from '@/components/elements/category-select';
 import { AttachmentUploader } from './attachment-uploader';
+import { FileAttachments } from './file-attachments';
 
 type UploadedFile = {
     id: string;
@@ -239,6 +240,10 @@ export const TransactionForm = ({
                 />
                 <InputError message={errors.notes} />
             </div>
+
+            {transaction && (
+                <FileAttachments transaction={transaction} />
+            )}
 
             {!transaction && (
                 <div className="space-y-2">
