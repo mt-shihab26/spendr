@@ -47,6 +47,7 @@ class TransactionController extends Controller
 
         $transactions = Inertia::scroll(
             $transactionsQuery
+                ->withCount('files')
                 ->orderByDesc('transacted_at')
                 ->orderByDesc('created_at')
                 ->paginate(20)
@@ -140,8 +141,7 @@ class TransactionController extends Controller
     {
         $query = Transaction::query()
             ->where('transactions.user_id', $request->user()->id)
-            ->with(['wallet', 'category'])
-            ->withCount('files');
+            ->with(['wallet', 'category']);
 
         if (! empty($validated['search'])) {
             $query->where('description', 'like', '%'.$validated['search'].'%');
