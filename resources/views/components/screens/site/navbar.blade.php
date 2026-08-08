@@ -27,15 +27,16 @@ $navLinks = [
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <button
+            <x-ui.button
                 id="theme-toggle"
-                type="button"
+                variant="outline"
+                size="icon"
                 aria-label="Toggle theme"
-                class="flex size-9 cursor-pointer items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                class="text-muted-foreground"
             >
                 <x-icons.sun id="icon-sun" class="hidden size-4" />
                 <x-icons.moon id="icon-moon" class="size-4" />
-            </button>
+            </x-ui.button>
             @auth
                 <x-ui.button href="{{ route('dashboard') }}">
                     Dashboard
