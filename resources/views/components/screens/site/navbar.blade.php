@@ -1,9 +1,22 @@
 <?php
 $home = route('home');
+
 $navLinks = [
-    ['label' => 'Features', 'href' => $home . '#features', 'section' => 'features'],
-    ['label' => 'Guide',    'href' => $home . '#guide',    'section' => 'guide'],
-    ['label' => 'Pricing',  'href' => $home . '#pricing',  'section' => 'pricing'],
+    [
+        'label'   => 'Features',
+        'href'    => $home . '#features',
+        'section' => 'features',
+    ],
+    [
+        'label'   => 'Guide',
+        'href'    => $home . '#guide',
+        'section' => 'guide',
+    ],
+    [
+        'label'   => 'Pricing',
+        'href'    => $home . '#pricing',
+        'section' => 'pricing',
+    ],
 ];
 ?>
 
