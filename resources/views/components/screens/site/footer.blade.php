@@ -13,7 +13,7 @@
                         alt="Spendr"
                         class="h-6 w-6"
                     />
-                    spendr<span class="text-primary">.</span>
+                    <x-app-logo />
                 </a>
                 <p class="mt-1 text-xs text-muted-foreground">Personal finance tracking</p>
             </div>

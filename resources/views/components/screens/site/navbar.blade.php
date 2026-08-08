@@ -3,9 +3,7 @@
 >
     <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
-            <span class="text-2xl font-bold tracking-tight text-foreground">
-                spendr<span class="text-primary">.</span>
-            </span>
+            <x-app-logo />
         </a>
         <div class="hidden items-center gap-8 md:flex">
             <a
