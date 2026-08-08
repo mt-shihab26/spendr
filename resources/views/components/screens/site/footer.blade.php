@@ -40,7 +40,7 @@ $links = [
                     <a
                         @class ([
                             'transition-colors hover:underline',
-                            'font-medium text-foreground underline' => request()->routeIs($link['route']),
+                            'font-medium text-foreground' => request()->routeIs($link['route']),
                             'hover:text-foreground' => ! request()->routeIs($link['route']),
                         ])
                         href="{{ route($link['route']) }}"
