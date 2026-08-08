@@ -1,4 +1,27 @@
-<section id="guide" class="bg-accent/30 py-24">
+<?php
+$steps = [
+    [
+        'step'  => '01',
+        'icon'  => 'inbox-stack',
+        'title' => 'Add your wallets',
+        'desc'  => 'Add your accounts — checking, savings, credit cards, or cash. Set a starting balance and you\'re ready.',
+    ],
+    [
+        'step'  => '02',
+        'icon'  => 'plus',
+        'title' => 'Log your transactions',
+        'desc'  => 'Record expenses and income manually or import from a CSV. Organize with categories and add notes or receipts.',
+    ],
+    [
+        'step'  => '03',
+        'icon'  => 'check',
+        'title' => 'Reach your goals',
+        'desc'  => 'Set budgets to control spending, create savings goals, and use reports to understand where your money goes.',
+    ],
+]
+?>
+
+<section id="guide" class="bg-accent/30 py-10 lg:py-16">
     <div class="mx-auto max-w-7xl px-4">
         <div class="mb-16 text-center">
             <p class="mb-3 text-sm font-medium tracking-wider text-primary uppercase">How it works</p>
@@ -7,11 +30,11 @@
             >
                 Start free trial
             </h2>
-            <p class="mx-auto max-w-xl text-muted-foreground">No complex setup. No imports needed. Start tracking your finances right away.</p>
+            <p class="mx-auto max-w-xl text-muted-foreground">
+                No complex setup. No imports needed. Start tracking your finances right away.
+            </p>
         </div>
-
         <div class="relative grid gap-8 lg:grid-cols-3">
-            {{-- Connector line (desktop) --}}
             <div
                 class="absolute top-8 right-1/3 left-1/3 hidden h-px bg-border lg:block"
             ></div>
@@ -19,11 +42,7 @@
                 class="absolute top-8 right-0 left-2/3 hidden h-px bg-border lg:block"
             ></div>
 
-            @foreach ([
-                ['step' => '01', 'icon' => 'inbox-stack', 'title' => 'Add your wallets',       'desc' => 'Connect your accounts — checking, savings, credit cards, or cash. Set a starting balance and you\'re ready.'],
-                ['step' => '02', 'icon' => 'plus',        'title' => 'Log your transactions',  'desc' => 'Record expenses and income manually or import from a CSV. Organize with categories and add notes or receipts.'],
-                ['step' => '03', 'icon' => 'check',       'title' => 'Reach your goals',       'desc' => 'Set budgets to control spending, create savings goals, and use reports to understand where your money goes.'],
-            ] as $step)
+            @foreach ($steps as $step)
                 <div class="relative flex flex-col items-center text-center">
                     <div
                         class="relative mb-6 flex h-16 w-16 items-center justify-center border-2 border-primary bg-background"
