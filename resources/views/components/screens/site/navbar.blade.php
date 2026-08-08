@@ -10,19 +10,21 @@ $navLinks = [
     class="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm"
 >
     <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-        <a class="flex items-center gap-2" href="{{ route('home') }}" >
-            <x-icons.app-logo />
-        </a>
-        <div class="hidden items-center gap-8 md:flex">
-            @foreach ($navLinks as $link)
-                <a
-                    class="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    href="{{ $link['href'] }}"
-                    data-section="{{ $link['section'] }}"
-                >
-                    {{ $link['label'] }}
-                </a>
-            @endforeach
+        <div class="flex items-center gap-9">
+            <a class="flex items-center gap-2" href="{{ route('home') }}">
+                <x-icons.app-logo />
+            </a>
+            <div class="hidden items-center gap-8 md:flex">
+                @foreach ($navLinks as $link)
+                    <a
+                        class="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground"
+                        href="{{ $link['href'] }}"
+                        data-section="{{ $link['section'] }}"
+                    >
+                        {{ $link['label'] }}
+                    </a>
+                @endforeach
+            </div>
         </div>
         <div class="flex items-center gap-3">
             <button

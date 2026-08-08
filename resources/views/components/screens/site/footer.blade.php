@@ -29,7 +29,7 @@ $links = [
                         class="transition-colors hover:text-foreground"
                         href="{{ $link['href'] }}"
                     >
-                    {{ $link['label'] }}
+                        {{ $link['label'] }}
                     </a>
                 @endforeach
             </div>
