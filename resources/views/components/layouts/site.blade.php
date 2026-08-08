@@ -33,10 +33,14 @@
     </style>
     @vite (['resources/css/app.css'])
 </head>
-<body class="bg-background font-mono text-foreground antialiased">
-    <x-screens.site.navbar />
-    <main>{{ $slot }}</main>
-    <x-screens.site.footer />
+<body class="font-mono text-foreground antialiased">
+    <div class="pointer-events-none fixed inset-0 z-0 bg-background bg-[linear-gradient(to_right,oklch(0.511_0.096_186.391/0.12)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.511_0.096_186.391/0.12)_1px,transparent_1px)] bg-size-[48px_48px] dark:bg-[linear-gradient(to_right,oklch(0.511_0.096_186.391/0.2)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.511_0.096_186.391/0.2)_1px,transparent_1px)]"></div>
+    <div class="pointer-events-none fixed top-1/2 left-1/2 z-0 h-150 w-150 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 blur-3xl dark:bg-primary/30"></div>
+    <div class="relative z-1">
+        <x-screens.site.navbar />
+        <main>{{ $slot }}</main>
+        <x-screens.site.footer />
+    </div>
     <script>
         (function () {
             const navLinks = document.querySelectorAll(

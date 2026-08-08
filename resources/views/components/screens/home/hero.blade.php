@@ -1,10 +1,4 @@
-<section class="relative overflow-hidden py-10 lg:py-16">
-    <div
-        class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,oklch(0.511_0.096_186.391/0.12)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.511_0.096_186.391/0.12)_1px,transparent_1px)] bg-size-[48px_48px] dark:bg-[linear-gradient(to_right,oklch(0.511_0.096_186.391/0.2)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.511_0.096_186.391/0.2)_1px,transparent_1px)]"
-    ></div>
-    <div
-        class="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 blur-3xl dark:bg-primary/30"
-    ></div>
+<section class="py-10 lg:py-16">
     <div class="relative mx-auto max-w-7xl px-4 text-center">
         <div
             class="mb-6 inline-flex items-center gap-2 border border-border bg-accent px-4 py-1.5 text-xs text-muted-foreground"
