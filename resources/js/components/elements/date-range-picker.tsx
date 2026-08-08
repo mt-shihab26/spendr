@@ -122,7 +122,11 @@ export const DateRangePicker = ({
     onClear: () => void;
 }) => {
     const { preferences } = usePage().props;
-    const weekStartsOn: 0 | 1 = preferences.first_day_of_week === 'sunday' ? 0 : 1;
+    const WEEK_START_MAP: Record<string, 0 | 1 | 2 | 3 | 4 | 5 | 6> = {
+        sunday: 0, monday: 1, tuesday: 2, wednesday: 3,
+        thursday: 4, friday: 5, saturday: 6,
+    };
+    const weekStartsOn = WEEK_START_MAP[preferences.first_day_of_week] ?? 1;
 
     const [open, setOpen] = useState(false);
     const [activePreset, setActivePreset] = useState<TPresetKey | null>(null);

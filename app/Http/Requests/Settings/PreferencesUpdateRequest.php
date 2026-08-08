@@ -18,7 +18,7 @@ class PreferencesUpdateRequest extends FormRequest
     {
         return [
             'default_currency' => ['required', Rule::enum(Currency::class)],
-            'first_day_of_week' => ['required', Rule::in(['monday', 'sunday'])],
+            'first_day_of_week' => ['required', Rule::in(['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])],
         ];
     }
 }

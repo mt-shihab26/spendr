@@ -74,11 +74,16 @@ const Preferences = ({
                     <RadioGroup
                         value={data.first_day_of_week}
                         onValueChange={(v) => setData('first_day_of_week', v)}
-                        className="flex flex-col gap-2"
+                        className="grid grid-cols-2 gap-2 sm:grid-cols-4"
                     >
                         {[
-                            { value: 'monday', label: 'Monday' },
                             { value: 'sunday', label: 'Sunday' },
+                            { value: 'monday', label: 'Monday' },
+                            { value: 'tuesday', label: 'Tuesday' },
+                            { value: 'wednesday', label: 'Wednesday' },
+                            { value: 'thursday', label: 'Thursday' },
+                            { value: 'friday', label: 'Friday' },
+                            { value: 'saturday', label: 'Saturday' },
                         ].map((opt) => (
                             <div
                                 key={opt.value}

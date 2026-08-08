@@ -25,7 +25,7 @@ test('preferences can be updated', function () {
         ->from(route('settings.preferences.edit'))
         ->patch(route('settings.preferences.update'), [
             'default_currency' => 'USD',
-            'first_day_of_week' => 'sunday',
+            'first_day_of_week' => 'friday',
         ]);
 
     $response
@@ -35,7 +35,34 @@ test('preferences can be updated', function () {
     $user->refresh();
 
     expect($user->getPreference('default_currency'))->toBe('USD');
-    expect($user->getPreference('first_day_of_week'))->toBe('sunday');
+    expect($user->getPreference('first_day_of_week'))->toBe('friday');
+});
+
+test('first day of week accepts any day', function () {
+    $user = User::factory()->create();
+
+    foreach (['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as $day) {
+        $this
+            ->actingAs($user)
+            ->patch(route('settings.preferences.update'), [
+                'default_currency' => 'BDT',
+                'first_day_of_week' => $day,
+            ])
+            ->assertSessionHasNoErrors();
+    }
+});
+
+test('preferences update rejects invalid day of week', function () {
+    $user = User::factory()->create();
+
+    $this
+        ->actingAs($user)
+        ->from(route('settings.preferences.edit'))
+        ->patch(route('settings.preferences.update'), [
+            'default_currency' => 'BDT',
+            'first_day_of_week' => 'funday',
+        ])
+        ->assertSessionHasErrors('first_day_of_week');
 });
 
 test('preferences update rejects invalid currency', function () {
