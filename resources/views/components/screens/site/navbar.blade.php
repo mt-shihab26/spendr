@@ -28,10 +28,6 @@ $navLinks = [
         </div>
         <div class="flex items-center gap-3">
             @auth
-                <x-ui.button href="{{ route('dashboard') }}">
-                    Dashboard
-                    <x-icons.squares-2x2 class="size-4" />
-                </x-ui.button>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-ui.button variant="outline" type="submit">
@@ -39,6 +35,10 @@ $navLinks = [
                         <x-icons.logout class="size-4" />
                     </x-ui.button>
                 </form>
+                <x-ui.button href="{{ route('dashboard') }}">
+                    Dashboard
+                    <x-icons.squares-2x2 class="size-4" />
+                </x-ui.button>
             @else
                 <x-ui.button variant="outline" href="{{ route('login') }}">
                     Sign in
