@@ -1,4 +1,4 @@
-<section class="py-24">
+<section class="py-10 lg:py-16">
     <div class="mx-auto max-w-7xl px-4">
         <div class="relative overflow-hidden bg-primary px-8 py-16 text-center">
             <div
