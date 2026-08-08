@@ -54,7 +54,7 @@ $navLinks = [
                     <x-icons.login class="size-4" />
                 </x-ui.button>
                 <x-ui.button href="{{ route('register') }}">
-                    Start free trial
+                    Sign up
                     <x-icons.arrow-right class="size-4" />
                 </x-ui.button>
             @endauth
