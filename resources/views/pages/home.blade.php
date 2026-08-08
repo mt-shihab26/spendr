@@ -7,5 +7,6 @@
     <x-screens.home.features />
     <x-screens.home.guide />
     <x-screens.home.pricing />
+    <x-screens.home.faq />
     <x-screens.home.cta />
 </x-layouts.site>

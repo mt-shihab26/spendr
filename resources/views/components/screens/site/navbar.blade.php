@@ -17,6 +17,11 @@ $navLinks = [
         'href'    => $home . '#pricing',
         'section' => 'pricing',
     ],
+    [
+        'label'   => 'Contact',
+        'href'    => route('contact'),
+        'section' => null,
+    ],
 ];
 ?>
 
@@ -33,7 +38,7 @@ $navLinks = [
                     <a
                         class="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground hover:underline"
                         href="{{ $link['href'] }}"
-                        data-section="{{ $link['section'] }}"
+                        @if($link['section']) data-section="{{ $link['section'] }}" @endif
                     >
                         {{ $link['label'] }}
                     </a>

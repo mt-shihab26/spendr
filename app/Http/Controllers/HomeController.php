@@ -45,4 +45,12 @@ class HomeController extends Controller
     {
         return view('pages.refund-policy');
     }
+
+    /**
+     * Display the contact page.
+     */
+    public function contact(): View
+    {
+        return view('pages.contact');
+    }
 }

@@ -23,6 +23,7 @@ Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('p
 Route::get('/terms-of-service', [HomeController::class, 'termsOfService'])->name('terms-of-service');
 Route::get('/cookie-policy', [HomeController::class, 'cookiePolicy'])->name('cookie-policy');
 Route::get('/refund-policy', [HomeController::class, 'refundPolicy'])->name('refund-policy');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
 Route::get('.well-known/passkey-endpoints', [WellKnownController::class, 'passkeyEndpoints'])->name('well-known.passkeys');
 
