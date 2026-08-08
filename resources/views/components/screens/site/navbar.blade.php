@@ -29,31 +29,31 @@ $navLinks = [
                 id="theme-toggle"
                 type="button"
                 aria-label="Toggle theme"
-                class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                class="flex size-9 cursor-pointer items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
-                <x-icons.sun id="icon-sun" class="hidden h-4 w-4" />
-                <x-icons.moon id="icon-moon" class="h-4 w-4" />
+                <x-icons.sun id="icon-sun" class="hidden size-4" />
+                <x-icons.moon id="icon-moon" class="size-4" />
             </button>
             @auth
                 <x-ui.button href="{{ route('dashboard') }}">
                     Dashboard
-                    <x-icons.squares-2x2 class="h-4 w-4" />
+                    <x-icons.squares-2x2 class="size-4" />
                 </x-ui.button>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-ui.button variant="outline" type="submit">
                         Sign out
-                        <x-icons.logout class="h-4 w-4" />
+                        <x-icons.logout class="size-4" />
                     </x-ui.button>
                 </form>
             @else
                 <x-ui.button variant="outline" href="{{ route('login') }}">
                     Sign in
-                    <x-icons.login class="h-4 w-4" />
+                    <x-icons.login class="size-4" />
                 </x-ui.button>
                 <x-ui.button href="{{ route('register') }}">
                     Start free trial
-                    <x-icons.arrow-right class="h-4 w-4" />
+                    <x-icons.arrow-right class="size-4" />
                 </x-ui.button>
             @endauth
         </div>
