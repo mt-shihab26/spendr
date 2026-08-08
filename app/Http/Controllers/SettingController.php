@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Currency;
+use App\Http\Requests\Settings\NotificationsUpdateRequest;
 use App\Http\Requests\Settings\PasswordUpdateRequest;
+use App\Http\Requests\Settings\PreferencesUpdateRequest;
 use App\Http\Requests\Settings\ProfileDeleteRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use App\Http\Requests\Settings\TwoFactorAuthenticationRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Response;
 use Laravel\Fortify\Features;
+use ZipArchive;
 
 class SettingController extends Controller
 {
@@ -126,5 +131,154 @@ class SettingController extends Controller
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
         ]);
+    }
+
+    /**
+     * Show the user's preferences settings page.
+     */
+    public function preferencesEdit(Request $request): Response
+    {
+        $defaults = [
+            'default_currency' => Currency::BDT->value,
+            'first_day_of_week' => 'monday',
+        ];
+
+        return inertia('settings/preferences', [
+            'preferences' => array_merge($defaults, array_intersect_key($request->user()->preferences ?? [], $defaults)),
+            'currencies' => array_map(fn (Currency $c) => $c->value, Currency::cases()),
+        ]);
+    }
+
+    /**
+     * Update the user's preferences.
+     */
+    public function preferencesUpdate(PreferencesUpdateRequest $request): RedirectResponse
+    {
+        $user = $request->user();
+        $user->preferences = array_merge($user->preferences ?? [], $request->validated());
+        $user->save();
+
+        return redirect()->back()->with('success', 'Preferences updated.');
+    }
+
+    /**
+     * Show the user's notification settings page.
+     */
+    public function notificationsEdit(Request $request): Response
+    {
+        $defaults = [
+            'notify_budget_alerts' => true,
+            'notify_budget_alert_threshold' => 80,
+            'notify_goal_milestones' => true,
+            'notify_recurring_reminders' => true,
+        ];
+
+        return inertia('settings/notifications', [
+            'preferences' => array_merge($defaults, array_intersect_key($request->user()->preferences ?? [], $defaults)),
+        ]);
+    }
+
+    /**
+     * Update the user's notification preferences.
+     */
+    public function notificationsUpdate(NotificationsUpdateRequest $request): RedirectResponse
+    {
+        $user = $request->user();
+        $user->preferences = array_merge($user->preferences ?? [], $request->validated());
+        $user->save();
+
+        return redirect()->back()->with('success', 'Notification preferences updated.');
+    }
+
+    /**
+     * Show the data export settings page.
+     */
+    public function dataEdit(Request $request): Response
+    {
+        return inertia('settings/data');
+    }
+
+    /**
+     * Export all user data as a ZIP archive containing multiple CSVs.
+     */
+    public function dataExport(Request $request): HttpResponse|\Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $user = $request->user();
+
+        return response()->streamDownload(function () use ($user) {
+            $path = tempnam(sys_get_temp_dir(), 'spendr_export_');
+            $zip = new ZipArchive();
+            $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+            $zip->addFromString('wallets.csv', $this->buildCsv(
+                ['Name', 'Currency', 'Initial Balance', 'Is Default', 'Created At'],
+                $user->wallets()->get(),
+                fn ($w) => [$w->name, $w->currency, $w->initial_balance, $w->is_default ? 'Yes' : 'No', $w->created_at],
+            ));
+
+            $zip->addFromString('categories.csv', $this->buildCsv(
+                ['Name', 'Type', 'Is Default', 'Created At'],
+                $user->categories()->get(),
+                fn ($c) => [$c->name, $c->type, $c->is_default ? 'Yes' : 'No', $c->created_at],
+            ));
+
+            $zip->addFromString('transactions.csv', $this->buildCsv(
+                ['Date', 'Description', 'Type', 'Amount', 'Category', 'Wallet', 'Notes'],
+                $user->transactions()->with(['category', 'wallet'])->latest('transacted_at')->get(),
+                fn ($t) => [$t->transacted_at, $t->description, $t->type, $t->amount, $t->category?->name, $t->wallet?->name, $t->notes],
+            ));
+
+            $zip->addFromString('transfers.csv', $this->buildCsv(
+                ['Date', 'Amount', 'From Wallet', 'To Wallet', 'Notes'],
+                $user->transfers()->with(['fromWallet', 'toWallet'])->latest('transacted_at')->get(),
+                fn ($t) => [$t->transacted_at, $t->amount, $t->fromWallet?->name, $t->toWallet?->name, $t->notes],
+            ));
+
+            $zip->addFromString('goals.csv', $this->buildCsv(
+                ['Name', 'Currency', 'Target Amount', 'Current Amount', 'Target Date', 'Description', 'Created At'],
+                $user->goals()->get(),
+                fn ($g) => [$g->name, $g->currency, $g->target_amount, $g->current_amount, $g->target_date, $g->description, $g->created_at],
+            ));
+
+            $zip->addFromString('budgets.csv', $this->buildCsv(
+                ['Category', 'Amount (JSON)', 'Created At'],
+                $user->budgets()->with('category')->get(),
+                fn ($b) => [$b->category?->name, json_encode($b->amount), $b->created_at],
+            ));
+
+            $zip->addFromString('recurring-transactions.csv', $this->buildCsv(
+                ['Description', 'Type', 'Amount', 'Frequency', 'Next Due', 'Is Active', 'Wallet', 'Category'],
+                $user->recurringTransactions()->with(['wallet', 'category'])->get(),
+                fn ($r) => [$r->description, $r->type, $r->amount, $r->frequency, $r->next_due_at, $r->is_active ? 'Yes' : 'No', $r->wallet?->name, $r->category?->name],
+            ));
+
+            $zip->close();
+
+            readfile($path);
+            unlink($path);
+        }, 'spendr-export.zip', ['Content-Type' => 'application/zip']);
+    }
+
+    /**
+     * Build a CSV string from a collection of rows.
+     *
+     * @param  array<string>  $headers
+     * @param  \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>  $rows
+     * @param  \Closure  $mapper
+     */
+    private function buildCsv(array $headers, $rows, \Closure $mapper): string
+    {
+        $buffer = fopen('php://temp', 'r+');
+        fputcsv($buffer, $headers);
+
+        foreach ($rows as $row) {
+            fputcsv($buffer, $mapper($row));
+        }
+
+        rewind($buffer);
+        $csv = stream_get_contents($buffer);
+        fclose($buffer);
+
+        return $csv;
     }
 }

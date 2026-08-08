@@ -112,29 +112,67 @@ const NotificationBell = ({
                                     >
                                         <div className="flex items-start justify-between gap-2 px-3 py-2.5">
                                             <div className="min-w-0 flex-1">
-                                                <p className="text-xs font-medium">
-                                                    {n.data.threshold >= 100
-                                                        ? `Budget exceeded: ${n.data.category}`
-                                                        : `Budget at ${n.data.threshold}%: ${n.data.category}`}
-                                                </p>
-                                                <p className="mt-0.5 text-xs text-muted-foreground">
-                                                    {n.data.currency}{' '}
-                                                    {n.data.spent.toFixed(2)} /{' '}
-                                                    {n.data.budget.toFixed(2)} •{' '}
-                                                    {n.data.month}
-                                                </p>
-                                                <Link
-                                                    href={route(
-                                                        'budgets.show',
-                                                        n.data.budget_id,
-                                                    )}
-                                                    className="mt-1 text-xs text-primary hover:underline"
-                                                    onClick={() =>
-                                                        setOpen(false)
-                                                    }
-                                                >
-                                                    View budget →
-                                                </Link>
+                                                {n.type === 'BudgetAlert' && (
+                                                    <>
+                                                        <p className="text-xs font-medium">
+                                                            {n.data.threshold >= 100
+                                                                ? `Budget exceeded: ${n.data.category}`
+                                                                : `Budget at ${n.data.threshold}%: ${n.data.category}`}
+                                                        </p>
+                                                        <p className="mt-0.5 text-xs text-muted-foreground">
+                                                            {n.data.currency}{' '}
+                                                            {n.data.spent.toFixed(2)} /{' '}
+                                                            {n.data.budget.toFixed(2)} •{' '}
+                                                            {n.data.month}
+                                                        </p>
+                                                        <Link
+                                                            href={route('budgets.show', n.data.budget_id)}
+                                                            className="mt-1 text-xs text-primary hover:underline"
+                                                            onClick={() => setOpen(false)}
+                                                        >
+                                                            View budget →
+                                                        </Link>
+                                                    </>
+                                                )}
+                                                {n.type === 'GoalMilestone' && (
+                                                    <>
+                                                        <p className="text-xs font-medium">
+                                                            {n.data.milestone >= 100
+                                                                ? `Goal achieved: ${n.data.goal_name}`
+                                                                : `Goal at ${n.data.milestone}%: ${n.data.goal_name}`}
+                                                        </p>
+                                                        <p className="mt-0.5 text-xs text-muted-foreground">
+                                                            {n.data.currency}{' '}
+                                                            {n.data.current_amount.toFixed(2)} /{' '}
+                                                            {n.data.target_amount.toFixed(2)}
+                                                        </p>
+                                                        <Link
+                                                            href={route('goals.show', n.data.goal_id)}
+                                                            className="mt-1 text-xs text-primary hover:underline"
+                                                            onClick={() => setOpen(false)}
+                                                        >
+                                                            View goal →
+                                                        </Link>
+                                                    </>
+                                                )}
+                                                {n.type === 'RecurringTransactionReminder' && (
+                                                    <>
+                                                        <p className="text-xs font-medium">
+                                                            Recurring processed: {n.data.description}
+                                                        </p>
+                                                        <p className="mt-0.5 text-xs text-muted-foreground">
+                                                            {n.data.type} • {n.data.amount} •{' '}
+                                                            next {n.data.next_due_at}
+                                                        </p>
+                                                        <Link
+                                                            href={route('recurring-transactions.index')}
+                                                            className="mt-1 text-xs text-primary hover:underline"
+                                                            onClick={() => setOpen(false)}
+                                                        >
+                                                            View recurring →
+                                                        </Link>
+                                                    </>
+                                                )}
                                             </div>
                                             <button
                                                 className="shrink-0 text-xs text-muted-foreground hover:underline"

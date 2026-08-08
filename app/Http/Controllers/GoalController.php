@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Goals\StoreGoalRequest;
 use App\Http\Requests\Goals\UpdateGoalRequest;
 use App\Models\Goal;
+use App\Notifications\GoalMilestone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -44,6 +45,8 @@ class GoalController extends Controller
     {
         $goal = $request->user()->goals()->create($request->validated());
 
+        $this->notifyGoalMilestone($request->user(), $goal, 0);
+
         return redirect()
             ->route('goals.show', $goal)
             ->with('success', 'Goal created.');
@@ -82,11 +85,30 @@ class GoalController extends Controller
     {
         abort_if($goal->user_id !== $request->user()->id, 403);
 
+        $previousPercentage = (int) $goal->progressPercentage();
+
         $goal->update($request->validated());
+
+        $this->notifyGoalMilestone($request->user(), $goal, $previousPercentage);
 
         return redirect()
             ->back()
             ->with('success', 'Goal updated.');
+    }
+
+    /**
+     * Fire a GoalMilestone notification if the goal crosses a milestone threshold.
+     */
+    private function notifyGoalMilestone(\App\Models\User $user, Goal $goal, int $previousPercentage): void
+    {
+        $currentPercentage = (int) $goal->progressPercentage();
+
+        foreach ([25, 50, 75, 100] as $milestone) {
+            if ($previousPercentage < $milestone && $currentPercentage >= $milestone) {
+                $user->notify(new GoalMilestone($goal, $milestone));
+                break;
+            }
+        }
     }
 
     /**

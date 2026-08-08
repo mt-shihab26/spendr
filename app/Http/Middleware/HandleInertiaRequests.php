@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\Currency;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
@@ -49,9 +50,18 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'preferences' => fn () => array_merge([
+                'default_currency' => Currency::BDT->value,
+                'first_day_of_week' => 'monday',
+                'notify_budget_alerts' => true,
+                'notify_budget_alert_threshold' => 80,
+                'notify_goal_milestones' => true,
+                'notify_recurring_reminders' => true,
+            ], $request->user()?->preferences ?? []),
             'notifications' => fn () => $request->user()
                 ? $request->user()->unreadNotifications()->latest()->take(10)->get()->map(fn ($n) => [
                     'id' => $n->id,
+                    'type' => class_basename($n->type),
                     'data' => $n->data,
                     'created_at' => $n->created_at,
                 ])->values()

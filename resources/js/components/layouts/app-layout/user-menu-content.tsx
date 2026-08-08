@@ -58,19 +58,6 @@ export const UserMenuContent = ({ user }: { user: TUser }) => {
                     <Home className="mr-2" />
                     Home
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                    render={
-                        <Link
-                            className="block w-full cursor-pointer"
-                            href={route('settings.profile.edit')}
-                            prefetch
-                            onClick={cleanup}
-                        />
-                    }
-                >
-                    <Settings className="mr-2" />
-                    Settings
-                </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem data-test="logout-button" onClick={handleLogout}>

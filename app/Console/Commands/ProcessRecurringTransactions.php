@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\RecurringTransaction;
+use App\Notifications\RecurringTransactionReminder;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -46,6 +47,8 @@ class ProcessRecurringTransactions extends Command
                 $recurring->advanceNextDue();
                 $recurring->last_run_at = Carbon::now();
                 $recurring->save();
+
+                $recurring->user->notify(new RecurringTransactionReminder($recurring));
 
                 $processed++;
             });

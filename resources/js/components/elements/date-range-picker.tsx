@@ -15,6 +15,7 @@ import {
 import type { DateRange } from 'react-day-picker';
 
 import { useMemo, useState } from 'react';
+import { usePage } from '@inertiajs/react';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -64,7 +65,7 @@ const PRESETS: { key: TPresetKey; label: string }[][] = [
     [{ key: 'all_time', label: 'All Time' }],
 ];
 
-const resolvePreset = (key: TPresetKey): TDateRange => {
+const resolvePreset = (key: TPresetKey, weekStartsOn: 0 | 1 = 1): TDateRange => {
     const today = new Date();
     switch (key) {
         case 'today':
@@ -77,7 +78,7 @@ const resolvePreset = (key: TPresetKey): TDateRange => {
             return { from: fmt(subDays(today, 1)), to: fmt(today) };
         case 'this_week':
             return {
-                from: fmt(startOfWeek(today, { weekStartsOn: 1 })),
+                from: fmt(startOfWeek(today, { weekStartsOn })),
                 to: fmt(today),
             };
         case 'this_month':
@@ -120,6 +121,9 @@ export const DateRangePicker = ({
     onSelect: (dates: TDateRange) => void;
     onClear: () => void;
 }) => {
+    const { preferences } = usePage().props;
+    const weekStartsOn: 0 | 1 = preferences.first_day_of_week === 'sunday' ? 0 : 1;
+
     const [open, setOpen] = useState(false);
     const [activePreset, setActivePreset] = useState<TPresetKey | null>(null);
     const [pending, setPending] = useState<DateRange | undefined>();
@@ -130,11 +134,11 @@ export const DateRangePicker = ({
         if (!dateFrom || !dateTo) return null;
         return (
             PRESETS.flat().find(({ key }) => {
-                const r = resolvePreset(key);
+                const r = resolvePreset(key, weekStartsOn);
                 return r !== null && r.from === dateFrom && r.to === dateTo;
             })?.key ?? null
         );
-    }, [dateFrom, dateTo]);
+    }, [dateFrom, dateTo, weekStartsOn]);
 
     const effectivePreset = activePreset ?? matchedPreset;
 
@@ -159,7 +163,7 @@ export const DateRangePicker = ({
         : null;
 
     const handlePreset = (key: TPresetKey) => {
-        const dates = resolvePreset(key);
+        const dates = resolvePreset(key, weekStartsOn);
         setActivePreset(key);
         setPending(undefined);
         onSelect(dates);

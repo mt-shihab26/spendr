@@ -1,4 +1,5 @@
 import type { TCurrency, TType } from '@/types/enums';
+import type { TUserPreferences } from '@/types/global';
 
 export type TUser = {
     id: number;
@@ -7,6 +8,7 @@ export type TUser = {
     avatar?: string;
     email_verified_at: string | null;
     two_factor_enabled?: boolean;
+    preferences: TUserPreferences | null;
     created_at: string;
     updated_at: string;
 };

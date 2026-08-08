@@ -1,6 +1,6 @@
 import type { TGoal } from '@/types/models';
 
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { CURRENCIES_OPTIONS } from '@/lib/currency';
 
 import { Button } from '@/components/ui/button';
@@ -28,11 +28,12 @@ type TGoalFormData = {
 };
 
 export const GoalForm = ({ goal }: { goal?: TGoal }) => {
+    const { preferences } = usePage().props;
     const { data, setData, post, patch, processing, errors } =
         useForm<TGoalFormData>({
             name: goal?.name ?? '',
             description: goal?.description ?? '',
-            currency: goal?.currency ?? 'BDT',
+            currency: goal?.currency ?? preferences.default_currency,
             target_amount: goal?.target_amount?.toString() ?? '',
             current_amount: goal?.current_amount?.toString() ?? '0',
             target_date: goal?.target_date ?? '',

@@ -128,5 +128,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/password', [SettingController::class, 'passwordUpdate'])->middleware('throttle:6,1')->name('settings.password.update');
 
         Route::get('/appearance', [SettingController::class, 'appearanceEdit'])->name('settings.appearance.edit');
+
+        Route::get('/preferences', [SettingController::class, 'preferencesEdit'])->name('settings.preferences.edit');
+        Route::patch('/preferences', [SettingController::class, 'preferencesUpdate'])->name('settings.preferences.update');
+
+        Route::get('/notifications', [SettingController::class, 'notificationsEdit'])->name('settings.notifications.edit');
+        Route::patch('/notifications', [SettingController::class, 'notificationsUpdate'])->name('settings.notifications.update');
+
+        Route::get('/data', [SettingController::class, 'dataEdit'])->name('settings.data.edit');
+        Route::get('/data/export', [SettingController::class, 'dataExport'])->name('settings.data.export');
     });
 });
