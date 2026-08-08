@@ -1,3 +1,12 @@
+<?php
+$links = [
+    ['label' => 'Privacy Policy',  'href' => '#'],
+    ['label' => 'Terms of Service','href' => '#'],
+    ['label' => 'Cookie Policy',   'href' => '#'],
+    ['label' => 'Refund Policy',   'href' => '#'],
+];
+?>
+
 <footer class="border-t border-border py-12">
     <div class="mx-auto max-w-7xl px-4">
         <div
@@ -10,23 +19,18 @@
                 <img
                     src="{{ Vite::asset('resources/assets/logo-icon.svg') }}"
                     alt="Spendr"
-                    class="h-6 w-6"
+                    class="size-6"
                 />
                 <x-app-logo />
             </a>
             <div class="flex items-center gap-6 text-sm text-muted-foreground">
-                <a href="#" class="transition-colors hover:text-foreground"
-                    >Privacy Policy</a
-                >
-                <a href="#" class="transition-colors hover:text-foreground"
-                    >Terms of Service</a
-                >
-                <a href="#" class="transition-colors hover:text-foreground"
-                    >Cookie Policy</a
-                >
-                <a href="#" class="transition-colors hover:text-foreground"
-                    >Refund Policy</a
-                >
+                @foreach ($links as $link)
+                    <a
+                        href="{{ $link['href'] }}"
+                        class="transition-colors hover:text-foreground"
+                        >{{ $link['label'] }}</a
+                    >
+                @endforeach
             </div>
             <p class="text-xs text-muted-foreground">&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
         </div>
