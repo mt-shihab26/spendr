@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Stevebauman\Location\LocationManager;
 
 /**
@@ -11,6 +12,12 @@ if (! function_exists('userTimezone')) {
     function userTimezone(): ?string
     {
         $ip = request()->ip();
+
+        if (in_array($ip, ['127.0.0.1', '::1'])) {
+            $ip = Cache::remember('host_public_ip', now()->addHours(1), function (): string {
+                return trim(Http::get('https://api.ipify.org')->body());
+            });
+        }
 
         return Cache::remember("user_timezone.{$ip}", now()->addDays(30), function () use ($ip): ?string {
             $position = app(LocationManager::class)->get($ip);
