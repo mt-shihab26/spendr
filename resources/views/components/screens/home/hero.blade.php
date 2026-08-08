@@ -3,7 +3,7 @@
         <div
             class="mb-6 inline-flex items-center gap-2 border border-border bg-accent px-4 py-1.5 text-xs text-muted-foreground"
         >
-            <span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+            <span class="size-1.5 rounded-full bg-primary"></span>
             Personal finance, simplified
         </div>
         <h1
@@ -19,16 +19,16 @@
             @auth
                 <x-ui.button size="lg" href="{{ route('dashboard') }}">
                     Go to dashboard
-                    <x-icons.squares-2x2 class="h-4 w-4" />
+                    <x-icons.squares-2x2 class="size-4" />
                 </x-ui.button>
             @else
                 <x-ui.button size="lg" href="{{ route('register') }}">
                     Start free trial
-                    <x-icons.arrow-right class="h-4 w-4" />
+                    <x-icons.arrow-right class="size-4" />
                 </x-ui.button>
                 <x-ui.button size="lg" variant="outline" href="#guide">
                     See how it works
-                    <x-icons.play class="h-4 w-4" />
+                    <x-icons.play class="size-4" />
                 </x-ui.button>
             @endauth
         </div>

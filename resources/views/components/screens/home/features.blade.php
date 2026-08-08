@@ -52,11 +52,11 @@ $features = [
                     class="group border border-border bg-card p-6 transition-shadow hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20"
                 >
                     <div
-                        class="mb-4 flex h-10 w-10 items-center justify-center bg-primary/10"
+                        class="mb-4 flex size-10 items-center justify-center bg-primary/10"
                     >
                         <x-dynamic-component
                             :component="'icons.'.$feature['icon']"
-                            class="h-5 w-5 text-primary"
+                            class="size-5 text-primary"
                         />
                     </div>
                     <h3 class="mb-2 font-semibold text-foreground">

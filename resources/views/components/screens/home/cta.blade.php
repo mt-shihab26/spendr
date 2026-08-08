@@ -23,7 +23,7 @@
                             href="{{ route('dashboard') }}"
                         >
                             Go to dashboard
-                            <x-icons.squares-2x2 class="h-4 w-4" />
+                            <x-icons.squares-2x2 class="size-4" />
                         </x-ui.button>
                     @else
                         <x-ui.button
@@ -32,7 +32,7 @@
                             href="{{ route('register') }}"
                         >
                             Start free trial
-                            <x-icons.arrow-right class="h-4 w-4" />
+                            <x-icons.arrow-right class="size-4" />
                         </x-ui.button>
                         <x-ui.button
                             variant="ghost"
@@ -40,7 +40,7 @@
                             href="{{ route('login') }}"
                         >
                             Already have an account? Sign in
-                            <x-icons.login class="h-4 w-4" />
+                            <x-icons.login class="size-4" />
                         </x-ui.button>
                     @endauth
                 </div>

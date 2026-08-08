@@ -44,14 +44,14 @@ $steps = [
             @foreach ($steps as $step)
                 <div class="relative flex flex-col items-center text-center">
                     <div
-                        class="relative mb-6 flex h-16 w-16 items-center justify-center border-2 border-primary bg-background"
+                        class="relative mb-6 flex size-16 items-center justify-center border-2 border-primary bg-background"
                     >
                         <x-dynamic-component
                             :component="'icons.'.$step['icon']"
-                            class="h-6 w-6 text-primary"
+                            class="size-6 text-primary"
                         />
                         <span
-                            class="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center bg-primary text-xs font-bold text-primary-foreground"
+                            class="absolute -top-2 -right-2 flex size-5 items-center justify-center bg-primary text-xs font-bold text-primary-foreground"
                         >
                             {{ substr($step['step'], 1) }}
                         </span>
