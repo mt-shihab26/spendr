@@ -1,9 +1,23 @@
 <?php
+$home = route('home');
+
 $links = [
-    ['label' => 'Privacy Policy',  'href' => '#'],
-    ['label' => 'Terms of Service', 'href' => '#'],
-    ['label' => 'Cookie Policy',   'href' => '#'],
-    ['label' => 'Refund Policy',   'href' => '#'],
+    [
+        'label' => 'Privacy Policy',
+        'href'  => $home . '#privacy',
+    ],
+    [
+        'label' => 'Terms of Service',
+        'href'  => $home . '#terms',
+    ],
+    [
+        'label' => 'Cookie Policy',
+        'href'  => $home . '#cookies',
+    ],
+    [
+        'label' => 'Refund Policy',
+        'href'  => $home . '#refund',
+    ],
 ];
 ?>
 
