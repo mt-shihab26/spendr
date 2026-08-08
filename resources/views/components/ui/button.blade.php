@@ -10,6 +10,8 @@
         'outline' => 'border border-border bg-background text-foreground hover:bg-accent',
         'secondary' => 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         'ghost' => 'text-foreground hover:bg-accent',
+        'ghost-inverse' => 'text-primary-foreground/80 hover:bg-white/10 hover:text-primary-foreground',
+        'inverse' => 'bg-primary-foreground text-primary hover:opacity-90',
         'destructive' => 'bg-destructive/10 text-destructive hover:bg-destructive/20',
         'link' => 'text-primary underline-offset-4 hover:underline',
     ];
