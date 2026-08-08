@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SettingsLayout } from '@/components/layouts/settings-layout';
-import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatInitial } from '@/lib/formats';
 
 const AvatarUpload = () => {
@@ -38,20 +38,13 @@ const AvatarUpload = () => {
 
     return (
         <div className="flex items-start gap-5 pb-6 border-b">
-            {preview || user?.avatar ? (
-                <img
-                    src={preview ?? user?.avatar ?? undefined}
-                    alt={user?.name}
-                    className="size-20 shrink-0 rounded-full object-cover ring-1 ring-border"
-                />
-            ) : (
-                <div className={cn(
-                    'size-20 shrink-0 rounded-full bg-muted ring-1 ring-border',
-                    'flex items-center justify-center text-2xl font-medium text-muted-foreground',
-                )}>
-                    {formatInitial(user?.name ?? '')}
-                </div>
-            )}
+            <Avatar
+                key={preview ?? user?.avatar ?? 'fallback'}
+                className="size-20 text-2xl"
+            >
+                <AvatarImage src={preview ?? user?.avatar} alt={user?.name} />
+                <AvatarFallback>{formatInitial(user?.name ?? '')}</AvatarFallback>
+            </Avatar>
 
             <div className="flex-1 space-y-2">
                 <div>
