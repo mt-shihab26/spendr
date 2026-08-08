@@ -1,4 +1,4 @@
-<section class="relative overflow-hidden py-10 lg:py-26">
+<section class="relative overflow-hidden py-10 lg:py-16">
     <div
         class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,oklch(0.511_0.096_186.391/0.05)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.511_0.096_186.391/0.05)_1px,transparent_1px)] bg-size-[48px_48px]"
     ></div>
@@ -20,7 +20,6 @@
         </h1>
 
         <p class="mx-auto mb-10 max-w-xl text-base text-muted-foreground lg:text-lg">Track spending, set budgets, and reach your savings goals — all from one clean dashboard. No spreadsheets needed.</p>
-
         <div
             class="flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
