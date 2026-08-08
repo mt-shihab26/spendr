@@ -31,7 +31,7 @@ $navLinks = [
             <div class="hidden items-center gap-8 md:flex">
                 @foreach ($navLinks as $link)
                     <a
-                        class="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground"
+                        class="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground hover:underline"
                         href="{{ $link['href'] }}"
                         data-section="{{ $link['section'] }}"
                     >
