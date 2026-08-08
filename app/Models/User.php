@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -59,6 +61,26 @@ class User extends Authenticatable implements PasskeyUser
     public function getPreference(string $key, mixed $default = null): mixed
     {
         return ($this->preferences ?? [])[$key] ?? $default;
+    }
+
+    /**
+     * Get the user's profile picture file.
+     *
+     * @return MorphOne<File, $this>
+     */
+    public function avatarFile(): MorphOne
+    {
+        return $this->morphOne(File::class, 'fileable')->latest();
+    }
+
+    /**
+     * Get all files morphed to this user (e.g. avatars).
+     *
+     * @return MorphMany<File, $this>
+     */
+    public function files(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable');
     }
 
     /**

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
 
 /**
@@ -75,6 +76,7 @@ class File extends Model
     {
         $folders = [
             Transaction::class => 'transaction-attachments',
+            User::class => 'avatars',
         ];
 
         $folder = $folders[$fileableType ?? ''] ?? 'files';

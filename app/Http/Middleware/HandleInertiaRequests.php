@@ -47,8 +47,10 @@ class HandleInertiaRequests extends Middleware
                 'info' => fn () => $request->session()->get('info'),
                 'warning' => fn () => $request->session()->get('warning'),
             ],
-            'auth' => [
-                'user' => $request->user(),
+            'auth' => fn () => [
+                'user' => $request->user() ? array_merge($request->user()->toArray(), [
+                    'avatar' => $request->user()->avatarFile?->url(),
+                ]) : null,
             ],
             'preferences' => fn () => array_merge([
                 'default_currency' => Currency::BDT->value,

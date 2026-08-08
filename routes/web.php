@@ -123,6 +123,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/profile', [SettingController::class, 'profileEdit'])->withoutMiddleware('verified')->name('settings.profile.edit');
         Route::patch('/profile', [SettingController::class, 'profileUpdate'])->withoutMiddleware('verified')->name('settings.profile.update');
         Route::delete('/profile', [SettingController::class, 'profileDestroy'])->name('settings.profile.destroy');
+        Route::post('/profile/avatar', [SettingController::class, 'avatarUpdate'])->withoutMiddleware('verified')->name('settings.profile.avatar.update');
+        Route::delete('/profile/avatar', [SettingController::class, 'avatarDestroy'])->withoutMiddleware('verified')->name('settings.profile.avatar.destroy');
 
         Route::get('/security', [SettingController::class, 'securityEdit'])->middleware(RequirePassword::class)->name('settings.security.edit');
         Route::put('/password', [SettingController::class, 'passwordUpdate'])->middleware('throttle:6,1')->name('settings.password.update');

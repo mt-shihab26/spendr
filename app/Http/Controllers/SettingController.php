@@ -9,11 +9,15 @@ use App\Http\Requests\Settings\PreferencesUpdateRequest;
 use App\Http\Requests\Settings\ProfileDeleteRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use App\Http\Requests\Settings\TwoFactorAuthenticationRequest;
+use App\Models\File;
+use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Response;
 use Laravel\Fortify\Features;
@@ -54,6 +58,60 @@ class SettingController extends Controller
         $request->user()->save();
 
         return redirect()->back()->with('success', 'Profile updated.');
+    }
+
+    /**
+     * Upload or replace the user's profile picture.
+     */
+    public function avatarUpdate(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'avatar' => ['required', 'image', 'max:2048'],
+        ]);
+
+        $user = $request->user();
+
+        $old = $user->fresh()->avatarFile;
+        if ($old) {
+            Storage::disk('public')->delete($old->path);
+            $old->delete();
+        }
+
+        $uploaded = $request->file('avatar');
+        $uuid = (string) Str::uuid();
+        $extension = $uploaded->getClientOriginalExtension();
+        $directory = File::resolveDirectory($user->id, User::class);
+        $filename = File::resolveFilename($uuid, $extension);
+
+        Storage::disk('public')->putFileAs($directory, $uploaded, $filename);
+
+        File::create([
+            'id' => $uuid,
+            'user_id' => $user->id,
+            'fileable_type' => User::class,
+            'fileable_id' => $user->id,
+            'name' => $uploaded->getClientOriginalName(),
+            'path' => $directory.'/'.$filename,
+            'mime_type' => $uploaded->getMimeType() ?? 'image/jpeg',
+            'size' => $uploaded->getSize(),
+        ]);
+
+        return redirect()->back()->with('success', 'Profile picture updated.');
+    }
+
+    /**
+     * Remove the user's profile picture.
+     */
+    public function avatarDestroy(Request $request): RedirectResponse
+    {
+        $avatar = $request->user()->fresh()->avatarFile;
+
+        if ($avatar) {
+            Storage::disk('public')->delete($avatar->path);
+            $avatar->delete();
+        }
+
+        return redirect()->back()->with('success', 'Profile picture removed.');
     }
 
     /**
