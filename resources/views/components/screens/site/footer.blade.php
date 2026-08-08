@@ -26,10 +26,11 @@ $links = [
             <div class="flex items-center gap-6 text-sm text-muted-foreground">
                 @foreach ($links as $link)
                     <a
-                        href="{{ $link['href'] }}"
                         class="transition-colors hover:text-foreground"
-                        >{{ $link['label'] }}</a
+                        href="{{ $link['href'] }}"
                     >
+                    {{ $link['label'] }}
+                    </a>
                 @endforeach
             </div>
             <p class="text-xs text-muted-foreground">&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>

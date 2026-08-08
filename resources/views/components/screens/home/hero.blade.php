@@ -1,14 +1,10 @@
-<section class="relative overflow-hidden py-24 lg:py-36">
-    {{-- Background grid --}}
+<section class="relative overflow-hidden py-10 lg:py-26">
     <div
-        class="pointer-events-none absolute inset-0 [background-image:linear-gradient(to_right,oklch(0.511_0.096_186.391/0.05)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.511_0.096_186.391/0.05)_1px,transparent_1px)] [background-size:48px_48px]"
+        class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,oklch(0.511_0.096_186.391/0.05)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.511_0.096_186.391/0.05)_1px,transparent_1px)] bg-size-[48px_48px]"
     ></div>
-
-    {{-- Glow --}}
     <div
         class="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl"
     ></div>
-
     <div class="relative mx-auto max-w-7xl px-4 text-center">
         <div
             class="mb-6 inline-flex items-center gap-2 border border-border bg-accent px-4 py-1.5 text-xs text-muted-foreground"
@@ -16,7 +12,6 @@
             <span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
             Personal finance, simplified
         </div>
-
         <h1
             class="mx-auto mb-6 max-w-3xl text-4xl font-bold tracking-tight text-foreground lg:text-6xl"
         >
