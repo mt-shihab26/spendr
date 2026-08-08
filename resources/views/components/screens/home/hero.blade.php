@@ -12,9 +12,7 @@
             Your finances,<br />
             <span class="text-primary">finally under control</span>
         </h1>
-        <p class="mx-auto mb-10 max-w-xl text-base text-muted-foreground lg:text-lg">
-            Track spending, set budgets, and reach your savings goals — all from one clean dashboard. No spreadsheets needed.
-        </p>
+        <p class="mx-auto mb-10 max-w-xl text-base text-muted-foreground lg:text-lg">Track spending, set budgets, and reach your savings goals — all from one clean dashboard. No spreadsheets needed.</p>
         <div
             class="flex flex-col items-center justify-center gap-4 sm:flex-row"
         >

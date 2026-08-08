@@ -1,10 +1,10 @@
-@php
+<?php
 $navLinks = [
     ['label' => 'Features', 'href' => '#features', 'section' => 'features'],
     ['label' => 'Guide',    'href' => '#guide',    'section' => 'guide'],
     ['label' => 'Pricing',  'href' => '#pricing',  'section' => 'pricing'],
 ];
-@endphp
+?>
 
 <nav
     class="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm"

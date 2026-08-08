@@ -1,7 +1,7 @@
 <?php
 $links = [
     ['label' => 'Privacy Policy',  'href' => '#'],
-    ['label' => 'Terms of Service','href' => '#'],
+    ['label' => 'Terms of Service', 'href' => '#'],
     ['label' => 'Cookie Policy',   'href' => '#'],
     ['label' => 'Refund Policy',   'href' => '#'],
 ];
