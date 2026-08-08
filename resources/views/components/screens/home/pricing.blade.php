@@ -1,4 +1,18 @@
-<section id="pricing" class="bg-accent/30 py-24">
+<?php
+$features = [
+    'Unlimited wallets & accounts',
+    'Unlimited transactions',
+    'Custom categories',
+    'Budget management',
+    'Savings goals',
+    'Recurring transactions',
+    'Visual reports & charts',
+    'CSV import & export',
+    'File attachments on transactions',
+]
+?>
+
+<section id="pricing" class="bg-accent/30 py-10 lg:py-16">
     <div class="mx-auto max-w-7xl px-4">
         <div class="mb-16 text-center">
             <p class="mb-3 text-sm font-medium tracking-wider text-primary uppercase">Pricing</p>
@@ -42,17 +56,7 @@
                 @endauth
             </div>
             <ul class="space-y-3">
-                @foreach ([
-                    'Unlimited wallets & accounts',
-                    'Unlimited transactions',
-                    'Custom categories',
-                    'Budget management',
-                    'Savings goals',
-                    'Recurring transactions',
-                    'Visual reports & charts',
-                    'CSV import & export',
-                    'File attachments on transactions',
-                ] as $feature)
+                @foreach ($features as $feature)
                     <li
                         class="flex items-center gap-3 text-sm text-muted-foreground"
                     >
