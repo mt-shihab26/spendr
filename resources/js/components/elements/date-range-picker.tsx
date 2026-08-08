@@ -65,7 +65,10 @@ const PRESETS: { key: TPresetKey; label: string }[][] = [
     [{ key: 'all_time', label: 'All Time' }],
 ];
 
-const resolvePreset = (key: TPresetKey, weekStartsOn: 0 | 1 = 1): TDateRange => {
+const resolvePreset = (
+    key: TPresetKey,
+    weekStartsOn: 0 | 1 = 1,
+): TDateRange => {
     const today = new Date();
     switch (key) {
         case 'today':
@@ -123,8 +126,13 @@ export const DateRangePicker = ({
 }) => {
     const { preferences } = usePage().props;
     const WEEK_START_MAP: Record<string, 0 | 1 | 2 | 3 | 4 | 5 | 6> = {
-        sunday: 0, monday: 1, tuesday: 2, wednesday: 3,
-        thursday: 4, friday: 5, saturday: 6,
+        sunday: 0,
+        monday: 1,
+        tuesday: 2,
+        wednesday: 3,
+        thursday: 4,
+        friday: 5,
+        saturday: 6,
     };
     const weekStartsOn = WEEK_START_MAP[preferences.first_day_of_week] ?? 1;
 

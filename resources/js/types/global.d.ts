@@ -40,9 +40,24 @@ type TRecurringTransactionReminderData = {
 };
 
 export type TInAppNotification =
-    | { id: string; type: 'BudgetAlert'; data: TBudgetAlertData; created_at: string }
-    | { id: string; type: 'GoalMilestone'; data: TGoalMilestoneData; created_at: string }
-    | { id: string; type: 'RecurringTransactionReminder'; data: TRecurringTransactionReminderData; created_at: string };
+    | {
+          id: string;
+          type: 'BudgetAlert';
+          data: TBudgetAlertData;
+          created_at: string;
+      }
+    | {
+          id: string;
+          type: 'GoalMilestone';
+          data: TGoalMilestoneData;
+          created_at: string;
+      }
+    | {
+          id: string;
+          type: 'RecurringTransactionReminder';
+          data: TRecurringTransactionReminderData;
+          created_at: string;
+      };
 
 declare global {
     var route: typeof routeFn;

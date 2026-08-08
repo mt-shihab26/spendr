@@ -6,21 +6,25 @@ $navLinks = [
         'label'   => 'Features',
         'href'    => $home . '#features',
         'section' => 'features',
+        'route'   => null,
     ],
     [
         'label'   => 'Guide',
         'href'    => $home . '#guide',
         'section' => 'guide',
+        'route'   => null,
     ],
     [
         'label'   => 'Pricing',
         'href'    => $home . '#pricing',
         'section' => 'pricing',
+        'route'   => null,
     ],
     [
         'label'   => 'Contact',
         'href'    => route('contact'),
         'section' => null,
+        'route'   => 'contact',
     ],
 ];
 ?>
@@ -36,9 +40,13 @@ $navLinks = [
             <div class="hidden items-center gap-8 md:flex">
                 @foreach ($navLinks as $link)
                     <a
-                        class="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground hover:underline"
+                        @class ([
+                            'nav-link text-sm transition-colors hover:underline',
+                            'text-foreground font-medium underline' => $link['route'] && request()->routeIs($link['route']),
+                            'text-muted-foreground hover:text-foreground' => ! ($link['route'] && request()->routeIs($link['route'])),
+                        ])
                         href="{{ $link['href'] }}"
-                        @if($link['section']) data-section="{{ $link['section'] }}" @endif
+                        @if ($link['section']) data-section="{{ $link['section'] }}" @endif
                     >
                         {{ $link['label'] }}
                     </a>

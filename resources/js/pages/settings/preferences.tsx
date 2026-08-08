@@ -52,7 +52,10 @@ const Preferences = ({
                     <Select
                         value={data.default_currency}
                         onValueChange={(v) =>
-                            setData('default_currency', v ?? data.default_currency)
+                            setData(
+                                'default_currency',
+                                v ?? data.default_currency,
+                            )
                         }
                     >
                         <SelectTrigger id="default_currency" className="w-full">

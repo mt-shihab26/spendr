@@ -1,3 +1,3 @@
-@props(['class' => ''])
+@props (['class' => ''])
 
-<p @class(['leading-relaxed text-muted-foreground', $class])>{{ $slot }}</p>
+<p @class (['leading-relaxed text-muted-foreground', $class])>{{ $slot }}</p>

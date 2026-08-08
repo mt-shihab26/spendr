@@ -48,8 +48,8 @@ const Notifications = ({
                                 Budget alerts
                             </Label>
                             <p className="text-xs text-muted-foreground">
-                                Receive an email when you approach or exceed your
-                                budget
+                                Receive an email when you approach or exceed
+                                your budget
                             </p>
                         </div>
                         <Switch

@@ -30,9 +30,7 @@ $steps = [
             >
                 Start free trial
             </h2>
-            <p class="mx-auto max-w-xl text-muted-foreground">
-                No complex setup. No imports needed. Start tracking your finances right away.
-            </p>
+            <p class="mx-auto max-w-xl text-muted-foreground">No complex setup. No imports needed. Start tracking your finances right away.</p>
         </div>
         <div class="relative grid gap-8 lg:grid-cols-3">
             <div

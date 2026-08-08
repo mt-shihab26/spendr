@@ -38,20 +38,24 @@ $faqs = [
 <section id="faq" class="py-10 lg:py-16">
     <div class="mx-auto max-w-7xl px-4">
         <div class="mb-16 text-center">
-            <p class="mb-3 text-sm font-medium uppercase tracking-wider text-primary">FAQ</p>
-            <h2 class="mb-4 text-3xl font-bold tracking-tight text-foreground lg:text-4xl">
+            <p class="mb-3 text-sm font-medium tracking-wider text-primary uppercase">FAQ</p>
+            <h2
+                class="mb-4 text-3xl font-bold tracking-tight text-foreground lg:text-4xl"
+            >
                 Frequently asked questions
             </h2>
-            <p class="mx-auto max-w-xl text-muted-foreground">
-                Everything you need to know before getting started.
-            </p>
+            <p class="mx-auto max-w-xl text-muted-foreground">Everything you need to know before getting started.</p>
         </div>
         <div class="mx-auto max-w-3xl divide-y divide-border">
             @foreach ($faqs as $faq)
                 <details class="group py-5">
-                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-foreground">
+                    <summary
+                        class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-foreground"
+                    >
                         {{ $faq['question'] }}
-                        <span class="shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-45">
+                        <span
+                            class="shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-45"
+                        >
                             <svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>

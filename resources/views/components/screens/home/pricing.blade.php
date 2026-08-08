@@ -21,14 +21,13 @@ $features = [
             >
                 Simple, honest pricing
             </h2>
-            <p class="mx-auto max-w-xl text-muted-foreground">
-                One plan. Everything included. No surprises.
-            </p>
+            <p class="mx-auto max-w-xl text-muted-foreground">One plan. Everything included. No surprises.</p>
             <div
                 class="mt-4 inline-flex items-center gap-2 border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary"
             >
                 <x-icons.clock class="size-4" />
-                {{ config('pricing.trial_days') }}-day free trial &mdash; no credit card required
+                {{ config('pricing.trial_days') }}-day free trial &mdash; no
+                credit card required
             </div>
         </div>
         <div
@@ -38,8 +37,13 @@ $features = [
                 <div
                     class="mb-4 flex items-end justify-center gap-2 lg:justify-start"
                 >
-                    <span class="text-7xl font-bold tracking-tight text-foreground">{{ resolvedMonthlyPrice() }}</span>
-                    <span class="mb-3 text-lg text-muted-foreground">/ month</span>
+                    <span
+                        class="text-7xl font-bold tracking-tight text-foreground"
+                        >{{ resolvedMonthlyPrice() }}</span
+                    >
+                    <span class="mb-3 text-lg text-muted-foreground"
+                        >/ month</span
+                    >
                 </div>
                 <p class="mb-2 text-sm text-muted-foreground">Free for the first {{ config('pricing.trial_days') }} days, then billed monthly.</p>
                 <p class="mb-8 text-xs text-muted-foreground">Cancel any time.</p>

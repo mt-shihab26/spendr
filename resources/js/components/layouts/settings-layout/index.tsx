@@ -8,7 +8,14 @@ import { Heading } from '@/components/elements/heading';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { AppLayout } from '@/components/layouts/app-layout';
-import { Bell, Download, Lock, Palette, SlidersHorizontal, User } from 'lucide-react';
+import {
+    Bell,
+    Download,
+    Lock,
+    Palette,
+    SlidersHorizontal,
+    User,
+} from 'lucide-react';
 
 const links = [
     {

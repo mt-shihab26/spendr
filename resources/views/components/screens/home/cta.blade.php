@@ -10,9 +10,7 @@
                 >
                     Take control of your money today
                 </h2>
-                <p class="mx-auto mb-8 max-w-lg text-primary-foreground/80">
-                    Join {{ config("app.name") }} and get a clear picture of your finances. Free to start, no credit card required.
-                </p>
+                <p class="mx-auto mb-8 max-w-lg text-primary-foreground/80">Join {{ config("app.name") }} and get a clear picture of your finances. Free to start, no credit card required.</p>
                 <div
                     class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
                 >

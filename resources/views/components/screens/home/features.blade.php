@@ -42,9 +42,7 @@ $features = [
             >
                 Everything you need to manage money
             </h2>
-            <p class="mx-auto max-w-xl text-muted-foreground">
-                From daily spending to long-term goals, {{ config("app.name") }} covers all the tools you need to stay on top of your finances.
-            </p>
+            <p class="mx-auto max-w-xl text-muted-foreground">From daily spending to long-term goals, {{ config("app.name") }} covers all the tools you need to stay on top of your finances.</p>
         </div>
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($features as $feature)

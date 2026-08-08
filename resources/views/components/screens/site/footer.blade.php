@@ -2,19 +2,19 @@
 $links = [
     [
         'label' => 'Privacy Policy',
-        'href'  => 'privacy-policy',
+        'route' => 'privacy-policy',
     ],
     [
         'label' => 'Terms of Service',
-        'href'  => 'terms-of-service',
+        'route' => 'terms-of-service',
     ],
     [
         'label' => 'Cookie Policy',
-        'href'  => 'cookie-policy',
+        'route' => 'cookie-policy',
     ],
     [
         'label' => 'Refund Policy',
-        'href'  => 'refund-policy',
+        'route' => 'refund-policy',
     ],
 ];
 ?>
@@ -38,8 +38,12 @@ $links = [
             <div class="flex items-center gap-6 text-sm text-muted-foreground">
                 @foreach ($links as $link)
                     <a
-                        class="transition-colors hover:text-foreground hover:underline"
-                        href="{{ route($link['href']) }}"
+                        @class ([
+                            'transition-colors hover:underline',
+                            'font-medium text-foreground underline' => request()->routeIs($link['route']),
+                            'hover:text-foreground' => ! request()->routeIs($link['route']),
+                        ])
+                        href="{{ route($link['route']) }}"
                     >
                         {{ $link['label'] }}
                     </a>

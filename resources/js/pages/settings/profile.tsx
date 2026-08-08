@@ -37,24 +37,29 @@ const AvatarUpload = () => {
     };
 
     return (
-        <div className="flex items-start gap-5 pb-6 border-b">
+        <div className="flex items-start gap-5 border-b pb-6">
             <Avatar
                 key={preview ?? user?.avatar ?? 'fallback'}
                 className="size-20 text-2xl"
             >
                 <AvatarImage src={preview ?? user?.avatar} alt={user?.name} />
-                <AvatarFallback>{formatInitial(user?.name ?? '')}</AvatarFallback>
+                <AvatarFallback>
+                    {formatInitial(user?.name ?? '')}
+                </AvatarFallback>
             </Avatar>
 
             <div className="flex-1 space-y-2">
                 <div>
                     <p className="text-sm font-medium">Profile picture</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="mt-0.5 text-xs text-muted-foreground">
                         JPG, PNG or WebP — max 2 MB
                     </p>
                 </div>
 
-                <form onSubmit={submitAvatar} className="flex flex-wrap items-center gap-2">
+                <form
+                    onSubmit={submitAvatar}
+                    className="flex flex-wrap items-center gap-2"
+                >
                     <Input
                         type="file"
                         accept="image/jpeg,image/png,image/webp,image/gif"
@@ -157,29 +162,33 @@ const Profile = ({
                                 />
                             </div>
 
-                            {mustVerifyEmail && user.email_verified_at === null && (
-                                <div>
-                                    <p className="-mt-4 text-sm text-muted-foreground">
-                                        Your email address is unverified.{' '}
-                                        <Link
-                                            href={route('verification.send')}
-                                            method="post"
-                                            as="button"
-                                            className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                                        >
-                                            Click here to re-send the verification
-                                            email.
-                                        </Link>
-                                    </p>
+                            {mustVerifyEmail &&
+                                user.email_verified_at === null && (
+                                    <div>
+                                        <p className="-mt-4 text-sm text-muted-foreground">
+                                            Your email address is unverified.{' '}
+                                            <Link
+                                                href={route(
+                                                    'verification.send',
+                                                )}
+                                                method="post"
+                                                as="button"
+                                                className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
+                                            >
+                                                Click here to re-send the
+                                                verification email.
+                                            </Link>
+                                        </p>
 
-                                    {status === 'verification-link-sent' && (
-                                        <div className="mt-2 text-sm font-medium text-green-600">
-                                            A new verification link has been sent to
-                                            your email address.
-                                        </div>
-                                    )}
-                                </div>
-                            )}
+                                        {status ===
+                                            'verification-link-sent' && (
+                                            <div className="mt-2 text-sm font-medium text-green-600">
+                                                A new verification link has been
+                                                sent to your email address.
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
 
                             <div className="flex items-center gap-4">
                                 <Button
