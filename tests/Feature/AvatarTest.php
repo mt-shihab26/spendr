@@ -5,7 +5,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 test('avatar can be uploaded', function () {
-    Storage::fake('public');
+    Storage::fake('local');
 
     $user = User::factory()->create();
 
@@ -33,7 +33,7 @@ test('non-image files are rejected for avatar', function () {
 });
 
 test('uploading a new avatar replaces the old one', function () {
-    Storage::fake('public');
+    Storage::fake('local');
 
     $user = User::factory()->create();
 
@@ -55,7 +55,7 @@ test('uploading a new avatar replaces the old one', function () {
 });
 
 test('avatar can be removed', function () {
-    Storage::fake('public');
+    Storage::fake('local');
 
     $user = User::factory()->create();
 

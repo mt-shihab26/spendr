@@ -73,7 +73,7 @@ class SettingController extends Controller
 
         $old = $user->fresh()->avatarFile;
         if ($old) {
-            Storage::disk('public')->delete($old->path);
+            Storage::disk('local')->delete($old->path);
             $old->delete();
         }
 
@@ -83,7 +83,7 @@ class SettingController extends Controller
         $directory = File::resolveDirectory($user->id, User::class);
         $filename = File::resolveFilename($uuid, $extension);
 
-        Storage::disk('public')->putFileAs($directory, $uploaded, $filename);
+        Storage::disk('local')->putFileAs($directory, $uploaded, $filename);
 
         File::create([
             'id' => $uuid,
@@ -107,11 +107,29 @@ class SettingController extends Controller
         $avatar = $request->user()->fresh()->avatarFile;
 
         if ($avatar) {
-            Storage::disk('public')->delete($avatar->path);
+            Storage::disk('local')->delete($avatar->path);
             $avatar->delete();
         }
 
         return redirect()->back()->with('success', 'Profile picture removed.');
+    }
+
+    /**
+     * Serve the user's profile picture inline from private storage.
+     */
+    public function avatarShow(Request $request, File $file): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        abort_if($file->user_id !== $request->user()->id, 403);
+
+        return response()->stream(
+            fn () => print (Storage::disk('local')->get($file->path) ?? ''),
+            200,
+            [
+                'Content-Type' => $file->mime_type,
+                'Content-Disposition' => 'inline',
+                'Cache-Control' => 'private, max-age=86400',
+            ],
+        );
     }
 
     /**

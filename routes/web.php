@@ -125,6 +125,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/profile', [SettingController::class, 'profileDestroy'])->name('settings.profile.destroy');
         Route::post('/profile/avatar', [SettingController::class, 'avatarUpdate'])->withoutMiddleware('verified')->name('settings.profile.avatar.update');
         Route::delete('/profile/avatar', [SettingController::class, 'avatarDestroy'])->withoutMiddleware('verified')->name('settings.profile.avatar.destroy');
+        Route::get('/profile/avatar/{file}', [SettingController::class, 'avatarShow'])->withoutMiddleware('verified')->name('settings.profile.avatar.show');
 
         Route::get('/security', [SettingController::class, 'securityEdit'])->middleware(RequirePassword::class)->name('settings.security.edit');
         Route::put('/password', [SettingController::class, 'passwordUpdate'])->middleware('throttle:6,1')->name('settings.password.update');

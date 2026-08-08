@@ -49,7 +49,9 @@ class HandleInertiaRequests extends Middleware
             ],
             'auth' => fn () => [
                 'user' => $request->user() ? array_merge($request->user()->toArray(), [
-                    'avatar' => $request->user()->avatarFile?->url(),
+                    'avatar' => ($avatarFile = $request->user()->avatarFile)
+                        ? route('settings.profile.avatar.show', $avatarFile->id)
+                        : null,
                 ]) : null,
             ],
             'preferences' => fn () => array_merge([
