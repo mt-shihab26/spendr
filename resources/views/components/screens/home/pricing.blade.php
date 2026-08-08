@@ -38,7 +38,7 @@ $features = [
                 <div
                     class="mb-4 flex items-end justify-center gap-2 lg:justify-start"
                 >
-                    <span id="price-amount" class="text-7xl font-bold tracking-tight text-foreground">{{ config('pricing.monthly') }}</span>
+                    <span class="text-7xl font-bold tracking-tight text-foreground">{{ resolvedMonthlyPrice() }}</span>
                     <span class="mb-3 text-lg text-muted-foreground">/ month</span>
                 </div>
                 <p class="mb-2 text-sm text-muted-foreground">Free for the first {{ config('pricing.trial_days') }} days, then billed monthly.</p>
@@ -71,13 +71,3 @@ $features = [
         </div>
     </div>
 </section>
-
-<script>
-    (function () {
-        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const overrides = @json(config('pricing.locale_overrides'));
-        if (overrides[tz]) {
-            document.getElementById('price-amount').textContent = overrides[tz];
-        }
-    })();
-</script>
