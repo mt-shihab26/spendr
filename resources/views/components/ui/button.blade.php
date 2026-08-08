@@ -29,7 +29,13 @@
 @endphp
 
 @if ($tag === 'a')
-    <a {{ $attributes->merge(['class' => $classes, 'href' => $href]) }}> {{ $slot }} </a>
+    <a {{ $attributes->merge(['class' => $classes, 'href' => $href]) }}>
+        {{ $slot }}
+    </a>
 @else
-    <button {{ $attributes->merge(['class' => $classes, 'type' => $type ?? 'button']) }}>{{ $slot }}</button>
+    <button
+        {{ $attributes->merge(['class' => $classes, 'type' => $type ?? 'button']) }}
+    >
+        {{ $slot }}
+    </button>
 @endif

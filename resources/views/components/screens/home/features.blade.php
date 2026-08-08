@@ -1,14 +1,13 @@
 <section id="features" class="py-24">
     <div class="mx-auto max-w-7xl px-4">
         <div class="mb-16 text-center">
-            <p class="text-primary mb-3 text-sm font-medium tracking-wider uppercase">Features</p>
-            <h2 class="text-foreground mb-4 text-3xl font-bold tracking-tight lg:text-4xl">
+            <p class="mb-3 text-sm font-medium tracking-wider text-primary uppercase">Features</p>
+            <h2
+                class="mb-4 text-3xl font-bold tracking-tight text-foreground lg:text-4xl"
+            >
                 Everything you need to manage money
             </h2>
-            <p class="text-muted-foreground mx-auto max-w-xl">
-                From daily spending to long-term goals, Spendr covers all the tools you need to stay on top of your
-                finances.
-            </p>
+            <p class="mx-auto max-w-xl text-muted-foreground">From daily spending to long-term goals, Spendr covers all the tools you need to stay on top of your finances.</p>
         </div>
 
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -20,12 +19,21 @@
                 ['icon' => 'arrow-path',        'title' => 'Recurring Transactions',   'desc' => 'Set up subscriptions and regular payments once. Spendr auto-logs them so your records stay accurate without manual entry.'],
                 ['icon' => 'chart-pie',         'title' => 'Visual Reports',           'desc' => 'Interactive charts showing spending patterns, income trends, and net worth over time. Export your data any time.'],
             ] as $feature)
-                <div class="group border-border bg-card border p-6 transition-shadow hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20">
-                    <div class="bg-primary/10 mb-4 flex h-10 w-10 items-center justify-center">
-                        <x-dynamic-component :component="'icons.'.$feature['icon']" class="text-primary h-5 w-5" />
+                <div
+                    class="group border border-border bg-card p-6 transition-shadow hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20"
+                >
+                    <div
+                        class="mb-4 flex h-10 w-10 items-center justify-center bg-primary/10"
+                    >
+                        <x-dynamic-component
+                            :component="'icons.'.$feature['icon']"
+                            class="h-5 w-5 text-primary"
+                        />
                     </div>
-                    <h3 class="text-foreground mb-2 font-semibold">{{ $feature['title'] }}</h3>
-                    <p class="text-muted-foreground text-sm leading-relaxed">{{ $feature['desc'] }}</p>
+                    <h3 class="mb-2 font-semibold text-foreground">
+                        {{ $feature['title'] }}
+                    </h3>
+                    <p class="text-sm leading-relaxed text-muted-foreground">{{ $feature['desc'] }}</p>
                 </div>
             @endforeach
         </div>

@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
+<html
+    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    @class (['dark' => ($appearance ?? 'system') == 'dark'])
+>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ $title ?? config('app.name') . ' — Personal Finance Tracker' }}</title>
+    <title>
+        {{ $title ?? config('app.name') . ' — Personal Finance Tracker' }}
+    </title>
     <meta
         name="description"
         content="{{ $description ?? 'Track spending, set budgets, and reach your savings goals with Spendr.' }}"
@@ -12,7 +17,9 @@
         (function () {
             const appearance = '{{ $appearance ?? "system" }}';
             if (appearance === 'system') {
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const prefersDark = window.matchMedia(
+                    '(prefers-color-scheme: dark)',
+                ).matches;
                 if (prefersDark) {
                     document.documentElement.classList.add('dark');
                 }
@@ -27,15 +34,17 @@
             background-color: oklch(0.145 0 0);
         }
     </style>
-    @vite(['resources/css/app.css'])
+    @vite (['resources/css/app.css'])
 </head>
-<body class="bg-background text-foreground font-mono antialiased">
+<body class="bg-background font-mono text-foreground antialiased">
     <x-screens.site.navbar />
     <main>{{ $slot }}</main>
     <x-screens.site.footer />
     <script>
         (function () {
-            const navLinks = document.querySelectorAll('.nav-link[data-section]');
+            const navLinks = document.querySelectorAll(
+                '.nav-link[data-section]',
+            );
             const sections = ['features', 'guide', 'pricing']
                 .map(function (id) {
                     return document.getElementById(id);
