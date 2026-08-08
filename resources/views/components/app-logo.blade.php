@@ -1,3 +1,5 @@
-<span {{ $attributes->merge(['class' => 'text-2xl font-bold tracking-tight text-foreground']) }}>
+<span
+    {{ $attributes->merge(['class' => 'text-2xl font-bold tracking-tight text-foreground']) }}
+>
     spendr<span class="text-primary">.</span>
 </span>
