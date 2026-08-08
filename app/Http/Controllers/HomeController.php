@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -52,5 +54,20 @@ class HomeController extends Controller
     public function contact(): View
     {
         return view('pages.contact');
+    }
+
+    /**
+     * Handle the contact form submission.
+     */
+    public function contactStore(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name'    => ['required', 'string', 'max:255'],
+            'email'   => ['required', 'email', 'max:255'],
+            'subject' => ['required', 'string', 'max:255'],
+            'message' => ['required', 'string', 'max:5000'],
+        ]);
+
+        return redirect()->route('contact')->with('success', 'Thanks for reaching out! I\'ll get back to you soon.');
     }
 }
