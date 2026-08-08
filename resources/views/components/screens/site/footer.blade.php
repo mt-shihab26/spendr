@@ -21,7 +21,7 @@ $links = [
                     alt="Spendr"
                     class="size-6"
                 />
-                <x-app-logo />
+                <x-icons.app-logo />
             </a>
             <div class="flex items-center gap-6 text-sm text-muted-foreground">
                 @foreach ($links as $link)

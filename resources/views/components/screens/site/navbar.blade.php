@@ -3,7 +3,7 @@
 >
     <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
-            <x-app-logo />
+            <x-icons.app-logo />
         </a>
         <div class="hidden items-center gap-8 md:flex">
             <a
