@@ -57,15 +57,15 @@
                 .filter(Boolean);
             function setActive(id) {
                 navLinks.forEach(function (link) {
-                    var isActive = link.dataset.section === id;
+                    const isActive = link.dataset.section === id;
                     link.classList.toggle('text-foreground', isActive);
                     link.classList.toggle('font-medium', isActive);
                     link.classList.toggle('text-muted-foreground', !isActive);
                 });
             }
             function onScroll() {
-                var midY = window.scrollY + window.innerHeight / 2;
-                var current = null;
+                const midY = window.scrollY + window.innerHeight / 2;
+                let current = null;
                 sections.forEach(function (section) {
                     if (section.offsetTop <= midY) {
                         current = section.id;

@@ -28,7 +28,7 @@ $features = [
                 class="mt-4 inline-flex items-center gap-2 border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary"
             >
                 <x-icons.clock class="size-4" />
-                30-day free trial &mdash; no credit card required
+                {{ config('pricing.trial_days') }}-day free trial &mdash; no credit card required
             </div>
         </div>
         <div
@@ -38,10 +38,10 @@ $features = [
                 <div
                     class="mb-4 flex items-end justify-center gap-2 lg:justify-start"
                 >
-                    <span id="price-amount" class="text-7xl font-bold tracking-tight text-foreground" >$5</span>
+                    <span id="price-amount" class="text-7xl font-bold tracking-tight text-foreground">{{ config('pricing.monthly') }}</span>
                     <span class="mb-3 text-lg text-muted-foreground">/ month</span>
                 </div>
-                <p class="mb-2 text-sm text-muted-foreground">Free for the first 30 days, then billed monthly.</p>
+                <p class="mb-2 text-sm text-muted-foreground">Free for the first {{ config('pricing.trial_days') }} days, then billed monthly.</p>
                 <p class="mb-8 text-xs text-muted-foreground">Cancel any time.</p>
                 @auth
                     <x-ui.button size="lg" href="{{ route('dashboard') }}">
@@ -74,8 +74,10 @@ $features = [
 
 <script>
     (function () {
-        if (Intl.DateTimeFormat().resolvedOptions().timeZone === 'Asia/Dhaka') {
-            document.getElementById('price-amount').textContent = '৳500';
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const overrides = @json(config('pricing.locale_overrides'));
+        if (overrides[tz]) {
+            document.getElementById('price-amount').textContent = overrides[tz];
         }
     })();
 </script>

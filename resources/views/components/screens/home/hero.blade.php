@@ -32,6 +32,11 @@
                 </x-ui.button>
             @endauth
         </div>
+        @guest
+            <p class="mt-4 text-xs text-muted-foreground">
+                {{ config('pricing.trial_days') }}-day free trial &mdash; no credit card required
+            </p>
+        @endguest
         <x-screens.home.video-showcase />
     </div>
 </section>
