@@ -38,7 +38,7 @@ $links = [
             <div class="flex items-center gap-6 text-sm text-muted-foreground">
                 @foreach ($links as $link)
                     <a
-                        class="transition-colors hover:text-foreground"
+                        class="transition-colors hover:text-foreground hover:underline"
                         href="{{ $link['href'] }}"
                     >
                         {{ $link['label'] }}
