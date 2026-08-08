@@ -12,8 +12,6 @@
             title="{{ config('app.name') }} demo"
         ></iframe>
     </div>
-
-    {{-- Full overlay — shown when muted, click to unmute --}}
     <button
         id="soundToggle"
         class="absolute inset-0 grid cursor-pointer place-items-center bg-black/30 transition-opacity duration-300"
@@ -27,8 +25,6 @@
             <x-icons.play-solid class="size-9 text-primary" />
         </div>
     </button>
-
-    {{-- Small corner mute button — shown when unmuted --}}
     <button
         id="muteBtn"
         class="absolute top-3 right-3 hidden size-9 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-opacity duration-300 hover:bg-black/80"
@@ -47,7 +43,6 @@
         const toggle = document.getElementById('soundToggle');
         const muteBtn = document.getElementById('muteBtn');
         let muted = true;
-
         function unmute() {
             iframe.contentWindow.postMessage(
                 '{"event":"command","func":"unMute","args":""}',
@@ -58,7 +53,6 @@
             muteBtn.classList.add('flex');
             muted = false;
         }
-
         function mute() {
             iframe.contentWindow.postMessage(
                 '{"event":"command","func":"mute","args":""}',
@@ -69,7 +63,6 @@
             muteBtn.classList.remove('flex');
             muted = true;
         }
-
         toggle.addEventListener('click', unmute);
         muteBtn.addEventListener('click', mute);
     })();
