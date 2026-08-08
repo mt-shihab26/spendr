@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\BudgetController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\GoalController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RecurringTransactionController;
 use App\Http\Controllers\ReportsController;

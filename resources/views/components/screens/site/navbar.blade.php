@@ -1,25 +1,37 @@
-<nav class="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
+<nav class="border-border bg-background/80 sticky top-0 z-50 border-b backdrop-blur-sm">
     <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
-            <span class="text-2xl font-bold tracking-tight text-foreground">
+            <span class="text-foreground text-2xl font-bold tracking-tight">
                 spendr<span class="text-primary">.</span>
             </span>
         </a>
-
         <div class="hidden items-center gap-8 md:flex">
-            <a href="#features" data-section="features" class="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground">Features</a>
-            <a href="#guide" data-section="guide" class="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground">Guide</a>
-            <a href="#pricing" data-section="pricing" class="nav-link text-sm text-muted-foreground transition-colors hover:text-foreground">Pricing</a>
+            <a
+                href="#features"
+                data-section="features"
+                class="nav-link text-muted-foreground hover:text-foreground text-sm transition-colors"
+            >Features</a>
+            <a
+                href="#guide"
+                data-section="guide"
+                class="nav-link text-muted-foreground hover:text-foreground text-sm transition-colors"
+            >Guide</a>
+            <a
+                href="#pricing"
+                data-section="pricing"
+                class="nav-link text-muted-foreground hover:text-foreground text-sm transition-colors"
+            >Pricing</a>
         </div>
-
         <div class="flex items-center gap-3">
-            {{-- Theme switcher --}}
-            <button id="theme-toggle" type="button" aria-label="Toggle theme"
-                    class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+            <button
+                id="theme-toggle"
+                type="button"
+                aria-label="Toggle theme"
+                class="border-border text-muted-foreground hover:bg-accent hover:text-foreground flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border transition-colors"
+            >
                 <x-icons.sun id="icon-sun" class="hidden h-4 w-4" />
                 <x-icons.moon id="icon-moon" class="h-4 w-4" />
             </button>
-
             @auth
                 <x-ui.button href="{{ route('dashboard') }}">
                     Dashboard
@@ -56,7 +68,7 @@
         const html = document.documentElement;
 
         function setCookie(value) {
-            document.cookie = 'appearance=' + value + ';path=/;max-age=' + (365 * 24 * 60 * 60) + ';SameSite=Lax';
+            document.cookie = 'appearance=' + value + ';path=/;max-age=' + 365 * 24 * 60 * 60 + ';SameSite=Lax';
         }
 
         function syncIcons(isDark) {
