@@ -1,5 +1,5 @@
 <section class="py-10 lg:py-16">
-    <div class="relative mx-auto max-w-7xl px-4 text-center">
+    <div class="mx-auto max-w-7xl px-4 text-center">
         <div
             class="mb-6 inline-flex items-center gap-2 border border-border bg-accent px-4 py-1.5 text-xs text-muted-foreground"
         >
@@ -12,8 +12,9 @@
             Your finances,<br />
             <span class="text-primary">finally under control</span>
         </h1>
-
-        <p class="mx-auto mb-10 max-w-xl text-base text-muted-foreground lg:text-lg">Track spending, set budgets, and reach your savings goals — all from one clean dashboard. No spreadsheets needed.</p>
+        <p class="mx-auto mb-10 max-w-xl text-base text-muted-foreground lg:text-lg">
+            Track spending, set budgets, and reach your savings goals — all from one clean dashboard. No spreadsheets needed.
+        </p>
         <div
             class="flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
@@ -33,7 +34,6 @@
                 </x-ui.button>
             @endauth
         </div>
-
         {{-- Dashboard preview --}}
         <div
             class="mt-16 overflow-hidden border border-border bg-card shadow-2xl shadow-black/10 dark:shadow-black/40"
