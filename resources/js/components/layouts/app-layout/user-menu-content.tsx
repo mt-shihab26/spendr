@@ -7,17 +7,15 @@ import {
 
 import type { TUser } from '@/types/models';
 
-import { router } from '@inertiajs/react';
+import { useHttp } from '@inertiajs/react';
 
 import { Link } from '@inertiajs/react';
-import { LogOut, Settings } from 'lucide-react';
+import { Home, LogOut, Settings } from 'lucide-react';
 import { UserInfo } from '@/components/layouts/app-layout/user-info';
 
 import { useCallback } from 'react';
 
-type TCleanupFn = () => void;
-
-const useMobileNavigation2 = (): TCleanupFn => {
+const useMobileNavigation = () => {
     return useCallback(() => {
         // Remove pointer-events style from body...
         document.body.style.removeProperty('pointer-events');
@@ -25,11 +23,17 @@ const useMobileNavigation2 = (): TCleanupFn => {
 };
 
 export const UserMenuContent = ({ user }: { user: TUser }) => {
-    const cleanup = useMobileNavigation2();
+    const cleanup = useMobileNavigation();
+
+    const { post } = useHttp();
 
     const handleLogout = () => {
         cleanup();
-        router.post(route('logout'));
+        post(route('logout'), {
+            onSuccess: () => {
+                window.location.href = route('home');
+            },
+        });
     };
 
     return (
@@ -45,16 +49,14 @@ export const UserMenuContent = ({ user }: { user: TUser }) => {
             <DropdownMenuGroup>
                 <DropdownMenuItem
                     render={
-                        <Link
+                        <a
                             className="block w-full cursor-pointer"
-                            href={route('settings.profile.edit')}
-                            prefetch
-                            onClick={cleanup}
+                            href={route('home')}
                         />
                     }
                 >
-                    <Settings className="mr-2" />
-                    Settings
+                    <Home className="mr-2" />
+                    Home
                 </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

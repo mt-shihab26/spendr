@@ -47,6 +47,7 @@ class TransactionController extends Controller
 
         $transactions = Inertia::scroll(
             $transactionsQuery
+                ->withCount('files')
                 ->orderByDesc('transacted_at')
                 ->orderByDesc('created_at')
                 ->paginate(20)

@@ -1,8 +1,9 @@
-import logoIcon from '@/assets/logo-icon.svg';
+import type { ImgHTMLAttributes } from 'react';
 
-export const AppLogoIcon = ({
-    className,
-    ...props
-}: React.ImgHTMLAttributes<HTMLImageElement>) => {
-    return <img src={logoIcon} alt="Spendr" className={className} {...props} />;
+import { APP_NAME } from '@/lib/env';
+
+import logoIcon from '@assets/logo-icon.svg';
+
+export const AppLogoIcon = (props: ImgHTMLAttributes<HTMLImageElement>) => {
+    return <img src={logoIcon} alt={APP_NAME} {...props} />;
 };

@@ -1,0 +1,55 @@
+<?php
+$links = [
+    [
+        'label' => 'Privacy Policy',
+        'route' => 'privacy-policy',
+    ],
+    [
+        'label' => 'Terms of Service',
+        'route' => 'terms-of-service',
+    ],
+    [
+        'label' => 'Cookie Policy',
+        'route' => 'cookie-policy',
+    ],
+    [
+        'label' => 'Refund Policy',
+        'route' => 'refund-policy',
+    ],
+];
+?>
+
+<footer class="border-t border-border py-12">
+    <div class="mx-auto max-w-7xl px-4">
+        <div
+            class="flex flex-col items-center justify-between gap-6 md:flex-row"
+        >
+            <a
+                class="inline-flex items-center gap-2 text-lg font-bold tracking-tight text-foreground"
+                href="{{ route('home') }}"
+            >
+                <img
+                    class="size-6"
+                    src="{{ Vite::asset('resources/assets/logo-icon.svg') }}"
+                    alt="{{ config('app.name') }}"
+                />
+                <x-icons.app-logo />
+            </a>
+            <div class="flex items-center gap-6 text-sm text-muted-foreground">
+                @foreach ($links as $link)
+                    <a
+                        @class ([
+                            'transition-colors hover:underline',
+                            'font-medium text-foreground' => request()->routeIs($link['route']),
+                            'hover:text-foreground' => ! request()->routeIs($link['route']),
+                        ])
+                        href="{{ route($link['route']) }}"
+                    >
+                        {{ $link['label'] }}
+                    </a>
+                @endforeach
+            </div>
+            <p class="text-xs text-muted-foreground">&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
+        </div>
+    </div>
+</footer>

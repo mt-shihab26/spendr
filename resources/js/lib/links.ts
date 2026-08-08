@@ -1,14 +1,21 @@
 import {
     ArrowRightLeft,
+    Bell,
     ChartBar,
     CircleDollarSign,
+    Download,
     Folder,
     Landmark,
     LayoutGrid,
+    Lock,
+    Palette,
     RefreshCw,
     Repeat,
+    Settings,
+    SlidersHorizontal,
     Tag,
     Target,
+    User,
     Wallet,
 } from 'lucide-react';
 
@@ -101,6 +108,49 @@ export const navEntries = (): TNavEntry[] => [
         title: 'Reports',
         href: route('reports.index'),
         icon: ChartBar,
+    },
+    {
+        type: 'group',
+        title: 'Settings',
+        icon: Settings,
+        links: [
+            {
+                title: 'Profile',
+                href: route('settings.profile.edit'),
+                icon: User,
+                description: 'Update your name and email',
+            },
+            {
+                title: 'Security',
+                href: route('settings.security.edit'),
+                icon: Lock,
+                description: 'Password, 2FA and passkeys',
+            },
+            {
+                title: 'Appearance',
+                href: route('settings.appearance.edit'),
+                icon: Palette,
+                description: 'Light, dark or system theme',
+            },
+            {
+                title: 'Preferences',
+                href: route('settings.preferences.edit'),
+                icon: SlidersHorizontal,
+                description: 'Default currency and week start',
+            },
+            {
+                title: 'Notifications',
+                href: route('settings.notifications.edit'),
+                icon: Bell,
+                description: 'Email alert preferences',
+            },
+            {
+                title: 'Data',
+                href: route('settings.data.edit'),
+                icon: Download,
+                description: 'Export all your data',
+            },
+        ],
     },
 ];
 

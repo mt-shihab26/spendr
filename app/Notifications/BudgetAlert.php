@@ -32,7 +32,13 @@ class BudgetAlert extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        $channels = ['database'];
+
+        if ($notifiable->getPreference('notify_budget_alerts', true)) {
+            $channels[] = 'mail';
+        }
+
+        return $channels;
     }
 
     /**

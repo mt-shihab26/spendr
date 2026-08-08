@@ -1,6 +1,6 @@
 import type { TWallet } from '@/types/models';
 
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 
 import { Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
@@ -14,9 +14,10 @@ import { CurrencyPicker } from '@/components/elements/currency-picker';
 import { Label } from '@/components/ui/label';
 
 export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
+    const { preferences } = usePage().props;
     const { data, setData, post, patch, processing, errors } = useForm({
         name: wallet?.name ?? '',
-        currency: wallet?.currency ?? 'BDT',
+        currency: wallet?.currency ?? preferences.default_currency,
         initial_balance: wallet?.initial_balance ?? 0,
         color: wallet?.color ?? '#6366f1',
         icon: wallet?.icon ?? '',

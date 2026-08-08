@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
 
 /**
@@ -52,5 +53,43 @@ class File extends Model
     public function url(): string
     {
         return asset('storage/'.$this->path);
+    }
+
+    /**
+     * Resolve the full storage path from the model's own attributes.
+     */
+    public function resolvePath(): string
+    {
+        return implode('/', [
+            self::resolveDirectory($this->user_id, $this->fileable_type),
+            self::resolveFilename($this->id, pathinfo($this->name, PATHINFO_EXTENSION)),
+        ]);
+    }
+
+    /**
+     * Resolve the storage directory for a file based on user and fileable type.
+     * Structure: {user_id}/{model-folder}
+     *
+     * @param  class-string|null  $fileableType
+     */
+    public static function resolveDirectory(string $userId, ?string $fileableType): string
+    {
+        $folders = [
+            Transaction::class => 'transaction-attachments',
+            User::class => 'avatars',
+        ];
+
+        $folder = $folders[$fileableType ?? ''] ?? 'files';
+
+        return implode('/', [$userId, $folder]);
+    }
+
+    /**
+     * Resolve the filename from a UUID and extension.
+     * Structure: {uuid}.{extension}
+     */
+    public static function resolveFilename(string $uuid, string $extension): string
+    {
+        return implode('.', [$uuid, $extension]);
     }
 }

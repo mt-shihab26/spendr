@@ -10,6 +10,7 @@ export default defineConfig({
     resolve: {
         alias: {
             'ziggy-js': resolve('vendor/tightenco/ziggy'),
+            '@assets': resolve('resources/assets'),
         },
     },
     plugins: [

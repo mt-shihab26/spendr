@@ -88,6 +88,14 @@ class ReportsController extends Controller
         $allTimeIncome = (float) (clone $balanceQuery)->where('type', 'income')->sum('amount');
         $allTimeExpense = (float) (clone $balanceQuery)->where('type', 'expense')->sum('amount');
 
+        $transfersOut = (float) $user->transfers()
+            ->when($walletId, fn ($q) => $q->where('from_wallet_id', $walletId), fn ($q) => $q->whereIn('from_wallet_id', $walletIds))
+            ->sum('amount');
+
+        $transfersIn = (float) $user->transfers()
+            ->when($walletId, fn ($q) => $q->where('to_wallet_id', $walletId), fn ($q) => $q->whereIn('to_wallet_id', $walletIds))
+            ->sum('amount');
+
         $periodIncome = (float) $transactions->where('type', 'income')->sum('amount');
         $periodExpense = (float) $transactions->where('type', 'expense')->sum('amount');
 
@@ -101,7 +109,7 @@ class ReportsController extends Controller
 
         return inertia('reports/index', [
             'currencies' => $currencies,
-            'balance' => $initialBalance + $allTimeIncome - $allTimeExpense,
+            'balance' => $initialBalance + $allTimeIncome - $allTimeExpense - $transfersOut + $transfersIn,
             'monthly_cash_flow' => $monthlyCashFlow,
             'monthly_summary' => array_reverse($monthlyCashFlow),
             'expense_breakdown' => $this->computeCategoryBreakdown(

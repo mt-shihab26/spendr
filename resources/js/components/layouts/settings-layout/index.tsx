@@ -8,7 +8,14 @@ import { Heading } from '@/components/elements/heading';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { AppLayout } from '@/components/layouts/app-layout';
-import { Lock, Palette, User } from 'lucide-react';
+import {
+    Bell,
+    Download,
+    Lock,
+    Palette,
+    SlidersHorizontal,
+    User,
+} from 'lucide-react';
 
 const links = [
     {
@@ -25,6 +32,21 @@ const links = [
         title: 'Appearance',
         route: 'settings.appearance.edit',
         icon: Palette,
+    },
+    {
+        title: 'Preferences',
+        route: 'settings.preferences.edit',
+        icon: SlidersHorizontal,
+    },
+    {
+        title: 'Notifications',
+        route: 'settings.notifications.edit',
+        icon: Bell,
+    },
+    {
+        title: 'Data',
+        route: 'settings.data.edit',
+        icon: Download,
     },
 ];
 

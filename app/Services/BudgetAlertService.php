@@ -63,7 +63,9 @@ class BudgetAlertService
 
             $percentage = (int) round(($spent / $limit) * 100);
 
-            foreach ([100, 80] as $threshold) {
+            $alertThreshold = $user->getPreference('notify_budget_alert_threshold', 80);
+
+            foreach (array_unique([100, $alertThreshold]) as $threshold) {
                 if ($percentage >= $threshold && ! $this->alreadyNotified($user, $budget->id, $currency, $month, $threshold)) {
                     $user->notify(new BudgetAlert(
                         categoryName: $budget->category->name ?? 'Unknown',

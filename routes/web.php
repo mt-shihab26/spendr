@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\GoalController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RecurringTransactionController;
 use App\Http\Controllers\ReportsController;
@@ -17,7 +18,13 @@ use App\Http\Controllers\WellKnownController;
 use Illuminate\Auth\Middleware\RequirePassword;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'welcome')->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('privacy-policy');
+Route::get('/terms-of-service', [HomeController::class, 'termsOfService'])->name('terms-of-service');
+Route::get('/cookie-policy', [HomeController::class, 'cookiePolicy'])->name('cookie-policy');
+Route::get('/refund-policy', [HomeController::class, 'refundPolicy'])->name('refund-policy');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::post('/contact', [HomeController::class, 'contactStore'])->name('contact.store');
 
 Route::get('.well-known/passkey-endpoints', [WellKnownController::class, 'passkeyEndpoints'])->name('well-known.passkeys');
 
@@ -122,10 +129,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/profile', [SettingController::class, 'profileEdit'])->withoutMiddleware('verified')->name('settings.profile.edit');
         Route::patch('/profile', [SettingController::class, 'profileUpdate'])->withoutMiddleware('verified')->name('settings.profile.update');
         Route::delete('/profile', [SettingController::class, 'profileDestroy'])->name('settings.profile.destroy');
+        Route::post('/profile/avatar', [SettingController::class, 'avatarUpdate'])->withoutMiddleware('verified')->name('settings.profile.avatar.update');
+        Route::delete('/profile/avatar', [SettingController::class, 'avatarDestroy'])->withoutMiddleware('verified')->name('settings.profile.avatar.destroy');
+        Route::get('/profile/avatar/{file}', [SettingController::class, 'avatarShow'])->withoutMiddleware('verified')->name('settings.profile.avatar.show');
 
         Route::get('/security', [SettingController::class, 'securityEdit'])->middleware(RequirePassword::class)->name('settings.security.edit');
         Route::put('/password', [SettingController::class, 'passwordUpdate'])->middleware('throttle:6,1')->name('settings.password.update');
 
         Route::get('/appearance', [SettingController::class, 'appearanceEdit'])->name('settings.appearance.edit');
+
+        Route::get('/preferences', [SettingController::class, 'preferencesEdit'])->name('settings.preferences.edit');
+        Route::patch('/preferences', [SettingController::class, 'preferencesUpdate'])->name('settings.preferences.update');
+
+        Route::get('/notifications', [SettingController::class, 'notificationsEdit'])->name('settings.notifications.edit');
+        Route::patch('/notifications', [SettingController::class, 'notificationsUpdate'])->name('settings.notifications.update');
+
+        Route::get('/data', [SettingController::class, 'dataEdit'])->name('settings.data.edit');
+        Route::get('/data/export', [SettingController::class, 'dataExport'])->name('settings.data.export');
     });
 });
