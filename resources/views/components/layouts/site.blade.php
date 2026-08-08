@@ -7,11 +7,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>
-        {{ $title ?? config('app.name') . ' — Personal Finance Tracker' }}
+        {{ $title ? $title . " " . config('app.name') : config('app.name') . ' — Personal Finance Tracker' }}
     </title>
     <meta
         name="description"
-        content="{{ $description ?? 'Track spending, set budgets, and reach your savings goals with Spendr.' }}"
+        content="{{ $description ?? 'Track spending, set budgets, and reach your savings goals with ' . config('app.name') . '.'  }}"
     />
     <script>
         (function () {

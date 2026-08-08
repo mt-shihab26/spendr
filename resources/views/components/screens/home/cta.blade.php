@@ -3,7 +3,7 @@
         <div class="relative overflow-hidden bg-primary px-8 py-16 text-center">
             {{-- Background pattern --}}
             <div
-                class="pointer-events-none absolute inset-0 [background-image:linear-gradient(to_right,oklch(1_0_0/0.05)_1px,transparent_1px),linear-gradient(to_bottom,oklch(1_0_0/0.05)_1px,transparent_1px)] [background-size:32px_32px]"
+                class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,oklch(1_0_0/0.05)_1px,transparent_1px),linear-gradient(to_bottom,oklch(1_0_0/0.05)_1px,transparent_1px)] bg-size-[32px_32px]"
             ></div>
 
             <div class="relative">
@@ -12,7 +12,7 @@
                 >
                     Take control of your money today
                 </h2>
-                <p class="mx-auto mb-8 max-w-lg text-primary-foreground/80">Join Spendr and get a clear picture of your finances. Free to start, no credit card required.</p>
+                <p class="mx-auto mb-8 max-w-lg text-primary-foreground/80">Join {{config("app.name")}} and get a clear picture of your finances. Free to start, no credit card required.</p>
                 <div
                     class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
                 >

@@ -57,7 +57,7 @@
                 <span class="h-3 w-3 rounded-full bg-yellow-400/50"></span>
                 <span class="h-3 w-3 rounded-full bg-green-400/50"></span>
                 <span class="ml-4 text-xs text-muted-foreground"
-                    >spendr &mdash; dashboard</span
+                    >{{config("app.name")}} &mdash; dashboard</span
                 >
             </div>
             <div class="grid grid-cols-3 gap-4 p-6 lg:grid-cols-4">

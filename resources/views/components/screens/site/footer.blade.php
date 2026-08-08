@@ -13,13 +13,13 @@ $links = [
             class="flex flex-col items-center justify-between gap-6 md:flex-row"
         >
             <a
-                href="{{ route('home') }}"
                 class="inline-flex items-center gap-2 text-lg font-bold tracking-tight text-foreground"
+                href="{{ route('home') }}"
             >
                 <img
-                    src="{{ Vite::asset('resources/assets/logo-icon.svg') }}"
-                    alt="Spendr"
                     class="size-6"
+                    src="{{ Vite::asset('resources/assets/logo-icon.svg') }}"
+                    alt="{{ config('app.name') }}"
                 />
                 <x-icons.app-logo />
             </a>
