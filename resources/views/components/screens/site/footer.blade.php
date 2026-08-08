@@ -2,19 +2,19 @@
 $links = [
     [
         'label' => 'Privacy Policy',
-        'href'  => '#',
+        'href'  => route('privacy-policy'),
     ],
     [
         'label' => 'Terms of Service',
-        'href'  => '#',
+        'href'  => route('terms-of-service'),
     ],
     [
         'label' => 'Cookie Policy',
-        'href'  => '#',
+        'href'  => route('cookie-policy'),
     ],
     [
         'label' => 'Refund Policy',
-        'href'  => '#',
+        'href'  => route('refund-policy'),
     ],
 ];
 ?>

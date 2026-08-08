@@ -13,4 +13,36 @@ class HomeController extends Controller
     {
         return view('pages.home');
     }
+
+    /**
+     * Display the privacy policy page.
+     */
+    public function privacyPolicy(): View
+    {
+        return view('pages.privacy-policy');
+    }
+
+    /**
+     * Display the terms of service page.
+     */
+    public function termsOfService(): View
+    {
+        return view('pages.terms-of-service');
+    }
+
+    /**
+     * Display the cookie policy page.
+     */
+    public function cookiePolicy(): View
+    {
+        return view('pages.cookie-policy');
+    }
+
+    /**
+     * Display the refund policy page.
+     */
+    public function refundPolicy(): View
+    {
+        return view('pages.refund-policy');
+    }
 }
