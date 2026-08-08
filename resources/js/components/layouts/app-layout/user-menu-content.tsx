@@ -7,7 +7,7 @@ import {
 
 import type { TUser } from '@/types/models';
 
-import { router } from '@inertiajs/react';
+import { useHttp } from '@inertiajs/react';
 
 import { Link } from '@inertiajs/react';
 import { Home, LogOut, Settings } from 'lucide-react';
@@ -25,9 +25,15 @@ const useMobileNavigation = () => {
 export const UserMenuContent = ({ user }: { user: TUser }) => {
     const cleanup = useMobileNavigation();
 
+    const { post } = useHttp();
+
     const handleLogout = () => {
         cleanup();
-        router.post(route('logout'));
+        post(route('logout'), {
+            onSuccess: () => {
+                window.location.href = route('home');
+            },
+        });
     };
 
     return (
