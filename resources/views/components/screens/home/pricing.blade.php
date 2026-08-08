@@ -7,7 +7,9 @@
             >
                 Simple, honest pricing
             </h2>
-            <p class="mx-auto max-w-xl text-muted-foreground">One plan. Everything included. No surprises.</p>
+            <p class="mx-auto max-w-xl text-muted-foreground">
+                One plan. Everything included. No surprises.
+            </p>
             <div
                 class="mt-4 inline-flex items-center gap-2 border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary"
             >
@@ -15,7 +17,6 @@
                 30-day free trial &mdash; no credit card required
             </div>
         </div>
-
         <div
             class="mx-auto grid max-w-4xl gap-8 lg:grid-cols-2 lg:items-center"
         >

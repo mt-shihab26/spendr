@@ -41,7 +41,6 @@ $steps = [
             <div
                 class="absolute top-8 right-0 left-2/3 hidden h-px bg-border lg:block"
             ></div>
-
             @foreach ($steps as $step)
                 <div class="relative flex flex-col items-center text-center">
                     <div
@@ -60,7 +59,9 @@ $steps = [
                     <h3 class="mb-3 text-lg font-semibold text-foreground">
                         {{ $step['title'] }}
                     </h3>
-                    <p class="text-sm leading-relaxed text-muted-foreground">{{ $step['desc'] }}</p>
+                    <p class="text-sm leading-relaxed text-muted-foreground">
+                        {{ $step['desc'] }}
+                    </p>
                 </div>
             @endforeach
         </div>
