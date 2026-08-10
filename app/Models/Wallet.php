@@ -96,6 +96,18 @@ class Wallet extends Model
     }
 
     /**
+     * Current balance: initial balance adjusted for all transactions and transfers.
+     */
+    public function balance(): float
+    {
+        return $this->initial_balance
+            + $this->totalIncome()
+            - $this->totalExpense()
+            - $this->totalOutgoingTransfers()
+            + $this->totalIncomingTransfers();
+    }
+
+    /**
      * Eager-load all four aggregate sums. Use on collection queries to avoid N+1.
      *
      * @param  Builder<Wallet>  $query
@@ -118,8 +130,9 @@ class Wallet extends Model
         $this->loadSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount');
         $this->loadSum(['outgoingTransfers as transfers_out'], 'amount');
         $this->loadSum(['incomingTransfers as transfers_in'], 'amount');
+
         $this->setAttribute('net', $this->netFlow());
-        $this->setAttribute('balance', $this->currentBalance());
+        $this->setAttribute('balance', $this->balance());
 
         return $this;
     }
@@ -170,17 +183,5 @@ class Wallet extends Model
     public function netFlow(): float
     {
         return $this->totalIncome() - $this->totalExpense();
-    }
-
-    /**
-     * Current balance: initial balance adjusted for all transactions and transfers.
-     */
-    public function currentBalance(): float
-    {
-        return $this->initial_balance
-            + $this->totalIncome()
-            - $this->totalExpense()
-            - $this->totalOutgoingTransfers()
-            + $this->totalIncomingTransfers();
     }
 }

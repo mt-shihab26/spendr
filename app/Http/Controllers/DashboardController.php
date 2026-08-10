@@ -34,7 +34,7 @@ class DashboardController extends Controller
             ->orderBy('sort_order')
             ->orderBy('created_at')
             ->get()
-            ->each(fn ($w) => $w->setAttribute('balance', $w->currentBalance()));
+            ->each(fn ($w) => $w->setAttribute('balance', $w->balance()));
 
         $currencies = $allWallets
             ->map(fn (Wallet $w) => $w->currency)
@@ -140,9 +140,11 @@ class DashboardController extends Controller
 
         return collect($currencies)->map(function (Currency $currency) use ($wallets, $sumByType, $period) {
             $wallets = $wallets->filter(fn ($w) => $w->currency === $currency);
+
             $walletIds = $wallets->pluck('id');
 
             $balance = round((float) $wallets->sum('balance'), 2);
+
             $monthIncome = $sumByType($walletIds, Type::Income, $period->year, $period->month);
             $monthExpense = $sumByType($walletIds, Type::Expense, $period->year, $period->month);
             $prevMonthIncome = $sumByType($walletIds, Type::Income, $period->prevYear, $period->prevMonth);
