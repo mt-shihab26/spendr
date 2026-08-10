@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Currency;
 use App\Enums\Type;
 use App\Models\Budget;
 use App\Models\Transaction;
@@ -19,6 +20,10 @@ class DashboardController extends Controller
      */
     public function index(Request $request): Response
     {
+        $validated = $request->validate([
+            'currency' => ['nullable', 'string', Rule::enum(Currency::class)],
+        ]);
+
         $user = $request->user();
 
         $now = now();
@@ -39,10 +44,6 @@ class DashboardController extends Controller
             ->sort()
             ->values()
             ->all();
-
-        $validated = $request->validate([
-            'currency' => ['nullable', 'string', Rule::in($currencies)],
-        ]);
 
         $primaryCurrency = $validated['currency']
             ?? (in_array('BDT', $currencies, true) ? 'BDT' : ($currencies[0] ?? null));
