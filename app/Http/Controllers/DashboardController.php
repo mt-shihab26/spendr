@@ -29,14 +29,9 @@ class DashboardController extends Controller
 
         $period = $this->period();
 
-        $allWallets = $user->wallets()
-            ->withStats()
-            ->orderBy('sort_order')
-            ->orderBy('created_at')
-            ->get()
-            ->each(fn ($w) => $w->setAttribute('balance', $w->balance()));
+        $wallets = $this->getWallets($user);
 
-        $currencies = $allWallets
+        $currencies = $wallets
             ->map(fn (Wallet $w) => $w->currency)
             ->unique()
             ->sort()
@@ -46,7 +41,7 @@ class DashboardController extends Controller
         $primaryCurrency = $request->input('currency')
             ?? (in_array(Currency::BDT, $currencies, true) ? Currency::BDT->value : (isset($currencies[0]) ? $currencies[0]->value : null));
 
-        $primaryWalletIds = $allWallets
+        $primaryWalletIds = $wallets
             ->when($primaryCurrency, fn ($c) => $c->filter(fn ($w) => $w->currency->value === $primaryCurrency))
             ->pluck('id');
 
@@ -73,13 +68,13 @@ class DashboardController extends Controller
             ]));
 
         return inertia('dashboard', [
-            'currencyStats' => $this->computeCurrencyStats($allWallets, $user, $currencies),
+            'currencyStats' => $this->computeCurrencyStats($wallets, $user, $currencies),
+            'wallets' => $wallets->take(5)->values(),
             'currencies' => array_map(fn (Currency $c) => $c->value, $currencies),
             'primary_currency' => $primaryCurrency,
             'filters' => [
                 'currency' => $request->input('currency'),
             ],
-            'wallets' => $allWallets->take(3)->values(),
             'spending_by_category' => $primaryCurrency
                 ? $this->computeSpendingByCategory($user, $primaryWalletIds, $period->year, $period->month)
                 : [],
@@ -90,6 +85,21 @@ class DashboardController extends Controller
             'upcoming_recurring' => $upcomingRecurring,
             'goals' => $goals,
         ]);
+    }
+
+    /**
+     * Load all user wallets with balance computed from aggregated stats.
+     *
+     * @return Collection<int, Wallet>
+     */
+    private function getWallets(User $user): Collection
+    {
+        return $user->wallets()
+            ->withStats()
+            ->orderBy('sort_order')
+            ->orderBy('created_at')
+            ->get()
+            ->each(fn ($w) => $w->setAttribute('balance', $w->balance()));
     }
 
     /**

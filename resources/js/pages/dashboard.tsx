@@ -3,12 +3,12 @@ import type {
     TGoal,
     TRecurringTransaction,
     TTransaction,
-    TWallet,
 } from '@/types/models';
 
 import type { TCategoryRow } from '@/types/reports';
 import type { TCurrency } from '@/types/enums';
-import type { TCurrencyStat } from '@/components/screens/dashboard/currencyStats';
+import type { TCurrencyStat } from '@/components/screens/dashboard/currency-stats';
+import type { TDashboardWallet } from '@/components/screens/dashboard/wallets';
 
 import { formatCurrency } from '@/lib/formats';
 
@@ -19,8 +19,8 @@ import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { CategoryDonut } from '@/components/screens/reports/category-donut';
 import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
-import { Button } from '@/components/ui/button';
-import { CurrencyStats } from '@/components/screens/dashboard/currencyStats';
+import { CurrencyStats } from '@/components/screens/dashboard/currency-stats';
+import { Wallets } from '@/components/screens/dashboard/wallets';
 
 type TBudgetStatus = {
     id: string;
@@ -31,8 +31,8 @@ type TBudgetStatus = {
 
 const Dashboard = ({
     currencyStats,
-    primary_currency,
     wallets,
+    primary_currency,
     spending_by_category,
     recent_transactions,
     budgets,
@@ -40,8 +40,8 @@ const Dashboard = ({
     goals,
 }: {
     currencyStats: TCurrencyStat[];
+    wallets: TDashboardWallet[];
     primary_currency: TCurrency | null;
-    wallets: TWallet[];
     spending_by_category: TCategoryRow[];
     recent_transactions: TTransaction[];
     budgets: TBudgetStatus[];
@@ -67,65 +67,8 @@ const Dashboard = ({
                     </NewButton>
                 </div>
                 <CurrencyStats currencyStats={currencyStats} />
-
-                {/* Wallets + Spending by Category */}
                 <div className="grid gap-4 md:grid-cols-2">
-                    {/* Wallets Panel */}
-                    <div className="border p-4">
-                        <div className="mb-3 flex items-center justify-between">
-                            <p className="text-sm font-medium">Wallets</p>
-                            <Link
-                                href={route('wallets.index')}
-                                className="text-xs text-muted-foreground hover:underline"
-                            >
-                                All Wallets →
-                            </Link>
-                        </div>
-                        {wallets.length === 0 ? (
-                            <div className="flex flex-col items-center gap-3 py-6 text-center">
-                                <p className="text-xs text-muted-foreground">
-                                    No wallets yet.
-                                </p>
-                                <Button
-                                    size="sm"
-                                    nativeButton={false}
-                                    render={
-                                        <Link href={route('wallets.create')} />
-                                    }
-                                >
-                                    Create your first wallet
-                                </Button>
-                            </div>
-                        ) : (
-                            <div className="divide-y">
-                                {wallets.map((wallet) => (
-                                    <div
-                                        key={wallet.id}
-                                        className="flex items-center gap-2 py-2"
-                                    >
-                                        <span
-                                            className="size-2 shrink-0 rounded-full"
-                                            style={{
-                                                backgroundColor: wallet.color,
-                                            }}
-                                        />
-                                        <span className="flex-1 truncate text-xs">
-                                            {wallet.name}
-                                        </span>
-                                        <span className="shrink-0 text-xs text-muted-foreground">
-                                            {wallet.currency}
-                                        </span>
-                                        <span className="shrink-0 text-xs font-medium tabular-nums">
-                                            {formatCurrency(
-                                                wallet.balance ?? 0,
-                                                wallet.currency,
-                                            )}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                    <Wallets wallets={wallets} />
 
                     {/* Spending by Category */}
                     <div className="flex flex-col gap-2">
