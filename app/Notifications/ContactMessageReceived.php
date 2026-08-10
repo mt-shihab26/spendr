@@ -47,7 +47,8 @@ class ContactMessageReceived extends Notification implements ShouldQueue
             ->greeting("New message from '{$name}' on {$appName}")
             ->line("**Email:** {$email}")
             ->line('**Message:**')
-            ->line($message);
+            ->line($message)
+            ->salutation('');
     }
 
     /**
