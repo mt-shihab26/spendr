@@ -5,103 +5,28 @@ import type {
     TTransaction,
     TWallet,
 } from '@/types/models';
+
 import type { TCategoryRow } from '@/types/reports';
 import type { TCurrency } from '@/types/enums';
+import type { TCurrencyStat } from '@/components/screens/dashboard/currencyStats';
+
+import { formatCurrency } from '@/lib/formats';
 
 import { Link } from '@inertiajs/react';
-import {
-    ArrowDown,
-    ArrowUp,
-    Minus,
-    RefreshCw,
-    Target,
-    TriangleAlert,
-} from 'lucide-react';
-
+import { RefreshCw, Target, TriangleAlert } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { CategoryDonut } from '@/components/screens/reports/category-donut';
 import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
 import { Button } from '@/components/ui/button';
-
-import { formatCurrency } from '@/lib/formats';
-
-type TCurrencyStat = {
-    currency: TCurrency;
-    balance: number;
-    month_income: number;
-    month_expense: number;
-    prev_month_income: number;
-    prev_month_expense: number;
-    net_worth_delta: number;
-};
+import { CurrencyStats } from '@/components/screens/dashboard/currencyStats';
 
 type TBudgetStatus = {
     id: string;
     category: TCategory;
     budget_amount: number;
     spent: number;
-};
-
-const PctChange = ({ current, prev }: { current: number; prev: number }) => {
-    if (prev === 0) return null;
-    const pct = ((current - prev) / prev) * 100;
-    const abs = Math.abs(pct).toFixed(1);
-
-    if (pct > 0) {
-        return (
-            <span className="flex items-center gap-0.5 text-xs text-income">
-                <ArrowUp className="size-3" />
-                {abs}% vs last month
-            </span>
-        );
-    }
-    if (pct < 0) {
-        return (
-            <span className="flex items-center gap-0.5 text-xs text-expense">
-                <ArrowDown className="size-3" />
-                {abs}% vs last month
-            </span>
-        );
-    }
-    return (
-        <span className="flex items-center gap-0.5 text-xs text-muted-foreground">
-            <Minus className="size-3" />
-            No change vs last month
-        </span>
-    );
-};
-
-const BalanceDelta = ({
-    delta,
-    currency,
-}: {
-    delta: number;
-    currency: TCurrency;
-}) => {
-    if (delta > 0) {
-        return (
-            <span className="flex items-center gap-0.5 text-xs text-income">
-                <ArrowUp className="size-3" />+{formatCurrency(delta, currency)}{' '}
-                vs last month
-            </span>
-        );
-    }
-    if (delta < 0) {
-        return (
-            <span className="flex items-center gap-0.5 text-xs text-expense">
-                <ArrowDown className="size-3" />
-                {formatCurrency(delta, currency)} vs last month
-            </span>
-        );
-    }
-    return (
-        <span className="flex items-center gap-0.5 text-xs text-muted-foreground">
-            <Minus className="size-3" />
-            No change vs last month
-        </span>
-    );
 };
 
 const Dashboard = ({
@@ -141,64 +66,7 @@ const Dashboard = ({
                         Add Transaction
                     </NewButton>
                 </div>
-
-                {/* Summary Cards — one row per currency */}
-                {currencyStats.map((stat) => (
-                    <div key={stat.currency}>
-                        {currencyStats.length > 1 && (
-                            <p className="mb-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                                {stat.currency}
-                            </p>
-                        )}
-                        <div className="grid gap-4 md:grid-cols-3">
-                            <div className="border p-4">
-                                <p className="text-xs text-muted-foreground">
-                                    Balance
-                                </p>
-                                <p className="mt-1 text-lg font-semibold tabular-nums">
-                                    {formatCurrency(
-                                        stat.balance,
-                                        stat.currency,
-                                    )}
-                                </p>
-                                <BalanceDelta
-                                    delta={stat.net_worth_delta}
-                                    currency={stat.currency}
-                                />
-                            </div>
-                            <div className="border p-4">
-                                <p className="text-xs text-muted-foreground">
-                                    This Month Income
-                                </p>
-                                <p className="mt-1 text-lg font-semibold text-income tabular-nums">
-                                    {formatCurrency(
-                                        stat.month_income,
-                                        stat.currency,
-                                    )}
-                                </p>
-                                <PctChange
-                                    current={stat.month_income}
-                                    prev={stat.prev_month_income}
-                                />
-                            </div>
-                            <div className="border p-4">
-                                <p className="text-xs text-muted-foreground">
-                                    This Month Expenses
-                                </p>
-                                <p className="mt-1 text-lg font-semibold text-expense tabular-nums">
-                                    {formatCurrency(
-                                        stat.month_expense,
-                                        stat.currency,
-                                    )}
-                                </p>
-                                <PctChange
-                                    current={stat.month_expense}
-                                    prev={stat.prev_month_expense}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                ))}
+                <CurrencyStats currencyStats={currencyStats} />
 
                 {/* Wallets + Spending by Category */}
                 <div className="grid gap-4 md:grid-cols-2">

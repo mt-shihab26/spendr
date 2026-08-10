@@ -3,6 +3,7 @@ import type { TCurrency } from '@/types/enums';
 import { formatCurrency } from '@/lib/formats';
 
 import { ArrowDown, ArrowUp, Minus } from 'lucide-react';
+import { getCurrencySymbol } from '@/lib/currency';
 
 const PctChange = ({ current, prev }: { current: number; prev: number }) => {
     if (prev === 0) return null;
@@ -64,7 +65,7 @@ const BalanceDelta = ({
     );
 };
 
-type TCurrencyStat = {
+export type TCurrencyStat = {
     currency: TCurrency;
     balance: number;
     month_income: number;
@@ -85,7 +86,7 @@ export const CurrencyStats = ({
                 <div key={stat.currency}>
                     {currencyStats.length > 1 && (
                         <p className="mb-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                            {stat.currency}
+                            {stat.currency} ({getCurrencySymbol(stat.currency)})
                         </p>
                     )}
                     <div className="grid gap-4 md:grid-cols-3">
