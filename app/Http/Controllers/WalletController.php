@@ -29,7 +29,7 @@ class WalletController extends Controller
             ->get()
             ->each(function (Wallet $wallet) {
                 $wallet->setAttribute('net', $wallet->netFlow());
-                $wallet->setAttribute('balance', $wallet->currentBalance());
+                $wallet->setAttribute('balance', $wallet->balance());
             });
 
         $stats = $wallets

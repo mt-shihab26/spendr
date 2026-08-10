@@ -45,7 +45,7 @@ test('data export only includes the authenticated user data', function () {
 
     $response->assertOk();
 
-    $zip = new ZipArchive();
+    $zip = new ZipArchive;
     $tmpFile = tempnam(sys_get_temp_dir(), 'test_export_');
     file_put_contents($tmpFile, $response->streamedContent());
 

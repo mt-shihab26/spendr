@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\Currency;
+
 return [
 
     /*
@@ -34,6 +36,19 @@ return [
         'Laptop', 'Cpu', 'Watch',
         'Baby', 'PawPrint', 'Scissors', 'Briefcase',
         'Star', 'Shield', 'BadgePercent',
+    ],
+
+    /*
+     * Default wallet seeded for every new user.
+     */
+    'default_wallet' => [
+        'name' => 'Money Bagg',
+        'currency' => Currency::BDT,
+        'initial_balance' => 0,
+        'color' => '#22c55e',
+        'icon' => 'Wallet',
+        'is_default' => true,
+        'sort_order' => 0,
     ],
 
     /*

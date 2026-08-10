@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Currency;
 use App\Enums\Type;
 use App\Models\Budget;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Inertia\Response;
 
 class DashboardController extends Controller
@@ -18,49 +21,30 @@ class DashboardController extends Controller
      */
     public function index(Request $request): Response
     {
+        $validated = $request->validate([
+            'currency' => ['nullable', 'string', Rule::enum(Currency::class)],
+        ]);
+
         $user = $request->user();
 
-        $now = now();
-        [$year, $monthNum] = [(int) $now->year, (int) $now->month];
-        $prevDate = $now->copy()->subMonth();
-        [$prevYear, $prevMonthNum] = [(int) $prevDate->year, (int) $prevDate->month];
+        $period = $this->period();
 
         $allWallets = $user->wallets()
             ->withStats()
             ->orderBy('sort_order')
             ->orderBy('created_at')
             ->get()
-            ->each(fn ($w) => $w->setAttribute('balance', $w->currentBalance()));
+            ->each(fn ($w) => $w->setAttribute('balance', $w->balance()));
 
         $currencies = $allWallets
-            ->map(fn (Wallet $w) => $w->currency->value)
+            ->map(fn (Wallet $w) => $w->currency)
             ->unique()
             ->sort()
             ->values()
             ->all();
 
-        $primaryCurrency = in_array('BDT', $currencies, true) ? 'BDT' : ($currencies[0] ?? null);
-
-        $currencyStats = collect($currencies)->map(function (string $currency) use ($allWallets, $user, $year, $monthNum, $prevYear, $prevMonthNum) {
-            $wallets = $allWallets->filter(fn ($w) => $w->currency->value === $currency);
-            $walletIds = $wallets->pluck('id');
-
-            $balance = round((float) $wallets->sum('balance'), 2);
-            $monthIncome = $this->sumByType($user->id, $walletIds, Type::Income, $year, $monthNum);
-            $monthExpense = $this->sumByType($user->id, $walletIds, Type::Expense, $year, $monthNum);
-            $prevMonthIncome = $this->sumByType($user->id, $walletIds, Type::Income, $prevYear, $prevMonthNum);
-            $prevMonthExpense = $this->sumByType($user->id, $walletIds, Type::Expense, $prevYear, $prevMonthNum);
-
-            return [
-                'currency' => $currency,
-                'balance' => $balance,
-                'month_income' => $monthIncome,
-                'month_expense' => $monthExpense,
-                'prev_month_income' => $prevMonthIncome,
-                'prev_month_expense' => $prevMonthExpense,
-                'net_worth_delta' => $monthIncome - $monthExpense,
-            ];
-        })->values()->all();
+        $primaryCurrency = $request->input('currency')
+            ?? (in_array(Currency::BDT, $currencies, true) ? Currency::BDT->value : (isset($currencies[0]) ? $currencies[0]->value : null));
 
         $primaryWalletIds = $allWallets
             ->when($primaryCurrency, fn ($c) => $c->filter(fn ($w) => $w->currency->value === $primaryCurrency))
@@ -89,15 +73,19 @@ class DashboardController extends Controller
             ]));
 
         return inertia('dashboard', [
-            'currency_stats' => $currencyStats,
+            'currencyStats' => $this->computeCurrencyStats($allWallets, $user, $currencies),
+            'currencies' => array_map(fn (Currency $c) => $c->value, $currencies),
             'primary_currency' => $primaryCurrency,
+            'filters' => [
+                'currency' => $request->input('currency'),
+            ],
             'wallets' => $allWallets->take(3)->values(),
             'spending_by_category' => $primaryCurrency
-                ? $this->computeSpendingByCategory($user->id, $primaryWalletIds, $year, $monthNum)
+                ? $this->computeSpendingByCategory($user, $primaryWalletIds, $period->year, $period->month)
                 : [],
             'recent_transactions' => $recentTransactions,
             'budgets' => $primaryCurrency
-                ? $this->getBudgetStatus($user->id, $primaryCurrency, $year, $monthNum)
+                ? $this->getBudgetStatus($user, $primaryCurrency, $period->year, $period->month)
                 : [],
             'upcoming_recurring' => $upcomingRecurring,
             'goals' => $goals,
@@ -105,23 +93,72 @@ class DashboardController extends Controller
     }
 
     /**
-     * Sum transactions of a given type for the specified month.
+     * Return the current and previous month parts as an object.
      *
-     * @param  Collection<int, string>  $walletIds
+     * @return object{year: int, month: int, prevYear: int, prevMonth: int}
      */
-    private function sumByType(string $userId, Collection $walletIds, Type $type, int $year, int $month): float
+    private function period(): object
     {
-        if ($walletIds->isEmpty()) {
-            return 0.0;
-        }
+        $now = now();
+        $prev = $now->copy()->subMonth();
 
-        return (float) Transaction::query()
-            ->where('transactions.user_id', $userId)
-            ->whereIn('wallet_id', $walletIds)
-            ->where('type', $type->value)
-            ->whereYear('transacted_at', $year)
-            ->whereMonth('transacted_at', $month)
-            ->sum('amount');
+        return new class((int) $now->year, (int) $now->month, (int) $prev->year, (int) $prev->month)
+        {
+            public function __construct(
+                public readonly int $year,
+                public readonly int $month,
+                public readonly int $prevYear,
+                public readonly int $prevMonth,
+            ) {}
+        };
+    }
+
+    /**
+     * Build per-currency balance and income/expense stats for the given month.
+     *
+     * @param  Collection<int, Wallet>  $wallets
+     * @param  array<int, Currency>  $currencies
+     * @return array<int, array{currency: string, balance: float, net_worth_delta: float, month_income: float, prev_month_income: float, month_expense: float, prev_month_expense: float}>
+     */
+    private function computeCurrencyStats(Collection $wallets, User $user, array $currencies): array
+    {
+        $period = $this->period();
+
+        $transactionSumByType = function (Collection $walletIds, Type $type, int $year, int $month) use ($user): float {
+            if ($walletIds->isEmpty()) {
+                return 0.0;
+            }
+
+            return (float) Transaction::query()
+                ->where('transactions.user_id', $user->id)
+                ->whereIn('wallet_id', $walletIds)
+                ->where('type', $type->value)
+                ->whereYear('transacted_at', $year)
+                ->whereMonth('transacted_at', $month)
+                ->sum('amount');
+        };
+
+        return collect($currencies)
+            ->map(function (Currency $currency) use ($wallets, $period, $transactionSumByType) {
+                $wallets = $wallets->filter(fn ($w) => $w->currency === $currency);
+                $walletIds = $wallets->pluck('id');
+                $monthIncome = $transactionSumByType($walletIds, Type::Income, $period->year, $period->month);
+                $monthExpense = $transactionSumByType($walletIds, Type::Expense, $period->year, $period->month);
+                $prevMonthIncome = $transactionSumByType($walletIds, Type::Income, $period->prevYear, $period->prevMonth);
+                $prevMonthExpense = $transactionSumByType($walletIds, Type::Expense, $period->prevYear, $period->prevMonth);
+
+                return [
+                    'currency' => $currency->value,
+                    'balance' => round((float) $wallets->sum('balance'), 2),
+                    'net_worth_delta' => $monthIncome - $monthExpense,
+                    'month_income' => $monthIncome,
+                    'prev_month_income' => $prevMonthIncome,
+                    'month_expense' => $monthExpense,
+                    'prev_month_expense' => $prevMonthExpense,
+                ];
+            })
+            ->values()
+            ->all();
     }
 
     /**
@@ -130,7 +167,7 @@ class DashboardController extends Controller
      * @param  Collection<int, string>  $walletIds
      * @return array<int, array{name: string, color: string, total: float, percentage: float}>
      */
-    private function computeSpendingByCategory(string $userId, Collection $walletIds, int $year, int $month): array
+    private function computeSpendingByCategory(User $user, Collection $walletIds, int $year, int $month): array
     {
         if ($walletIds->isEmpty()) {
             return [];
@@ -138,7 +175,7 @@ class DashboardController extends Controller
 
         $transactions = Transaction::query()
             ->with('category')
-            ->where('transactions.user_id', $userId)
+            ->where('transactions.user_id', $user->id)
             ->whereIn('wallet_id', $walletIds)
             ->where('type', Type::Expense->value)
             ->whereYear('transacted_at', $year)
@@ -187,16 +224,16 @@ class DashboardController extends Controller
      *
      * @return array<int, array{id: string, category: mixed, budget_amount: float, spent: float}>
      */
-    private function getBudgetStatus(string $userId, string $currency, int $year, int $month): array
+    private function getBudgetStatus(User $user, string $currency, int $year, int $month): array
     {
         $budgets = Budget::query()
-            ->where('user_id', $userId)
+            ->where('user_id', $user->id)
             ->with('category')
             ->get();
 
         $spending = DB::table('transactions')
             ->join('wallets', 'transactions.wallet_id', '=', 'wallets.id')
-            ->where('transactions.user_id', $userId)
+            ->where('transactions.user_id', $user->id)
             ->where('wallets.currency', $currency)
             ->where('transactions.type', Type::Expense->value)
             ->whereYear('transactions.transacted_at', $year)

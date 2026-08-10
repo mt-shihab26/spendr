@@ -12,6 +12,7 @@ use App\Http\Requests\Settings\TwoFactorAuthenticationRequest;
 use App\Models\File;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
@@ -21,6 +22,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Response;
 use Laravel\Fortify\Features;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use ZipArchive;
 
 class SettingController extends Controller
@@ -117,7 +119,7 @@ class SettingController extends Controller
     /**
      * Serve the user's profile picture inline from private storage.
      */
-    public function avatarShow(Request $request, File $file): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function avatarShow(Request $request, File $file): StreamedResponse
     {
         abort_if($file->user_id !== $request->user()->id, 403);
 
@@ -277,13 +279,13 @@ class SettingController extends Controller
     /**
      * Export all user data as a ZIP archive containing multiple CSVs.
      */
-    public function dataExport(Request $request): HttpResponse|\Symfony\Component\HttpFoundation\StreamedResponse
+    public function dataExport(Request $request): HttpResponse|StreamedResponse
     {
         $user = $request->user();
 
         return response()->streamDownload(function () use ($user) {
             $path = tempnam(sys_get_temp_dir(), 'spendr_export_');
-            $zip = new ZipArchive();
+            $zip = new ZipArchive;
             $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
             $zip->addFromString('wallets.csv', $this->buildCsv(
@@ -339,12 +341,16 @@ class SettingController extends Controller
      * Build a CSV string from a collection of rows.
      *
      * @param  array<string>  $headers
-     * @param  \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>  $rows
-     * @param  \Closure  $mapper
+     * @param  iterable<Model>  $rows
      */
-    private function buildCsv(array $headers, $rows, \Closure $mapper): string
+    private function buildCsv(array $headers, iterable $rows, \Closure $mapper): string
     {
         $buffer = fopen('php://temp', 'r+');
+
+        if ($buffer === false) {
+            throw new \RuntimeException('Failed to open temporary stream.');
+        }
+
         fputcsv($buffer, $headers);
 
         foreach ($rows as $row) {
@@ -354,6 +360,10 @@ class SettingController extends Controller
         rewind($buffer);
         $csv = stream_get_contents($buffer);
         fclose($buffer);
+
+        if ($csv === false) {
+            throw new \RuntimeException('Failed to read from temporary stream.');
+        }
 
         return $csv;
     }

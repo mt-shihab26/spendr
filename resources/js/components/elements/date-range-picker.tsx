@@ -67,7 +67,7 @@ const PRESETS: { key: TPresetKey; label: string }[][] = [
 
 const resolvePreset = (
     key: TPresetKey,
-    weekStartsOn: 0 | 1 = 1,
+    weekStartsOn: 0 | 1 | 2 | 3 | 4 | 5 | 6 = 1,
 ): TDateRange => {
     const today = new Date();
     switch (key) {

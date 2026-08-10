@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -34,7 +35,12 @@ class BudgetAlert extends Notification
     {
         $channels = ['database'];
 
-        if ($notifiable->getPreference('notify_budget_alerts', true)) {
+        /**
+         * @var User $user
+         */
+        $user = $notifiable;
+
+        if ($user->getPreference('notify_budget_alerts', true)) {
             $channels[] = 'mail';
         }
 

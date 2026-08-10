@@ -96,6 +96,58 @@ class Wallet extends Model
     }
 
     /**
+     * Current balance: initial balance adjusted for all transactions and transfers.
+     */
+    public function balance(): float
+    {
+        return $this->initial_balance
+            + $this->totalIncome()
+            - $this->totalExpense()
+            - $this->totalOutgoingTransfers()
+            + $this->totalIncomingTransfers();
+    }
+
+    /**
+     * Total income from transactions. Uses pre-loaded value when available.
+     */
+    private function totalIncome(): float
+    {
+        return array_key_exists('income', $this->getAttributes())
+            ? (float) ($this->getAttributes()['income'] ?? 0)
+            : (float) $this->transactions()->where('type', Type::Income->value)->sum('amount');
+    }
+
+    /**
+     * Total expense from transactions. Uses pre-loaded value when available.
+     */
+    private function totalExpense(): float
+    {
+        return array_key_exists('expense', $this->getAttributes())
+            ? (float) ($this->getAttributes()['expense'] ?? 0)
+            : (float) $this->transactions()->where('type', Type::Expense->value)->sum('amount');
+    }
+
+    /**
+     * Total amount transferred out of this wallet. Uses pre-loaded value when available.
+     */
+    private function totalOutgoingTransfers(): float
+    {
+        return array_key_exists('transfers_out', $this->getAttributes())
+            ? (float) ($this->getAttributes()['transfers_out'] ?? 0)
+            : (float) $this->outgoingTransfers()->sum('amount');
+    }
+
+    /**
+     * Total amount transferred into this wallet. Uses pre-loaded value when available.
+     */
+    private function totalIncomingTransfers(): float
+    {
+        return array_key_exists('transfers_in', $this->getAttributes())
+            ? (float) ($this->getAttributes()['transfers_in'] ?? 0)
+            : (float) $this->incomingTransfers()->sum('amount');
+    }
+
+    /**
      * Eager-load all four aggregate sums. Use on collection queries to avoid N+1.
      *
      * @param  Builder<Wallet>  $query
@@ -118,50 +170,11 @@ class Wallet extends Model
         $this->loadSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount');
         $this->loadSum(['outgoingTransfers as transfers_out'], 'amount');
         $this->loadSum(['incomingTransfers as transfers_in'], 'amount');
+
         $this->setAttribute('net', $this->netFlow());
-        $this->setAttribute('balance', $this->currentBalance());
+        $this->setAttribute('balance', $this->balance());
 
         return $this;
-    }
-
-    /**
-     * Total income from transactions. Uses pre-loaded value when available.
-     */
-    public function totalIncome(): float
-    {
-        return array_key_exists('income', $this->getAttributes())
-            ? (float) ($this->getAttributes()['income'] ?? 0)
-            : (float) $this->transactions()->where('type', Type::Income->value)->sum('amount');
-    }
-
-    /**
-     * Total expense from transactions. Uses pre-loaded value when available.
-     */
-    public function totalExpense(): float
-    {
-        return array_key_exists('expense', $this->getAttributes())
-            ? (float) ($this->getAttributes()['expense'] ?? 0)
-            : (float) $this->transactions()->where('type', Type::Expense->value)->sum('amount');
-    }
-
-    /**
-     * Total amount transferred out of this wallet. Uses pre-loaded value when available.
-     */
-    public function totalOutgoingTransfers(): float
-    {
-        return array_key_exists('transfers_out', $this->getAttributes())
-            ? (float) ($this->getAttributes()['transfers_out'] ?? 0)
-            : (float) $this->outgoingTransfers()->sum('amount');
-    }
-
-    /**
-     * Total amount transferred into this wallet. Uses pre-loaded value when available.
-     */
-    public function totalIncomingTransfers(): float
-    {
-        return array_key_exists('transfers_in', $this->getAttributes())
-            ? (float) ($this->getAttributes()['transfers_in'] ?? 0)
-            : (float) $this->incomingTransfers()->sum('amount');
     }
 
     /**
@@ -170,17 +183,5 @@ class Wallet extends Model
     public function netFlow(): float
     {
         return $this->totalIncome() - $this->totalExpense();
-    }
-
-    /**
-     * Current balance: initial balance adjusted for all transactions and transfers.
-     */
-    public function currentBalance(): float
-    {
-        return $this->initial_balance
-            + $this->totalIncome()
-            - $this->totalExpense()
-            - $this->totalOutgoingTransfers()
-            + $this->totalIncomingTransfers();
     }
 }

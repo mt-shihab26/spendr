@@ -53,11 +53,9 @@ const Data = () => {
                     </ul>
                 </div>
 
-                <Button asChild>
-                    <a href={route('settings.data.export')}>
-                        <Download />
-                        Download my data
-                    </a>
+                <Button render={<a href={route('settings.data.export')} />}>
+                    <Download />
+                    Download my data
                 </Button>
             </div>
         </SettingsLayout>

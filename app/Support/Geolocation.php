@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Stevebauman\Location\LocationManager;
+use Stevebauman\Location\Position;
 
 class Geolocation
 {
@@ -27,7 +28,7 @@ class Geolocation
 
         return Cache::remember("user.timezone.{$ip}", now()->addDays(30), function () use ($ip): ?string {
             $position = app(LocationManager::class)->get($ip);
-            $timezone = $position ? $position->timezone : null;
+            $timezone = $position instanceof Position ? $position->timezone : null;
             Log::debug('Geolocation: resolved timezone', ['ip' => $ip, 'timezone' => $timezone]);
 
             return $timezone;

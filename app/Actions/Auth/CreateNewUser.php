@@ -3,7 +3,6 @@
 namespace App\Actions\Auth;
 
 use App\Concerns\ValidationRules;
-use App\Enums\Currency;
 use App\Enums\Type;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
@@ -41,19 +40,11 @@ class CreateNewUser implements CreatesNewUsers
     }
 
     /**
-     * Create the default "Money Bag" wallet for a new user.
+     * Create the default wallet for a new user.
      */
     private function createDefaultWallet(User $user): void
     {
-        $user->wallets()->create([
-            'name' => 'Money Bagg',
-            'currency' => Currency::BDT,
-            'initial_balance' => 0,
-            'color' => '#22c55e',
-            'icon' => 'Wallet',
-            'is_default' => true,
-            'sort_order' => 0,
-        ]);
+        $user->wallets()->create(config('seeds.default_wallet'));
     }
 
     /**

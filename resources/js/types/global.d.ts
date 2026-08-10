@@ -1,8 +1,9 @@
 import type { TAuth } from '@/types/auth';
+import type { TCurrency } from '@/types/enums';
 import type { route as routeFn } from 'ziggy-js';
 
 export type TUserPreferences = {
-    default_currency: string;
+    default_currency: TCurrency;
     first_day_of_week: string;
     notify_budget_alerts: boolean;
     notify_budget_alert_threshold: number;
