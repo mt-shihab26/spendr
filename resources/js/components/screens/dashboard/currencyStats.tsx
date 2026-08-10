@@ -81,7 +81,7 @@ export const CurrencyStats = ({
     currencyStats: TCurrencyStat[];
 }) => {
     return (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="flex flex-col gap-4">
             {currencyStats.map((stat) => (
                 <div key={stat.currency}>
                     {currencyStats.length > 1 && (
