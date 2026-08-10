@@ -5,8 +5,8 @@ import type {
     TTransaction,
 } from '@/types/models';
 
-import type { TCategoryRow } from '@/types/reports';
 import type { TCurrency } from '@/types/enums';
+import type { TSpendingCategory } from '@/components/screens/dashboard/spending-by-category';
 import type { TCurrencyStat } from '@/components/screens/dashboard/currency-stats';
 import type { TDashboardWallet } from '@/components/screens/dashboard/wallet-overview';
 
@@ -17,7 +17,6 @@ import { RefreshCw, Target, TriangleAlert } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
-import { CategoryDonut } from '@/components/screens/reports/category-donut';
 import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
 import { CurrencyStats } from '@/components/screens/dashboard/currency-stats';
 import { WalletOverview } from '@/components/screens/dashboard/wallet-overview';
@@ -33,8 +32,8 @@ type TBudgetStatus = {
 const Dashboard = ({
     currencyStats,
     wallets,
+    spendingCategories,
     primary_currency,
-    spending_by_category,
     recent_transactions,
     budgets,
     upcoming_recurring,
@@ -42,8 +41,8 @@ const Dashboard = ({
 }: {
     currencyStats: TCurrencyStat[];
     wallets: TDashboardWallet[];
+    spendingCategories: TSpendingCategory[];
     primary_currency: TCurrency | null;
-    spending_by_category: TCategoryRow[];
     recent_transactions: TTransaction[];
     budgets: TBudgetStatus[];
     upcoming_recurring: TRecurringTransaction[];
@@ -68,20 +67,21 @@ const Dashboard = ({
                     </NewButton>
                 </div>
                 <CurrencyStats currencyStats={currencyStats} />
-                <div className="flex gap-4">
-                    <WalletOverview wallets={wallets} />
-                    <SpendingByCategory
-                        primary_currency={primary_currency}
-                        spending_by_category={spending_by_category}
-                    />
-                </div>
-                <div className="text-right">
-                    <Link
-                        href={route('reports.index')}
-                        className="text-xs text-muted-foreground hover:underline"
-                    >
-                        View Full Report →
-                    </Link>
+                <div className="flex flex-col gap-2">
+                    <div className="grid grid-cols-2 gap-4">
+                        <WalletOverview wallets={wallets} />
+                        <SpendingByCategory
+                            spendingCategories={spendingCategories}
+                        />
+                    </div>
+                    <div className="text-right">
+                        <Link
+                            href={route('reports.index')}
+                            className="text-xs text-muted-foreground hover:underline"
+                        >
+                            View Full Report →
+                        </Link>
+                    </div>
                 </div>
 
                 {/* Recent Transactions */}

@@ -70,14 +70,12 @@ class DashboardController extends Controller
         return inertia('dashboard', [
             'currencyStats' => $this->computeCurrencyStats($wallets, $user, $currencies),
             'wallets' => $wallets->take(5)->values(),
+            'spendingCategories' => $this->computeSpendingByCategory($user, $wallets),
             'currencies' => array_map(fn (Currency $c) => $c->value, $currencies),
             'primary_currency' => $primaryCurrency,
             'filters' => [
                 'currency' => $request->input('currency'),
             ],
-            'spending_by_category' => $primaryCurrency
-                ? $this->computeSpendingByCategory($user, $primaryWalletIds, $period->year, $period->month)
-                : [],
             'recent_transactions' => $recentTransactions,
             'budgets' => $primaryCurrency
                 ? $this->getBudgetStatus($user, $primaryCurrency, $period->year, $period->month)
@@ -172,61 +170,68 @@ class DashboardController extends Controller
     }
 
     /**
-     * Compute spending by expense category for the given month (top 5 + Other).
+     * Compute spending by expense category for the given month across all currencies.
+     * Each category entry contains per-currency totals and percentages.
      *
-     * @param  Collection<int, string>  $walletIds
-     * @return array<int, array{name: string, color: string, total: float, percentage: float}>
+     * @param  Collection<int, Wallet>  $wallets
+     * @return array<int, array{name: string, color: string, total: array<string, float>, percentage: array<string, float>}>
      */
-    private function computeSpendingByCategory(User $user, Collection $walletIds, int $year, int $month): array
+    private function computeSpendingByCategory(User $user, Collection $wallets): array
     {
-        if ($walletIds->isEmpty()) {
+        $period = $this->period();
+
+        $month = $period->month;
+        $year = $period->year;
+
+        if ($wallets->isEmpty()) {
             return [];
         }
+
+        $currencyByWalletId = $wallets->pluck('currency', 'id')
+            ->map(fn (Currency $c) => $c->value);
 
         $transactions = Transaction::query()
             ->with('category')
             ->where('transactions.user_id', $user->id)
-            ->whereIn('wallet_id', $walletIds)
+            ->whereIn('wallet_id', $wallets->pluck('id'))
             ->where('type', Type::Expense->value)
             ->whereYear('transacted_at', $year)
             ->whereMonth('transacted_at', $month)
-            ->get();
+            ->get()
+            ->each(fn ($t) => $t->setAttribute('_currency', $currencyByWalletId[$t->wallet_id] ?? ''));
 
-        $total = (float) $transactions->sum('amount');
-
-        if ($total === 0.0) {
+        if ($transactions->isEmpty()) {
             return [];
         }
 
-        $byCategory = $transactions
+        $totalByCurrency = $transactions
+            ->groupBy('_currency')
+            ->map(fn ($g) => (float) $g->sum('amount'));
+
+        return $transactions
             ->groupBy('category_id')
-            ->map(fn ($group) => [
-                'name' => $group->first()->category->name ?? 'Unknown',
-                'color' => $group->first()->category->color ?? '#6b7280',
-                'total' => (float) $group->sum('amount'),
-            ])
-            ->sortByDesc('total')
-            ->values();
+            ->map(function ($group) use ($totalByCurrency) {
+                $first = $group->first();
+                $totalPerCurrency = $group
+                    ->groupBy('_currency')
+                    ->map(fn ($g) => (float) $g->sum('amount'));
 
-        $top = $byCategory->take(5);
-        $other = $byCategory->skip(5);
-
-        $result = $top->map(fn ($item) => [
-            ...$item,
-            'percentage' => round($item['total'] / $total * 100, 1),
-        ])->all();
-
-        if ($other->isNotEmpty()) {
-            $otherTotal = (float) $other->sum('total');
-            $result[] = [
-                'name' => 'Other',
-                'color' => '#6b7280',
-                'total' => $otherTotal,
-                'percentage' => round($otherTotal / $total * 100, 1),
-            ];
-        }
-
-        return $result;
+                return [
+                    'name' => $first->category->name ?? 'Unknown',
+                    'color' => $first->category->color ?? '#6b7280',
+                    'total' => $totalPerCurrency->all(),
+                    'percentage' => $totalPerCurrency
+                        ->mapWithKeys(fn ($amount, $currency) => [
+                            $currency => $totalByCurrency[$currency] > 0
+                                ? round($amount / $totalByCurrency[$currency] * 100, 1)
+                                : 0.0,
+                        ])
+                        ->all(),
+                ];
+            })
+            ->sortByDesc(fn ($c) => array_sum($c['total']))
+            ->values()
+            ->all();
     }
 
     /**

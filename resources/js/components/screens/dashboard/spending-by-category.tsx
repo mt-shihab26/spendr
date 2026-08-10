@@ -1,115 +1,62 @@
-import {
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from '@/components/ui/chart';
-
-import type { ChartConfig } from '@/components/ui/chart';
-import type { TCategoryRow } from '@/types/reports';
 import type { TCurrency } from '@/types/enums';
 
 import { formatCurrency } from '@/lib/formats';
 
-import { Cell, Pie, PieChart } from 'recharts';
+export type TSpendingCategory = {
+    name: string;
+    color: string;
+    total: Record<string, number>;
+    percentage: Record<string, number>;
+};
 
-const CategoryDonut = ({
-    title,
-    data,
-    currency,
+export const SpendingByCategory = ({
+    spendingCategories,
 }: {
-    title: string;
-    data: TCategoryRow[];
-    currency: TCurrency;
+    spendingCategories: TSpendingCategory[];
 }) => {
-    const chartConfig = Object.fromEntries(
-        data.map((d) => [d.name, { label: d.name, color: d.color }]),
-    ) satisfies ChartConfig;
-
-    if (data.length === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center border p-4">
-                <p className="mb-4 self-start text-sm font-medium">{title}</p>
-                <p className="text-xs text-muted-foreground">No data</p>
-            </div>
-        );
-    }
-
     return (
-        <div className="border p-4">
-            <p className="mb-2 text-sm font-medium">{title}</p>
-            <div className="flex items-center gap-6">
-                <ChartContainer
-                    config={chartConfig}
-                    className="h-40 w-40 shrink-0"
-                >
-                    <PieChart>
-                        <ChartTooltip
-                            content={
-                                <ChartTooltipContent
-                                    formatter={(value, name) => [
-                                        formatCurrency(Number(value), currency),
-                                        name,
-                                    ]}
-                                />
-                            }
-                        />
-                        <Pie
-                            data={data}
-                            dataKey="total"
-                            nameKey="name"
-                            innerRadius="55%"
-                            outerRadius="80%"
-                            strokeWidth={0}
-                        >
-                            {data.map((entry, i) => (
-                                <Cell key={i} fill={entry.color} />
-                            ))}
-                        </Pie>
-                    </PieChart>
-                </ChartContainer>
-                <ul className="flex flex-1 flex-col gap-1.5 overflow-hidden">
-                    {data.map((item) => (
+        <div className="h-full w-full border p-4">
+            <p className="mb-3 text-sm font-medium">Spending by Category</p>
+            {spendingCategories.length === 0 ? (
+                <p className="text-xs text-muted-foreground">No data</p>
+            ) : (
+                <ul className="divide-y">
+                    {spendingCategories.map((item) => (
                         <li
                             key={item.name}
-                            className="flex items-center gap-2 text-xs"
+                            className="flex items-center gap-2 py-2"
                         >
                             <span
                                 className="size-2 shrink-0 rounded-full"
                                 style={{ backgroundColor: item.color }}
                             />
-                            <span className="min-w-0 flex-1 truncate text-muted-foreground">
+                            <span className="min-w-0 flex-1 truncate text-xs">
                                 {item.name}
                             </span>
-                            <span className="shrink-0 text-muted-foreground">
-                                {item.percentage}%
-                            </span>
-                            <span className="shrink-0 font-medium tabular-nums">
-                                {formatCurrency(item.total, currency)}
-                            </span>
+                            <div className="flex flex-col items-end gap-0.5">
+                                {Object.entries(item.total).map(
+                                    ([currency, amount]) => (
+                                        <span
+                                            key={currency}
+                                            className="text-xs tabular-nums"
+                                        >
+                                            <span className="font-medium">
+                                                {formatCurrency(
+                                                    amount,
+                                                    currency as TCurrency,
+                                                )}
+                                            </span>
+                                            <span className="ml-1 text-muted-foreground">
+                                                {item.percentage[currency]}%
+                                            </span>
+                                        </span>
+                                    ),
+                                )}
+                            </div>
                         </li>
                     ))}
                 </ul>
-            </div>
-        </div>
-    );
-};
-
-export const SpendingByCategory = ({
-    primary_currency,
-    spending_by_category,
-}: {
-    primary_currency: TCurrency | null;
-    spending_by_category: TCategoryRow[];
-}) => {
-    const displayCurrency = primary_currency ?? 'BDT';
-
-    return (
-        <div className="flex w-full flex-col gap-2">
-            <CategoryDonut
-                title="Spending by Category"
-                data={spending_by_category}
-                currency={displayCurrency}
-            />
+            )}
         </div>
     );
 };
