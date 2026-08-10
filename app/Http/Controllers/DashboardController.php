@@ -27,7 +27,7 @@ class DashboardController extends Controller
 
         $user = $request->user();
 
-        $months = $this->monthNumbers();
+        $period = $this->period();
 
         $allWallets = $user->wallets()
             ->withStats()
@@ -83,11 +83,11 @@ class DashboardController extends Controller
             ],
             'wallets' => $allWallets->take(3)->values(),
             'spending_by_category' => $primaryCurrency
-                ? $this->computeSpendingByCategory($user, $primaryWalletIds, $months['year'], $months['month'])
+                ? $this->computeSpendingByCategory($user, $primaryWalletIds, $period->year, $period->month)
                 : [],
             'recent_transactions' => $recentTransactions,
             'budgets' => $primaryCurrency
-                ? $this->getBudgetStatus($user, $primaryCurrency, $months['year'], $months['month'])
+                ? $this->getBudgetStatus($user, $primaryCurrency, $period->year, $period->month)
                 : [],
             'upcoming_recurring' => $upcomingRecurring,
             'goals' => $goals,
@@ -95,21 +95,22 @@ class DashboardController extends Controller
     }
 
     /**
-     * Return the current and previous month date parts.
-     *
-     * @return array{year: int, month: int, prev_year: int, prev_month: int}
+     * Return the current and previous month parts as an object.
      */
-    private function monthNumbers(): array
+    private function period(): object
     {
         $now = now();
         $prev = $now->copy()->subMonth();
 
-        return [
-            'year' => (int) $now->year,
-            'month' => (int) $now->month,
-            'prev_year' => (int) $prev->year,
-            'prev_month' => (int) $prev->month,
-        ];
+        return new class((int) $now->year, (int) $now->month, (int) $prev->year, (int) $prev->month)
+        {
+            public function __construct(
+                public readonly int $year,
+                public readonly int $month,
+                public readonly int $prevYear,
+                public readonly int $prevMonth,
+            ) {}
+        };
     }
 
     /**
@@ -121,7 +122,7 @@ class DashboardController extends Controller
      */
     private function computeCurrencyStats(Collection $wallets, User $user, array $currencies): array
     {
-        $months = $this->monthNumbers();
+        $period = $this->period();
 
         $sumByType = function (Collection $walletIds, Type $type, int $year, int $month) use ($user): float {
             if ($walletIds->isEmpty()) {
@@ -137,15 +138,15 @@ class DashboardController extends Controller
                 ->sum('amount');
         };
 
-        return collect($currencies)->map(function (string $currency) use ($wallets, $sumByType, $months) {
+        return collect($currencies)->map(function (string $currency) use ($wallets, $sumByType, $period) {
             $wallets = $wallets->filter(fn ($w) => $w->currency->value === $currency);
             $walletIds = $wallets->pluck('id');
 
             $balance = round((float) $wallets->sum('balance'), 2);
-            $monthIncome = $sumByType($walletIds, Type::Income, $months['year'], $months['month']);
-            $monthExpense = $sumByType($walletIds, Type::Expense, $months['year'], $months['month']);
-            $prevMonthIncome = $sumByType($walletIds, Type::Income, $months['prev_year'], $months['prev_month']);
-            $prevMonthExpense = $sumByType($walletIds, Type::Expense, $months['prev_year'], $months['prev_month']);
+            $monthIncome = $sumByType($walletIds, Type::Income, $period->year, $period->month);
+            $monthExpense = $sumByType($walletIds, Type::Expense, $period->year, $period->month);
+            $prevMonthIncome = $sumByType($walletIds, Type::Income, $period->prevYear, $period->prevMonth);
+            $prevMonthExpense = $sumByType($walletIds, Type::Expense, $period->prevYear, $period->prevMonth);
 
             return [
                 'currency' => $currency,
