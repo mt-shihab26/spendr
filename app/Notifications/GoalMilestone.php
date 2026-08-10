@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Goal;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -25,7 +26,12 @@ class GoalMilestone extends Notification
     {
         $channels = ['database'];
 
-        if ($notifiable->getPreference('notify_goal_milestones', true)) {
+        /**
+         * @var User $user
+         */
+        $user = $notifiable;
+
+        if ($user->getPreference('notify_goal_milestones', true)) {
             $channels[] = 'mail';
         }
 

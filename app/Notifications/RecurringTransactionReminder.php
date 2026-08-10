@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\RecurringTransaction;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -24,7 +25,12 @@ class RecurringTransactionReminder extends Notification
     {
         $channels = ['database'];
 
-        if ($notifiable->getPreference('notify_recurring_reminders', true)) {
+        /**
+         * @var User $user
+         */
+        $user = $notifiable;
+
+        if ($user->getPreference('notify_recurring_reminders', true)) {
             $channels[] = 'mail';
         }
 
