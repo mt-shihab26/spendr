@@ -249,4 +249,90 @@ describe('index', function () {
                 );
         });
     });
+
+    describe('wallets', function () {
+        test('is empty when user has no wallets', function () {
+            $user = User::factory()->create();
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('wallets', [])
+                );
+        });
+
+        test('returns at most 5 wallets', function () {
+            $user = User::factory()->create();
+            Wallet::factory()->for($user)->count(7)->create();
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->has('wallets', 5)
+                );
+        });
+
+        test('returns all wallets when fewer than 5 exist', function () {
+            $user = User::factory()->create();
+            Wallet::factory()->for($user)->count(3)->create();
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->has('wallets', 3)
+                );
+        });
+
+        test('excludes wallets belonging to other users', function () {
+            $user = User::factory()->create();
+            $other = User::factory()->create();
+
+            Wallet::factory()->for($user)->create();
+            Wallet::factory()->for($other)->count(3)->create();
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->has('wallets', 1)
+                );
+        });
+
+        test('wallets are ordered by sort_order then created_at', function () {
+            $user = User::factory()->create();
+
+            $third = Wallet::factory()->for($user)->create(['name' => 'Third', 'sort_order' => 3]);
+            $first = Wallet::factory()->for($user)->create(['name' => 'First', 'sort_order' => 1]);
+            $second = Wallet::factory()->for($user)->create(['name' => 'Second', 'sort_order' => 2]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('wallets.0.name', 'First')
+                    ->where('wallets.1.name', 'Second')
+                    ->where('wallets.2.name', 'Third')
+                );
+        });
+
+        test('each wallet includes a computed balance', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create(['initial_balance' => 500]);
+
+            $income = Category::factory()->for($user)->income()->create();
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $income->id,
+                'type' => Type::Income->value,
+                'amount' => 300,
+                'transacted_at' => now(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('wallets.0.balance', 800)
+                );
+        });
+    });
 });
