@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Goals\StoreGoalRequest;
 use App\Http\Requests\Goals\UpdateGoalRequest;
 use App\Models\Goal;
+use App\Models\User;
 use App\Notifications\GoalMilestone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -99,7 +100,7 @@ class GoalController extends Controller
     /**
      * Fire a GoalMilestone notification if the goal crosses a milestone threshold.
      */
-    private function notifyGoalMilestone(\App\Models\User $user, Goal $goal, int $previousPercentage): void
+    private function notifyGoalMilestone(User $user, Goal $goal, int $previousPercentage): void
     {
         $currentPercentage = (int) $goal->progressPercentage();
 
