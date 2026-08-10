@@ -56,7 +56,7 @@ const Dashboard = ({
             description="Overview of your account"
             breadcrumbs={[{ title: 'Dashboard', route: 'dashboard' }]}
         >
-            <div className="flex flex-col gap-4 p-4">
+            <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-start justify-between">
                     <Heading
                         title="Dashboard"

@@ -300,9 +300,9 @@ describe('index', function () {
         test('wallets are ordered by sort_order then created_at', function () {
             $user = User::factory()->create();
 
-            $third = Wallet::factory()->for($user)->create(['name' => 'Third', 'sort_order' => 3]);
-            $first = Wallet::factory()->for($user)->create(['name' => 'First', 'sort_order' => 1]);
-            $second = Wallet::factory()->for($user)->create(['name' => 'Second', 'sort_order' => 2]);
+            Wallet::factory()->for($user)->create(['name' => 'Third', 'sort_order' => 3]);
+            Wallet::factory()->for($user)->create(['name' => 'First', 'sort_order' => 1]);
+            Wallet::factory()->for($user)->create(['name' => 'Second', 'sort_order' => 2]);
 
             $this->actingAs($user)
                 ->get(route('dashboard'))
@@ -335,4 +335,239 @@ describe('index', function () {
                 );
         });
     });
+
+    describe('spendingCategories', function () {
+        test('is empty when user has no wallets', function () {
+            $user = User::factory()->create();
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('spendingCategories', [])
+                );
+        });
+
+        test('is empty when there are no expense transactions this month', function () {
+            $user = User::factory()->create();
+            Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('spendingCategories', [])
+                );
+        });
+
+        test('returns category name, color, total, and percentage', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
+            $category = Category::factory()->for($user)->expense()->create();
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+                'amount' => 300,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->has('spendingCategories', 1)
+                    ->where('spendingCategories.0.name', $category->name)
+                    ->where('spendingCategories.0.color', $category->color)
+                    ->where('spendingCategories.0.total.BDT', 300)
+                    ->where('spendingCategories.0.percentage.BDT', 100)
+                );
+        });
+
+        test('only includes expense transactions', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
+            $income = Category::factory()->for($user)->income()->create();
+            $expense = Category::factory()->for($user)->expense()->create();
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $income->id,
+                'type' => Type::Income->value,
+                'amount' => 9999,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $expense->id,
+                'type' => Type::Expense->value,
+                'amount' => 200,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->has('spendingCategories', 1)
+                    ->where('spendingCategories.0.total.BDT', 200)
+                );
+        });
+
+        test('is scoped to the current month', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
+            $category = Category::factory()->for($user)->expense()->create();
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+                'amount' => 9999,
+                'transacted_at' => now()->subMonth()->startOfMonth(),
+            ]);
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+                'amount' => 100,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('spendingCategories.0.total.BDT', 100)
+                );
+        });
+
+        test('excludes transactions belonging to other users', function () {
+            $user = User::factory()->create();
+            $other = User::factory()->create();
+
+            Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
+
+            $otherWallet = Wallet::factory()->for($other)->create(['currency' => Currency::BDT->value]);
+            $otherCategory = Category::factory()->for($other)->expense()->create();
+
+            Transaction::factory()->create([
+                'user_id' => $other->id,
+                'wallet_id' => $otherWallet->id,
+                'category_id' => $otherCategory->id,
+                'type' => Type::Expense->value,
+                'amount' => 9999,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('spendingCategories', [])
+                );
+        });
+
+        test('totals are grouped per currency with no cross-contamination', function () {
+            $user = User::factory()->create();
+            $bdtWallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
+            $usdWallet = Wallet::factory()->for($user)->create(['currency' => Currency::USD->value]);
+            $category = Category::factory()->for($user)->expense()->create();
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $bdtWallet->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+                'amount' => 300,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $usdWallet->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+                'amount' => 50,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->has('spendingCategories', 1)
+                    ->where('spendingCategories.0.total.BDT', 300)
+                    ->where('spendingCategories.0.total.USD', 50)
+                    ->where('spendingCategories.0.percentage.BDT', 100)
+                    ->where('spendingCategories.0.percentage.USD', 100)
+                );
+        });
+
+        test('categories are sorted by total spending descending', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
+            $food = Category::factory()->for($user)->expense()->create(['name' => 'Food']);
+            $transport = Category::factory()->for($user)->expense()->create(['name' => 'Transport']);
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $transport->id,
+                'type' => Type::Expense->value,
+                'amount' => 500,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $food->id,
+                'type' => Type::Expense->value,
+                'amount' => 200,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('spendingCategories.0.name', 'Transport')
+                    ->where('spendingCategories.1.name', 'Food')
+                );
+        });
+
+        test('percentage reflects each category share within its currency', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
+            $food = Category::factory()->for($user)->expense()->create(['name' => 'Food']);
+            $transport = Category::factory()->for($user)->expense()->create(['name' => 'Transport']);
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $food->id,
+                'type' => Type::Expense->value,
+                'amount' => 600,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $transport->id,
+                'type' => Type::Expense->value,
+                'amount' => 400,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('spendingCategories.0.percentage.BDT', 60)
+                    ->where('spendingCategories.1.percentage.BDT', 40)
+                );
+        });
+    });
+
 });
