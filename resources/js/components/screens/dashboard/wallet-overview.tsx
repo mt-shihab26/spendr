@@ -7,9 +7,13 @@ import { Button } from '@/components/ui/button';
 
 export type TDashboardWallet = TWallet & { balance: number };
 
-export const Wallets = ({ wallets }: { wallets: TDashboardWallet[] }) => {
+export const WalletOverview = ({
+    wallets,
+}: {
+    wallets: TDashboardWallet[];
+}) => {
     return (
-        <div className="border p-4">
+        <div className="w-full border p-4">
             <div className="mb-3 flex items-center justify-between">
                 <p className="text-sm font-medium">Wallets</p>
                 <Link
