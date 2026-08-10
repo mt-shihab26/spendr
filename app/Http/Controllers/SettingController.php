@@ -339,12 +339,17 @@ class SettingController extends Controller
      * Build a CSV string from a collection of rows.
      *
      * @param  array<string>  $headers
-     * @param  \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>  $rows
+     * @param  iterable<\Illuminate\Database\Eloquent\Model>  $rows
      * @param  \Closure  $mapper
      */
-    private function buildCsv(array $headers, $rows, \Closure $mapper): string
+    private function buildCsv(array $headers, iterable $rows, \Closure $mapper): string
     {
         $buffer = fopen('php://temp', 'r+');
+
+        if ($buffer === false) {
+            throw new \RuntimeException('Failed to open temporary stream.');
+        }
+
         fputcsv($buffer, $headers);
 
         foreach ($rows as $row) {
@@ -354,6 +359,10 @@ class SettingController extends Controller
         rewind($buffer);
         $csv = stream_get_contents($buffer);
         fclose($buffer);
+
+        if ($csv === false) {
+            throw new \RuntimeException('Failed to read from temporary stream.');
+        }
 
         return $csv;
     }

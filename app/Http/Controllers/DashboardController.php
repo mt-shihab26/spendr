@@ -43,8 +43,8 @@ class DashboardController extends Controller
             ->values()
             ->all();
 
-        $primaryCurrency = $validated['currency']
-            ?? (in_array(Currency::BDT, $currencies, true) ? Currency::BDT->value : ($currencies[0]?->value ?? null));
+        $primaryCurrency = $request->input('currency')
+            ?? (in_array(Currency::BDT, $currencies, true) ? Currency::BDT->value : (isset($currencies[0]) ? $currencies[0]->value : null));
 
         $primaryWalletIds = $allWallets
             ->when($primaryCurrency, fn ($c) => $c->filter(fn ($w) => $w->currency->value === $primaryCurrency))
@@ -77,7 +77,7 @@ class DashboardController extends Controller
             'currencies' => array_map(fn (Currency $c) => $c->value, $currencies),
             'primary_currency' => $primaryCurrency,
             'filters' => [
-                'currency' => $validated['currency'] ?? null,
+                'currency' => $request->input('currency'),
             ],
             'wallets' => $allWallets->take(3)->values(),
             'spending_by_category' => $primaryCurrency
@@ -94,6 +94,8 @@ class DashboardController extends Controller
 
     /**
      * Return the current and previous month parts as an object.
+     *
+     * @return object{year: int, month: int, prevYear: int, prevMonth: int}
      */
     private function period(): object
     {

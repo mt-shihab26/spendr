@@ -61,7 +61,7 @@ class HandleInertiaRequests extends Middleware
                 'notify_budget_alert_threshold' => 80,
                 'notify_goal_milestones' => true,
                 'notify_recurring_reminders' => true,
-            ], $request->user()?->preferences ?? []),
+            ], $request->user() !== null ? ($request->user()->preferences ?? []) : []),
             'notifications' => fn () => $request->user()
                 ? $request->user()->unreadNotifications()->latest()->take(10)->get()->map(fn ($n) => [
                     'id' => $n->id,

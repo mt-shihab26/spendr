@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Goal;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -21,7 +22,7 @@ class GoalMilestone extends Notification
      *
      * @return array<int, string>
      */
-    public function via(object $notifiable): array
+    public function via(User $notifiable): array
     {
         $channels = ['database'];
 

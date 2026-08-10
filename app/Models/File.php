@@ -13,7 +13,7 @@ use Illuminate\Support\Carbon;
 /**
  * @property string $id
  * @property string $user_id
- * @property string|null $fileable_type
+ * @property class-string|null $fileable_type
  * @property string|null $fileable_id
  * @property string $name
  * @property string $path
