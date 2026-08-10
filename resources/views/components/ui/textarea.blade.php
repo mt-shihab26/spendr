@@ -15,10 +15,11 @@
     @endif
     <textarea
         {{ $attributes->class([
-            'w-full resize-none border bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1',
+            'w-full resize-none overflow-hidden border bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1',
             'border-destructive focus:border-destructive focus:ring-destructive/50' => $hasError,
             'border-border focus:border-ring focus:ring-ring/50' => ! $hasError,
         ]) }}
+        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
         >{{ $slot }}</textarea
     >
     @if ($hasError)

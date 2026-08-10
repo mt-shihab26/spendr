@@ -7,11 +7,7 @@
             {{ session('success') }}
         </div>
     @endif
-    <form
-        method="POST"
-        action="{{ route('contact.store') }}"
-        class="space-y-5"
-    >
+    <form method="POST" action="{{ route('contact.store') }}" class="space-y-5">
         @csrf
         <div class="grid gap-5 sm:grid-cols-2">
             <x-ui.input

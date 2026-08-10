@@ -1,6 +1,12 @@
 <?php
 $contacts = [
     [
+        'icon'   => 'globe',
+        'label'  => 'developershihab.com',
+        'href'   => 'https://developershihab.com/',
+        'target' => '_blank',
+    ],
+    [
         'icon'   => 'envelope',
         'label'  => 'mt.shihab26@gmail.com',
         'href'   => 'mailto:mt.shihab26@gmail.com',
@@ -24,12 +30,7 @@ $contacts = [
         'href'   => 'https://github.com/mt-shihab26',
         'target' => '_blank',
     ],
-    [
-        'icon'   => 'globe',
-        'label'  => 'developershihab.com',
-        'href'   => 'https://developershihab.com/',
-        'target' => '_blank',
-    ],
+
 ];
 ?>
 
