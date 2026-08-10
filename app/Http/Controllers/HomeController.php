@@ -62,12 +62,14 @@ class HomeController extends Controller
     public function contactStore(Request $request): RedirectResponse
     {
         $request->validate([
-            'name'    => ['required', 'string', 'max:255'],
-            'email'   => ['required', 'email', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
             'subject' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:5000'],
         ]);
 
-        return redirect()->route('contact')->with('success', 'Thanks for reaching out! I\'ll get back to you soon.');
+        return redirect()
+            ->back()
+            ->with('success', 'Thanks for reaching out! I\'ll get back to you soon.');
     }
 }
