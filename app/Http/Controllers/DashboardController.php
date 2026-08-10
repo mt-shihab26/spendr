@@ -46,8 +46,6 @@ class DashboardController extends Controller
         $primaryCurrency = $validated['currency']
             ?? (in_array(Currency::BDT, $currencies, true) ? Currency::BDT->value : ($currencies[0]?->value ?? null));
 
-        $currencyStats = $this->computeCurrencyStats($allWallets, $user, $currencies);
-
         $primaryWalletIds = $allWallets
             ->when($primaryCurrency, fn ($c) => $c->filter(fn ($w) => $w->currency->value === $primaryCurrency))
             ->pluck('id');
@@ -75,7 +73,7 @@ class DashboardController extends Controller
             ]));
 
         return inertia('dashboard', [
-            'currency_stats' => $currencyStats,
+            'currencyStats' => $this->computeCurrencyStats($allWallets, $user, $currencies),
             'currencies' => array_map(fn (Currency $c) => $c->value, $currencies),
             'primary_currency' => $primaryCurrency,
             'filters' => [
@@ -138,28 +136,27 @@ class DashboardController extends Controller
                 ->sum('amount');
         };
 
-        return collect($currencies)->map(function (Currency $currency) use ($wallets, $transactionSumByType, $period) {
-            $wallets = $wallets->filter(fn ($w) => $w->currency === $currency);
+        return collect($currencies)
+            ->map(function (Currency $currency) use ($wallets, $period, $transactionSumByType) {
+                $wallets = $wallets->filter(fn ($w) => $w->currency === $currency);
+                $walletIds = $wallets->pluck('id');
+                $monthIncome = $transactionSumByType($walletIds, Type::Income, $period->year, $period->month);
+                $monthExpense = $transactionSumByType($walletIds, Type::Expense, $period->year, $period->month);
+                $prevMonthIncome = $transactionSumByType($walletIds, Type::Income, $period->prevYear, $period->prevMonth);
+                $prevMonthExpense = $transactionSumByType($walletIds, Type::Expense, $period->prevYear, $period->prevMonth);
 
-            $walletIds = $wallets->pluck('id');
-
-            $balance = round((float) $wallets->sum('balance'), 2);
-
-            $monthIncome = $transactionSumByType($walletIds, Type::Income, $period->year, $period->month);
-            $monthExpense = $transactionSumByType($walletIds, Type::Expense, $period->year, $period->month);
-            $prevMonthIncome = $transactionSumByType($walletIds, Type::Income, $period->prevYear, $period->prevMonth);
-            $prevMonthExpense = $transactionSumByType($walletIds, Type::Expense, $period->prevYear, $period->prevMonth);
-
-            return [
-                'currency' => $currency->value,
-                'balance' => $balance,
-                'net_worth_delta' => $monthIncome - $monthExpense,
-                'month_income' => $monthIncome,
-                'prev_month_income' => $prevMonthIncome,
-                'month_expense' => $monthExpense,
-                'prev_month_expense' => $prevMonthExpense,
-            ];
-        })->values()->all();
+                return [
+                    'currency' => $currency->value,
+                    'balance' => round((float) $wallets->sum('balance'), 2),
+                    'net_worth_delta' => $monthIncome - $monthExpense,
+                    'month_income' => $monthIncome,
+                    'prev_month_income' => $prevMonthIncome,
+                    'month_expense' => $monthExpense,
+                    'prev_month_expense' => $prevMonthExpense,
+                ];
+            })
+            ->values()
+            ->all();
     }
 
     /**

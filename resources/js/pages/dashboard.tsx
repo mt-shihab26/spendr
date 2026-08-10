@@ -105,7 +105,7 @@ const BalanceDelta = ({
 };
 
 const Dashboard = ({
-    currency_stats,
+    currencyStats,
     primary_currency,
     wallets,
     spending_by_category,
@@ -114,7 +114,7 @@ const Dashboard = ({
     upcoming_recurring,
     goals,
 }: {
-    currency_stats: TCurrencyStat[];
+    currencyStats: TCurrencyStat[];
     primary_currency: TCurrency | null;
     wallets: TWallet[];
     spending_by_category: TCategoryRow[];
@@ -143,9 +143,9 @@ const Dashboard = ({
                 </div>
 
                 {/* Summary Cards — one row per currency */}
-                {currency_stats.map((stat) => (
+                {currencyStats.map((stat) => (
                     <div key={stat.currency}>
-                        {currency_stats.length > 1 && (
+                        {currencyStats.length > 1 && (
                             <p className="mb-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 {stat.currency}
                             </p>
