@@ -36,13 +36,18 @@ class ContactMessageReceived extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $appName = config('app.name');
+        $name    = e($this->name);
+        $email   = e($this->email);
+        $subject = e($this->subject);
+        $message = e($this->message);
+
         return (new MailMessage)
-            ->subject('Contact: ' . e($this->subject))
-            ->greeting('New message from ' . e($this->name))
-            ->line('**Email:** ' . e($this->email))
+            ->subject("{$appName} Contact: {$subject}")
+            ->greeting("New message from '{$name}' on {$appName}")
+            ->line("**Email:** {$email}")
             ->line('**Message:**')
-            ->line(e($this->message))
-            ->salutation('—  ' . config('app.name'));
+            ->line($message);
     }
 
     /**
