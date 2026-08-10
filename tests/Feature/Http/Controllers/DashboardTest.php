@@ -250,7 +250,7 @@ describe('index', function () {
         });
     });
 
-    describe('wallets', function () {
+    describe('computeTopWallets', function () {
         test('is empty when user has no wallets', function () {
             $user = User::factory()->create();
 

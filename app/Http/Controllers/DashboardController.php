@@ -21,7 +21,7 @@ class DashboardController extends Controller
      */
     public function index(Request $request): Response
     {
-        $validated = $request->validate([
+        $request->validate([
             'currency' => ['nullable', 'string', Rule::enum(Currency::class)],
         ]);
 
@@ -40,10 +40,6 @@ class DashboardController extends Controller
 
         $primaryCurrency = $request->input('currency')
             ?? (in_array(Currency::BDT, $currencies, true) ? Currency::BDT->value : (isset($currencies[0]) ? $currencies[0]->value : null));
-
-        $primaryWalletIds = $wallets
-            ->when($primaryCurrency, fn ($c) => $c->filter(fn ($w) => $w->currency->value === $primaryCurrency))
-            ->pluck('id');
 
         $recentTransactions = $user->transactions()
             ->with(['wallet', 'category'])
@@ -68,8 +64,8 @@ class DashboardController extends Controller
             ]));
 
         return inertia('dashboard', [
-            'currencyStats' => $this->computeCurrencyStats($wallets, $user, $currencies),
-            'wallets' => $wallets->take(5)->values(),
+            'currencyStats' => $this->computeCurrencyStats($user, $wallets, $currencies),
+            'wallets' => $this->computeTopWallets($wallets),
             'spendingCategories' => $this->computeSpendingByCategory($user, $wallets),
             'currencies' => array_map(fn (Currency $c) => $c->value, $currencies),
             'primary_currency' => $primaryCurrency,
@@ -124,11 +120,11 @@ class DashboardController extends Controller
     /**
      * Build per-currency balance and income/expense stats for the given month.
      *
-     * @param  Collection<int, Wallet>  $wallets
      * @param  array<int, Currency>  $currencies
+     * @param  Collection<int, Wallet>  $wallets
      * @return array<int, array{currency: string, balance: float, net_worth_delta: float, month_income: float, prev_month_income: float, month_expense: float, prev_month_expense: float}>
      */
-    private function computeCurrencyStats(Collection $wallets, User $user, array $currencies): array
+    private function computeCurrencyStats(User $user, Collection $wallets, array $currencies): array
     {
         $period = $this->period();
 
@@ -170,6 +166,17 @@ class DashboardController extends Controller
     }
 
     /**
+     * Return the top 5 wallets for display.
+     *
+     * @param  Collection<int, Wallet>  $wallets
+     * @return Collection<int, Wallet>
+     */
+    private function computeTopWallets(Collection $wallets): Collection
+    {
+        return $wallets->take(5)->values();
+    }
+
+    /**
      * Compute spending by expense category for the given month across all currencies.
      * Each category entry contains per-currency totals and percentages.
      *
@@ -178,16 +185,13 @@ class DashboardController extends Controller
      */
     private function computeSpendingByCategory(User $user, Collection $wallets): array
     {
-        $period = $this->period();
-
-        $month = $period->month;
-        $year = $period->year;
-
         if ($wallets->isEmpty()) {
             return [];
         }
 
-        $currencyByWalletId = $wallets->pluck('currency', 'id')
+        $period = $this->period();
+
+        $walletCurrencyMap = $wallets->pluck('currency', 'id')
             ->map(fn (Currency $c) => $c->value);
 
         $transactions = Transaction::query()
@@ -195,30 +199,28 @@ class DashboardController extends Controller
             ->where('transactions.user_id', $user->id)
             ->whereIn('wallet_id', $wallets->pluck('id'))
             ->where('type', Type::Expense->value)
-            ->whereYear('transacted_at', $year)
-            ->whereMonth('transacted_at', $month)
+            ->whereYear('transacted_at', $period->year)
+            ->whereMonth('transacted_at', $period->month)
             ->get()
-            ->each(fn ($t) => $t->setAttribute('_currency', $currencyByWalletId[$t->wallet_id] ?? ''));
+            ->each(fn ($t) => $t->setAttribute('currency', $walletCurrencyMap[$t->wallet_id] ?? ''));
 
         if ($transactions->isEmpty()) {
             return [];
         }
 
         $totalByCurrency = $transactions
-            ->groupBy('_currency')
+            ->groupBy('currency')
             ->map(fn ($g) => (float) $g->sum('amount'));
 
         return $transactions
             ->groupBy('category_id')
             ->map(function ($group) use ($totalByCurrency) {
                 $first = $group->first();
-                $totalPerCurrency = $group
-                    ->groupBy('_currency')
-                    ->map(fn ($g) => (float) $g->sum('amount'));
+                $totalPerCurrency = $group->groupBy('currency')->map(fn ($g) => (float) $g->sum('amount'));
 
                 return [
-                    'name' => $first->category->name ?? 'Unknown',
-                    'color' => $first->category->color ?? '#6b7280',
+                    'name' => $first->category->name,
+                    'color' => $first->category->color,
                     'total' => $totalPerCurrency->all(),
                     'percentage' => $totalPerCurrency
                         ->mapWithKeys(fn ($amount, $currency) => [
