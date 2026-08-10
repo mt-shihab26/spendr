@@ -37,8 +37,8 @@ class ContactMessageReceived extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $appName = config('app.name');
-        $name    = strip_tags($this->name);
-        $email   = strip_tags($this->email);
+        $name = strip_tags($this->name);
+        $email = strip_tags($this->email);
         $subject = strip_tags($this->subject);
         $message = strip_tags($this->message);
 
@@ -48,7 +48,7 @@ class ContactMessageReceived extends Notification implements ShouldQueue
             ->line("**Email:** {$email}")
             ->line('**Message:**')
             ->line($message)
-            ->salutation('');
+            ->salutation(' ');
     }
 
     /**
