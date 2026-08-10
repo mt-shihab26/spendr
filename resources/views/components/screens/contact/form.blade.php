@@ -39,7 +39,7 @@
             label="Message"
             id="message"
             name="message"
-            rows="6"
+            class="min-h-36"
             placeholder="Tell me what's on your mind..."
         >
             {{ old('message') }}</x-ui.textarea
