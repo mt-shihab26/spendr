@@ -124,7 +124,7 @@ class DashboardController extends Controller
     {
         $period = $this->period();
 
-        $sumByType = function (Collection $walletIds, Type $type, int $year, int $month) use ($user): float {
+        $transactionSumByType = function (Collection $walletIds, Type $type, int $year, int $month) use ($user): float {
             if ($walletIds->isEmpty()) {
                 return 0.0;
             }
@@ -138,17 +138,17 @@ class DashboardController extends Controller
                 ->sum('amount');
         };
 
-        return collect($currencies)->map(function (Currency $currency) use ($wallets, $sumByType, $period) {
+        return collect($currencies)->map(function (Currency $currency) use ($wallets, $transactionSumByType, $period) {
             $wallets = $wallets->filter(fn ($w) => $w->currency === $currency);
 
             $walletIds = $wallets->pluck('id');
 
             $balance = round((float) $wallets->sum('balance'), 2);
 
-            $monthIncome = $sumByType($walletIds, Type::Income, $period->year, $period->month);
-            $monthExpense = $sumByType($walletIds, Type::Expense, $period->year, $period->month);
-            $prevMonthIncome = $sumByType($walletIds, Type::Income, $period->prevYear, $period->prevMonth);
-            $prevMonthExpense = $sumByType($walletIds, Type::Expense, $period->prevYear, $period->prevMonth);
+            $monthIncome = $transactionSumByType($walletIds, Type::Income, $period->year, $period->month);
+            $monthExpense = $transactionSumByType($walletIds, Type::Expense, $period->year, $period->month);
+            $prevMonthIncome = $transactionSumByType($walletIds, Type::Income, $period->prevYear, $period->prevMonth);
+            $prevMonthExpense = $transactionSumByType($walletIds, Type::Expense, $period->prevYear, $period->prevMonth);
 
             return [
                 'currency' => $currency->value,

@@ -140,7 +140,7 @@ class Wallet extends Model
     /**
      * Total income from transactions. Uses pre-loaded value when available.
      */
-    public function totalIncome(): float
+    private function totalIncome(): float
     {
         return array_key_exists('income', $this->getAttributes())
             ? (float) ($this->getAttributes()['income'] ?? 0)
@@ -150,7 +150,7 @@ class Wallet extends Model
     /**
      * Total expense from transactions. Uses pre-loaded value when available.
      */
-    public function totalExpense(): float
+    private function totalExpense(): float
     {
         return array_key_exists('expense', $this->getAttributes())
             ? (float) ($this->getAttributes()['expense'] ?? 0)
@@ -160,7 +160,7 @@ class Wallet extends Model
     /**
      * Total amount transferred out of this wallet. Uses pre-loaded value when available.
      */
-    public function totalOutgoingTransfers(): float
+    private function totalOutgoingTransfers(): float
     {
         return array_key_exists('transfers_out', $this->getAttributes())
             ? (float) ($this->getAttributes()['transfers_out'] ?? 0)
@@ -170,7 +170,7 @@ class Wallet extends Model
     /**
      * Total amount transferred into this wallet. Uses pre-loaded value when available.
      */
-    public function totalIncomingTransfers(): float
+    private function totalIncomingTransfers(): float
     {
         return array_key_exists('transfers_in', $this->getAttributes())
             ? (float) ($this->getAttributes()['transfers_in'] ?? 0)
