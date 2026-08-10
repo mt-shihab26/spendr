@@ -37,14 +37,14 @@ class DashboardController extends Controller
             ->each(fn ($w) => $w->setAttribute('balance', $w->currentBalance()));
 
         $currencies = $allWallets
-            ->map(fn (Wallet $w) => $w->currency->value)
+            ->map(fn (Wallet $w) => $w->currency)
             ->unique()
             ->sort()
             ->values()
             ->all();
 
         $primaryCurrency = $validated['currency']
-            ?? (in_array('BDT', $currencies, true) ? 'BDT' : ($currencies[0] ?? null));
+            ?? (in_array(Currency::BDT, $currencies, true) ? Currency::BDT->value : ($currencies[0]?->value ?? null));
 
         $currencyStats = $this->computeCurrencyStats($allWallets, $user, $currencies);
 
@@ -76,7 +76,7 @@ class DashboardController extends Controller
 
         return inertia('dashboard', [
             'currency_stats' => $currencyStats,
-            'currencies' => $currencies,
+            'currencies' => array_map(fn (Currency $c) => $c->value, $currencies),
             'primary_currency' => $primaryCurrency,
             'filters' => [
                 'currency' => $validated['currency'] ?? null,
@@ -117,7 +117,7 @@ class DashboardController extends Controller
      * Build per-currency balance and income/expense stats for the given month.
      *
      * @param  Collection<int, Wallet>  $wallets
-     * @param  array<int, string>  $currencies
+     * @param  array<int, Currency>  $currencies
      * @return array<int, array{currency: string, balance: float, net_worth_delta: float, month_income: float, prev_month_income: float, month_expense: float, prev_month_expense: float}>
      */
     private function computeCurrencyStats(Collection $wallets, User $user, array $currencies): array
@@ -138,8 +138,8 @@ class DashboardController extends Controller
                 ->sum('amount');
         };
 
-        return collect($currencies)->map(function (string $currency) use ($wallets, $sumByType, $period) {
-            $wallets = $wallets->filter(fn ($w) => $w->currency->value === $currency);
+        return collect($currencies)->map(function (Currency $currency) use ($wallets, $sumByType, $period) {
+            $wallets = $wallets->filter(fn ($w) => $w->currency === $currency);
             $walletIds = $wallets->pluck('id');
 
             $balance = round((float) $wallets->sum('balance'), 2);
@@ -149,7 +149,7 @@ class DashboardController extends Controller
             $prevMonthExpense = $sumByType($walletIds, Type::Expense, $period->prevYear, $period->prevMonth);
 
             return [
-                'currency' => $currency,
+                'currency' => $currency->value,
                 'balance' => $balance,
                 'net_worth_delta' => $monthIncome - $monthExpense,
                 'month_income' => $monthIncome,
