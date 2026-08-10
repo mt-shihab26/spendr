@@ -9,7 +9,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class CategoryController extends Controller
@@ -19,9 +18,14 @@ class CategoryController extends Controller
      */
     public function index(Request $request): Response
     {
+        $validated = $request->validate([
+            'type' => ['nullable', 'string', Rule::in(['income', 'expense'])],
+        ]);
+
         $categories = $request->user()
             ->categories()
             ->withStats()
+            ->when($validated['type'] ?? null, fn ($q, $type) => $q->where('type', $type))
             ->orderBy('sort_order')
             ->orderBy('created_at')
             ->get();
@@ -47,6 +51,9 @@ class CategoryController extends Controller
 
         return inertia('categories/index', [
             'categories' => $categories,
+            'filters' => [
+                'type' => $validated['type'] ?? null,
+            ],
         ]);
     }
 

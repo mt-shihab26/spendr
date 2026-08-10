@@ -9,6 +9,7 @@ use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Inertia\Response;
 
 class DashboardController extends Controller
@@ -39,7 +40,12 @@ class DashboardController extends Controller
             ->values()
             ->all();
 
-        $primaryCurrency = in_array('BDT', $currencies, true) ? 'BDT' : ($currencies[0] ?? null);
+        $validated = $request->validate([
+            'currency' => ['nullable', 'string', Rule::in($currencies)],
+        ]);
+
+        $primaryCurrency = $validated['currency']
+            ?? (in_array('BDT', $currencies, true) ? 'BDT' : ($currencies[0] ?? null));
 
         $currencyStats = collect($currencies)->map(function (string $currency) use ($allWallets, $user, $year, $monthNum, $prevYear, $prevMonthNum) {
             $wallets = $allWallets->filter(fn ($w) => $w->currency->value === $currency);
@@ -90,7 +96,11 @@ class DashboardController extends Controller
 
         return inertia('dashboard', [
             'currency_stats' => $currencyStats,
+            'currencies' => $currencies,
             'primary_currency' => $primaryCurrency,
+            'filters' => [
+                'currency' => $validated['currency'] ?? null,
+            ],
             'wallets' => $allWallets->take(3)->values(),
             'spending_by_category' => $primaryCurrency
                 ? $this->computeSpendingByCategory($user->id, $primaryWalletIds, $year, $monthNum)

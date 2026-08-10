@@ -16,14 +16,22 @@ class RecurringTransactionController extends Controller
      */
     public function index(Request $request): Response
     {
+        $validated = $request->validate([
+            'is_active' => ['nullable', 'boolean'],
+        ]);
+
         $recurring = $request->user()
             ->recurringTransactions()
             ->with(['wallet', 'category'])
+            ->when(isset($validated['is_active']), fn ($q) => $q->where('is_active', $validated['is_active']))
             ->orderBy('next_due_at')
             ->get();
 
         return inertia('recurring-transactions/index', [
             'recurring' => $recurring,
+            'filters' => [
+                'is_active' => $validated['is_active'] ?? null,
+            ],
         ]);
     }
 
