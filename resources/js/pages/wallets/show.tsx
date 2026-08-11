@@ -15,7 +15,6 @@ import { Expense } from '@/components/elements/expense';
 import { TransferIn } from '@/components/elements/transfer-in';
 import { TransferOut } from '@/components/elements/transfer-out';
 import { Net } from '@/components/elements/net';
-import { Separator } from '@/components/ui/separator';
 
 type TShowWallet = TWallet & {
     balance: number;
@@ -61,77 +60,41 @@ const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
                     </div>
                 </div>
 
-                <div className="flex items-center border px-4 py-3">
-                    <div className="w-[18%] shrink-0">
-                        <Balance
-                            balance={wallet.balance}
-                            currency={wallet.currency}
-                        />
+                <div className="grid gap-4 sm:grid-cols-3">
+                    <div className="border p-4">
+                        <Balance balance={wallet.balance} currency={wallet.currency} />
                     </div>
-                    <Separator
-                        orientation="vertical"
-                        className="hidden h-8 sm:block"
-                    />
-                    <div className="flex w-[14%] shrink-0 justify-start px-4">
-                        <InitialBalance
-                            amount={wallet.initial_balance}
-                            currency={wallet.currency}
-                        />
+                    <div className="border p-4">
+                        <InitialBalance amount={wallet.initial_balance} currency={wallet.currency} />
                     </div>
-                    <Separator
-                        orientation="vertical"
-                        className="hidden h-8 sm:block"
-                    />
-                    <div className="flex w-[28%] shrink-0 px-4">
-                        <div className="w-2/5">
-                            <Income
-                                income={wallet.income}
-                                currency={wallet.currency}
-                            />
-                        </div>
-                        <div className="w-3/5">
-                            <Expense
-                                expense={wallet.expense}
-                                currency={wallet.currency}
-                            />
-                        </div>
-                    </div>
-                    {hasTransfers && (
-                        <>
-                            <Separator
-                                orientation="vertical"
-                                className="hidden h-8 sm:block"
-                            />
-                            <div className="flex w-[28%] shrink-0 px-4">
-                                <div className="w-2/5">
-                                    {wallet.transfers_in > 0 && (
-                                        <TransferIn
-                                            amount={wallet.transfers_in}
-                                            currency={wallet.currency}
-                                        />
-                                    )}
-                                </div>
-                                <div className="w-3/5">
-                                    {wallet.transfers_out > 0 && (
-                                        <TransferOut
-                                            amount={wallet.transfers_out}
-                                            currency={wallet.currency}
-                                        />
-                                    )}
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    <div className="ml-auto flex items-center gap-4">
-                        <Separator
-                            orientation="vertical"
-                            className="hidden h-8 sm:block"
-                        />
-                        <div className="flex min-w-24 justify-start">
-                            <Net net={wallet.net} currency={wallet.currency} />
-                        </div>
+                    <div className="border p-4">
+                        <Net net={wallet.net} currency={wallet.currency} />
                     </div>
                 </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="border p-4">
+                        <Income income={wallet.income} currency={wallet.currency} />
+                    </div>
+                    <div className="border p-4">
+                        <Expense expense={wallet.expense} currency={wallet.currency} />
+                    </div>
+                </div>
+
+                {hasTransfers && (
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        {wallet.transfers_in > 0 && (
+                            <div className="border p-4">
+                                <TransferIn amount={wallet.transfers_in} currency={wallet.currency} />
+                            </div>
+                        )}
+                        {wallet.transfers_out > 0 && (
+                            <div className="border p-4">
+                                <TransferOut amount={wallet.transfers_out} currency={wallet.currency} />
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </AppLayout>
     );
