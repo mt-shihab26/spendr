@@ -17,14 +17,9 @@ class WalletSeeder extends Seeder
     public function run(): void
     {
         User::all()->each(function (User $user) {
-            Wallet::factory()
-                ->for($user)
-                ->default()
-                ->create(['name' => 'Cash']);
-
-            Wallet::factory(3)
-                ->for($user)
-                ->create();
+            foreach (config('seeds.demo_wallets') as $data) {
+                Wallet::factory()->for($user)->create($data);
+            }
         });
     }
 }

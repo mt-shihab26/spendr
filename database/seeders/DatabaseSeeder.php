@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             TransactionSeeder::class,
             TransferSeeder::class,
             BudgetSeeder::class,
+            GoalSeeder::class,
+            RecurringTransactionSeeder::class,
         ]);
     }
 }
