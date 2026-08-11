@@ -34,8 +34,10 @@ class WalletController extends Controller
             ->each(function (Wallet $wallet) {
                 $wallet->setAttribute('income', $wallet->income());
                 $wallet->setAttribute('expense', $wallet->expense());
-                $wallet->setAttribute('balance', $wallet->balance());
+                $wallet->setAttribute('transfers_in', $wallet->transfersIn());
+                $wallet->setAttribute('transfers_out', $wallet->transfersOut());
                 $wallet->setAttribute('net', $wallet->net());
+                $wallet->setAttribute('balance', $wallet->balance());
             });
 
         $stats = $wallets
@@ -101,7 +103,14 @@ class WalletController extends Controller
         $month = $validated['month'] ?? now()->format('Y-m');
         $type = $validated['type'] ?? 'all';
 
-        $wallet->loadStats();
+        $wallet->loadSum(['transactions as income' => fn ($q) => $q->where('type', Type::Income->value)], 'amount');
+        $wallet->loadSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount');
+        $wallet->loadSum(['outgoingTransfers as transfers_out'], 'amount');
+        $wallet->loadSum(['incomingTransfers as transfers_in'], 'amount');
+        $wallet->setAttribute('transfers_in', $wallet->transfersIn());
+        $wallet->setAttribute('transfers_out', $wallet->transfersOut());
+        $wallet->setAttribute('net', $wallet->net());
+        $wallet->setAttribute('balance', $wallet->balance());
 
         [$year, $monthNum] = explode('-', $month);
 

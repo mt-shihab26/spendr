@@ -95,26 +95,6 @@ class Wallet extends Model
     }
 
     /**
-     * Current balance: initial balance adjusted for all transactions and transfers.
-     */
-    public function balance(): float
-    {
-        return $this->initial_balance
-            + $this->income()
-            - $this->expense()
-            - $this->totalOutgoingTransfers()
-            + $this->totalIncomingTransfers();
-    }
-
-    /**
-     * Net cash flow: income minus expenses.
-     */
-    public function net(): float
-    {
-        return $this->income() - $this->expense();
-    }
-
-    /**
      * Total income from transactions. Uses pre-loaded value when available.
      */
     public function income(): float
@@ -137,7 +117,7 @@ class Wallet extends Model
     /**
      * Total amount transferred out of this wallet. Uses pre-loaded value when available.
      */
-    private function totalOutgoingTransfers(): float
+    public function transfersOut(): float
     {
         return array_key_exists('transfers_out', $this->getAttributes())
             ? (float) ($this->getAttributes()['transfers_out'] ?? 0)
@@ -147,7 +127,7 @@ class Wallet extends Model
     /**
      * Total amount transferred into this wallet. Uses pre-loaded value when available.
      */
-    private function totalIncomingTransfers(): float
+    public function transfersIn(): float
     {
         return array_key_exists('transfers_in', $this->getAttributes())
             ? (float) ($this->getAttributes()['transfers_in'] ?? 0)
@@ -155,18 +135,25 @@ class Wallet extends Model
     }
 
     /**
-     * Load all aggregate stats onto this instance, then compute net and balance.
+     * Net cash flow: income minus expenses plus incoming transfers minus outgoing transfers.
      */
-    public function loadStats(): static
+    public function net(): float
     {
-        $this->loadSum(['transactions as income' => fn ($q) => $q->where('type', Type::Income->value)], 'amount');
-        $this->loadSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount');
-        $this->loadSum(['outgoingTransfers as transfers_out'], 'amount');
-        $this->loadSum(['incomingTransfers as transfers_in'], 'amount');
+        return $this->income()
+            - $this->expense()
+            + $this->transfersIn()
+            - $this->transfersOut();
+    }
 
-        $this->setAttribute('net', $this->net());
-        $this->setAttribute('balance', $this->balance());
-
-        return $this;
+    /**
+     * Current balance: initial balance adjusted for all transactions and transfers.
+     */
+    public function balance(): float
+    {
+        return $this->initial_balance
+            + $this->income()
+            - $this->expense()
+            - $this->transfersOut()
+            + $this->transfersIn();
     }
 }

@@ -37,6 +37,9 @@ class DashboardController extends Controller
             ->each(function (Wallet $w) {
                 $w->setAttribute('income', $w->income());
                 $w->setAttribute('expense', $w->expense());
+                $w->setAttribute('transfers_in', $w->transfersIn());
+                $w->setAttribute('transfers_out', $w->transfersOut());
+                $w->setAttribute('net', $w->net());
                 $w->setAttribute('balance', $w->balance());
             });
 
