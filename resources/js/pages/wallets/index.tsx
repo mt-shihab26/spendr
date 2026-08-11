@@ -1,19 +1,19 @@
 import type { TTableWallet } from '@/components/screens/wallets/wallets-table';
-import type { TStat } from '@/components/elements/currency-stats';
+import type { TStatWallet } from '@/components/screens/wallets/wallet-stats';
 
 import { Wallet } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { WalletsTable } from '@/components/screens/wallets/wallets-table';
-import { CurrencyStats } from '@/components/elements/currency-stats';
+import { WalletStats } from '@/components/screens/wallets/wallet-stats';
 import { EmptyState } from '@/components/elements/empty-state';
 
 const WalletsIndex = ({
     stats,
     wallets,
 }: {
-    stats: TStat[];
+    stats: TStatWallet[];
     wallets: TTableWallet[];
 }) => {
     return (
@@ -42,7 +42,7 @@ const WalletsIndex = ({
                     />
                 ) : (
                     <>
-                        <CurrencyStats stats={stats} />
+                        <WalletStats stats={stats} />
                         <WalletsTable wallets={wallets} />
                     </>
                 )}

@@ -5,7 +5,7 @@ import { formatCurrency } from '@/lib/formats';
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import { ProfitLossBadge } from '@/components/elements/profit-loss-badge';
 
-export type TStat = {
+export type TStatWallet = {
     currency: TCurrency;
     initial_balance?: number;
     income: number;
@@ -35,7 +35,7 @@ const StatCell = ({
     </div>
 );
 
-export const CurrencyStats = ({ stats }: { stats: TStat[] }) => {
+export const WalletStats = ({ stats }: { stats: TStatWallet[] }) => {
     return (
         <div className="grid gap-4 sm:grid-cols-2">
             {stats.map(
