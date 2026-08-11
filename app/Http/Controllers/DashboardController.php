@@ -85,7 +85,7 @@ class DashboardController extends Controller
         $currencies = $wallets
             ->map(fn (Wallet $w) => $w->currency)
             ->unique()
-            ->sort()
+            ->sortBy(fn (Currency $c) => $c->value)
             ->values()
             ->all();
 
@@ -231,9 +231,9 @@ class DashboardController extends Controller
     /**
      * Return the 4 goals with least progress, each augmented with progress_percentage.
      *
-     * @return Collection<int, array<string, mixed>>
+     * @return array<int, non-empty-array<string, mixed>>
      */
-    private function getGoals(User $user): Collection
+    private function getGoals(User $user): array
     {
         return $user->goals()
             ->orderByRaw('(CAST(current_amount AS REAL) / CAST(target_amount AS REAL)) ASC')
@@ -241,7 +241,8 @@ class DashboardController extends Controller
             ->get()
             ->map(fn ($goal) => array_merge($goal->toArray(), [
                 'progress_percentage' => $goal->progressPercentage(),
-            ]));
+            ]))
+            ->all();
     }
 
     /**
@@ -272,7 +273,7 @@ class DashboardController extends Controller
             ->map(fn ($rows) => $rows->pluck('total', 'currency'));
 
         return $budgets
-            ->flatMap(fn ($budget) => collect($budget->amount)
+            ->flatMap(fn (Budget $budget) => collect($budget->amount)
                 ->map(fn ($budgetAmount, $currency) => [
                     'id' => $budget->id,
                     'category' => $budget->category,
@@ -280,6 +281,7 @@ class DashboardController extends Controller
                     'budget_amount' => (float) $budgetAmount,
                     'spent' => (float) ($spending->get($budget->category_id)?->get($currency, 0) ?? 0),
                 ])
+                ->all()
             )
             ->values()
             ->all();

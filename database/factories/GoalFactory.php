@@ -26,7 +26,7 @@ class GoalFactory extends Factory
             'currency' => fake()->randomElement(\App\Enums\Currency::cases())->value,
             'target_amount' => $target,
             'current_amount' => fake()->randomFloat(2, 0, $target),
-            'target_date' => fake()->optional()->dateTimeBetween('now', '+2 years')?->format('Y-m-d'),
+            'target_date' => fake()->boolean() ? fake()->dateTimeBetween('now', '+2 years')->format('Y-m-d') : null,
             'icon' => fake()->randomElement(config('seeds.wallet_icons')),
             'color' => fake()->hexColor(),
         ];
