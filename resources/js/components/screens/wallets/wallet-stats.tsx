@@ -48,7 +48,7 @@ export const WalletStats = ({ stats }: { stats: TStatWallet[] }) => {
                                 orientation="vertical"
                                 className="hidden h-8 sm:block"
                             />
-                            <div className="flex w-[30%] shrink-0 justify-start gap-6 px-6">
+                            <div className="flex w-[35%] shrink-0 justify-start gap-6 px-4">
                                 <Income income={income} currency={currency} />
                                 <Expense
                                     expense={expense}
@@ -61,7 +61,7 @@ export const WalletStats = ({ stats }: { stats: TStatWallet[] }) => {
                                         orientation="vertical"
                                         className="hidden h-8 sm:block"
                                     />
-                                    <div className="flex w-[25%] shrink-0 justify-start gap-4 px-6">
+                                    <div className="flex w-[35%] shrink-0 justify-start gap-4 px-4">
                                         {transfers_in > 0 && (
                                             <TransferIn
                                                 amount={transfers_in}
@@ -77,14 +77,12 @@ export const WalletStats = ({ stats }: { stats: TStatWallet[] }) => {
                                     </div>
                                 </>
                             )}
-                            <div className="ml-auto flex items-center gap-6">
-                                <Separator
-                                    orientation="vertical"
-                                    className="hidden h-8 sm:block"
-                                />
-                                <div className="flex w-[15%] justify-start">
-                                    <Net net={net} currency={currency} />
-                                </div>
+                            <Separator
+                                orientation="vertical"
+                                className="hidden h-8 sm:block"
+                            />
+                            <div className="flex w-[10%] shrink-0 justify-start px-4">
+                                <Net net={net} currency={currency} />
                             </div>
                         </div>
                     );
