@@ -8,11 +8,7 @@ import { ViewAllLink } from '@/components/elements/view-all-link';
 
 export type TDashboardWallet = TWallet & { balance: number };
 
-export const WalletOverview = ({
-    wallets,
-}: {
-    wallets: TDashboardWallet[];
-}) => {
+export const TopWallets = ({ wallets }: { wallets: TDashboardWallet[] }) => {
     return (
         <div className="h-full w-full border p-4">
             <div className="mb-3 flex items-center justify-between">
