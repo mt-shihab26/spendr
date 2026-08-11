@@ -67,6 +67,7 @@ class DashboardController extends Controller
             'currencyStats' => $this->computeCurrencyStats($user, $wallets, $currencies),
             'wallets' => $this->computeTopWallets($wallets),
             'spendingCategories' => $this->computeSpendingByCategory($user, $wallets),
+
             'currencies' => array_map(fn (Currency $c) => $c->value, $currencies),
             'primary_currency' => $primaryCurrency,
             'filters' => [
@@ -185,6 +186,8 @@ class DashboardController extends Controller
      */
     private function computeSpendingByCategory(User $user, Collection $wallets): array
     {
+        $wallets = $this->computeTopWallets($wallets);
+
         if ($wallets->isEmpty()) {
             return [];
         }
