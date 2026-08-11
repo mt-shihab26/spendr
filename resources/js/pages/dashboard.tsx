@@ -1,19 +1,13 @@
 import type {
-    TCategory,
     TGoal,
     TRecurringTransaction,
     TTransaction,
 } from '@/types/models';
-
-import type { TCurrency } from '@/types/enums';
 import type { TSpendingCategory } from '@/components/screens/dashboard/spending-by-category';
 import type { TCurrencyStat } from '@/components/screens/dashboard/currency-stats';
 import type { TDashboardWallet } from '@/components/screens/dashboard/wallet-overview';
+import type { TBudgetStatus } from '@/components/screens/dashboard/budget-status';
 
-import { formatCurrency } from '@/lib/formats';
-
-import { Link } from '@inertiajs/react';
-import { RefreshCw, Target, TriangleAlert } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
@@ -22,37 +16,27 @@ import { CurrencyStats } from '@/components/screens/dashboard/currency-stats';
 import { WalletOverview } from '@/components/screens/dashboard/wallet-overview';
 import { SpendingByCategory } from '@/components/screens/dashboard/spending-by-category';
 import { RecentTransactions } from '@/components/screens/dashboard/recent-transctions';
-
-type TBudgetStatus = {
-    id: string;
-    category: TCategory;
-    budget_amount: number;
-    spent: number;
-};
+import { BudgetStatus } from '@/components/screens/dashboard/budget-status';
+import { GoalsOverview } from '@/components/screens/dashboard/goals-overview';
+import { UpcomingRecurring } from '@/components/screens/dashboard/upcoming-recurring';
 
 const Dashboard = ({
     currencyStats,
     wallets,
     spendingCategories,
     recentTransactions,
-
-    primary_currency,
     budgets,
-    upcoming_recurring,
+    upcomingRecurring,
     goals,
 }: {
     currencyStats: TCurrencyStat[];
     wallets: TDashboardWallet[];
     spendingCategories: TSpendingCategory[];
     recentTransactions: TTransaction[];
-
-    primary_currency: TCurrency | null;
     budgets: TBudgetStatus[];
-    upcoming_recurring: TRecurringTransaction[];
+    upcomingRecurring: TRecurringTransaction[];
     goals: TGoal[];
 }) => {
-    const displayCurrency = primary_currency ?? 'BDT';
-
     return (
         <AppLayout
             title="Dashboard"
@@ -84,183 +68,11 @@ const Dashboard = ({
                     </div>
                 </div>
                 <RecentTransactions recentTransactions={recentTransactions} />
-
-                {/* Budget Status */}
-                {budgets.length > 0 && (
-                    <div>
-                        <div className="mb-2 flex items-center justify-between">
-                            <p className="text-sm font-medium">Budget Status</p>
-                            <ViewAllLink href={route('budgets.index')}>
-                                Manage Budgets
-                            </ViewAllLink>
-                        </div>
-                        <div className="divide-y border">
-                            {budgets.map((item) => {
-                                const isOver = item.spent > item.budget_amount;
-                                const pct =
-                                    item.budget_amount > 0
-                                        ? Math.min(
-                                              (item.spent /
-                                                  item.budget_amount) *
-                                                  100,
-                                              100,
-                                          )
-                                        : 0;
-
-                                return (
-                                    <div key={item.id} className="px-4 py-3">
-                                        <div className="mb-1.5 flex items-center justify-between">
-                                            <div className="flex items-center gap-1.5">
-                                                <span className="text-xs font-medium">
-                                                    {item.category.name}
-                                                </span>
-                                                {isOver && (
-                                                    <span className="flex items-center gap-0.5 text-xs text-destructive">
-                                                        <TriangleAlert className="size-3" />
-                                                        Over
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <span className="text-xs text-muted-foreground tabular-nums">
-                                                {formatCurrency(
-                                                    item.spent,
-                                                    displayCurrency,
-                                                )}{' '}
-                                                /{' '}
-                                                {formatCurrency(
-                                                    item.budget_amount,
-                                                    displayCurrency,
-                                                )}
-                                            </span>
-                                        </div>
-                                        <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                                            <div
-                                                className={`h-full rounded-full transition-all ${isOver ? 'bg-destructive' : 'bg-primary'}`}
-                                                style={{ width: `${pct}%` }}
-                                            />
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                )}
-
-                {/* Goals + Upcoming Recurring */}
-                {(goals.length > 0 || upcoming_recurring.length > 0) && (
-                    <div className="grid gap-4 md:grid-cols-2">
-                        {/* Goals */}
-                        {goals.length > 0 && (
-                            <div>
-                                <div className="mb-2 flex items-center justify-between">
-                                    <p className="text-sm font-medium">Goals</p>
-                                    <ViewAllLink href={route('goals.index')}>
-                                        All Goals
-                                    </ViewAllLink>
-                                </div>
-                                <div className="divide-y border">
-                                    {goals.map((goal) => {
-                                        const pct =
-                                            goal.progress_percentage ?? 0;
-                                        return (
-                                            <Link
-                                                key={goal.id}
-                                                href={route(
-                                                    'goals.show',
-                                                    goal.id,
-                                                )}
-                                                className="block px-4 py-3 hover:bg-muted/50"
-                                            >
-                                                <div className="mb-1.5 flex items-center justify-between">
-                                                    <div className="flex items-center gap-1.5">
-                                                        <div
-                                                            className="flex size-5 items-center justify-center rounded-full"
-                                                            style={{
-                                                                backgroundColor:
-                                                                    goal.color +
-                                                                    '20',
-                                                                color: goal.color,
-                                                            }}
-                                                        >
-                                                            <Target className="size-3" />
-                                                        </div>
-                                                        <span className="text-xs font-medium">
-                                                            {goal.name}
-                                                        </span>
-                                                    </div>
-                                                    <span className="text-xs text-muted-foreground tabular-nums">
-                                                        {pct.toFixed(0)}%
-                                                    </span>
-                                                </div>
-                                                <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                                                    <div
-                                                        className="h-full rounded-full transition-all"
-                                                        style={{
-                                                            width: `${Math.min(100, pct)}%`,
-                                                            backgroundColor:
-                                                                goal.color,
-                                                        }}
-                                                    />
-                                                </div>
-                                            </Link>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Upcoming Recurring */}
-                        {upcoming_recurring.length > 0 && (
-                            <div>
-                                <div className="mb-2 flex items-center justify-between">
-                                    <p className="text-sm font-medium">
-                                        Upcoming Recurring
-                                    </p>
-                                    <ViewAllLink
-                                        href={route(
-                                            'recurring-transactions.index',
-                                        )}
-                                    >
-                                        All Recurring
-                                    </ViewAllLink>
-                                </div>
-                                <div className="divide-y border">
-                                    {upcoming_recurring.map((r) => (
-                                        <Link
-                                            key={r.id}
-                                            href={route(
-                                                'recurring-transactions.show',
-                                                r.id,
-                                            )}
-                                            className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50"
-                                        >
-                                            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-muted">
-                                                <RefreshCw className="size-3 text-muted-foreground" />
-                                            </span>
-                                            <div className="flex flex-1 flex-col">
-                                                <span className="text-xs font-medium">
-                                                    {r.description}
-                                                </span>
-                                                <span className="text-xs text-muted-foreground capitalize">
-                                                    {r.frequency} · due{' '}
-                                                    {r.next_due_at}
-                                                </span>
-                                            </div>
-                                            <span className="text-xs font-semibold tabular-nums">
-                                                {r.wallet
-                                                    ? formatCurrency(
-                                                          r.amount,
-                                                          r.wallet.currency,
-                                                      )
-                                                    : r.amount.toFixed(2)}
-                                            </span>
-                                        </Link>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                )}
+                <BudgetStatus budgets={budgets} />
+                <div className="flex gap-4">
+                    <GoalsOverview goals={goals} />
+                    <UpcomingRecurring upcomingRecurring={upcomingRecurring} />
+                </div>
             </div>
         </AppLayout>
     );
