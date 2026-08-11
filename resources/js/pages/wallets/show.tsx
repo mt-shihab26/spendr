@@ -61,22 +61,22 @@ const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
                 </div>
 
                 <div className="flex w-full gap-4">
-                    <div className="border p-4">
+                    <div className="w-full border p-4">
                         <Balance balance={wallet.balance} currency={wallet.currency} />
                     </div>
-                    <div className="border p-4">
+                    <div className="w-full border p-4">
                         <InitialBalance amount={wallet.initial_balance} currency={wallet.currency} />
                     </div>
-                    <div className="border p-4">
+                    <div className="w-full border p-4">
                         <Net net={wallet.net} currency={wallet.currency} />
                     </div>
                 </div>
 
                 <div className="flex w-full gap-4">
-                    <div className="border p-4">
+                    <div className="w-full border p-4">
                         <Income income={wallet.income} currency={wallet.currency} />
                     </div>
-                    <div className="border p-4">
+                    <div className="w-full border p-4">
                         <Expense expense={wallet.expense} currency={wallet.currency} />
                     </div>
                 </div>
@@ -84,12 +84,12 @@ const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
                 {hasTransfers && (
                     <div className="flex w-full gap-4">
                         {wallet.transfers_in > 0 && (
-                            <div className="border p-4">
+                            <div className="w-full border p-4">
                                 <TransferIn amount={wallet.transfers_in} currency={wallet.currency} />
                             </div>
                         )}
                         {wallet.transfers_out > 0 && (
-                            <div className="border p-4">
+                            <div className="w-full border p-4">
                                 <TransferOut amount={wallet.transfers_out} currency={wallet.currency} />
                             </div>
                         )}
