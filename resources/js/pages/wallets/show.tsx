@@ -27,11 +27,12 @@ type TShowWallet = TWallet & {
 };
 
 const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
+    const walletTitle = `'${wallet.name}' Wallet`;
     const hasTransfers = wallet.transfers_in > 0 || wallet.transfers_out > 0;
 
     return (
         <AppLayout
-            title={wallet.name}
+            title={walletTitle}
             description={wallet.name}
             breadcrumbs={[
                 {
@@ -48,7 +49,7 @@ const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
             <div className="flex flex-col gap-4 p-4">
                 <div className="flex items-start justify-between">
                     <Heading
-                        title={wallet.name}
+                        title={walletTitle}
                         description={`${getCurrencySymbol(wallet.currency)} ${wallet.currency}${wallet.is_default ? ' · Default wallet' : ''}`}
                         icon={getIcon(wallet.icon)}
                         color={wallet.color}
