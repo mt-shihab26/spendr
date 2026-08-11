@@ -63,7 +63,7 @@ export const WalletsTable = ({ wallets }: { wallets: TTableWallet[] }) => {
                             <Expense expense={wallet.expense} currency={wallet.currency} />
                             {wallet.transfers_in > 0 && <TransferIn amount={wallet.transfers_in} currency={wallet.currency} />}
                             {wallet.transfers_out > 0 && <TransferOut amount={wallet.transfers_out} currency={wallet.currency} />}
-                            <Balance balance={wallet.balance} currency={wallet.currency} />
+                            <Balance balance={wallet.balance} currency={wallet.currency} prominent={false} />
                             <Net net={wallet.net} currency={wallet.currency} />
                             <WalletActions
                                 wallet={wallet}
