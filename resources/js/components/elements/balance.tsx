@@ -27,8 +27,11 @@ export const Balance = ({
 
     return (
         <div className="min-w-28">
-            <p className="text-xs text-muted-foreground">{currency} Balance</p>
-            <p className="text-lg font-bold text-balance tabular-nums">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Wallet className="size-3 text-balance" />
+                {currency} Balance
+            </div>
+            <p className="mt-1 text-lg font-bold tabular-nums">
                 {formatCurrency(balance, currency)}
             </p>
         </div>

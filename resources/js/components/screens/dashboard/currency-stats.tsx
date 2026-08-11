@@ -2,7 +2,7 @@ import type { TCurrency } from '@/types/enums';
 
 import { formatCurrency } from '@/lib/formats';
 
-import { ArrowDown, ArrowUp, Minus } from 'lucide-react';
+import { ArrowDown, ArrowUp, Minus, Plus, Wallet } from 'lucide-react';
 import { getCurrencySymbol } from '@/lib/currency';
 
 const PctChange = ({ current, prev }: { current: number; prev: number }) => {
@@ -91,9 +91,10 @@ export const CurrencyStats = ({
                     )}
                     <div className="grid gap-4 md:grid-cols-3">
                         <div className="border p-4">
-                            <p className="text-xs text-muted-foreground">
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                <Wallet className="size-3 text-balance" />
                                 Balance
-                            </p>
+                            </div>
                             <p className="mt-1 text-lg font-semibold tabular-nums">
                                 {formatCurrency(stat.balance, stat.currency)}
                             </p>
@@ -103,9 +104,10 @@ export const CurrencyStats = ({
                             />
                         </div>
                         <div className="border p-4">
-                            <p className="text-xs text-muted-foreground">
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                <Plus className="size-3 text-income" />
                                 This Month Income
-                            </p>
+                            </div>
                             <p className="mt-1 text-lg font-semibold tabular-nums">
                                 {formatCurrency(
                                     stat.month_income,
@@ -118,9 +120,10 @@ export const CurrencyStats = ({
                             />
                         </div>
                         <div className="border p-4">
-                            <p className="text-xs text-muted-foreground">
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                <Minus className="size-3 text-expense" />
                                 This Month Expenses
-                            </p>
+                            </div>
                             <p className="mt-1 text-lg font-semibold tabular-nums">
                                 {formatCurrency(
                                     stat.month_expense,
