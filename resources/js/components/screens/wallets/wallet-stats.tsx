@@ -7,6 +7,7 @@ import { Expense } from '@/components/elements/expense';
 import { TransferIn } from '@/components/elements/transfer-in';
 import { TransferOut } from '@/components/elements/transfer-out';
 import { Net } from '@/components/elements/net';
+import { InitialBalance } from '@/components/elements/initial-balance';
 
 export type TStatWallet = {
     currency: TCurrency;
@@ -25,6 +26,7 @@ export const WalletStats = ({ stats }: { stats: TStatWallet[] }) => {
             {stats.map(
                 ({
                     currency,
+                    initial_balance,
                     income,
                     expense,
                     net,
@@ -48,6 +50,13 @@ export const WalletStats = ({ stats }: { stats: TStatWallet[] }) => {
                                 orientation="vertical"
                                 className="hidden h-8 sm:block"
                             />
+                            <div className="flex w-[15%] shrink-0 justify-start px-4">
+                                <InitialBalance amount={initial_balance} currency={currency} />
+                            </div>
+                            <Separator
+                                orientation="vertical"
+                                className="hidden h-8 sm:block"
+                            />
                             <div className="flex w-[35%] shrink-0 justify-start px-4">
                                 <div className="w-2/5">
                                     <Income
@@ -62,7 +71,7 @@ export const WalletStats = ({ stats }: { stats: TStatWallet[] }) => {
                                     />
                                 </div>
                             </div>
-                            {false && (
+                            {hasTransfers && (
                                 <>
                                     <Separator
                                         orientation="vertical"
@@ -88,12 +97,14 @@ export const WalletStats = ({ stats }: { stats: TStatWallet[] }) => {
                                     </div>
                                 </>
                             )}
-                            <Separator
-                                orientation="vertical"
-                                className="hidden h-8 sm:block"
-                            />
-                            <div className="flex w-[10%] shrink-0 justify-start px-4">
-                                <Net net={net} currency={currency} />
+                            <div className="ml-auto flex items-center gap-4">
+                                <Separator
+                                    orientation="vertical"
+                                    className="hidden h-8 sm:block"
+                                />
+                                <div className="flex min-w-24 justify-start">
+                                    <Net net={net} currency={currency} />
+                                </div>
                             </div>
                         </div>
                     );
