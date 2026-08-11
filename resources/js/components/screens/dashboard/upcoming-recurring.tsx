@@ -16,7 +16,7 @@ export const UpcomingRecurring = ({
     }
 
     return (
-        <div>
+        <div className="flex-1">
             <div className="mb-2 flex items-center justify-between">
                 <p className="text-sm font-medium">Upcoming Recurring</p>
                 <ViewAllLink href={route('recurring-transactions.index')}>

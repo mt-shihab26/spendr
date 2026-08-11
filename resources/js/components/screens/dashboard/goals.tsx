@@ -10,7 +10,7 @@ export const Goals = ({ goals }: { goals: TGoal[] }) => {
     }
 
     return (
-        <div>
+        <div className="flex-1">
             <div className="mb-2 flex items-center justify-between">
                 <p className="text-sm font-medium">Goals</p>
                 <ViewAllLink href={route('goals.index')}>All Goals</ViewAllLink>

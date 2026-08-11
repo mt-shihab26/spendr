@@ -55,7 +55,7 @@ const Dashboard = ({
                 </div>
                 <CurrencyStats currencyStats={currencyStats} />
                 <div className="flex flex-col gap-2">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="flex gap-4">
                         <TopWallets wallets={wallets} />
                         <TopSpendingByCategory
                             spendingCategories={spendingCategories}
