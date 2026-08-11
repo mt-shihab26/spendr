@@ -8,9 +8,9 @@ use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Carbon\CarbonInterface;
 
 class TransactionSeeder extends Seeder
 {
@@ -33,20 +33,20 @@ class TransactionSeeder extends Seeder
             $cat = fn (string $name) => Category::where('user_id', $user->id)
                 ->where('name', $name)->first();
 
-            $salary     = $cat('Salary');
-            $freelance  = $cat('Freelance');
+            $salary = $cat('Salary');
+            $freelance = $cat('Freelance');
             $investment = $cat('Investment');
-            $food       = $cat('Food');
-            $transport  = $cat('Transport');
-            $shopping   = $cat('Shopping');
-            $housing    = $cat('Housing');
-            $health     = $cat('Health');
-            $education  = $cat('Education');
-            $entertain  = $cat('Entertainment');
+            $food = $cat('Food');
+            $transport = $cat('Transport');
+            $shopping = $cat('Shopping');
+            $housing = $cat('Housing');
+            $health = $cat('Health');
+            $education = $cat('Education');
+            $entertain = $cat('Entertainment');
 
             $bankWallet = $bdtWallets->firstWhere('name', 'Bank Account');
-            $bkash      = $bdtWallets->firstWhere('name', 'bKash');
-            $cash       = $bdtWallets->firstWhere('name', 'Cash');
+            $bkash = $bdtWallets->firstWhere('name', 'bKash');
+            $cash = $bdtWallets->firstWhere('name', 'Cash');
 
             // Generate 6 months of history + current month
             for ($monthsAgo = 5; $monthsAgo >= 0; $monthsAgo--) {

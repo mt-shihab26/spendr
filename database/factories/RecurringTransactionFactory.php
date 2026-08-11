@@ -2,7 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Enums\Type;
 use App\Models\RecurringTransaction;
+use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,11 +20,11 @@ class RecurringTransactionFactory extends Factory
      */
     public function definition(): array
     {
-        $type = fake()->randomElement(\App\Enums\Type::cases())->value;
+        $type = fake()->randomElement(Type::cases())->value;
 
         return [
-            'user_id' => \App\Models\User::inRandomOrder()->first()?->id,
-            'wallet_id' => \App\Models\Wallet::inRandomOrder()->first()?->id,
+            'user_id' => User::inRandomOrder()->first()?->id,
+            'wallet_id' => Wallet::inRandomOrder()->first()?->id,
             'category_id' => null,
             'type' => $type,
             'amount' => fake()->randomFloat(2, 10, 5000),

@@ -25,9 +25,9 @@ class BudgetSeeder extends Seeder
                 }
 
                 Budget::create([
-                    'user_id'     => $user->id,
+                    'user_id' => $user->id,
                     'category_id' => $category->id,
-                    'amount'      => array_filter($limits, fn ($v) => $v !== null),
+                    'amount' => array_filter($limits, fn ($v) => $v !== null),
                 ]);
             }
         });

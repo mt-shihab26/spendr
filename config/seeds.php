@@ -65,13 +65,13 @@ return [
      * Demo budgets: category name → per-currency limits (null = no limit for that currency).
      */
     'demo_budgets' => [
-        'Food'          => ['BDT' => 15000, 'USD' => null],
-        'Transport'     => ['BDT' => 8000,  'USD' => null],
-        'Shopping'      => ['BDT' => 12000, 'USD' => null],
-        'Housing'       => ['BDT' => 20000, 'USD' => null],
+        'Food' => ['BDT' => 15000, 'USD' => null],
+        'Transport' => ['BDT' => 8000,  'USD' => null],
+        'Shopping' => ['BDT' => 12000, 'USD' => null],
+        'Housing' => ['BDT' => 20000, 'USD' => null],
         'Entertainment' => ['BDT' => 5000,  'USD' => 60],
-        'Health'        => ['BDT' => 5000,  'USD' => null],
-        'Education'     => ['BDT' => null,  'USD' => 50],
+        'Health' => ['BDT' => 5000,  'USD' => null],
+        'Education' => ['BDT' => null,  'USD' => 50],
     ],
 
     /*

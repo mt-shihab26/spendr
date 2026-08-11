@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\Currency;
 use App\Models\Goal;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,10 +22,10 @@ class GoalFactory extends Factory
         $target = fake()->randomFloat(2, 1000, 50000);
 
         return [
-            'user_id' => \App\Models\User::inRandomOrder()->first()?->id,
+            'user_id' => User::inRandomOrder()->first()?->id,
             'name' => fake()->words(3, true),
             'description' => fake()->optional()->sentence(),
-            'currency' => fake()->randomElement(\App\Enums\Currency::cases())->value,
+            'currency' => fake()->randomElement(Currency::cases())->value,
             'target_amount' => $target,
             'current_amount' => fake()->randomFloat(2, 0, $target),
             'target_date' => fake()->boolean() ? fake()->dateTimeBetween('now', '+2 years')->format('Y-m-d') : null,

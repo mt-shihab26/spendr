@@ -28,15 +28,15 @@ class RecurringTransactionSeeder extends Seeder
                 }
 
                 RecurringTransaction::create([
-                    'user_id'     => $user->id,
-                    'wallet_id'   => $wallet->id,
+                    'user_id' => $user->id,
+                    'wallet_id' => $wallet->id,
                     'category_id' => $category->id,
-                    'type'        => $data['type'],
-                    'amount'      => $data['amount'],
+                    'type' => $data['type'],
+                    'amount' => $data['amount'],
                     'description' => $data['description'],
-                    'frequency'   => $data['frequency'],
+                    'frequency' => $data['frequency'],
                     'next_due_at' => now()->startOfMonth()->addMonth()->addDays($data['due_day'] - 1)->format('Y-m-d'),
-                    'is_active'   => true,
+                    'is_active' => true,
                 ]);
             }
         });
