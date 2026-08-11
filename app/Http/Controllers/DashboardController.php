@@ -236,7 +236,7 @@ class DashboardController extends Controller
     private function getGoals(User $user): Collection
     {
         return $user->goals()
-            ->orderByRaw('(current_amount / target_amount) ASC')
+            ->orderByRaw('(CAST(current_amount AS REAL) / CAST(target_amount AS REAL)) ASC')
             ->limit(4)
             ->get()
             ->map(fn ($goal) => array_merge($goal->toArray(), [

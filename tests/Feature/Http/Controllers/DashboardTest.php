@@ -2,7 +2,10 @@
 
 use App\Enums\Currency;
 use App\Enums\Type;
+use App\Models\Budget;
 use App\Models\Category;
+use App\Models\Goal;
+use App\Models\RecurringTransaction;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
@@ -250,7 +253,7 @@ describe('index', function () {
         });
     });
 
-    describe('computeTopWallets', function () {
+    describe('wallets', function () {
         test('is empty when user has no wallets', function () {
             $user = User::factory()->create();
 
@@ -595,4 +598,463 @@ describe('index', function () {
         });
     });
 
+    describe('recentTransactions', function () {
+        test('is empty when user has no transactions', function () {
+            $user = User::factory()->create();
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('recentTransactions', [])
+                );
+        });
+
+        test('returns at most 10 transactions', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create();
+            $category = Category::factory()->for($user)->expense()->create();
+
+            Transaction::factory()->count(15)->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->has('recentTransactions', 10)
+                );
+        });
+
+        test('transactions are ordered by transacted_at descending', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create();
+            $category = Category::factory()->for($user)->expense()->create();
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+                'amount' => 100,
+                'transacted_at' => now()->subDays(2),
+            ]);
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+                'amount' => 200,
+                'transacted_at' => now(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('recentTransactions.0.amount', 200)
+                    ->where('recentTransactions.1.amount', 100)
+                );
+        });
+
+        test('excludes transactions belonging to other users', function () {
+            $user = User::factory()->create();
+            $other = User::factory()->create();
+
+            $otherWallet = Wallet::factory()->for($other)->create();
+            $otherCategory = Category::factory()->for($other)->expense()->create();
+
+            Transaction::factory()->count(3)->create([
+                'user_id' => $other->id,
+                'wallet_id' => $otherWallet->id,
+                'category_id' => $otherCategory->id,
+                'type' => Type::Expense->value,
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('recentTransactions', [])
+                );
+        });
+
+        test('each transaction includes wallet and category relationships', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create(['name' => 'My Wallet']);
+            $category = Category::factory()->for($user)->expense()->create(['name' => 'Food']);
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+                'transacted_at' => now(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('recentTransactions.0.wallet.name', 'My Wallet')
+                    ->where('recentTransactions.0.category.name', 'Food')
+                );
+        });
+    });
+
+    describe('budgets', function () {
+        test('is empty when user has no budgets', function () {
+            $user = User::factory()->create();
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('budgets', [])
+                );
+        });
+
+        test('returns one entry per budget currency', function () {
+            $user = User::factory()->create();
+            $category = Category::factory()->for($user)->expense()->create();
+
+            Budget::factory()->for($user)->for($category)->create([
+                'amount' => ['BDT' => 5000, 'USD' => 200],
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->has('budgets', 2)
+                );
+        });
+
+        test('includes category, budget_amount, spent, and currency', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
+            $category = Category::factory()->for($user)->expense()->create(['name' => 'Food']);
+
+            Budget::factory()->for($user)->for($category)->create([
+                'amount' => ['BDT' => 5000],
+            ]);
+
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+                'amount' => 1500,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->has('budgets', 1)
+                    ->where('budgets.0.currency', 'BDT')
+                    ->where('budgets.0.budget_amount', 5000)
+                    ->where('budgets.0.spent', 1500)
+                    ->where('budgets.0.category.name', 'Food')
+                );
+        });
+
+        test('spent is scoped to the current month', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
+            $category = Category::factory()->for($user)->expense()->create();
+
+            Budget::factory()->for($user)->for($category)->create([
+                'amount' => ['BDT' => 5000],
+            ]);
+
+            // Last month — must not count
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+                'amount' => 9999,
+                'transacted_at' => now()->subMonth()->startOfMonth(),
+            ]);
+
+            // Current month — counts
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+                'amount' => 800,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('budgets.0.spent', 800)
+                );
+        });
+
+        test('spent is zero when no transactions exist for the category this month', function () {
+            $user = User::factory()->create();
+            $category = Category::factory()->for($user)->expense()->create();
+
+            Budget::factory()->for($user)->for($category)->create([
+                'amount' => ['BDT' => 3000],
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('budgets.0.spent', 0)
+                );
+        });
+
+        test('excludes other users transactions from spent calculation', function () {
+            $user = User::factory()->create();
+            $other = User::factory()->create();
+
+            $category = Category::factory()->for($user)->expense()->create();
+
+            Budget::factory()->for($user)->for($category)->create([
+                'amount' => ['BDT' => 5000],
+            ]);
+
+            $otherCategory = Category::factory()->for($other)->expense()->create();
+            $otherWallet = Wallet::factory()->for($other)->create(['currency' => Currency::BDT->value]);
+
+            Transaction::factory()->create([
+                'user_id' => $other->id,
+                'wallet_id' => $otherWallet->id,
+                'category_id' => $otherCategory->id,
+                'type' => Type::Expense->value,
+                'amount' => 9999,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('budgets.0.spent', 0)
+                );
+        });
+    });
+
+    describe('goals', function () {
+        test('is empty when user has no goals', function () {
+            $user = User::factory()->create();
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('goals', [])
+                );
+        });
+
+        test('returns at most 4 goals', function () {
+            $user = User::factory()->create();
+
+            Goal::factory()->count(6)->create([
+                'user_id' => $user->id,
+                'target_amount' => 1000.0,
+                'current_amount' => 500.0,
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->has('goals', 4)
+                );
+        });
+
+        test('goals are ordered by least progress first', function () {
+            $user = User::factory()->create();
+
+            Goal::factory()->create([
+                'user_id' => $user->id,
+                'name' => 'Halfway',
+                'target_amount' => 1000.0,
+                'current_amount' => 500.0,
+            ]);
+
+            Goal::factory()->create([
+                'user_id' => $user->id,
+                'name' => 'Nearly done',
+                'target_amount' => 1000.0,
+                'current_amount' => 900.0,
+            ]);
+
+            Goal::factory()->create([
+                'user_id' => $user->id,
+                'name' => 'Just started',
+                'target_amount' => 1000.0,
+                'current_amount' => 100.0,
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('goals.0.name', 'Just started')
+                    ->where('goals.1.name', 'Halfway')
+                    ->where('goals.2.name', 'Nearly done')
+                );
+        });
+
+        test('each goal includes a progress_percentage', function () {
+            $user = User::factory()->create();
+
+            Goal::factory()->create([
+                'user_id' => $user->id,
+                'target_amount' => 1000.0,
+                'current_amount' => 250.0,
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('goals.0.progress_percentage', 25)
+                );
+        });
+
+        test('excludes goals belonging to other users', function () {
+            $user = User::factory()->create();
+            $other = User::factory()->create();
+
+            Goal::factory()->count(3)->create([
+                'user_id' => $other->id,
+                'target_amount' => 1000,
+                'current_amount' => 500,
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('goals', [])
+                );
+        });
+    });
+
+    describe('upcomingRecurring', function () {
+        test('is empty when user has no recurring transactions', function () {
+            $user = User::factory()->create();
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('upcomingRecurring', [])
+                );
+        });
+
+        test('returns at most 5 upcoming recurring transactions', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create();
+            $category = Category::factory()->for($user)->expense()->create();
+
+            RecurringTransaction::factory()->count(8)->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'is_active' => true,
+                'next_due_at' => now()->addDays(5),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->has('upcomingRecurring', 5)
+                );
+        });
+
+        test('only includes active recurring transactions', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create();
+            $category = Category::factory()->for($user)->expense()->create();
+
+            RecurringTransaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'is_active' => false,
+                'next_due_at' => now()->addDays(3),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('upcomingRecurring', [])
+                );
+        });
+
+        test('ordered by next_due_at ascending', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create();
+            $category = Category::factory()->for($user)->expense()->create();
+
+            RecurringTransaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'description' => 'Late',
+                'is_active' => true,
+                'next_due_at' => now()->addDays(10)->format('Y-m-d'),
+            ]);
+
+            RecurringTransaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'description' => 'Soon',
+                'is_active' => true,
+                'next_due_at' => now()->addDays(2)->format('Y-m-d'),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('upcomingRecurring.0.description', 'Soon')
+                    ->where('upcomingRecurring.1.description', 'Late')
+                );
+        });
+
+        test('excludes recurring transactions belonging to other users', function () {
+            $user = User::factory()->create();
+            $other = User::factory()->create();
+
+            $otherWallet = Wallet::factory()->for($other)->create();
+            $otherCategory = Category::factory()->for($other)->expense()->create();
+
+            RecurringTransaction::factory()->count(3)->create([
+                'user_id' => $other->id,
+                'wallet_id' => $otherWallet->id,
+                'category_id' => $otherCategory->id,
+                'is_active' => true,
+                'next_due_at' => now()->addDays(5),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('upcomingRecurring', [])
+                );
+        });
+
+        test('each entry includes wallet and category relationships', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create(['name' => 'bKash']);
+            $category = Category::factory()->for($user)->expense()->create(['name' => 'Utilities']);
+
+            RecurringTransaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'is_active' => true,
+                'next_due_at' => now()->addDays(5)->format('Y-m-d'),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('upcomingRecurring.0.wallet.name', 'bKash')
+                    ->where('upcomingRecurring.0.category.name', 'Utilities')
+                );
+        });
+    });
 });
