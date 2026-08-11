@@ -2,127 +2,91 @@ import type { TCurrency } from '@/types/enums';
 
 import { formatCurrency } from '@/lib/formats';
 
-import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
-import { ProfitLossBadge } from '@/components/elements/profit-loss-badge';
+import { Plus, Minus, ArrowDownLeft, ArrowUpRight, Equal } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { StatItem } from '@/components/elements/stat-item';
 
 export type TStatWallet = {
     currency: TCurrency;
-    initial_balance?: number;
+    initial_balance: number;
     income: number;
     expense: number;
     net: number;
-    balance?: number;
-    transfers_out?: number;
-    transfers_in?: number;
+    balance: number;
+    transfers_out: number;
+    transfers_in: number;
 };
 
-const StatCell = ({
-    label,
-    value,
-    currency,
-    className,
-}: {
-    label: string;
-    value: number;
-    currency: TCurrency;
-    className?: string;
-}) => (
-    <div className="flex flex-col gap-0.5">
-        <span className="text-xs text-muted-foreground">{label}</span>
-        <span className={`text-sm font-medium tabular-nums ${className ?? ''}`}>
-            {formatCurrency(value, currency)}
-        </span>
+const WalletBalance = ({ balance, currency }: { balance: number; currency: TCurrency }) => (
+    <div className="min-w-28">
+        <p className="text-xs text-muted-foreground">{currency} Balance</p>
+        <p className="text-lg font-bold text-balance tabular-nums">
+            {formatCurrency(balance, currency)}
+        </p>
     </div>
+);
+
+const WalletIncome = ({ income, currency }: { income: number; currency: TCurrency }) => (
+    <StatItem icon={Plus} iconClassName="text-income" label="Income" value={income} currency={currency} valueClassName="text-income" />
+);
+
+const WalletExpense = ({ expense, currency }: { expense: number; currency: TCurrency }) => (
+    <StatItem icon={Minus} iconClassName="text-expense" label="Expenses" value={expense} currency={currency} valueClassName="text-expense" />
+);
+
+const WalletTransferIn = ({ amount, currency }: { amount: number; currency: TCurrency }) => (
+    <StatItem icon={ArrowDownLeft} iconClassName="text-income" label="Transfer In" value={amount} currency={currency} />
+);
+
+const WalletTransferOut = ({ amount, currency }: { amount: number; currency: TCurrency }) => (
+    <StatItem icon={ArrowUpRight} iconClassName="text-expense" label="Transfer Out" value={amount} currency={currency} />
+);
+
+const WalletNet = ({ net, currency }: { net: number; currency: TCurrency }) => (
+    <StatItem
+        icon={Equal}
+        iconClassName={net >= 0 ? 'text-income' : 'text-expense'}
+        label="Net"
+        value={net}
+        currency={currency}
+        valueClassName={net >= 0 ? 'text-income' : 'text-expense'}
+    />
 );
 
 export const WalletStats = ({ stats }: { stats: TStatWallet[] }) => {
     return (
-        <div className="grid gap-4 sm:grid-cols-2">
-            {stats.map(
-                ({
-                    currency,
-                    income,
-                    expense,
-                    net,
-                    balance,
-                    transfers_in,
-                    transfers_out,
-                }) => {
-                    const hasTransfers =
-                        (transfers_in ?? 0) > 0 || (transfers_out ?? 0) > 0;
+        <div className="flex flex-col divide-y border">
+            {stats.map(({ currency, income, expense, net, balance, transfers_in, transfers_out }) => {
+                const hasTransfers = transfers_in > 0 || transfers_out > 0;
 
-                    return (
-                        <div
-                            key={currency}
-                            className="flex flex-col gap-4 border p-4"
-                        >
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm font-semibold">
-                                    {currency}
-                                </span>
-                                <ProfitLossBadge net={net} />
-                            </div>
+                return (
+                    <div key={currency} className="flex flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3">
+                        <WalletBalance balance={balance} currency={currency} />
 
-                            {balance !== undefined && (
-                                <div className="flex flex-col gap-0.5">
-                                    <span className="text-xs text-muted-foreground">
-                                        Total Balance
-                                    </span>
-                                    <span className="text-2xl font-bold text-balance tabular-nums">
-                                        {formatCurrency(balance, currency)}
-                                    </span>
-                                </div>
-                            )}
+                        <Separator orientation="vertical" className="hidden h-8 sm:block" />
 
-                            <div className="grid grid-cols-3 gap-3 border-t pt-4">
-                                <StatCell
-                                    label="Income"
-                                    value={income}
-                                    currency={currency}
-                                    className="text-income"
-                                />
-                                <StatCell
-                                    label="Expenses"
-                                    value={expense}
-                                    currency={currency}
-                                    className="text-expense"
-                                />
-                                <StatCell
-                                    label="Net"
-                                    value={net}
-                                    currency={currency}
-                                    className={
-                                        net >= 0
-                                            ? 'text-income'
-                                            : 'text-expense'
-                                    }
-                                />
-                            </div>
-
-                            {hasTransfers && (
-                                <div className="flex gap-6 border-t pt-4">
-                                    <div className="flex items-center gap-2">
-                                        <ArrowDownLeft className="size-3.5 text-income" />
-                                        <StatCell
-                                            label="Transfers In"
-                                            value={transfers_in ?? 0}
-                                            currency={currency}
-                                        />
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <ArrowUpRight className="size-3.5 text-expense" />
-                                        <StatCell
-                                            label="Transfers Out"
-                                            value={transfers_out ?? 0}
-                                            currency={currency}
-                                        />
-                                    </div>
-                                </div>
-                            )}
+                        <div className="flex gap-6">
+                            <WalletIncome income={income} currency={currency} />
+                            <WalletExpense expense={expense} currency={currency} />
                         </div>
-                    );
-                },
-            )}
+
+                        {hasTransfers && (
+                            <>
+                                <Separator orientation="vertical" className="hidden h-8 sm:block" />
+                                <div className="flex gap-4">
+                                    {transfers_in > 0 && <WalletTransferIn amount={transfers_in} currency={currency} />}
+                                    {transfers_out > 0 && <WalletTransferOut amount={transfers_out} currency={currency} />}
+                                </div>
+                            </>
+                        )}
+
+                        <div className="ml-auto flex items-center gap-6">
+                            <Separator orientation="vertical" className="hidden h-8 sm:block" />
+                            <WalletNet net={net} currency={currency} />
+                        </div>
+                    </div>
+                );
+            })}
         </div>
     );
 };
