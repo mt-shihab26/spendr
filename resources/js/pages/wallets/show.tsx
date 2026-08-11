@@ -60,7 +60,7 @@ const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
                     </div>
                 </div>
 
-                <div className="flex gap-4">
+                <div className="flex w-full gap-4">
                     <div className="border p-4">
                         <Balance balance={wallet.balance} currency={wallet.currency} />
                     </div>
@@ -72,7 +72,7 @@ const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
                     </div>
                 </div>
 
-                <div className="flex gap-4">
+                <div className="flex w-full gap-4">
                     <div className="border p-4">
                         <Income income={wallet.income} currency={wallet.currency} />
                     </div>
@@ -82,7 +82,7 @@ const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
                 </div>
 
                 {hasTransfers && (
-                    <div className="flex gap-4">
+                    <div className="flex w-full gap-4">
                         {wallet.transfers_in > 0 && (
                             <div className="border p-4">
                                 <TransferIn amount={wallet.transfers_in} currency={wallet.currency} />
