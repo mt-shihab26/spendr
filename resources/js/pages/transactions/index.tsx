@@ -1,12 +1,4 @@
 import {
-    Empty,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from '@/components/ui/empty';
-
-import {
     Select,
     SelectContent,
     SelectGroup,
@@ -33,6 +25,7 @@ import { TransactionsTable } from '@/components/screens/transactions/transaction
 import { DateRangePicker } from '@/components/elements/date-range-picker';
 import { WalletSelect } from '@/components/elements/wallet-select';
 import { CategorySelect } from '@/components/elements/category-select';
+import { EmptyState } from '@/components/elements/empty-state';
 
 type TFilters = {
     type: TTransactionType;
@@ -228,21 +221,13 @@ const TransactionsIndex = ({
                 </div>
 
                 {transactions.data.length === 0 ? (
-                    <Empty className="border">
-                        <EmptyHeader>
-                            <EmptyMedia>
-                                <ArrowRightLeft />
-                            </EmptyMedia>
-                            <EmptyTitle>No transactions yet</EmptyTitle>
-                            <EmptyDescription>
-                                Record your first income or expense to start
-                                tracking your finances.
-                            </EmptyDescription>
-                        </EmptyHeader>
-                        <NewButton href={route('transactions.create')}>
-                            Record first transaction
-                        </NewButton>
-                    </Empty>
+                    <EmptyState
+                        icon={<ArrowRightLeft />}
+                        title="No transactions yet"
+                        description="Record your first income or expense to start tracking your finances."
+                        href={route('transactions.create')}
+                        action="Record first transaction"
+                    />
                 ) : (
                     <InfiniteScroll data="transactions" onlyNext preserveUrl>
                         <TransactionsTable

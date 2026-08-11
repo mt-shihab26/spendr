@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { getCurrencySymbol } from '@/lib/currency';
 import { formatCurrency } from '@/lib/formats';
 
+import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import { Badge } from '@/components/ui/badge';
 import { IconBadge } from '@/components/elements/icon-badge';
@@ -16,6 +17,8 @@ export type TTableWallet = TWallet & {
     income: number;
     expense: number;
     net: number;
+    transfers_in: number;
+    transfers_out: number;
 };
 
 export const WalletsTable = ({ wallets }: { wallets: TTableWallet[] }) => {
@@ -84,6 +87,39 @@ export const WalletsTable = ({ wallets }: { wallets: TTableWallet[] }) => {
                                     )}
                                 </span>
                             </div>
+                            {(wallet.transfers_in > 0 ||
+                                wallet.transfers_out > 0) && (
+                                <>
+                                    {wallet.transfers_in > 0 && (
+                                        <div className="flex flex-col items-end">
+                                            <span className="flex items-center gap-1 text-muted-foreground">
+                                                <ArrowDownLeft className="size-3 text-income" />
+                                                In
+                                            </span>
+                                            <span className="font-medium tabular-nums">
+                                                {formatCurrency(
+                                                    wallet.transfers_in,
+                                                    wallet.currency,
+                                                )}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {wallet.transfers_out > 0 && (
+                                        <div className="flex flex-col items-end">
+                                            <span className="flex items-center gap-1 text-muted-foreground">
+                                                <ArrowUpRight className="size-3 text-expense" />
+                                                Out
+                                            </span>
+                                            <span className="font-medium tabular-nums">
+                                                {formatCurrency(
+                                                    wallet.transfers_out,
+                                                    wallet.currency,
+                                                )}
+                                            </span>
+                                        </div>
+                                    )}
+                                </>
+                            )}
                             <div className="flex flex-col items-end">
                                 <span className="text-muted-foreground">
                                     Balance

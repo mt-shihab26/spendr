@@ -1,11 +1,3 @@
-import {
-    Empty,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from '@/components/ui/empty';
-
 import type { TBudget } from '@/types/models';
 import type { TCurrency } from '@/types/enums';
 
@@ -17,6 +9,7 @@ import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { MonthPicker } from '@/components/elements/month-picker';
 import { BudgetsTable } from '@/components/screens/budgets/budgets-table';
+import { EmptyState } from '@/components/elements/empty-state';
 
 const BudgetsIndex = ({
     budgets,
@@ -109,21 +102,13 @@ const BudgetsIndex = ({
                 </div>
 
                 {budgets.length === 0 ? (
-                    <Empty className="border">
-                        <EmptyHeader>
-                            <EmptyMedia>
-                                <CircleDollarSign />
-                            </EmptyMedia>
-                            <EmptyTitle>No budgets yet</EmptyTitle>
-                            <EmptyDescription>
-                                Set a monthly spending limit for each expense
-                                category to track your progress.
-                            </EmptyDescription>
-                        </EmptyHeader>
-                        <NewButton href={route('budgets.create')}>
-                            Create first budget
-                        </NewButton>
-                    </Empty>
+                    <EmptyState
+                        icon={<CircleDollarSign />}
+                        title="No budgets yet"
+                        description="Set a monthly spending limit for each expense category to track your progress."
+                        href={route('budgets.create')}
+                        action="Create first budget"
+                    />
                 ) : (
                     <BudgetsTable budgets={budgets} />
                 )}

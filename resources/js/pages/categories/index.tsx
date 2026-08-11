@@ -1,11 +1,3 @@
-import {
-    Empty,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from '@/components/ui/empty';
-
 import type { TCategory } from '@/types/models';
 import type { TType } from '@/types/enums';
 
@@ -16,6 +8,7 @@ import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CategoriesTable } from '@/components/screens/categories/categories-table';
+import { EmptyState } from '@/components/elements/empty-state';
 
 const CategoriesIndex = ({ categories }: { categories: TCategory[] }) => {
     const [type, setType] = useState<TType>('expense');
@@ -47,21 +40,13 @@ const CategoriesIndex = ({ categories }: { categories: TCategory[] }) => {
                 </Tabs>
 
                 {filtered.length === 0 ? (
-                    <Empty className="border">
-                        <EmptyHeader>
-                            <EmptyMedia>
-                                <Tag />
-                            </EmptyMedia>
-                            <EmptyTitle>No {type} categories yet</EmptyTitle>
-                            <EmptyDescription>
-                                Create your first {type} category to start
-                                organising your transactions.
-                            </EmptyDescription>
-                        </EmptyHeader>
-                        <NewButton href={route('categories.create')}>
-                            Create your first category
-                        </NewButton>
-                    </Empty>
+                    <EmptyState
+                        icon={<Tag />}
+                        title={`No ${type} categories yet`}
+                        description={`Create your first ${type} category to start organising your transactions.`}
+                        href={route('categories.create')}
+                        action="Create your first category"
+                    />
                 ) : (
                     <CategoriesTable categories={filtered} />
                 )}

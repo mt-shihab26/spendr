@@ -1,11 +1,3 @@
-import {
-    Empty,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from '@/components/ui/empty';
-
 import type { TPaginated } from '@/types/utils';
 import type { TTransfer, TWallet } from '@/types/models';
 
@@ -19,6 +11,7 @@ import { NewButton } from '@/components/elements/new-button';
 import { TransfersTable } from '@/components/screens/transfers/transfers-table';
 import { DateRangePicker } from '@/components/elements/date-range-picker';
 import { WalletSelect } from '@/components/elements/wallet-select';
+import { EmptyState } from '@/components/elements/empty-state';
 
 type TFilters = {
     date_from: string | null;
@@ -87,21 +80,13 @@ const TransfersIndex = ({
                     </div>
                 </div>
                 {transfers.data.length === 0 ? (
-                    <Empty className="border">
-                        <EmptyHeader>
-                            <EmptyMedia>
-                                <Repeat />
-                            </EmptyMedia>
-                            <EmptyTitle>No transfers yet</EmptyTitle>
-                            <EmptyDescription>
-                                Move funds between wallets to keep your balances
-                                accurate.
-                            </EmptyDescription>
-                        </EmptyHeader>
-                        <NewButton href={route('transfers.create')}>
-                            Record first transfer
-                        </NewButton>
-                    </Empty>
+                    <EmptyState
+                        icon={<Repeat />}
+                        title="No transfers yet"
+                        description="Move funds between wallets to keep your balances accurate."
+                        href={route('transfers.create')}
+                        action="Record first transfer"
+                    />
                 ) : (
                     <InfiniteScroll data="transfers" onlyNext preserveUrl>
                         <TransfersTable transfers={transfers.data} />

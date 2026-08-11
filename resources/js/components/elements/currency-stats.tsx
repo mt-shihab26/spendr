@@ -2,6 +2,7 @@ import type { TCurrency } from '@/types/enums';
 
 import { formatCurrency } from '@/lib/formats';
 
+import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import { ProfitLossBadge } from '@/components/elements/profit-loss-badge';
 
 export type TStat = {
@@ -15,58 +16,107 @@ export type TStat = {
     transfers_in?: number;
 };
 
+const StatCell = ({
+    label,
+    value,
+    currency,
+    className,
+}: {
+    label: string;
+    value: number;
+    currency: TCurrency;
+    className?: string;
+}) => (
+    <div className="flex flex-col gap-0.5">
+        <span className="text-xs text-muted-foreground">{label}</span>
+        <span className={`text-sm font-medium tabular-nums ${className ?? ''}`}>
+            {formatCurrency(value, currency)}
+        </span>
+    </div>
+);
+
 export const CurrencyStats = ({ stats }: { stats: TStat[] }) => {
     return (
         <div className="grid gap-4 sm:grid-cols-2">
             {stats.map(
-                ({ currency, initial_balance, income, expense, net }) => {
+                ({
+                    currency,
+                    income,
+                    expense,
+                    net,
+                    balance,
+                    transfers_in,
+                    transfers_out,
+                }) => {
+                    const hasTransfers =
+                        (transfers_in ?? 0) > 0 || (transfers_out ?? 0) > 0;
+
                     return (
-                        <div key={currency} className="border p-4">
+                        <div
+                            key={currency}
+                            className="flex flex-col gap-4 border p-4"
+                        >
                             <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">
+                                <span className="text-sm font-semibold">
                                     {currency}
                                 </span>
                                 <ProfitLossBadge net={net} />
                             </div>
-                            <div className="mt-3 flex items-end justify-between gap-4 text-xs">
-                                {initial_balance !== undefined && (
-                                    <div className="flex flex-col gap-1">
-                                        <span className="text-muted-foreground">
-                                            Initial
-                                        </span>
-                                        <span className="text-sm font-medium text-initial-balance tabular-nums">
-                                            {formatCurrency(
-                                                initial_balance,
-                                                currency,
-                                            )}
-                                        </span>
-                                    </div>
-                                )}
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-muted-foreground">
-                                        Income
+
+                            {balance !== undefined && (
+                                <div className="flex flex-col gap-0.5">
+                                    <span className="text-xs text-muted-foreground">
+                                        Total Balance
                                     </span>
-                                    <span className="text-sm font-medium text-income tabular-nums">
-                                        {formatCurrency(income, currency)}
+                                    <span className="text-2xl font-bold text-balance tabular-nums">
+                                        {formatCurrency(balance, currency)}
                                     </span>
                                 </div>
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-muted-foreground">
-                                        Expenses
-                                    </span>
-                                    <span className="text-sm font-medium text-expense tabular-nums">
-                                        {formatCurrency(expense, currency)}
-                                    </span>
-                                </div>
-                                <div className="flex flex-col items-end gap-1">
-                                    <span className="text-muted-foreground">
-                                        Net
-                                    </span>
-                                    <span className="text-sm font-medium text-net tabular-nums">
-                                        {formatCurrency(net, currency)}
-                                    </span>
-                                </div>
+                            )}
+
+                            <div className="grid grid-cols-3 gap-3 border-t pt-4">
+                                <StatCell
+                                    label="Income"
+                                    value={income}
+                                    currency={currency}
+                                    className="text-income"
+                                />
+                                <StatCell
+                                    label="Expenses"
+                                    value={expense}
+                                    currency={currency}
+                                    className="text-expense"
+                                />
+                                <StatCell
+                                    label="Net"
+                                    value={net}
+                                    currency={currency}
+                                    className={
+                                        net >= 0 ? 'text-income' : 'text-expense'
+                                    }
+                                />
                             </div>
+
+                            {hasTransfers && (
+                                <div className="flex gap-6 border-t pt-4">
+                                    <div className="flex items-center gap-2">
+                                        <ArrowDownLeft className="size-3.5 text-income" />
+                                        <StatCell
+                                            label="Transfers In"
+                                            value={transfers_in ?? 0}
+                                            currency={currency}
+                                        />
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <ArrowUpRight className="size-3.5 text-expense" />
+                                        <StatCell
+                                            label="Transfers Out"
+                                            value={transfers_out ?? 0}
+                                            currency={currency}
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     );
                 },

@@ -1,11 +1,3 @@
-import {
-    Empty,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from '@/components/ui/empty';
-
 import type { TRecurringTransaction } from '@/types/models';
 
 import { RefreshCw } from 'lucide-react';
@@ -13,6 +5,7 @@ import { formatCurrency } from '@/lib/formats';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
+import { EmptyState } from '@/components/elements/empty-state';
 import { Link } from '@inertiajs/react';
 import { EditButton } from '@/components/elements/edit-button';
 import { Badge } from '@/components/ui/badge';
@@ -54,23 +47,13 @@ const RecurringTransactionsIndex = ({
                 </div>
 
                 {recurring.length === 0 ? (
-                    <Empty className="border">
-                        <EmptyHeader>
-                            <EmptyMedia>
-                                <RefreshCw />
-                            </EmptyMedia>
-                            <EmptyTitle>No recurring transactions</EmptyTitle>
-                            <EmptyDescription>
-                                Set up recurring income or expenses that
-                                automatically post on a schedule.
-                            </EmptyDescription>
-                        </EmptyHeader>
-                        <NewButton
-                            href={route('recurring-transactions.create')}
-                        >
-                            Create first recurring transaction
-                        </NewButton>
-                    </Empty>
+                    <EmptyState
+                        icon={<RefreshCw />}
+                        title="No recurring transactions"
+                        description="Set up recurring income or expenses that automatically post on a schedule."
+                        href={route('recurring-transactions.create')}
+                        action="Create first recurring transaction"
+                    />
                 ) : (
                     <div className="border">
                         <table className="w-full text-sm">

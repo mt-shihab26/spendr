@@ -1,11 +1,3 @@
-import {
-    Empty,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from '@/components/ui/empty';
-
 import type { TGoal } from '@/types/models';
 
 import { Target } from 'lucide-react';
@@ -15,6 +7,7 @@ import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { Link } from '@inertiajs/react';
 import { EditButton } from '@/components/elements/edit-button';
+import { EmptyState } from '@/components/elements/empty-state';
 
 const GoalCard = ({ goal }: { goal: TGoal }) => {
     const percentage = goal.progress_percentage ?? 0;
@@ -102,21 +95,13 @@ const GoalsIndex = ({ goals }: { goals: TGoal[] }) => {
                 </div>
 
                 {goals.length === 0 ? (
-                    <Empty className="border">
-                        <EmptyHeader>
-                            <EmptyMedia>
-                                <Target />
-                            </EmptyMedia>
-                            <EmptyTitle>No goals yet</EmptyTitle>
-                            <EmptyDescription>
-                                Create a savings goal to track your progress
-                                toward a financial target.
-                            </EmptyDescription>
-                        </EmptyHeader>
-                        <NewButton href={route('goals.create')}>
-                            Create your first goal
-                        </NewButton>
-                    </Empty>
+                    <EmptyState
+                        icon={<Target />}
+                        title="No goals yet"
+                        description="Create a savings goal to track your progress toward a financial target."
+                        href={route('goals.create')}
+                        action="Create your first goal"
+                    />
                 ) : (
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {goals.map((goal) => (

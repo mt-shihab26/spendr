@@ -1,11 +1,3 @@
-import {
-    Empty,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from '@/components/ui/empty';
-
 import type { TTableWallet } from '@/components/screens/wallets/wallets-table';
 import type { TStat } from '@/components/elements/currency-stats';
 
@@ -15,6 +7,7 @@ import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { WalletsTable } from '@/components/screens/wallets/wallets-table';
 import { CurrencyStats } from '@/components/elements/currency-stats';
+import { EmptyState } from '@/components/elements/empty-state';
 
 const WalletsIndex = ({
     stats,
@@ -40,21 +33,13 @@ const WalletsIndex = ({
                     </NewButton>
                 </div>
                 {wallets.length === 0 ? (
-                    <Empty className="border">
-                        <EmptyHeader>
-                            <EmptyMedia>
-                                <Wallet />
-                            </EmptyMedia>
-                            <EmptyTitle>No wallets yet</EmptyTitle>
-                            <EmptyDescription>
-                                Create your first wallet to start tracking your
-                                finances.
-                            </EmptyDescription>
-                        </EmptyHeader>
-                        <NewButton href={route('wallets.create')}>
-                            Create your first wallet
-                        </NewButton>
-                    </Empty>
+                    <EmptyState
+                        icon={<Wallet />}
+                        title="No wallets yet"
+                        description="Create your first wallet to start tracking your finances."
+                        href={route('wallets.create')}
+                        action="Create your first wallet"
+                    />
                 ) : (
                     <>
                         <CurrencyStats stats={stats} />
