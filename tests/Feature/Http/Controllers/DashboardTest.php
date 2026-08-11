@@ -568,6 +568,31 @@ describe('index', function () {
                     ->where('spendingCategories.1.percentage.BDT', 40)
                 );
         });
+
+        test('excludes transactions from wallets beyond the top 5', function () {
+            $user = User::factory()->create();
+            $category = Category::factory()->for($user)->expense()->create();
+
+            $wallets = Wallet::factory()->for($user)->count(6)->sequence(
+                fn ($s) => ['sort_order' => $s->index + 1, 'currency' => Currency::BDT->value],
+            )->create();
+
+            // Transaction in the 6th wallet — must be excluded
+            Transaction::factory()->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallets->last()->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+                'amount' => 9999,
+                'transacted_at' => now()->startOfMonth(),
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('spendingCategories', [])
+                );
+        });
     });
 
 });

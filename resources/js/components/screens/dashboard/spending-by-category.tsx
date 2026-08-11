@@ -18,9 +18,9 @@ export const SpendingByCategory = ({
     return (
         <div className="h-full w-full border p-4">
             <div className="mb-3 flex items-center justify-between">
-                <p className="text-sm font-medium">Spending by Category</p>
-                <ViewAllLink href={route('reports.index')}>
-                    View Report
+                <p className="text-sm font-medium">Top Spending by Category</p>
+                <ViewAllLink href={route('categories.index')}>
+                    All Categories
                 </ViewAllLink>
             </div>
             {spendingCategories.length === 0 ? (

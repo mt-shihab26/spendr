@@ -18,10 +18,10 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { ViewAllLink } from '@/components/elements/view-all-link';
-import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
 import { CurrencyStats } from '@/components/screens/dashboard/currency-stats';
 import { WalletOverview } from '@/components/screens/dashboard/wallet-overview';
 import { SpendingByCategory } from '@/components/screens/dashboard/spending-by-category';
+import { RecentTransactions } from '@/components/screens/dashboard/recent-transctions';
 
 type TBudgetStatus = {
     id: string;
@@ -34,8 +34,9 @@ const Dashboard = ({
     currencyStats,
     wallets,
     spendingCategories,
+    recentTransactions,
+
     primary_currency,
-    recent_transactions,
     budgets,
     upcoming_recurring,
     goals,
@@ -43,8 +44,9 @@ const Dashboard = ({
     currencyStats: TCurrencyStat[];
     wallets: TDashboardWallet[];
     spendingCategories: TSpendingCategory[];
+    recentTransactions: TTransaction[];
+
     primary_currency: TCurrency | null;
-    recent_transactions: TTransaction[];
     budgets: TBudgetStatus[];
     upcoming_recurring: TRecurringTransaction[];
     goals: TGoal[];
@@ -81,27 +83,7 @@ const Dashboard = ({
                         </ViewAllLink>
                     </div>
                 </div>
-
-                {/* Recent Transactions */}
-                <div>
-                    <div className="mb-2 flex items-center justify-between">
-                        <p className="text-sm font-medium">
-                            Recent Transactions
-                        </p>
-                        <ViewAllLink href={route('transactions.index')}>
-                            View All
-                        </ViewAllLink>
-                    </div>
-                    {recent_transactions.length === 0 ? (
-                        <div className="border p-4">
-                            <p className="text-xs text-muted-foreground">
-                                No transactions yet.
-                            </p>
-                        </div>
-                    ) : (
-                        <TransactionsTable transactions={recent_transactions} />
-                    )}
-                </div>
+                <RecentTransactions recentTransactions={recentTransactions} />
 
                 {/* Budget Status */}
                 {budgets.length > 0 && (

@@ -41,13 +41,6 @@ class DashboardController extends Controller
         $primaryCurrency = $request->input('currency')
             ?? (in_array(Currency::BDT, $currencies, true) ? Currency::BDT->value : (isset($currencies[0]) ? $currencies[0]->value : null));
 
-        $recentTransactions = $user->transactions()
-            ->with(['wallet', 'category'])
-            ->orderByDesc('transacted_at')
-            ->orderByDesc('created_at')
-            ->limit(10)
-            ->get();
-
         $upcomingRecurring = $user->recurringTransactions()
             ->with(['wallet', 'category'])
             ->where('is_active', true)
@@ -67,13 +60,13 @@ class DashboardController extends Controller
             'currencyStats' => $this->computeCurrencyStats($user, $wallets, $currencies),
             'wallets' => $this->computeTopWallets($wallets),
             'spendingCategories' => $this->computeSpendingByCategory($user, $wallets),
+            'recent_transactions' => $this->getRecentTransactions($user),
 
             'currencies' => array_map(fn (Currency $c) => $c->value, $currencies),
             'primary_currency' => $primaryCurrency,
             'filters' => [
                 'currency' => $request->input('currency'),
             ],
-            'recent_transactions' => $recentTransactions,
             'budgets' => $primaryCurrency
                 ? $this->getBudgetStatus($user, $primaryCurrency, $period->year, $period->month)
                 : [],
@@ -237,6 +230,21 @@ class DashboardController extends Controller
             ->sortByDesc(fn ($c) => array_sum($c['total']))
             ->values()
             ->all();
+    }
+
+    /**
+     * Return the 10 most recent transactions for the user.
+     *
+     * @return Collection<int, Transaction>
+     */
+    private function getRecentTransactions(User $user): Collection
+    {
+        return $user->transactions()
+            ->with(['wallet', 'category'])
+            ->orderByDesc('transacted_at')
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get();
     }
 
     /**
