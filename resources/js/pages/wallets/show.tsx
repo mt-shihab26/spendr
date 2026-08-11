@@ -1,38 +1,33 @@
-import type { TWallet, TTransaction } from '@/types/models';
-import type { TPaginated, TTransactionType } from '@/types/utils';
+import type { TWallet } from '@/types/models';
 
-import { formatCurrency } from '@/lib/formats';
 import { getCurrencySymbol } from '@/lib/currency';
 import { getIcon } from '@/lib/icons';
 
-import { router } from '@inertiajs/react';
-import { InfiniteScroll } from '@inertiajs/react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { EditButton } from '@/components/elements/edit-button';
 import { BackButton } from '@/components/elements/back-button';
-import { MonthPicker } from '@/components/elements/month-picker';
-import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TransactionsButton } from '@/components/elements/transactions-button';
+import { Balance } from '@/components/elements/balance';
+import { InitialBalance } from '@/components/elements/initial-balance';
+import { Income } from '@/components/elements/income';
+import { Expense } from '@/components/elements/expense';
+import { TransferIn } from '@/components/elements/transfer-in';
+import { TransferOut } from '@/components/elements/transfer-out';
+import { Net } from '@/components/elements/net';
+import { Separator } from '@/components/ui/separator';
 
-const WalletsShow = ({
-    wallet,
-    transactions,
-    month,
-    type,
-}: {
-    wallet: TWallet;
-    transactions: TPaginated<TTransaction>;
-    month: string;
-    type: TTransactionType;
-}) => {
-    const navigate = (params: { month?: string; type?: string }) => {
-        router.get(
-            route('wallets.show', wallet.id),
-            { month, type, ...params },
-            { preserveScroll: true, replace: true },
-        );
-    };
+type TShowWallet = TWallet & {
+    balance: number;
+    income: number;
+    expense: number;
+    transfers_in: number;
+    transfers_out: number;
+    net: number;
+};
+
+const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
+    const hasTransfers = wallet.transfers_in > 0 || wallet.transfers_out > 0;
 
     return (
         <AppLayout
@@ -58,75 +53,84 @@ const WalletsShow = ({
                         icon={getIcon(wallet.icon)}
                         color={wallet.color}
                     />
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-2">
+                        <TransactionsButton href={route('transactions.index', { wallet_id: wallet.id })} />
                         <EditButton href={route('wallets.edit', wallet.id)} />
                         <BackButton href={route('wallets.index')} />
                     </div>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Balance</p>
-                        <p className="mt-1 text-lg font-semibold text-balance tabular-nums">
-                            {formatCurrency(
-                                wallet.balance ?? 0,
-                                wallet.currency,
-                            )}
-                        </p>
+                <div className="flex items-center border px-4 py-3">
+                    <div className="w-[18%] shrink-0">
+                        <Balance
+                            balance={wallet.balance}
+                            currency={wallet.currency}
+                        />
                     </div>
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">
-                            Month Income
-                        </p>
-                        <p className="mt-1 text-lg font-semibold text-income tabular-nums">
-                            {formatCurrency(
-                                wallet.month_income ?? 0,
-                                wallet.currency,
-                            )}
-                        </p>
-                    </div>
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">
-                            Month Expenses
-                        </p>
-                        <p className="mt-1 text-lg font-semibold text-expense tabular-nums">
-                            {formatCurrency(
-                                wallet.month_expense ?? 0,
-                                wallet.currency,
-                            )}
-                        </p>
-                    </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                    <MonthPicker
-                        month={month}
-                        href={route('wallets.show', wallet.id)}
-                        extraParams={{ type }}
+                    <Separator
+                        orientation="vertical"
+                        className="hidden h-8 sm:block"
                     />
-                    <Tabs
-                        value={type}
-                        onValueChange={(value) => navigate({ type: value })}
-                    >
-                        <TabsList>
-                            <TabsTrigger value="all">All</TabsTrigger>
-                            <TabsTrigger value="income">Income</TabsTrigger>
-                            <TabsTrigger value="expense">Expense</TabsTrigger>
-                        </TabsList>
-                    </Tabs>
-                </div>
-
-                {transactions.data.length > 0 ? (
-                    <InfiniteScroll data="transactions" onlyNext preserveUrl>
-                        <TransactionsTable transactions={transactions.data} />
-                    </InfiniteScroll>
-                ) : (
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">
-                            No transactions for this month.
-                        </p>
+                    <div className="flex w-[14%] shrink-0 justify-start px-4">
+                        <InitialBalance
+                            amount={wallet.initial_balance}
+                            currency={wallet.currency}
+                        />
                     </div>
-                )}
+                    <Separator
+                        orientation="vertical"
+                        className="hidden h-8 sm:block"
+                    />
+                    <div className="flex w-[28%] shrink-0 px-4">
+                        <div className="w-2/5">
+                            <Income
+                                income={wallet.income}
+                                currency={wallet.currency}
+                            />
+                        </div>
+                        <div className="w-3/5">
+                            <Expense
+                                expense={wallet.expense}
+                                currency={wallet.currency}
+                            />
+                        </div>
+                    </div>
+                    {hasTransfers && (
+                        <>
+                            <Separator
+                                orientation="vertical"
+                                className="hidden h-8 sm:block"
+                            />
+                            <div className="flex w-[28%] shrink-0 px-4">
+                                <div className="w-2/5">
+                                    {wallet.transfers_in > 0 && (
+                                        <TransferIn
+                                            amount={wallet.transfers_in}
+                                            currency={wallet.currency}
+                                        />
+                                    )}
+                                </div>
+                                <div className="w-3/5">
+                                    {wallet.transfers_out > 0 && (
+                                        <TransferOut
+                                            amount={wallet.transfers_out}
+                                            currency={wallet.currency}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        </>
+                    )}
+                    <div className="ml-auto flex items-center gap-4">
+                        <Separator
+                            orientation="vertical"
+                            className="hidden h-8 sm:block"
+                        />
+                        <div className="flex min-w-24 justify-start">
+                            <Net net={wallet.net} currency={wallet.currency} />
+                        </div>
+                    </div>
+                </div>
             </div>
         </AppLayout>
     );

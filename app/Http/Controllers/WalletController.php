@@ -9,7 +9,6 @@ use App\Models\Wallet;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -95,14 +94,6 @@ class WalletController extends Controller
     {
         abort_if($wallet->user_id !== $request->user()->id, 403);
 
-        $validated = $request->validate([
-            'month' => ['nullable', 'date_format:Y-m'],
-            'type' => ['nullable', 'string', Rule::in(['income', 'expense', 'all'])],
-        ]);
-
-        $month = $validated['month'] ?? now()->format('Y-m');
-        $type = $validated['type'] ?? 'all';
-
         $wallet->loadSum(['transactions as income' => fn ($q) => $q->where('type', Type::Income->value)], 'amount');
         $wallet->loadSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount');
         $wallet->loadSum(['outgoingTransfers as transfers_out'], 'amount');
@@ -112,41 +103,8 @@ class WalletController extends Controller
         $wallet->setAttribute('net', $wallet->net());
         $wallet->setAttribute('balance', $wallet->balance());
 
-        [$year, $monthNum] = explode('-', $month);
-
-        $monthIncome = $wallet->transactions()
-            ->where('type', Type::Income->value)
-            ->whereYear('transacted_at', (int) $year)
-            ->whereMonth('transacted_at', (int) $monthNum)
-            ->sum('amount');
-
-        $monthExpense = $wallet->transactions()
-            ->where('type', Type::Expense->value)
-            ->whereYear('transacted_at', (int) $year)
-            ->whereMonth('transacted_at', (int) $monthNum)
-            ->sum('amount');
-
-        $wallet->setAttribute('month_income', (float) $monthIncome);
-        $wallet->setAttribute('month_expense', (float) $monthExpense);
-
-        $txQuery = $wallet->transactions()
-            ->with(['wallet', 'category'])
-            ->whereYear('transacted_at', (int) $year)
-            ->whereMonth('transacted_at', (int) $monthNum)
-            ->orderByDesc('transacted_at')
-            ->orderByDesc('created_at');
-
-        if ($type !== 'all') {
-            $txQuery->where('type', $type);
-        }
-
-        $transactions = Inertia::scroll($txQuery->paginate(20));
-
         return inertia('wallets/show', [
             'wallet' => $wallet,
-            'transactions' => $transactions,
-            'month' => $month,
-            'type' => $type,
         ]);
     }
 
