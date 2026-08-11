@@ -10,7 +10,7 @@ export type TSpendingCategory = {
     percentage: Record<string, number>;
 };
 
-export const SpendingByCategory = ({
+export const TopSpendingByCategory = ({
     spendingCategories,
 }: {
     spendingCategories: TSpendingCategory[];

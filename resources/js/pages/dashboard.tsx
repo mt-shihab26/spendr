@@ -3,7 +3,7 @@ import type {
     TRecurringTransaction,
     TTransaction,
 } from '@/types/models';
-import type { TSpendingCategory } from '@/components/screens/dashboard/spending-by-category';
+import type { TSpendingCategory } from '@/components/screens/dashboard/top-spending-by-category';
 import type { TCurrencyStat } from '@/components/screens/dashboard/currency-stats';
 import type { TDashboardWallet } from '@/components/screens/dashboard/top-wallets';
 import type { TBudgetStatus } from '@/components/screens/dashboard/budget-status';
@@ -14,10 +14,10 @@ import { NewButton } from '@/components/elements/new-button';
 import { ViewAllLink } from '@/components/elements/view-all-link';
 import { CurrencyStats } from '@/components/screens/dashboard/currency-stats';
 import { TopWallets } from '@/components/screens/dashboard/top-wallets';
-import { SpendingByCategory } from '@/components/screens/dashboard/spending-by-category';
-import { RecentTransactions } from '@/components/screens/dashboard/recent-transctions';
+import { TopSpendingByCategory } from '@/components/screens/dashboard/top-spending-by-category';
+import { RecentTransactions } from '@/components/screens/dashboard/recent-transactions';
 import { BudgetStatus } from '@/components/screens/dashboard/budget-status';
-import { GoalsOverview } from '@/components/screens/dashboard/goals-overview';
+import { Goals } from '@/components/screens/dashboard/goals';
 import { UpcomingRecurring } from '@/components/screens/dashboard/upcoming-recurring';
 
 const Dashboard = ({
@@ -57,7 +57,7 @@ const Dashboard = ({
                 <div className="flex flex-col gap-2">
                     <div className="grid grid-cols-2 gap-4">
                         <TopWallets wallets={wallets} />
-                        <SpendingByCategory
+                        <TopSpendingByCategory
                             spendingCategories={spendingCategories}
                         />
                     </div>
@@ -70,7 +70,7 @@ const Dashboard = ({
                 <RecentTransactions recentTransactions={recentTransactions} />
                 <BudgetStatus budgets={budgets} />
                 <div className="flex gap-4">
-                    <GoalsOverview goals={goals} />
+                    <Goals goals={goals} />
                     <UpcomingRecurring upcomingRecurring={upcomingRecurring} />
                 </div>
             </div>

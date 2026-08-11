@@ -4,7 +4,7 @@ import { Link } from '@inertiajs/react';
 import { Target } from 'lucide-react';
 import { ViewAllLink } from '@/components/elements/view-all-link';
 
-export const GoalsOverview = ({ goals }: { goals: TGoal[] }) => {
+export const Goals = ({ goals }: { goals: TGoal[] }) => {
     if (goals.length === 0) {
         return null;
     }
