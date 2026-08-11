@@ -9,7 +9,6 @@ use App\Models\Wallet;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class WalletController extends Controller
@@ -94,14 +93,15 @@ class WalletController extends Controller
     {
         abort_if($wallet->user_id !== $request->user()->id, 403);
 
-        $wallet->loadSum(['transactions as income' => fn ($q) => $q->where('type', Type::Income->value)], 'amount');
-        $wallet->loadSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount');
-        $wallet->loadSum(['outgoingTransfers as transfers_out'], 'amount');
-        $wallet->loadSum(['incomingTransfers as transfers_in'], 'amount');
-        $wallet->setAttribute('transfers_in', $wallet->transfersIn());
-        $wallet->setAttribute('transfers_out', $wallet->transfersOut());
-        $wallet->setAttribute('net', $wallet->net());
-        $wallet->setAttribute('balance', $wallet->balance());
+        $wallet
+            ->loadSum(['transactions as income' => fn ($q) => $q->where('type', Type::Income->value)], 'amount')
+            ->loadSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount')
+            ->loadSum(['outgoingTransfers as transfers_out'], 'amount')
+            ->loadSum(['incomingTransfers as transfers_in'], 'amount')
+            ->setAttribute('transfers_in', $wallet->transfersIn())
+            ->setAttribute('transfers_out', $wallet->transfersOut())
+            ->setAttribute('net', $wallet->net())
+            ->setAttribute('balance', $wallet->balance());
 
         return inertia('wallets/show', [
             'wallet' => $wallet,

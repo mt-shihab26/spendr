@@ -28,16 +28,6 @@ export type TWallet = {
     deleted_at: string | null;
     created_at: string;
     updated_at: string;
-
-    // income?: number | null;
-    // expense?: number | null;
-    // transfers_out?: number | null;
-    // transfers_in?: number | null;
-    // net?: number | null;
-    // balance?: number | null;
-    // transactions_count?: number | null;
-    // month_income?: number | null;
-    // month_expense?: number | null;
 };
 
 export type TBudget = {
