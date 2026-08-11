@@ -22,13 +22,18 @@ class WalletController extends Controller
     {
         $wallets = $request->user()
             ->wallets()
-            ->withStats()
+            ->withSum(['transactions as income' => fn ($q) => $q->where('type', Type::Income->value)], 'amount')
+            ->withSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount')
+            ->withSum('outgoingTransfers as transfers_out', 'amount')
+            ->withSum('incomingTransfers as transfers_in', 'amount')
             ->withCount('transactions')
             ->orderBy('sort_order')
             ->orderBy('created_at')
             ->limit(config('limits.wallets'))
             ->get()
             ->each(function (Wallet $wallet) {
+                $wallet->setAttribute('income', $wallet->income());
+                $wallet->setAttribute('expense', $wallet->expense());
                 $wallet->setAttribute('balance', $wallet->balance());
                 $wallet->setAttribute('net', $wallet->net());
             });

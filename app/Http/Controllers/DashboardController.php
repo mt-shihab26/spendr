@@ -27,11 +27,18 @@ class DashboardController extends Controller
         $period = DashboardPeriod::fromNow();
 
         $wallets = $user->wallets()
-            ->withStats()
+            ->withSum(['transactions as income' => fn ($q) => $q->where('type', Type::Income->value)], 'amount')
+            ->withSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount')
+            ->withSum('outgoingTransfers as transfers_out', 'amount')
+            ->withSum('incomingTransfers as transfers_in', 'amount')
             ->orderBy('sort_order')
             ->orderBy('created_at')
             ->get()
-            ->each(fn ($w) => $w->setAttribute('balance', $w->balance()));
+            ->each(function (Wallet $w) {
+                $w->setAttribute('income', $w->income());
+                $w->setAttribute('expense', $w->expense());
+                $w->setAttribute('balance', $w->balance());
+            });
 
         return inertia('dashboard', [
             'currencyStats' => $this->getCurrencyStats($user, $wallets, $period),

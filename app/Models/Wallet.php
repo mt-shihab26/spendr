@@ -6,7 +6,6 @@ use App\Enums\Currency;
 use App\Enums\Type;
 use Database\Factories\WalletFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -101,8 +100,8 @@ class Wallet extends Model
     public function balance(): float
     {
         return $this->initial_balance
-            + $this->totalIncome()
-            - $this->totalExpense()
+            + $this->income()
+            - $this->expense()
             - $this->totalOutgoingTransfers()
             + $this->totalIncomingTransfers();
     }
@@ -112,13 +111,13 @@ class Wallet extends Model
      */
     public function net(): float
     {
-        return $this->totalIncome() - $this->totalExpense();
+        return $this->income() - $this->expense();
     }
 
     /**
      * Total income from transactions. Uses pre-loaded value when available.
      */
-    private function totalIncome(): float
+    public function income(): float
     {
         return array_key_exists('income', $this->getAttributes())
             ? (float) ($this->getAttributes()['income'] ?? 0)
@@ -128,7 +127,7 @@ class Wallet extends Model
     /**
      * Total expense from transactions. Uses pre-loaded value when available.
      */
-    private function totalExpense(): float
+    public function expense(): float
     {
         return array_key_exists('expense', $this->getAttributes())
             ? (float) ($this->getAttributes()['expense'] ?? 0)
@@ -156,20 +155,6 @@ class Wallet extends Model
     }
 
     /**
-     * Eager-load all four aggregate sums. Use on collection queries to avoid N+1.
-     *
-     * @param  Builder<Wallet>  $query
-     */
-    public function scopeWithStats(Builder $query): void
-    {
-        $query
-            ->withSum(['transactions as income' => fn (Builder $q) => $q->where('type', Type::Income->value)], 'amount')
-            ->withSum(['transactions as expense' => fn (Builder $q) => $q->where('type', Type::Expense->value)], 'amount')
-            ->withSum('outgoingTransfers as transfers_out', 'amount')
-            ->withSum('incomingTransfers as transfers_in', 'amount');
-    }
-
-    /**
      * Load all aggregate stats onto this instance, then compute net and balance.
      */
     public function loadStats(): static
@@ -179,7 +164,7 @@ class Wallet extends Model
         $this->loadSum(['outgoingTransfers as transfers_out'], 'amount');
         $this->loadSum(['incomingTransfers as transfers_in'], 'amount');
 
-        $this->setAttribute('net', $this->netFlow());
+        $this->setAttribute('net', $this->net());
         $this->setAttribute('balance', $this->balance());
 
         return $this;
