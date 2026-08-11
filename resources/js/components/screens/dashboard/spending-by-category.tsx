@@ -1,6 +1,7 @@
 import type { TCurrency } from '@/types/enums';
 
 import { formatCurrency } from '@/lib/formats';
+import { ViewAllLink } from '@/components/elements/view-all-link';
 
 export type TSpendingCategory = {
     name: string;
@@ -16,7 +17,12 @@ export const SpendingByCategory = ({
 }) => {
     return (
         <div className="h-full w-full border p-4">
-            <p className="mb-3 text-sm font-medium">Spending by Category</p>
+            <div className="mb-3 flex items-center justify-between">
+                <p className="text-sm font-medium">Spending by Category</p>
+                <ViewAllLink href={route('reports.index')}>
+                    View Report
+                </ViewAllLink>
+            </div>
             {spendingCategories.length === 0 ? (
                 <p className="text-xs text-muted-foreground">No data</p>
             ) : (

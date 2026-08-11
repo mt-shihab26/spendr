@@ -4,6 +4,7 @@ import { formatCurrency } from '@/lib/formats';
 
 import { Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
+import { ViewAllLink } from '@/components/elements/view-all-link';
 
 export type TDashboardWallet = TWallet & { balance: number };
 
@@ -13,15 +14,12 @@ export const WalletOverview = ({
     wallets: TDashboardWallet[];
 }) => {
     return (
-        <div className="w-full border p-4 h-full">
+        <div className="h-full w-full border p-4">
             <div className="mb-3 flex items-center justify-between">
-                <p className="text-sm font-medium">Wallets</p>
-                <Link
-                    href={route('wallets.index')}
-                    className="text-xs text-muted-foreground hover:underline"
-                >
-                    All Wallets →
-                </Link>
+                <p className="text-sm font-medium">Top Wallets</p>
+                <ViewAllLink href={route('wallets.index')}>
+                    All Wallets
+                </ViewAllLink>
             </div>
             {wallets.length === 0 ? (
                 <div className="flex flex-col items-center gap-3 py-6 text-center">

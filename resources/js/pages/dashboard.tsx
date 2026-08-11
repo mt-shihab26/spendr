@@ -17,6 +17,7 @@ import { RefreshCw, Target, TriangleAlert } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
+import { ViewAllLink } from '@/components/elements/view-all-link';
 import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
 import { CurrencyStats } from '@/components/screens/dashboard/currency-stats';
 import { WalletOverview } from '@/components/screens/dashboard/wallet-overview';
@@ -74,13 +75,10 @@ const Dashboard = ({
                             spendingCategories={spendingCategories}
                         />
                     </div>
-                    <div className="text-right">
-                        <Link
-                            href={route('reports.index')}
-                            className="text-xs text-muted-foreground hover:underline"
-                        >
-                            View Full Report →
-                        </Link>
+                    <div className="flex justify-end">
+                        <ViewAllLink href={route('reports.index')}>
+                            View Full Report
+                        </ViewAllLink>
                     </div>
                 </div>
 
@@ -90,12 +88,9 @@ const Dashboard = ({
                         <p className="text-sm font-medium">
                             Recent Transactions
                         </p>
-                        <Link
-                            href={route('transactions.index')}
-                            className="text-xs text-muted-foreground hover:underline"
-                        >
-                            View All →
-                        </Link>
+                        <ViewAllLink href={route('transactions.index')}>
+                            View All
+                        </ViewAllLink>
                     </div>
                     {recent_transactions.length === 0 ? (
                         <div className="border p-4">
@@ -113,12 +108,9 @@ const Dashboard = ({
                     <div>
                         <div className="mb-2 flex items-center justify-between">
                             <p className="text-sm font-medium">Budget Status</p>
-                            <Link
-                                href={route('budgets.index')}
-                                className="text-xs text-muted-foreground hover:underline"
-                            >
-                                Manage Budgets →
-                            </Link>
+                            <ViewAllLink href={route('budgets.index')}>
+                                Manage Budgets
+                            </ViewAllLink>
                         </div>
                         <div className="divide-y border">
                             {budgets.map((item) => {
@@ -180,12 +172,9 @@ const Dashboard = ({
                             <div>
                                 <div className="mb-2 flex items-center justify-between">
                                     <p className="text-sm font-medium">Goals</p>
-                                    <Link
-                                        href={route('goals.index')}
-                                        className="text-xs text-muted-foreground hover:underline"
-                                    >
-                                        All Goals →
-                                    </Link>
+                                    <ViewAllLink href={route('goals.index')}>
+                                        All Goals
+                                    </ViewAllLink>
                                 </div>
                                 <div className="divide-y border">
                                     {goals.map((goal) => {
@@ -245,14 +234,13 @@ const Dashboard = ({
                                     <p className="text-sm font-medium">
                                         Upcoming Recurring
                                     </p>
-                                    <Link
+                                    <ViewAllLink
                                         href={route(
                                             'recurring-transactions.index',
                                         )}
-                                        className="text-xs text-muted-foreground hover:underline"
                                     >
-                                        All Recurring →
-                                    </Link>
+                                        All Recurring
+                                    </ViewAllLink>
                                 </div>
                                 <div className="divide-y border">
                                     {upcoming_recurring.map((r) => (
