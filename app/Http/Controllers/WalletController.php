@@ -26,10 +26,11 @@ class WalletController extends Controller
             ->withCount('transactions')
             ->orderBy('sort_order')
             ->orderBy('created_at')
+            ->limit(config('limits.wallets'))
             ->get()
             ->each(function (Wallet $wallet) {
-                $wallet->setAttribute('net', $wallet->netFlow());
                 $wallet->setAttribute('balance', $wallet->balance());
+                $wallet->setAttribute('net', $wallet->net());
             });
 
         $stats = $wallets
@@ -47,8 +48,8 @@ class WalletController extends Controller
             ->values();
 
         return inertia('wallets/index', [
-            'wallets' => $wallets,
             'stats' => $stats,
+            'wallets' => $wallets,
         ]);
     }
 
@@ -65,6 +66,8 @@ class WalletController extends Controller
      */
     public function store(StoreWalletRequest $request): RedirectResponse
     {
+        abort_if($request->user()->wallets()->count() >= config('limits.wallets'), 403, 'You have reached the maximum limit of wallets.');
+
         $wallet = DB::transaction(function () use ($request) {
             if ($request->boolean('is_default')) {
                 $request->user()->wallets()->update(['is_default' => false]);

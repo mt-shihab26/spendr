@@ -108,6 +108,14 @@ class Wallet extends Model
     }
 
     /**
+     * Net cash flow: income minus expenses.
+     */
+    public function net(): float
+    {
+        return $this->totalIncome() - $this->totalExpense();
+    }
+
+    /**
      * Total income from transactions. Uses pre-loaded value when available.
      */
     private function totalIncome(): float
@@ -175,13 +183,5 @@ class Wallet extends Model
         $this->setAttribute('balance', $this->balance());
 
         return $this;
-    }
-
-    /**
-     * Net cash flow: income minus expenses.
-     */
-    public function netFlow(): float
-    {
-        return $this->totalIncome() - $this->totalExpense();
     }
 }

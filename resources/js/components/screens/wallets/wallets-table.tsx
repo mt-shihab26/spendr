@@ -11,7 +11,14 @@ import { ProfitLossBadge } from '@/components/elements/profit-loss-badge';
 import { WalletActions } from '@/components/screens/wallets/wallet-actions';
 import { WalletDeleteDialog } from '@/components/screens/wallets/wallet-delete-dialog';
 
-export const WalletsTable = ({ wallets }: { wallets: TWallet[] }) => {
+export type TTableWallet = TWallet & {
+    balance: number;
+    income: number;
+    expense: number;
+    net: number;
+};
+
+export const WalletsTable = ({ wallets }: { wallets: TTableWallet[] }) => {
     const [walletToDelete, setWalletToDelete] = useState<TWallet | null>(null);
 
     return (

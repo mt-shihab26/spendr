@@ -6,7 +6,7 @@ import {
     EmptyTitle,
 } from '@/components/ui/empty';
 
-import type { TWallet } from '@/types/models';
+import type { TTableWallet } from '@/components/screens/wallets/wallets-table';
 import type { TStat } from '@/components/elements/currency-stats';
 
 import { Wallet } from 'lucide-react';
@@ -17,11 +17,11 @@ import { WalletsTable } from '@/components/screens/wallets/wallets-table';
 import { CurrencyStats } from '@/components/elements/currency-stats';
 
 const WalletsIndex = ({
-    wallets,
     stats,
+    wallets,
 }: {
-    wallets: TWallet[];
     stats: TStat[];
+    wallets: TTableWallet[];
 }) => {
     return (
         <AppLayout
