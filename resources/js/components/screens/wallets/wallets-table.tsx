@@ -2,13 +2,17 @@ import type { TWallet } from '@/types/models';
 
 import { useState } from 'react';
 import { getCurrencySymbol } from '@/lib/currency';
-import { formatCurrency } from '@/lib/formats';
 
-import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import { Badge } from '@/components/ui/badge';
 import { IconBadge } from '@/components/elements/icon-badge';
-import { ProfitLossBadge } from '@/components/elements/profit-loss-badge';
+import { InitialBalance } from '@/components/elements/initial-balance';
+import { Income } from '@/components/elements/income';
+import { Expense } from '@/components/elements/expense';
+import { TransferIn } from '@/components/elements/transfer-in';
+import { TransferOut } from '@/components/elements/transfer-out';
+import { Balance } from '@/components/elements/balance';
+import { Net } from '@/components/elements/net';
 import { WalletActions } from '@/components/screens/wallets/wallet-actions';
 import { WalletDeleteDialog } from '@/components/screens/wallets/wallet-delete-dialog';
 
@@ -53,85 +57,14 @@ export const WalletsTable = ({ wallets }: { wallets: TTableWallet[] }) => {
                                 </Badge>
                             )}
                         </div>
-                        <div className="flex items-center gap-4 text-xs">
-                            <div className="flex flex-col items-end">
-                                <span className="text-muted-foreground">
-                                    Initial
-                                </span>
-                                <span className="font-medium text-initial-balance tabular-nums">
-                                    {formatCurrency(
-                                        wallet.initial_balance,
-                                        wallet.currency,
-                                    )}
-                                </span>
-                            </div>
-                            <div className="flex flex-col items-end">
-                                <span className="text-muted-foreground">
-                                    Income
-                                </span>
-                                <span className="font-medium text-income tabular-nums">
-                                    {formatCurrency(
-                                        wallet.income ?? 0,
-                                        wallet.currency,
-                                    )}
-                                </span>
-                            </div>
-                            <div className="flex flex-col items-end">
-                                <span className="text-muted-foreground">
-                                    Expenses
-                                </span>
-                                <span className="font-medium text-expense tabular-nums">
-                                    {formatCurrency(
-                                        wallet.expense ?? 0,
-                                        wallet.currency,
-                                    )}
-                                </span>
-                            </div>
-                            {(wallet.transfers_in > 0 ||
-                                wallet.transfers_out > 0) && (
-                                <>
-                                    {wallet.transfers_in > 0 && (
-                                        <div className="flex flex-col items-end">
-                                            <span className="flex items-center gap-1 text-muted-foreground">
-                                                <ArrowDownLeft className="size-3 text-income" />
-                                                In
-                                            </span>
-                                            <span className="font-medium tabular-nums">
-                                                {formatCurrency(
-                                                    wallet.transfers_in,
-                                                    wallet.currency,
-                                                )}
-                                            </span>
-                                        </div>
-                                    )}
-                                    {wallet.transfers_out > 0 && (
-                                        <div className="flex flex-col items-end">
-                                            <span className="flex items-center gap-1 text-muted-foreground">
-                                                <ArrowUpRight className="size-3 text-expense" />
-                                                Out
-                                            </span>
-                                            <span className="font-medium tabular-nums">
-                                                {formatCurrency(
-                                                    wallet.transfers_out,
-                                                    wallet.currency,
-                                                )}
-                                            </span>
-                                        </div>
-                                    )}
-                                </>
-                            )}
-                            <div className="flex flex-col items-end">
-                                <span className="text-muted-foreground">
-                                    Balance
-                                </span>
-                                <span className="font-medium text-balance tabular-nums">
-                                    {formatCurrency(
-                                        wallet.balance ?? 0,
-                                        wallet.currency,
-                                    )}
-                                </span>
-                            </div>
-                            <ProfitLossBadge net={wallet.net ?? 0} />
+                        <div className="flex items-center gap-4">
+                            <InitialBalance amount={wallet.initial_balance} currency={wallet.currency} />
+                            <Income income={wallet.income} currency={wallet.currency} />
+                            <Expense expense={wallet.expense} currency={wallet.currency} />
+                            {wallet.transfers_in > 0 && <TransferIn amount={wallet.transfers_in} currency={wallet.currency} />}
+                            {wallet.transfers_out > 0 && <TransferOut amount={wallet.transfers_out} currency={wallet.currency} />}
+                            <Balance balance={wallet.balance} currency={wallet.currency} />
+                            <Net net={wallet.net} currency={wallet.currency} />
                             <WalletActions
                                 wallet={wallet}
                                 onDelete={setWalletToDelete}

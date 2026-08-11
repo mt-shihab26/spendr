@@ -40,7 +40,7 @@ export const WalletStats = ({ stats }: { stats: TStatWallet[] }) => {
                             key={currency}
                             className="flex items-center px-4 py-3"
                         >
-                            <div className="flex w-[20%] shrink-0 justify-start">
+                            <div className="flex w-[18%] shrink-0 justify-start">
                                 <Balance
                                     balance={balance}
                                     currency={currency}
@@ -50,14 +50,14 @@ export const WalletStats = ({ stats }: { stats: TStatWallet[] }) => {
                                 orientation="vertical"
                                 className="hidden h-8 sm:block"
                             />
-                            <div className="flex w-[15%] shrink-0 justify-start px-4">
+                            <div className="flex w-[14%] shrink-0 justify-start px-4">
                                 <InitialBalance amount={initial_balance} currency={currency} />
                             </div>
                             <Separator
                                 orientation="vertical"
                                 className="hidden h-8 sm:block"
                             />
-                            <div className="flex w-[35%] shrink-0 justify-start px-4">
+                            <div className="flex w-[28%] shrink-0 justify-start px-4">
                                 <div className="w-2/5">
                                     <Income
                                         income={income}
@@ -77,7 +77,7 @@ export const WalletStats = ({ stats }: { stats: TStatWallet[] }) => {
                                         orientation="vertical"
                                         className="hidden h-8 sm:block"
                                     />
-                                    <div className="flex w-[35%] shrink-0 justify-start px-4">
+                                    <div className="flex w-[28%] shrink-0 justify-start px-4">
                                         <div className="w-2/5">
                                             {transfers_in > 0 && (
                                                 <TransferIn
