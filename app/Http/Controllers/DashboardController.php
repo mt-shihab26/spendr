@@ -26,11 +26,11 @@ class DashboardController extends Controller
         $wallets = $this->getWallets($user);
 
         return inertia('dashboard', [
-            'currencyStats' => $this->getCurrencyStats($user, $wallets),
+            'currencyStats' => $this->getCurrencyStats($user, $wallets, $period),
             'wallets' => $this->getTopWallets($wallets),
-            'spendingCategories' => $this->getSpendingByCategory($user, $wallets),
+            'spendingCategories' => $this->getSpendingByCategory($user, $wallets, $period),
             'recentTransactions' => $this->getRecentTransactions($user),
-            'budgets' => $this->getBudgetStatus($user),
+            'budgets' => $this->getBudgetStatus($user, $period),
             'goals' => $this->getGoals($user),
             'upcomingRecurring' => $this->getUpcomingRecurring($user),
         ]);
@@ -76,11 +76,11 @@ class DashboardController extends Controller
      * Build per-currency balance and income/expense stats for the given month.
      *
      * @param  Collection<int, Wallet>  $wallets
+     * @param  object{year: int, month: int, prevYear: int, prevMonth: int}  $period
      * @return array<int, array{currency: string, balance: float, net_worth_delta: float, month_income: float, prev_month_income: float, month_expense: float, prev_month_expense: float}>
      */
-    private function getCurrencyStats(User $user, Collection $wallets): array
+    private function getCurrencyStats(User $user, Collection $wallets, object $period): array
     {
-        $period = $this->period();
 
         $currencies = $wallets
             ->map(fn (Wallet $w) => $w->currency)
@@ -142,17 +142,16 @@ class DashboardController extends Controller
      * Each category entry contains per-currency totals and percentages.
      *
      * @param  Collection<int, Wallet>  $wallets
+     * @param  object{year: int, month: int, prevYear: int, prevMonth: int}  $period
      * @return array<int, array{name: string, color: string, total: array<string, float>, percentage: array<string, float>}>
      */
-    private function getSpendingByCategory(User $user, Collection $wallets): array
+    private function getSpendingByCategory(User $user, Collection $wallets, object $period): array
     {
         $wallets = $this->getTopWallets($wallets);
 
         if ($wallets->isEmpty()) {
             return [];
         }
-
-        $period = $this->period();
 
         $walletCurrencyMap = $wallets->pluck('currency', 'id')
             ->map(fn (Currency $c) => $c->value);
@@ -248,11 +247,11 @@ class DashboardController extends Controller
     /**
      * Get expense budgets with their current-month spending in the given currency.
      *
+     * @param  object{year: int, month: int, prevYear: int, prevMonth: int}  $period
      * @return array<int, array{id: string, category: mixed, budget_amount: float, spent: float}>
      */
-    private function getBudgetStatus(User $user): array
+    private function getBudgetStatus(User $user, object $period): array
     {
-        $period = $this->period();
 
         $budgets = Budget::query()
             ->where('user_id', $user->id)
