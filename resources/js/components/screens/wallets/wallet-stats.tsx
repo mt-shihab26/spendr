@@ -48,32 +48,43 @@ export const WalletStats = ({ stats }: { stats: TStatWallet[] }) => {
                                 orientation="vertical"
                                 className="hidden h-8 sm:block"
                             />
-                            <div className="flex w-[35%] shrink-0 justify-start gap-6 px-4">
-                                <Income income={income} currency={currency} />
-                                <Expense
-                                    expense={expense}
-                                    currency={currency}
-                                />
+                            <div className="flex w-[35%] shrink-0 justify-start px-4">
+                                <div className="w-2/5">
+                                    <Income
+                                        income={income}
+                                        currency={currency}
+                                    />
+                                </div>
+                                <div className="w-3/5">
+                                    <Expense
+                                        expense={expense}
+                                        currency={currency}
+                                    />
+                                </div>
                             </div>
-                            {hasTransfers && (
+                            {false && (
                                 <>
                                     <Separator
                                         orientation="vertical"
                                         className="hidden h-8 sm:block"
                                     />
-                                    <div className="flex w-[35%] shrink-0 justify-start gap-4 px-4">
-                                        {transfers_in > 0 && (
-                                            <TransferIn
-                                                amount={transfers_in}
-                                                currency={currency}
-                                            />
-                                        )}
-                                        {transfers_out > 0 && (
-                                            <TransferOut
-                                                amount={transfers_out}
-                                                currency={currency}
-                                            />
-                                        )}
+                                    <div className="flex w-[35%] shrink-0 justify-start px-4">
+                                        <div className="w-2/5">
+                                            {transfers_in > 0 && (
+                                                <TransferIn
+                                                    amount={transfers_in}
+                                                    currency={currency}
+                                                />
+                                            )}
+                                        </div>
+                                        <div className="w-3/5">
+                                            {transfers_out > 0 && (
+                                                <TransferOut
+                                                    amount={transfers_out}
+                                                    currency={currency}
+                                                />
+                                            )}
+                                        </div>
                                     </div>
                                 </>
                             )}
