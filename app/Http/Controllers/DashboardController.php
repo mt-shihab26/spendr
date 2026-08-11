@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\DashboardPeriod;
 use App\Enums\Currency;
 use App\Enums\Type;
 use App\Models\Budget;
@@ -22,8 +23,15 @@ class DashboardController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $period = $this->period();
-        $wallets = $this->getWallets($user);
+
+        $period = DashboardPeriod::fromNow();
+
+        $wallets = $user->wallets()
+            ->withStats()
+            ->orderBy('sort_order')
+            ->orderBy('created_at')
+            ->get()
+            ->each(fn ($w) => $w->setAttribute('balance', $w->balance()));
 
         return inertia('dashboard', [
             'currencyStats' => $this->getCurrencyStats($user, $wallets, $period),
@@ -37,51 +45,13 @@ class DashboardController extends Controller
     }
 
     /**
-     * Load all user wallets with balance computed from aggregated stats.
-     *
-     * @return Collection<int, Wallet>
-     */
-    private function getWallets(User $user): Collection
-    {
-        return $user->wallets()
-            ->withStats()
-            ->orderBy('sort_order')
-            ->orderBy('created_at')
-            ->get()
-            ->each(fn ($w) => $w->setAttribute('balance', $w->balance()));
-    }
-
-    /**
-     * Return the current and previous month parts as an object.
-     *
-     * @return object{year: int, month: int, prevYear: int, prevMonth: int}
-     */
-    private function period(): object
-    {
-        $now = now();
-        $prev = $now->copy()->subMonth();
-
-        return new class((int) $now->year, (int) $now->month, (int) $prev->year, (int) $prev->month)
-        {
-            public function __construct(
-                public readonly int $year,
-                public readonly int $month,
-                public readonly int $prevYear,
-                public readonly int $prevMonth,
-            ) {}
-        };
-    }
-
-    /**
      * Build per-currency balance and income/expense stats for the given month.
      *
      * @param  Collection<int, Wallet>  $wallets
-     * @param  object{year: int, month: int, prevYear: int, prevMonth: int}  $period
      * @return array<int, array{currency: string, balance: float, net_worth_delta: float, month_income: float, prev_month_income: float, month_expense: float, prev_month_expense: float}>
      */
-    private function getCurrencyStats(User $user, Collection $wallets, object $period): array
+    private function getCurrencyStats(User $user, Collection $wallets, DashboardPeriod $period): array
     {
-
         $currencies = $wallets
             ->map(fn (Wallet $w) => $w->currency)
             ->unique()
@@ -142,10 +112,9 @@ class DashboardController extends Controller
      * Each category entry contains per-currency totals and percentages.
      *
      * @param  Collection<int, Wallet>  $wallets
-     * @param  object{year: int, month: int, prevYear: int, prevMonth: int}  $period
      * @return array<int, array{name: string, color: string, total: array<string, float>, percentage: array<string, float>}>
      */
-    private function getSpendingByCategory(User $user, Collection $wallets, object $period): array
+    private function getSpendingByCategory(User $user, Collection $wallets, DashboardPeriod $period): array
     {
         $wallets = $this->getTopWallets($wallets);
 
@@ -248,10 +217,9 @@ class DashboardController extends Controller
     /**
      * Get expense budgets with their current-month spending in the given currency.
      *
-     * @param  object{year: int, month: int, prevYear: int, prevMonth: int}  $period
      * @return array<int, array{id: string, category: mixed, budget_amount: float, spent: float}>
      */
-    private function getBudgetStatus(User $user, object $period): array
+    private function getBudgetStatus(User $user, DashboardPeriod $period): array
     {
 
         $budgets = Budget::query()
