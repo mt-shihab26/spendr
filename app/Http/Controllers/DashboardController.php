@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\Enums\Currency;
 use App\Enums\Type;
 use App\Models\Budget;
+use App\Models\RecurringTransaction;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 use Inertia\Response;
 
 class DashboardController extends Controller
@@ -21,39 +21,18 @@ class DashboardController extends Controller
      */
     public function index(Request $request): Response
     {
-        $request->validate([
-            'currency' => ['nullable', 'string', Rule::enum(Currency::class)],
-        ]);
-
         $user = $request->user();
-
         $period = $this->period();
-
         $wallets = $this->getWallets($user);
 
-        $currencies = $wallets
-            ->map(fn (Wallet $w) => $w->currency)
-            ->unique()
-            ->sort()
-            ->values()
-            ->all();
-
-        $primaryCurrency = $request->input('currency')
-            ?? (in_array(Currency::BDT, $currencies, true) ? Currency::BDT->value : (isset($currencies[0]) ? $currencies[0]->value : null));
-
         return inertia('dashboard', [
-            'currencyStats' => $this->getCurrencyStats($user, $wallets, $currencies),
+            'currencyStats' => $this->getCurrencyStats($user, $wallets),
             'wallets' => $this->getTopWallets($wallets),
             'spendingCategories' => $this->getSpendingByCategory($user, $wallets),
             'recentTransactions' => $this->getRecentTransactions($user),
-            'budgets' => $this->getBudgetStatus($user, $period->year, $period->month),
-            'upcomingRecurring' => $this->getUpcomingRecurring($user),
+            'budgets' => $this->getBudgetStatus($user),
             'goals' => $this->getGoals($user),
-            'currencies' => array_map(fn (Currency $c) => $c->value, $currencies),
-            'primary_currency' => $primaryCurrency,
-            'filters' => [
-                'currency' => $request->input('currency'),
-            ],
+            'upcomingRecurring' => $this->getUpcomingRecurring($user),
         ]);
     }
 
@@ -96,13 +75,19 @@ class DashboardController extends Controller
     /**
      * Build per-currency balance and income/expense stats for the given month.
      *
-     * @param  array<int, Currency>  $currencies
      * @param  Collection<int, Wallet>  $wallets
      * @return array<int, array{currency: string, balance: float, net_worth_delta: float, month_income: float, prev_month_income: float, month_expense: float, prev_month_expense: float}>
      */
-    private function getCurrencyStats(User $user, Collection $wallets, array $currencies): array
+    private function getCurrencyStats(User $user, Collection $wallets): array
     {
         $period = $this->period();
+
+        $currencies = $wallets
+            ->map(fn (Wallet $w) => $w->currency)
+            ->unique()
+            ->sort()
+            ->values()
+            ->all();
 
         $transactionSumByType = function (Collection $walletIds, Type $type, int $year, int $month) use ($user): float {
             if ($walletIds->isEmpty()) {
@@ -232,9 +217,9 @@ class DashboardController extends Controller
     /**
      * Return the 5 next active recurring transactions ordered by due date.
      *
-     * @return \Illuminate\Support\Collection<int, \App\Models\RecurringTransaction>
+     * @return Collection<int, RecurringTransaction>
      */
-    private function getUpcomingRecurring(User $user): \Illuminate\Support\Collection
+    private function getUpcomingRecurring(User $user): Collection
     {
         return $user->recurringTransactions()
             ->with(['wallet', 'category'])
@@ -247,9 +232,9 @@ class DashboardController extends Controller
     /**
      * Return the 4 goals with least progress, each augmented with progress_percentage.
      *
-     * @return \Illuminate\Support\Collection<int, array<string, mixed>>
+     * @return Collection<int, array<string, mixed>>
      */
-    private function getGoals(User $user): \Illuminate\Support\Collection
+    private function getGoals(User $user): Collection
     {
         return $user->goals()
             ->orderByRaw('(current_amount / target_amount) ASC')
@@ -265,8 +250,10 @@ class DashboardController extends Controller
      *
      * @return array<int, array{id: string, category: mixed, budget_amount: float, spent: float}>
      */
-    private function getBudgetStatus(User $user, int $year, int $month): array
+    private function getBudgetStatus(User $user): array
     {
+        $period = $this->period();
+
         $budgets = Budget::query()
             ->where('user_id', $user->id)
             ->with('category')
@@ -276,8 +263,8 @@ class DashboardController extends Controller
             ->join('wallets', 'transactions.wallet_id', '=', 'wallets.id')
             ->where('transactions.user_id', $user->id)
             ->where('transactions.type', Type::Expense->value)
-            ->whereYear('transactions.transacted_at', $year)
-            ->whereMonth('transactions.transacted_at', $month)
+            ->whereYear('transactions.transacted_at', $period->year)
+            ->whereMonth('transactions.transacted_at', $period->month)
             ->whereNull('transactions.deleted_at')
             ->select('transactions.category_id', 'wallets.currency', DB::raw('SUM(transactions.amount) as total'))
             ->groupBy('transactions.category_id', 'wallets.currency')

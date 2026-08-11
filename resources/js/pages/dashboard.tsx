@@ -3,6 +3,7 @@ import type {
     TRecurringTransaction,
     TTransaction,
 } from '@/types/models';
+
 import type { TSpendingCategory } from '@/components/screens/dashboard/top-spending-by-category';
 import type { TCurrencyStat } from '@/components/screens/dashboard/currency-stats';
 import type { TDashboardWallet } from '@/components/screens/dashboard/top-wallets';
