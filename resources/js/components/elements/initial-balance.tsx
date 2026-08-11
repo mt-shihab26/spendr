@@ -16,6 +16,5 @@ export const InitialBalance = ({
         label="Initial"
         value={amount}
         currency={currency}
-        valueClassName="text-initial-balance"
     />
 );

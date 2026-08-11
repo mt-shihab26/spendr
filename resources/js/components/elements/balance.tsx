@@ -21,7 +21,6 @@ export const Balance = ({
                 label="Balance"
                 value={balance}
                 currency={currency}
-                valueClassName="text-balance"
             />
         );
     }

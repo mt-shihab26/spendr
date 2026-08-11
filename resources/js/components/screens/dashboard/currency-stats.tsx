@@ -106,7 +106,7 @@ export const CurrencyStats = ({
                             <p className="text-xs text-muted-foreground">
                                 This Month Income
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-income tabular-nums">
+                            <p className="mt-1 text-lg font-semibold tabular-nums">
                                 {formatCurrency(
                                     stat.month_income,
                                     stat.currency,
@@ -121,7 +121,7 @@ export const CurrencyStats = ({
                             <p className="text-xs text-muted-foreground">
                                 This Month Expenses
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-expense tabular-nums">
+                            <p className="mt-1 text-lg font-semibold tabular-nums">
                                 {formatCurrency(
                                     stat.month_expense,
                                     stat.currency,

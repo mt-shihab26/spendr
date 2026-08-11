@@ -10,6 +10,5 @@ export const Net = ({ net, currency }: { net: number; currency: TCurrency }) => 
         label="Net"
         value={net}
         currency={currency}
-        valueClassName={net >= 0 ? 'text-income' : 'text-expense'}
     />
 );
