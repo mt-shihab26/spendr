@@ -16,14 +16,14 @@ export const UpcomingRecurring = ({
     }
 
     return (
-        <div className="flex-1">
+        <div className="flex flex-1 flex-col">
             <div className="mb-2 flex items-center justify-between">
                 <p className="text-sm font-medium">Upcoming Recurring</p>
                 <ViewAllLink href={route('recurring-transactions.index')}>
                     All Recurring
                 </ViewAllLink>
             </div>
-            <div className="divide-y border">
+            <div className="flex-1 divide-y border">
                 {upcomingRecurring.map((r) => (
                     <Link
                         key={r.id}

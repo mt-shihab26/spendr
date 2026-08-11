@@ -16,7 +16,7 @@ export const TopSpendingByCategory = ({
     spendingCategories: TSpendingCategory[];
 }) => {
     return (
-        <div className="h-full flex-1 border p-4">
+        <div className="flex-1 border p-4">
             <div className="mb-3 flex items-center justify-between">
                 <p className="text-sm font-medium">Top Spending by Category</p>
                 <ViewAllLink href={route('categories.index')}>

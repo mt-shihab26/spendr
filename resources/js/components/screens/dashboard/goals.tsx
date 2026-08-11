@@ -10,12 +10,12 @@ export const Goals = ({ goals }: { goals: TGoal[] }) => {
     }
 
     return (
-        <div className="flex-1">
+        <div className="flex flex-1 flex-col">
             <div className="mb-2 flex items-center justify-between">
                 <p className="text-sm font-medium">Goals</p>
                 <ViewAllLink href={route('goals.index')}>All Goals</ViewAllLink>
             </div>
-            <div className="divide-y border">
+            <div className="flex-1 divide-y border">
                 {goals.map((goal) => {
                     const pct = goal.progress_percentage ?? 0;
                     return (

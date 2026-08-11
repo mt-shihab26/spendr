@@ -10,7 +10,7 @@ export type TDashboardWallet = TWallet & { balance: number };
 
 export const TopWallets = ({ wallets }: { wallets: TDashboardWallet[] }) => {
     return (
-        <div className="h-full flex-1 border p-4">
+        <div className="flex-1 border p-4">
             <div className="mb-3 flex items-center justify-between">
                 <p className="text-sm font-medium">Top Wallets</p>
                 <ViewAllLink href={route('wallets.index')}>
