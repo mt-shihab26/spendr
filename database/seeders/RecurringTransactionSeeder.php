@@ -19,24 +19,25 @@ class RecurringTransactionSeeder extends Seeder
     public function run(): void
     {
         User::all()->each(function (User $user) {
-            $wallets = Wallet::where('user_id', $user->id)->get();
-            $categories = Category::where('user_id', $user->id)->get();
+            foreach (config('seeds.demo_recurring') as $data) {
+                $wallet = Wallet::where('user_id', $user->id)->where('name', $data['wallet'])->first();
+                $category = Category::where('user_id', $user->id)->where('name', $data['category'])->first();
 
-            if ($wallets->isEmpty()) {
-                return;
-            }
+                if (! $wallet || ! $category) {
+                    continue;
+                }
 
-            foreach (range(1, fake()->numberBetween(3, 8)) as $ignored) {
-                $wallet = $wallets->random();
-                $category = $categories->isNotEmpty() ? $categories->random() : null;
-
-                RecurringTransaction::factory()
-                    ->for($user)
-                    ->for($wallet)
-                    ->create([
-                        'category_id' => $category?->id,
-                        'type' => $category?->type ?? fake()->randomElement(['income', 'expense']),
-                    ]);
+                RecurringTransaction::create([
+                    'user_id'     => $user->id,
+                    'wallet_id'   => $wallet->id,
+                    'category_id' => $category->id,
+                    'type'        => $data['type'],
+                    'amount'      => $data['amount'],
+                    'description' => $data['description'],
+                    'frequency'   => $data['frequency'],
+                    'next_due_at' => now()->startOfMonth()->addMonth()->addDays($data['due_day'] - 1)->format('Y-m-d'),
+                    'is_active'   => true,
+                ]);
             }
         });
     }

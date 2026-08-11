@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Enums\Type;
 use App\Models\Budget;
 use App\Models\Category;
 use App\Models\User;
@@ -19,17 +18,18 @@ class BudgetSeeder extends Seeder
     public function run(): void
     {
         User::all()->each(function (User $user) {
-            $expenseCategories = Category::where('user_id', $user->id)
-                ->where('type', Type::Expense->value)
-                ->get();
+            foreach (config('seeds.demo_budgets') as $categoryName => $limits) {
+                $category = Category::where('user_id', $user->id)->where('name', $categoryName)->first();
+                if (! $category) {
+                    continue;
+                }
 
-            $expenseCategories->each(function (Category $category) use ($user) {
-                Budget::factory()
-                    ->for($user)
-                    ->create([
-                        'category_id' => $category->id,
-                    ]);
-            });
+                Budget::create([
+                    'user_id'     => $user->id,
+                    'category_id' => $category->id,
+                    'amount'      => array_filter($limits, fn ($v) => $v !== null),
+                ]);
+            }
         });
     }
 }

@@ -17,10 +17,18 @@ class GoalSeeder extends Seeder
     public function run(): void
     {
         User::all()->each(function (User $user) {
-            Goal::factory()
-                ->for($user)
-                ->count(fake()->numberBetween(2, 5))
-                ->create();
+            foreach (config('seeds.demo_goals') as $data) {
+                Goal::create([
+                    'user_id'        => $user->id,
+                    'name'           => $data['name'],
+                    'currency'       => $data['currency'],
+                    'target_amount'  => $data['target_amount'],
+                    'current_amount' => $data['current_amount'],
+                    'color'          => $data['color'],
+                    'icon'           => $data['icon'],
+                    'target_date'    => now()->addMonths($data['months_ahead'])->format('Y-m-d'),
+                ]);
+            }
         });
     }
 }
