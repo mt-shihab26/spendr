@@ -34,8 +34,9 @@ export const TransferStats = ({ stats }: { stats: TTransferStat[] }) => {
                     </div>
                     <div className="ml-auto flex items-center">
                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <Hash className="size-3" />
-                            <span className="font-medium uppercase">{currency}</span>
+                            <span className="font-medium uppercase">
+                                {currency}
+                            </span>
                         </div>
                     </div>
                 </div>
