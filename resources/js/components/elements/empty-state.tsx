@@ -6,6 +6,8 @@ import {
     EmptyTitle,
 } from '@/components/ui/empty';
 
+import type { ReactNode } from 'react';
+
 import { NewButton } from '@/components/elements/new-button';
 
 export const EmptyState = ({

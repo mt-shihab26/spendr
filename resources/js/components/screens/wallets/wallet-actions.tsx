@@ -38,7 +38,6 @@ export const WalletActions = ({
             {hasTransactions ? (
                 <WithTooltip
                     content="Reassign or delete all transactions first."
-                    disabled
                     className="w-full"
                 >
                     <DeleteItem onClick={() => {}} disabled />

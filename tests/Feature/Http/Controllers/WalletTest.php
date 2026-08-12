@@ -566,3 +566,249 @@ describe('show', function () {
             );
     });
 });
+
+describe('edit', function () {
+    test('guests are redirected to the login page', function () {
+        $wallet = Wallet::factory()->for(User::factory()->create())->create();
+
+        $this->get(route('wallets.edit', $wallet))
+            ->assertRedirect(route('login'));
+    });
+
+    test('authenticated users can visit the edit wallet page', function () {
+        $user = User::factory()->create();
+        $wallet = Wallet::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->get(route('wallets.edit', $wallet))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('wallets/edit'));
+    });
+
+    test('returns 403 when the wallet belongs to another user', function () {
+        $user = User::factory()->create();
+        $other = User::factory()->create();
+        $wallet = Wallet::factory()->for($other)->create();
+
+        $this->actingAs($user)
+            ->get(route('wallets.edit', $wallet))
+            ->assertForbidden();
+    });
+
+    test('has_transactions is false when wallet has no transactions', function () {
+        $user = User::factory()->create();
+        $wallet = Wallet::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->get(route('wallets.edit', $wallet))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('wallet.has_transactions', false)
+            );
+    });
+
+    test('has_transactions is true when wallet has transactions', function () {
+        $user = User::factory()->create();
+        $wallet = Wallet::factory()->for($user)->create();
+        $category = Category::factory()->for($user)->expense()->create();
+
+        Transaction::factory()->create([
+            'user_id' => $user->id,
+            'wallet_id' => $wallet->id,
+            'category_id' => $category->id,
+            'type' => Type::Expense->value,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('wallets.edit', $wallet))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('wallet.has_transactions', true)
+            );
+    });
+});
+
+describe('update', function () {
+    test('guests are redirected to the login page', function () {
+        $wallet = Wallet::factory()->for(User::factory()->create())->create();
+
+        $this->patch(route('wallets.update', $wallet), [])
+            ->assertRedirect(route('login'));
+    });
+
+    test('returns 403 when the wallet belongs to another user', function () {
+        $user = User::factory()->create();
+        $other = User::factory()->create();
+        $wallet = Wallet::factory()->for($other)->create();
+
+        $this->actingAs($user)
+            ->patch(route('wallets.update', $wallet), ['name' => 'New Name'])
+            ->assertForbidden();
+    });
+
+    test('updates the wallet and redirects back with a success message', function () {
+        $user = User::factory()->create();
+        $wallet = Wallet::factory()->for($user)->create(['name' => 'Old Name']);
+
+        $this->actingAs($user)
+            ->patch(route('wallets.update', $wallet), ['name' => 'New Name'])
+            ->assertRedirect()
+            ->assertSessionHas('success', 'Wallet updated.');
+
+        expect($wallet->fresh()->name)->toBe('New Name');
+    });
+
+    test('when is_default is true, clears default from all other wallets', function () {
+        $user = User::factory()->create();
+        $other = Wallet::factory()->for($user)->default()->create();
+        $wallet = Wallet::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->patch(route('wallets.update', $wallet), ['is_default' => true]);
+
+        expect($other->fresh()->is_default)->toBeFalse();
+        expect($wallet->fresh()->is_default)->toBeTrue();
+    });
+
+    test('when is_default is true, does not clear default from itself', function () {
+        $user = User::factory()->create();
+        $wallet = Wallet::factory()->for($user)->default()->create();
+
+        $this->actingAs($user)
+            ->patch(route('wallets.update', $wallet), ['is_default' => true]);
+
+        expect($wallet->fresh()->is_default)->toBeTrue();
+    });
+
+    test('when is_default is false, other wallets keep their default status', function () {
+        $user = User::factory()->create();
+        $default = Wallet::factory()->for($user)->default()->create();
+        $wallet = Wallet::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->patch(route('wallets.update', $wallet), ['is_default' => false]);
+
+        expect($default->fresh()->is_default)->toBeTrue();
+    });
+
+    test('name must be unique per user ignoring the wallet itself', function () {
+        $user = User::factory()->create();
+        $wallet = Wallet::factory()->for($user)->create(['name' => 'Savings']);
+
+        $this->actingAs($user)
+            ->patch(route('wallets.update', $wallet), ['name' => 'Savings'])
+            ->assertSessionHasNoErrors();
+    });
+
+    test('name must not duplicate another wallet name for the same user', function () {
+        $user = User::factory()->create();
+        Wallet::factory()->for($user)->create(['name' => 'Savings']);
+        $wallet = Wallet::factory()->for($user)->create(['name' => 'Other']);
+
+        $this->actingAs($user)
+            ->patch(route('wallets.update', $wallet), ['name' => 'Savings'])
+            ->assertSessionHasErrors('name');
+    });
+
+    test('name must not exceed 100 characters', function () {
+        $user = User::factory()->create();
+        $wallet = Wallet::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->patch(route('wallets.update', $wallet), ['name' => str_repeat('a', 101)])
+            ->assertSessionHasErrors('name');
+    });
+
+    test('currency must be a valid enum value', function () {
+        $user = User::factory()->create();
+        $wallet = Wallet::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->patch(route('wallets.update', $wallet), ['currency' => 'INVALID'])
+            ->assertSessionHasErrors('currency');
+    });
+
+    test('initial_balance must not be negative', function () {
+        $user = User::factory()->create();
+        $wallet = Wallet::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->patch(route('wallets.update', $wallet), ['initial_balance' => -50])
+            ->assertSessionHasErrors('initial_balance');
+    });
+});
+
+describe('destroy', function () {
+    test('guests are redirected to the login page', function () {
+        $wallet = Wallet::factory()->for(User::factory()->create())->create();
+
+        $this->delete(route('wallets.destroy', $wallet))
+            ->assertRedirect(route('login'));
+    });
+
+    test('returns 403 when the wallet belongs to another user', function () {
+        $user = User::factory()->create();
+        $other = User::factory()->create();
+        $wallet = Wallet::factory()->for($other)->create();
+
+        $this->actingAs($user)
+            ->delete(route('wallets.destroy', $wallet))
+            ->assertForbidden();
+    });
+
+    test('deletes the wallet and redirects to the index with a success message', function () {
+        $user = User::factory()->create();
+        $wallet = Wallet::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->delete(route('wallets.destroy', $wallet))
+            ->assertRedirect(route('wallets.index'))
+            ->assertSessionHas('success', 'Wallet deleted.');
+
+        $this->assertDatabaseMissing('wallets', ['id' => $wallet->id]);
+    });
+
+    test('when the deleted wallet was default, promotes the next wallet to default', function () {
+        $user = User::factory()->create();
+        $default = Wallet::factory()->for($user)->default()->create(['sort_order' => 1]);
+        $next = Wallet::factory()->for($user)->create(['sort_order' => 2]);
+
+        $this->actingAs($user)
+            ->delete(route('wallets.destroy', $default));
+
+        expect($next->fresh()->is_default)->toBeTrue();
+    });
+
+    test('promotes the wallet with the lowest sort_order first', function () {
+        $user = User::factory()->create();
+        $default = Wallet::factory()->for($user)->default()->create(['sort_order' => 1]);
+        $second = Wallet::factory()->for($user)->create(['sort_order' => 3]);
+        $first = Wallet::factory()->for($user)->create(['sort_order' => 2]);
+
+        $this->actingAs($user)
+            ->delete(route('wallets.destroy', $default));
+
+        expect($first->fresh()->is_default)->toBeTrue();
+        expect($second->fresh()->is_default)->toBeFalse();
+    });
+
+    test('when the deleted wallet was not default, no other wallet is promoted', function () {
+        $user = User::factory()->create();
+        $default = Wallet::factory()->for($user)->default()->create();
+        $wallet = Wallet::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->delete(route('wallets.destroy', $wallet));
+
+        expect($default->fresh()->is_default)->toBeTrue();
+    });
+
+    test('when no other wallets exist after deleting the default, nothing breaks', function () {
+        $user = User::factory()->create();
+        $wallet = Wallet::factory()->for($user)->default()->create();
+
+        $this->actingAs($user)
+            ->delete(route('wallets.destroy', $wallet))
+            ->assertRedirect(route('wallets.index'));
+
+        expect($user->wallets()->count())->toBe(0);
+    });
+});
