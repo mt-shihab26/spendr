@@ -29,20 +29,30 @@ class TransferController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        $transfers = $request->user()
+        $baseQuery = $request->user()
             ->transfers()
-            ->with(['fromWallet', 'toWallet'])
             ->when(! empty($filters['wallet_id']), fn ($q) => $q->where(fn ($q) => $q->where('from_wallet_id', $filters['wallet_id'])->orWhere('to_wallet_id', $filters['wallet_id'])))
             ->when(! empty($filters['date_from']), fn ($q) => $q->whereDate('transacted_at', '>=', $filters['date_from']))
-            ->when(! empty($filters['date_to']), fn ($q) => $q->whereDate('transacted_at', '<=', $filters['date_to']))
+            ->when(! empty($filters['date_to']), fn ($q) => $q->whereDate('transacted_at', '<=', $filters['date_to']));
+
+        $transfers = (clone $baseQuery)
+            ->with(['fromWallet', 'toWallet'])
             ->orderByDesc('transacted_at')
             ->orderByDesc('created_at')
             ->paginate(20);
+
+        $stats = (clone $baseQuery)
+            ->join('wallets', 'transfers.from_wallet_id', '=', 'wallets.id')
+            ->selectRaw('wallets.currency, COUNT(transfers.id) as count, ROUND(SUM(transfers.amount), 2) as volume')
+            ->groupBy('wallets.currency')
+            ->orderBy('wallets.currency')
+            ->get();
 
         return inertia('transfers/index', [
             'filters' => $filters,
             'wallets' => $wallets,
             'transfers' => Inertia::scroll($transfers),
+            'stats' => $stats,
         ]);
     }
 

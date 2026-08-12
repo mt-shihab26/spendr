@@ -1,6 +1,7 @@
 import type { TPaginated } from '@/types/utils';
 import type { TTransterWithWallets } from '@/types/withs';
 import type { TWallet } from '@/types/models';
+import type { TTransferStat } from '@/components/screens/transfers/transfer-stats';
 
 import { router } from '@inertiajs/react';
 
@@ -10,6 +11,7 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { TransfersTable } from '@/components/screens/transfers/transfers-table';
+import { TransferStats } from '@/components/screens/transfers/transfer-stats';
 import { DateRangePicker } from '@/components/elements/date-range-picker';
 import { WalletSelect } from '@/components/elements/wallet-select';
 import { EmptyState } from '@/components/elements/empty-state';
@@ -24,10 +26,12 @@ const TransfersIndex = ({
     filters,
     wallets,
     transfers,
+    stats,
 }: {
     filters: TFilters;
     wallets: TWallet[];
     transfers: TPaginated<TTransterWithWallets>;
+    stats: TTransferStat[];
 }) => {
     const title = `Transfers (${transfers.total})`;
 
@@ -97,9 +101,12 @@ const TransfersIndex = ({
                         action="Record first transfer"
                     />
                 ) : (
-                    <InfiniteScroll data="transfers" onlyNext preserveUrl>
-                        <TransfersTable transfers={transfers.data} />
-                    </InfiniteScroll>
+                    <>
+                        {stats.length > 0 && <TransferStats stats={stats} />}
+                        <InfiniteScroll data="transfers" onlyNext preserveUrl>
+                            <TransfersTable transfers={transfers.data} />
+                        </InfiniteScroll>
+                    </>
                 )}
             </div>
         </AppLayout>
