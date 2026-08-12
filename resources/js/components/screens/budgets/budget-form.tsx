@@ -20,8 +20,8 @@ export const BudgetForm = ({
     categories: TCategory[];
 }) => {
     const { data, setData, post, patch, processing, errors } = useForm({
-        category_id: budget?.category_id ?? null,
-        amount: budget?.amount ?? ({} as TBudget['amount']),
+        category_id: budget ? (budget?.category_id ?? null) : null,
+        amount: budget ? (budget?.amount ?? null) : ({} as TBudget['amount']),
     });
 
     return (

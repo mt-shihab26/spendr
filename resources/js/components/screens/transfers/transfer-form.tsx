@@ -26,16 +26,15 @@ export const TransferForm = ({
     wallets: TWallet[];
 }) => {
     const { data, setData, post, patch, processing, errors } = useForm({
-        from_wallet_id:
-            transfer?.from_wallet_id ??
-            wallets.find((w) => w.is_default)?.id ??
-            null,
-        to_wallet_id: transfer?.to_wallet_id ?? null,
-        amount: transfer?.amount ?? 0,
-        transacted_at: transfer?.transacted_at
+        from_wallet_id: transfer
+            ? (transfer?.from_wallet_id ?? null)
+            : (wallets.find((w) => w.is_default)?.id ?? null),
+        to_wallet_id: transfer ? (transfer?.to_wallet_id ?? null) : null,
+        amount: transfer ? (transfer?.amount ?? null) : 0,
+        transacted_at: transfer
             ? normalizeUtcIso(transfer.transacted_at)
             : nowUtcIso(),
-        notes: transfer?.notes ?? '',
+        notes: transfer ? (transfer?.notes ?? null) : '',
     });
 
     const fromWallet = wallets.find((w) => w.id === data.from_wallet_id);

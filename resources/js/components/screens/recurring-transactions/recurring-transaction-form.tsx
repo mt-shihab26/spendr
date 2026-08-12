@@ -5,13 +5,6 @@ import { useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { InputError } from '@/components/elements/input-error';
 import { Switch } from '@/components/ui/switch';
@@ -19,7 +12,7 @@ import { TypePicker } from '@/components/elements/type-picker';
 import { NumberInput } from '@/components/elements/number-input';
 import { WalletSelect } from '@/components/elements/wallet-select';
 import { CategorySelect } from '@/components/elements/category-select';
-import type { TFrequency } from '@/types/enums';
+import { FrequencySelect } from '@/components/elements/frequency-select';
 
 export const RecurringTransactionForm = ({
     recurring,
@@ -31,14 +24,14 @@ export const RecurringTransactionForm = ({
     categories: TCategory[];
 }) => {
     const { data, setData, post, patch, processing, errors } = useForm({
-        wallet_id: recurring?.wallet_id ?? '',
-        category_id: recurring?.category_id ?? '',
+        wallet_id: recurring ? (recurring?.wallet_id ?? null) : '',
+        category_id: recurring ? (recurring?.category_id ?? null) : '',
         type: recurring ? (recurring?.type ?? null) : 'expense',
-        amount: recurring?.amount ?? 0,
-        name: recurring?.name ?? '',
-        notes: recurring?.notes ?? '',
+        amount: recurring ? (recurring?.amount ?? null) : 0,
+        name: recurring ? (recurring?.name ?? null) : '',
+        notes: recurring ? (recurring?.notes ?? null) : '',
         frequency: recurring ? (recurring?.frequency ?? null) : 'monthly',
-        next_due_at: recurring?.next_due_at ?? '',
+        next_due_at: recurring ? (recurring?.next_due_at ?? null) : '',
         is_active: recurring ? (recurring?.is_active ?? null) : true,
     });
 
@@ -116,22 +109,10 @@ export const RecurringTransactionForm = ({
             <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                     <Label htmlFor="frequency">Frequency</Label>
-                    <Select
+                    <FrequencySelect
                         value={data.frequency}
-                        onValueChange={(v) =>
-                            setData('frequency', v as TFrequency)
-                        }
-                    >
-                        <SelectTrigger id="frequency">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="daily">Daily</SelectItem>
-                            <SelectItem value="weekly">Weekly</SelectItem>
-                            <SelectItem value="monthly">Monthly</SelectItem>
-                            <SelectItem value="yearly">Yearly</SelectItem>
-                        </SelectContent>
-                    </Select>
+                        onValueChange={(v) => setData('frequency', v)}
+                    />
                     <InputError message={errors.frequency} />
                 </div>
 
@@ -151,7 +132,7 @@ export const RecurringTransactionForm = ({
                 <Label htmlFor="notes">Notes (optional)</Label>
                 <Textarea
                     id="notes"
-                    value={data.notes}
+                    value={data.notes ?? ''}
                     onChange={(e) => setData('notes', e.target.value)}
                     rows={2}
                 />

@@ -31,14 +31,14 @@ export const GoalForm = ({ goal }: { goal?: TGoal }) => {
     const { preferences } = usePage().props;
     const { data, setData, post, patch, processing, errors } =
         useForm<TGoalFormData>({
-            name: goal?.name ?? '',
-            description: goal?.description ?? '',
-            currency: goal?.currency ?? preferences.default_currency,
-            target_amount: goal?.target_amount?.toString() ?? '',
-            current_amount: goal?.current_amount?.toString() ?? '0',
-            target_date: goal?.target_date ?? '',
-            icon: goal?.icon ?? '',
-            color: goal?.color ?? '#6366f1',
+            name: goal ? (goal?.name ?? null) : '',
+            description: goal ? (goal?.description ?? null) : '',
+            currency: goal ? (goal?.currency ?? null) : preferences.default_currency,
+            target_amount: goal ? (goal?.target_amount?.toString() ?? null) : '',
+            current_amount: goal ? (goal?.current_amount?.toString() ?? null) : '0',
+            target_date: goal ? (goal?.target_date ?? null) : '',
+            icon: goal ? (goal?.icon ?? null) : '',
+            color: goal ? (goal?.color ?? null) : '#6366f1',
         });
 
     const submit = (e: React.FormEvent) => {

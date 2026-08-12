@@ -41,18 +41,17 @@ export const TransactionForm = ({
         notes: string;
         file_ids: string[];
     }>({
-        wallet_id:
-            transaction?.wallet_id ??
-            wallets.find((w) => w.is_default)?.id ??
-            null,
-        category_id: transaction?.category_id ?? null,
-        type: (transaction?.type ?? 'expense') as TType,
-        amount: transaction?.amount ?? 0,
-        transacted_at: transaction?.transacted_at
+        wallet_id: transaction
+            ? (transaction?.wallet_id ?? null)
+            : (wallets.find((w) => w.is_default)?.id ?? null),
+        category_id: transaction ? (transaction?.category_id ?? null) : null,
+        type: transaction ? (transaction?.type ?? null) : 'expense',
+        amount: transaction ? (transaction?.amount ?? null) : 0,
+        transacted_at: transaction
             ? normalizeUtcIso(transaction.transacted_at)
             : nowUtcIso(),
-        description: transaction?.description ?? '',
-        notes: transaction?.notes ?? '',
+        description: transaction ? (transaction?.description ?? null) : '',
+        notes: transaction ? (transaction?.notes ?? null) : '',
         file_ids: [],
     });
 

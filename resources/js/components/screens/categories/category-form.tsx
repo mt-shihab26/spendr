@@ -14,10 +14,10 @@ import { Label } from '@/components/ui/label';
 
 export const CategoryForm = ({ category }: { category?: TCategory }) => {
     const { data, setData, post, patch, processing, errors } = useForm({
-        name: category?.name ?? '',
-        type: (category?.type ?? 'expense') as TType,
-        color: category?.color ?? '#6366f1',
-        icon: category?.icon ?? '',
+        name: category ? (category?.name ?? null) : '',
+        type: category ? (category?.type ?? null) : 'expense',
+        color: category ? (category?.color ?? null) : '#6366f1',
+        icon: category ? (category?.icon ?? null) : '',
     });
 
     return (

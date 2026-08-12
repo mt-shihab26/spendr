@@ -17,12 +17,12 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
     const { preferences } = usePage().props;
 
     const { data, setData, post, patch, processing, errors } = useForm({
-        name: wallet?.name ?? '',
-        currency: wallet?.currency ?? preferences.default_currency,
-        initial_balance: wallet?.initial_balance ?? 0,
-        color: wallet?.color ?? '#6366f1',
-        icon: wallet?.icon ?? '',
-        is_default: wallet?.is_default ?? false,
+        name: wallet ? (wallet?.name ?? null) : '',
+        currency: wallet ? (wallet?.currency ?? null) : preferences.default_currency,
+        initial_balance: wallet ? (wallet?.initial_balance ?? null) : 0,
+        color: wallet ? (wallet?.color ?? null) : '#6366f1',
+        icon: wallet ? (wallet?.icon ?? null) : '',
+        is_default: wallet ? (wallet?.is_default ?? null) : false,
     });
 
     return (
