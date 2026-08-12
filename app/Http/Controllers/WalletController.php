@@ -98,6 +98,7 @@ class WalletController extends Controller
             ->loadSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount')
             ->loadSum(['outgoingTransfers as transfers_out'], 'amount')
             ->loadSum(['incomingTransfers as transfers_in'], 'amount')
+            ->loadCount('transactions')
             ->setAttribute('transfers_in', $wallet->transfersIn())
             ->setAttribute('transfers_out', $wallet->transfersOut())
             ->setAttribute('net', $wallet->net())

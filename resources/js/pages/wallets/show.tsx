@@ -15,6 +15,7 @@ import { Expense } from '@/components/elements/expense';
 import { TransferIn } from '@/components/elements/transfer-in';
 import { TransferOut } from '@/components/elements/transfer-out';
 import { Net } from '@/components/elements/net';
+import { TransactionCount } from '@/components/elements/transaction-count';
 
 type TShowWallet = TWallet & {
     balance: number;
@@ -23,6 +24,7 @@ type TShowWallet = TWallet & {
     transfers_in: number;
     transfers_out: number;
     net: number;
+    transactions_count: number;
 };
 
 const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
@@ -69,6 +71,9 @@ const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
                     </div>
                     <div className="w-full border p-4">
                         <Net net={wallet.net} currency={wallet.currency} />
+                    </div>
+                    <div className="w-full border p-4">
+                        <TransactionCount count={wallet.transactions_count} />
                     </div>
                 </div>
 

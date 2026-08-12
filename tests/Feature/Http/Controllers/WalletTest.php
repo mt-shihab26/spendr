@@ -171,6 +171,25 @@ describe('index', function () {
                     ->has('wallets', $limit)
                 );
         });
+
+        test('each wallet includes transactions_count', function () {
+            $user = User::factory()->create();
+            $wallet = Wallet::factory()->for($user)->create();
+            $category = Category::factory()->for($user)->expense()->create();
+
+            Transaction::factory()->count(3)->create([
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $category->id,
+                'type' => Type::Expense->value,
+            ]);
+
+            $this->actingAs($user)
+                ->get(route('wallets.index'))
+                ->assertInertia(fn (Assert $page) => $page
+                    ->where('wallets.0.transactions_count', 3)
+                );
+        });
     });
 });
 
@@ -427,8 +446,28 @@ describe('show', function () {
                     ->has('transfers_in')
                     ->has('transfers_out')
                     ->has('net')
+                    ->has('transactions_count')
                     ->etc()
                 )
+            );
+    });
+
+    test('transactions_count reflects the number of transactions', function () {
+        $user = User::factory()->create();
+        $wallet = Wallet::factory()->for($user)->create();
+        $category = Category::factory()->for($user)->expense()->create();
+
+        Transaction::factory()->count(4)->create([
+            'user_id' => $user->id,
+            'wallet_id' => $wallet->id,
+            'category_id' => $category->id,
+            'type' => Type::Expense->value,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('wallets.show', $wallet))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('wallet.transactions_count', 4)
             );
     });
 
