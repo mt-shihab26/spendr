@@ -276,16 +276,16 @@ export const DateRangePicker = ({
                 </PopoverContent>
             </Popover>
 
-            {hasSelection && (
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-8"
-                    onClick={handleClear}
-                >
-                    <XIcon className="size-3.5" />
-                </Button>
-            )}
+            {/* {hasSelection && ( */}
+            {/*     <Button */}
+            {/*         variant="ghost" */}
+            {/*         size="icon" */}
+            {/*         className="size-8" */}
+            {/*         onClick={handleClear} */}
+            {/*     > */}
+            {/*         <XIcon className="size-3.5" /> */}
+            {/*     </Button> */}
+            {/* )} */}
         </div>
     );
 };

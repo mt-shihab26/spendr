@@ -2,6 +2,7 @@ import type { TPaginated } from '@/types/utils';
 import type { TTransterWithRelations } from '@/types/withs';
 import type { TWallet } from '@/types/models';
 import type { TTransferStat } from '@/components/screens/transfers/transfer-stats';
+import type { TFilters } from '@/components/screens/transfers/transters-filters';
 
 import { router } from '@inertiajs/react';
 
@@ -12,15 +13,8 @@ import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { TransfersTable } from '@/components/screens/transfers/transfers-table';
 import { TransferStats } from '@/components/screens/transfers/transfer-stats';
-import { DateRangePicker } from '@/components/elements/date-range-picker';
-import { WalletSelect } from '@/components/elements/wallet-select';
 import { EmptyState } from '@/components/elements/empty-state';
-
-type TFilters = {
-    wallet_id: string | null;
-    date_from: string | null;
-    date_to: string | null;
-};
+import { TransfersFilters } from '@/components/screens/transfers/transters-filters';
 
 const TransfersIndex = ({
     filters,
@@ -34,20 +28,6 @@ const TransfersIndex = ({
     stats: TTransferStat[];
 }) => {
     const title = `Transfers (${transfers.total})`;
-
-    const navigate = (params: Partial<TFilters>) => {
-        router.get(
-            route('transfers.index'),
-            {
-                ...filters,
-                ...params,
-            },
-            {
-                preserveScroll: true,
-                replace: true,
-            },
-        );
-    };
 
     return (
         <AppLayout
@@ -65,33 +45,7 @@ const TransfersIndex = ({
                         New Transfer
                     </NewButton>
                 </div>
-                <div className="flex items-center gap-2">
-                    <div>
-                        <WalletSelect
-                            wallets={wallets}
-                            value={filters.wallet_id}
-                            includeAll
-                            onValueChange={(value) =>
-                                navigate({ wallet_id: value || null })
-                            }
-                        />
-                    </div>
-                    <div>
-                        <DateRangePicker
-                            dateFrom={filters.date_from}
-                            dateTo={filters.date_to}
-                            onClear={() =>
-                                navigate({ date_from: null, date_to: null })
-                            }
-                            onSelect={(dates) =>
-                                navigate({
-                                    date_from: dates?.from ?? null,
-                                    date_to: dates?.to ?? null,
-                                })
-                            }
-                        />
-                    </div>
-                </div>
+                <TransfersFilters wallets={wallets} filters={filters} />
                 {transfers.data.length === 0 ? (
                     <EmptyState
                         icon={<Repeat />}
