@@ -105,6 +105,9 @@ export const TransfersTable = ({
                                                 </span>
                                             )}
                                         </div>
+                                        <span className="font-mono text-xs text-muted-foreground">
+                                            #{transfer.id}
+                                        </span>
                                         <span className="text-xs text-muted-foreground">
                                             {formatLocalDateTime(
                                                 transfer.transacted_at,

@@ -26,7 +26,7 @@ const TransfersEdit = ({
                     route: 'transfers.index',
                 },
                 {
-                    title: 'Transfer',
+                    title: transfer.id,
                     route: 'transfers.show',
                     params: { transfer: transfer.id },
                 },
@@ -39,10 +39,7 @@ const TransfersEdit = ({
         >
             <div className="flex flex-col gap-4 p-4">
                 <div className="flex items-start justify-between">
-                    <Heading
-                        title="Edit Transfer"
-                        description="Update transfer details"
-                    />
+                    <Heading title="Edit Transfer" description={`Transfer #${transfer.id}`} />
                     <BackButton href={route('transfers.show', transfer.id)} />
                 </div>
                 <div className="mx-auto w-full max-w-lg border p-4">

@@ -12,7 +12,11 @@ import { EditButton } from '@/components/elements/edit-button';
 import { BackButton } from '@/components/elements/back-button';
 import { IconBadge } from '@/components/elements/icon-badge';
 
-const WalletCard = ({ wallet }: { wallet: TTransterWithWallets['from_wallet'] }) => (
+const WalletCard = ({
+    wallet,
+}: {
+    wallet: TTransterWithWallets['from_wallet'];
+}) => (
     <div className="flex items-center gap-3">
         <IconBadge icon={wallet.icon} color={wallet.color} />
         <div>
@@ -37,9 +41,12 @@ const TransfersShow = ({ transfer }: { transfer: TTransterWithWallets }) => {
             title={title}
             description={formatLocalDateLong(transfer.transacted_at)}
             breadcrumbs={[
-                { title: 'Transfers', route: 'transfers.index' },
                 {
-                    title,
+                    title: 'Transfers',
+                    route: 'transfers.index',
+                },
+                {
+                    title: transfer.id,
                     route: 'transfers.show',
                     params: { transfer: transfer.id },
                 },
@@ -49,10 +56,14 @@ const TransfersShow = ({ transfer }: { transfer: TTransterWithWallets }) => {
                 <div className="flex items-start justify-between">
                     <Heading
                         title={title}
-                        description={formatLocalDateLong(transfer.transacted_at)}
+                        description={formatLocalDateLong(
+                            transfer.transacted_at,
+                        )}
                     />
                     <div className="flex items-center gap-2">
-                        <EditButton href={route('transfers.edit', transfer.id)} />
+                        <EditButton
+                            href={route('transfers.edit', transfer.id)}
+                        />
                         <BackButton href={route('transfers.index')} />
                     </div>
                 </div>
@@ -66,8 +77,11 @@ const TransfersShow = ({ transfer }: { transfer: TTransterWithWallets }) => {
                     </div>
                     <div className="w-full border p-4">
                         <p className="text-xs text-muted-foreground">Amount</p>
-                        <p className="mt-1 text-lg font-bold tabular-nums text-blue-600">
-                            {formatCurrency(transfer.amount, transfer.from_wallet.currency)}
+                        <p className="mt-1 text-lg font-bold text-blue-600 tabular-nums">
+                            {formatCurrency(
+                                transfer.amount,
+                                transfer.from_wallet.currency,
+                            )}
                         </p>
                     </div>
                     <div className="w-full border p-4">
@@ -83,7 +97,9 @@ const TransfersShow = ({ transfer }: { transfer: TTransterWithWallets }) => {
 
                 <div className="flex w-full gap-4">
                     <div className="w-full border p-4">
-                        <p className="mb-2 text-xs text-muted-foreground">From</p>
+                        <p className="mb-2 text-xs text-muted-foreground">
+                            From
+                        </p>
                         <WalletCard wallet={transfer.from_wallet} />
                     </div>
                     <div className="w-full border p-4">
