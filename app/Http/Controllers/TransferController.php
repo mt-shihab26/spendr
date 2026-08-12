@@ -19,9 +19,9 @@ class TransferController extends Controller
     public function index(Request $request): Response
     {
         $filters = $request->validate([
+            'wallet_id' => ['nullable', 'uuid', Rule::exists('wallets', 'id')->where('user_id', $request->user()->id)],
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
-            'wallet_id' => ['nullable', 'uuid', Rule::exists('wallets', 'id')->where('user_id', $request->user()->id)],
         ]);
 
         $wallets = $request->user()
@@ -29,23 +29,24 @@ class TransferController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        $query = $request->user()
+        $transfers = $request->user()
             ->transfers()
             ->with(['fromWallet', 'toWallet'])
-            ->when(! empty($filters['date_from']), fn ($q) => $q->whereDate('transacted_at', '>=', $filters['date_from']))
-            ->when(! empty($filters['date_to']), fn ($q) => $q->whereDate('transacted_at', '<=', $filters['date_to']))
             ->when(! empty($filters['wallet_id']), function ($q) use ($filters): void {
                 $q->where(fn ($q) => $q
                     ->where('from_wallet_id', $filters['wallet_id'])->orWhere('to_wallet_id', $filters['wallet_id'])
                 );
             })
+            ->when(! empty($filters['date_from']), fn ($q) => $q->whereDate('transacted_at', '>=', $filters['date_from']))
+            ->when(! empty($filters['date_to']), fn ($q) => $q->whereDate('transacted_at', '<=', $filters['date_to']))
             ->orderByDesc('transacted_at')
-            ->orderByDesc('created_at');
+            ->orderByDesc('created_at')
+            ->paginate(20);
 
         return inertia('transfers/index', [
-            'wallets' => $wallets,
             'filters' => $filters,
-            'transfers' => Inertia::scroll($query->paginate(20)),
+            'wallets' => $wallets,
+            'transfers' => Inertia::scroll($transfers),
         ]);
     }
 
