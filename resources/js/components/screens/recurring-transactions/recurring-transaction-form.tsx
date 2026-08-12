@@ -13,6 +13,7 @@ import { NumberInput } from '@/components/elements/number-input';
 import { WalletSelect } from '@/components/elements/wallet-select';
 import { CategorySelect } from '@/components/elements/category-select';
 import { FrequencySelect } from '@/components/elements/frequency-select';
+import { DateInput } from '@/components/elements/date-input';
 
 export const RecurringTransactionForm = ({
     recurring,
@@ -118,11 +119,10 @@ export const RecurringTransactionForm = ({
 
                 <div className="flex flex-col gap-1.5">
                     <Label htmlFor="next_due_at">Next Due Date</Label>
-                    <Input
+                    <DateInput
                         id="next_due_at"
-                        type="date"
                         value={data.next_due_at}
-                        onChange={(e) => setData('next_due_at', e.target.value)}
+                        onChange={(v) => setData('next_due_at', v)}
                     />
                     <InputError message={errors.next_due_at} />
                 </div>
