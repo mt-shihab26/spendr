@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 
 export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
     const { preferences } = usePage().props;
+
     const { data, setData, post, patch, processing, errors } = useForm({
         name: wallet?.name ?? '',
         currency: wallet?.currency ?? preferences.default_currency,
@@ -68,6 +69,7 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
                     id="initial_balance"
                     name="initial_balance"
                     value={data.initial_balance}
+                    currency={data.currency}
                     onValueChange={({ value }) =>
                         setData('initial_balance', Number(value))
                     }

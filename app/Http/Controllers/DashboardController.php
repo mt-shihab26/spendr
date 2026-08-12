@@ -70,10 +70,6 @@ class DashboardController extends Controller
             ->all();
 
         $transactionSumByType = function (Collection $walletIds, Type $type, int $year, int $month) use ($user): float {
-            if ($walletIds->isEmpty()) {
-                return 0.0;
-            }
-
             return (float) Transaction::query()
                 ->where('transactions.user_id', $user->id)
                 ->whereIn('wallet_id', $walletIds)

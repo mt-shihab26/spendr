@@ -1,4 +1,7 @@
 import type { NumericFormatProps } from 'react-number-format';
+import type { TCurrency } from '@/types/enums';
+
+import { getCurrencySymbol } from '@/lib/currency';
 
 import { NumericFormat } from 'react-number-format';
 import { Input } from '@/components/ui/input';
@@ -9,8 +12,9 @@ export const NumberInput = ({
     fixedDecimalScale = true,
     thousandSeparator = true,
     allowNegative = false,
+    currency,
     ...props
-}: Omit<NumericFormatProps, 'customInput'>) => {
+}: Omit<NumericFormatProps, 'customInput'> & { currency?: TCurrency }) => {
     return (
         <NumericFormat
             placeholder={placeholder}
@@ -19,6 +23,7 @@ export const NumberInput = ({
             thousandSeparator={thousandSeparator}
             allowNegative={allowNegative}
             customInput={Input}
+            prefix={currency ? getCurrencySymbol(currency) : ''}
             {...props}
         />
     );

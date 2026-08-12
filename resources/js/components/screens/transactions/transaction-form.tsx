@@ -8,7 +8,6 @@ import {
 import type { TTransaction, TWallet, TCategory } from '@/types/models';
 import type { TType } from '@/types/enums';
 
-import { getCurrencySymbol } from '@/lib/currency';
 import { useForm } from '@inertiajs/react';
 
 import { Link } from '@inertiajs/react';
@@ -58,9 +57,6 @@ export const TransactionForm = ({
     });
 
     const selectedWallet = wallets.find((w) => w.id === data.wallet_id);
-    const currencyPrefix = selectedWallet
-        ? getCurrencySymbol(selectedWallet.currency)
-        : '';
 
     return (
         <form
@@ -111,10 +107,10 @@ export const TransactionForm = ({
                 </Label>
                 <NumberInput
                     value={data.amount}
+                    currency={selectedWallet?.currency}
                     onValueChange={({ value }) =>
                         setData('amount', Number(value))
                     }
-                    prefix={currencyPrefix}
                 />
                 <InputError message={errors.amount} />
             </div>
