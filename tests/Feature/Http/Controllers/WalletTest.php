@@ -763,7 +763,7 @@ describe('destroy', function () {
             ->assertRedirect(route('wallets.index'))
             ->assertSessionHas('success', 'Wallet deleted.');
 
-        $this->assertDatabaseMissing('wallets', ['id' => $wallet->id]);
+        $this->assertSoftDeleted('wallets', ['id' => $wallet->id]);
     });
 
     test('when the deleted wallet was default, promotes the next wallet to default', function () {
