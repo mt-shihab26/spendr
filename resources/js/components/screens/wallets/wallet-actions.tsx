@@ -36,15 +36,6 @@ export const WalletActions = ({
                 href={route('transfers.index', { wallet_id: wallet.id })}
                 count={wallet.transfers_count}
             />
-            {!wallet.is_default && (
-                <SetDefaultItem
-                    onClick={() =>
-                        router.patch(route('wallets.update', wallet.id), {
-                            is_default: true,
-                        })
-                    }
-                />
-            )}
             <ActionsMenuSeparator />
             {hasTransactions ? (
                 <WithTooltip

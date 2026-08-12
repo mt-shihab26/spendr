@@ -36,7 +36,7 @@ class WalletController extends Controller
                 $wallet->setAttribute('transfers_out', $wallet->transfersOut());
                 $wallet->setAttribute('net', $wallet->net());
                 $wallet->setAttribute('balance', $wallet->balance());
-                $wallet->setAttribute('transfers_count', ($wallet->outgoing_transfers_count ?? 0) + ($wallet->incoming_transfers_count ?? 0));
+                $wallet->setAttribute('transfers_count', $wallet->transfersCount());
             });
 
         $stats = $wallets

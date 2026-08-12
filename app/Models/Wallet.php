@@ -135,6 +135,24 @@ class Wallet extends Model
     }
 
     /**
+     * Total number of transfers involving this wallet. Uses pre-loaded counts when available.
+     */
+    public function transfersCount(): int
+    {
+        $attrs = $this->getAttributes();
+
+        $outgoing = array_key_exists('outgoing_transfers_count', $attrs)
+            ? (int) ($attrs['outgoing_transfers_count'] ?? 0)
+            : $this->outgoingTransfers()->count();
+
+        $incoming = array_key_exists('incoming_transfers_count', $attrs)
+            ? (int) ($attrs['incoming_transfers_count'] ?? 0)
+            : $this->incomingTransfers()->count();
+
+        return $outgoing + $incoming;
+    }
+
+    /**
      * Net cash flow: income minus expenses plus incoming transfers minus outgoing transfers.
      */
     public function net(): float
