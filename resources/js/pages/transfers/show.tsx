@@ -1,4 +1,4 @@
-import type { TTransterWithWallets } from '@/types/withs';
+import type { TTransterWithRelations } from '@/types/withs';
 
 import { formatCurrency } from '@/lib/formats';
 import { formatLocalDateLong, formatLocalDateTime } from '@/lib/date';
@@ -15,7 +15,7 @@ import { IconBadge } from '@/components/elements/icon-badge';
 const WalletCard = ({
     wallet,
 }: {
-    wallet: TTransterWithWallets['from_wallet'];
+    wallet: TTransterWithRelations['from_wallet'];
 }) => (
     <div className="flex items-center gap-3">
         <IconBadge icon={wallet.icon} color={wallet.color} />
@@ -33,7 +33,7 @@ const WalletCard = ({
     </div>
 );
 
-const TransfersShow = ({ transfer }: { transfer: TTransterWithWallets }) => {
+const TransfersShow = ({ transfer }: { transfer: TTransterWithRelations }) => {
     const title = `Transfer #${transfer.id}`;
 
     return (

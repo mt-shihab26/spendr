@@ -1,5 +1,5 @@
 import type { TWallet } from '@/types/models';
-import type { TTransterWithWallets } from '@/types/withs';
+import type { TTransterWithRelations } from '@/types/withs';
 
 import { Trash2 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -14,7 +14,7 @@ const TransfersEdit = ({
     transfer,
 }: {
     wallets: TWallet[];
-    transfer: TTransterWithWallets;
+    transfer: TTransterWithRelations;
 }) => {
     return (
         <AppLayout
@@ -39,7 +39,10 @@ const TransfersEdit = ({
         >
             <div className="flex flex-col gap-4 p-4">
                 <div className="flex items-start justify-between">
-                    <Heading title="Edit Transfer" description={`Transfer #${transfer.id}`} />
+                    <Heading
+                        title="Edit Transfer"
+                        description={`Transfer #${transfer.id}`}
+                    />
                     <BackButton href={route('transfers.show', transfer.id)} />
                 </div>
                 <div className="mx-auto w-full max-w-lg border p-4">

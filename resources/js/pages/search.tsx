@@ -1,12 +1,7 @@
-import type {
-    TCategory,
-    TGoal,
-    TTransaction,
-    TWallet,
-} from '@/types/models';
+import type { TCategory, TGoal, TTransaction, TWallet } from '@/types/models';
 
 import type {
-    TTransterWithWallets,
+    TTransterWithRelations,
     TRecurringTransactionWithRelations,
 } from '@/types/withs';
 
@@ -50,7 +45,7 @@ const Search = ({
     query: string;
     transactions: TTransaction[];
     wallets: TWallet[];
-    transfers: TTransterWithWallets[];
+    transfers: TTransterWithRelations[];
     categories: TCategory[];
     goals: TGoal[];
     recurring: TRecurringTransactionWithRelations[];

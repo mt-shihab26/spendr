@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import type { TTransterWithWallets } from '@/types/withs';
+import type { TTransterWithRelations } from '@/types/withs';
 
 import { router } from '@inertiajs/react';
 import { formatLocalDateLong } from '@/lib/date';
@@ -15,7 +15,7 @@ export const TransferDeleteDialog = ({
     onDeleted,
     trigger,
 }: {
-    transfer: TTransterWithWallets;
+    transfer: TTransterWithRelations;
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
     onDeleted?: () => void;

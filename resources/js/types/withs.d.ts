@@ -16,7 +16,7 @@ export type TWalletWithStats = TWallet & {
     transfers_count: number;
 };
 
-export type TTransterWithWallets = TTransfer & {
+export type TTransterWithRelations = TTransfer & {
     from_wallet: TWallet;
     to_wallet: TWallet;
 };

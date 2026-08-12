@@ -1,5 +1,5 @@
 import type { TPaginated } from '@/types/utils';
-import type { TTransterWithWallets } from '@/types/withs';
+import type { TTransterWithRelations } from '@/types/withs';
 import type { TWallet } from '@/types/models';
 import type { TTransferStat } from '@/components/screens/transfers/transfer-stats';
 
@@ -30,7 +30,7 @@ const TransfersIndex = ({
 }: {
     filters: TFilters;
     wallets: TWallet[];
-    transfers: TPaginated<TTransterWithWallets>;
+    transfers: TPaginated<TTransterWithRelations>;
     stats: TTransferStat[];
 }) => {
     const title = `Transfers (${transfers.total})`;
