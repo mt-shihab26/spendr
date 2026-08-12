@@ -1,4 +1,4 @@
-import type { TTransaction } from '@/types/models';
+import type { TTransactionWithRelations } from '@/types/withs';
 
 import { Link } from '@inertiajs/react';
 import { formatLocalDateTimeLong } from '@/lib/date';
@@ -12,7 +12,11 @@ import { Badge } from '@/components/ui/badge';
 import { IconBadge } from '@/components/elements/icon-badge';
 import { FileAttachments } from '@/components/screens/transactions/file-attachments';
 
-const TransactionsShow = ({ transaction }: { transaction: TTransaction }) => {
+const TransactionsShow = ({
+    transaction,
+}: {
+    transaction: TTransactionWithRelations;
+}) => {
     return (
         <AppLayout
             title={transaction.description}
@@ -63,49 +67,37 @@ const TransactionsShow = ({ transaction }: { transaction: TTransaction }) => {
                             Category
                         </p>
                         <div className="mt-1 flex items-center gap-2">
-                            {transaction.category && (
-                                <IconBadge
-                                    icon={transaction.category.icon}
-                                    color={transaction.category.color}
-                                />
-                            )}
-                            {transaction.category ? (
-                                <Link
-                                    href={route(
-                                        'categories.show',
-                                        transaction.category.id,
-                                    )}
-                                    className="text-sm font-medium hover:underline"
-                                >
-                                    {transaction.category.name}
-                                </Link>
-                            ) : (
-                                <span className="text-sm font-medium">—</span>
-                            )}
+                            <IconBadge
+                                icon={transaction.category.icon}
+                                color={transaction.category.color}
+                            />
+                            <Link
+                                href={route(
+                                    'categories.show',
+                                    transaction.category.id,
+                                )}
+                                className="text-sm font-medium hover:underline"
+                            >
+                                {transaction.category.name}
+                            </Link>
                         </div>
                     </div>
                     <div className="border p-4">
                         <p className="text-xs text-muted-foreground">Wallet</p>
                         <div className="mt-1 flex items-center gap-2">
-                            {transaction.wallet && (
-                                <IconBadge
-                                    icon={transaction.wallet.icon}
-                                    color={transaction.wallet.color}
-                                />
-                            )}
-                            {transaction.wallet ? (
-                                <Link
-                                    href={route(
-                                        'wallets.show',
-                                        transaction.wallet.id,
-                                    )}
-                                    className="text-sm font-medium hover:underline"
-                                >
-                                    {transaction.wallet.name}
-                                </Link>
-                            ) : (
-                                <span className="text-sm font-medium">—</span>
-                            )}
+                            <IconBadge
+                                icon={transaction.wallet.icon}
+                                color={transaction.wallet.color}
+                            />
+                            <Link
+                                href={route(
+                                    'wallets.show',
+                                    transaction.wallet.id,
+                                )}
+                                className="text-sm font-medium hover:underline"
+                            >
+                                {transaction.wallet.name}
+                            </Link>
                         </div>
                     </div>
                 </div>

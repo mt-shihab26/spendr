@@ -1,4 +1,5 @@
-import type { TTransaction, TWallet, TCategory } from '@/types/models';
+import type { TWallet, TCategory } from '@/types/models';
+import type { TTransactionWithRelations } from '@/types/withs';
 
 import { Trash2 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -13,7 +14,7 @@ const TransactionsEdit = ({
     wallets,
     categories,
 }: {
-    transaction: TTransaction;
+    transaction: TTransactionWithRelations;
     wallets: TWallet[];
     categories: TCategory[];
 }) => {

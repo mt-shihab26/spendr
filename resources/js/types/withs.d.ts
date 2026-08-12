@@ -1,9 +1,12 @@
 import type {
     TCategory,
+    TFile,
     TRecurringTransaction,
+    TTransaction,
     TTransfer,
     TWallet,
 } from './models';
+import type { TCurrency } from './enums';
 
 export type TWalletWithStats = TWallet & {
     balance: number;
@@ -24,4 +27,22 @@ export type TTransterWithRelations = TTransfer & {
 export type TRecurringTransactionWithRelations = TRecurringTransaction & {
     wallet: TWallet;
     category: TCategory | null;
+};
+
+export type TTransactionStat = {
+    currency: TCurrency;
+    count: number;
+    income: number;
+    expense: number;
+    net: number;
+};
+
+export type TTransactionListItem = TTransaction & {
+    wallet: TWallet;
+    category: TCategory;
+    files_count: number;
+};
+
+export type TTransactionWithRelations = TTransactionListItem & {
+    files: TFile[];
 };

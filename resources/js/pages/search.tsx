@@ -1,8 +1,9 @@
-import type { TCategory, TGoal, TTransaction, TWallet } from '@/types/models';
+import type { TCategory, TGoal, TWallet } from '@/types/models';
 
 import type {
     TTransterWithRelations,
     TRecurringTransactionWithRelations,
+    TTransactionListItem,
 } from '@/types/withs';
 
 import { useEffect, useRef } from 'react';
@@ -43,7 +44,7 @@ const Search = ({
     recurring,
 }: {
     query: string;
-    transactions: TTransaction[];
+    transactions: TTransactionListItem[];
     wallets: TWallet[];
     transfers: TTransterWithRelations[];
     categories: TCategory[];

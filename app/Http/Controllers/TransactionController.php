@@ -55,12 +55,13 @@ class TransactionController extends Controller
 
         $stats = (clone $baseQuery)
             ->join('wallets', 'transactions.wallet_id', '=', 'wallets.id')
-            ->selectRaw('wallets.currency, transactions.type, SUM(transactions.amount) as total')
+            ->selectRaw('wallets.currency, transactions.type, COUNT(*) as count, SUM(transactions.amount) as total')
             ->groupBy('wallets.currency', 'transactions.type')
             ->get()
             ->groupBy('currency')
             ->map(fn ($rows, $currency) => [
                 'currency' => $currency,
+                'count' => (int) $rows->sum('count'),
                 'income' => (float) $rows->where('type', Type::Income->value)->sum('total'),
                 'expense' => (float) $rows->where('type', Type::Expense->value)->sum('total'),
                 'net' => (float) $rows->where('type', Type::Income->value)->sum('total')
@@ -215,6 +216,7 @@ class TransactionController extends Controller
         abort_if($transaction->user_id !== $request->user()->id, 403);
 
         $transaction->load(['wallet', 'category', 'files']);
+        $transaction->loadCount('files');
 
         return inertia('transactions/show', [
             'transaction' => $transaction,
@@ -228,7 +230,8 @@ class TransactionController extends Controller
     {
         abort_if($transaction->user_id !== $request->user()->id, 403);
 
-        $transaction->load('files');
+        $transaction->load(['wallet', 'category', 'files']);
+        $transaction->loadCount('files');
         $wallets = $request->user()->wallets()->orderBy('sort_order')->get();
         $categories = $request->user()->categories()->orderBy('sort_order')->get();
 

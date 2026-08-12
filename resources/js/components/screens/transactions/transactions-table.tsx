@@ -1,4 +1,5 @@
-import type { TTransaction, TCategory } from '@/types/models';
+import type { TCategory } from '@/types/models';
+import type { TTransactionListItem } from '@/types/withs';
 
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
@@ -6,7 +7,6 @@ import { formatLocalDateLong, formatLocalDateTime } from '@/lib/date';
 
 import { Link } from '@inertiajs/react';
 import { ChevronRight, Trash2, Tag, Paperclip } from 'lucide-react';
-
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -14,25 +14,18 @@ import { TransactionAmount } from '@/components/elements/transaction-amount';
 import { IconBadge } from '@/components/elements/icon-badge';
 import { TransactionActions } from '@/components/screens/transactions/transaction-actions';
 import { TransactionDeleteDialog } from '@/components/screens/transactions/transaction-delete-dialog';
-
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import { CategorySelect } from '@/components/elements/category-select';
 
 export const TransactionsTable = ({
     transactions,
     categories,
     selectable = false,
 }: {
-    transactions: TTransaction[];
+    transactions: TTransactionListItem[];
     categories?: TCategory[];
     selectable?: boolean;
 }) => {
-    const [toDelete, setToDelete] = useState<TTransaction | null>(null);
+    const [toDelete, setToDelete] = useState<TTransactionListItem | null>(null);
     const [selected, setSelected] = useState<Set<string>>(new Set());
     const [reassignCategory, setReassignCategory] = useState('');
 
@@ -81,16 +74,15 @@ export const TransactionsTable = ({
         );
     };
 
-    const transactionsByDate = transactions.reduce<Map<string, TTransaction[]>>(
-        (groups, transaction) => {
-            const dateKey = transaction.transacted_at.substring(0, 10);
-            const transactionsForDate = groups.get(dateKey) ?? [];
-            transactionsForDate.push(transaction);
-            groups.set(dateKey, transactionsForDate);
-            return groups;
-        },
-        new Map(),
-    );
+    const transactionsByDate = transactions.reduce<
+        Map<string, TTransactionListItem[]>
+    >((groups, transaction) => {
+        const dateKey = transaction.transacted_at.substring(0, 10);
+        const transactionsForDate = groups.get(dateKey) ?? [];
+        transactionsForDate.push(transaction);
+        groups.set(dateKey, transactionsForDate);
+        return groups;
+    }, new Map());
 
     return (
         <>
@@ -102,27 +94,15 @@ export const TransactionsTable = ({
                     <div className="flex flex-1 items-center gap-2">
                         {categories && categories.length > 0 && (
                             <div className="flex items-center gap-1">
-                                <Select
-                                    value={reassignCategory}
+                                <CategorySelect
+                                    categories={categories}
+                                    value={reassignCategory || null}
                                     onValueChange={(v) =>
                                         setReassignCategory(v ?? '')
                                     }
-                                >
-                                    <SelectTrigger className="h-7 w-40 text-xs">
-                                        <SelectValue placeholder="Reassign category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {categories.map((c) => (
-                                            <SelectItem
-                                                key={c.id}
-                                                value={c.id}
-                                                className="text-xs"
-                                            >
-                                                {c.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                    placeholder="Reassign category"
+                                    triggerClassName="h-7 w-40 text-xs"
+                                />
                                 <Button
                                     size="sm"
                                     variant="outline"

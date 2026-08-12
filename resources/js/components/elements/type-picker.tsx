@@ -1,12 +1,9 @@
 import type { TType } from '@/types/enums';
 
+import { typeOptions } from '@/lib/options';
+
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-
-const options: { value: TType; label: string }[] = [
-    { value: 'expense', label: 'Expense' },
-    { value: 'income', label: 'Income' },
-];
 
 export const TypePicker = ({
     value,
@@ -24,17 +21,15 @@ export const TypePicker = ({
             disabled={disabled}
             className="flex gap-4"
         >
-            {options.map((option) => (
-                <div key={option.value} className="flex items-center gap-2">
-                    <RadioGroupItem
-                        id={`type-${option.value}`}
-                        value={option.value}
-                    />
+            {typeOptions.map(({ value: val, label, icon: Icon }) => (
+                <div key={val} className="flex items-center gap-2">
+                    <RadioGroupItem id={`type-${val}`} value={val} />
                     <Label
-                        htmlFor={`type-${option.value}`}
-                        className="cursor-pointer font-normal"
+                        htmlFor={`type-${val}`}
+                        className="flex cursor-pointer items-center gap-1.5 font-normal"
                     >
-                        {option.label}
+                        <Icon className="size-4 text-muted-foreground" />
+                        {label}
                     </Label>
                 </div>
             ))}

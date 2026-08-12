@@ -1,4 +1,4 @@
-import type { TTransaction } from '@/types/models';
+import type { TTransactionListItem } from '@/types/withs';
 import type { ReactElement } from 'react';
 
 import { router } from '@inertiajs/react';
@@ -13,7 +13,7 @@ export const TransactionDeleteDialog = ({
     onDeleted,
     trigger,
 }: {
-    transaction: TTransaction;
+    transaction: TTransactionListItem;
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
     onDeleted?: () => void;

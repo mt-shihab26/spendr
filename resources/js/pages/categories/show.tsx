@@ -1,4 +1,5 @@
-import type { TCategory, TTransaction } from '@/types/models';
+import type { TCategory } from '@/types/models';
+import type { TTransactionListItem } from '@/types/withs';
 import type { TPaginated } from '@/types/utils';
 
 import { getIcon } from '@/lib/icons';
@@ -16,7 +17,7 @@ const CategoriesShow = ({
     transactions,
 }: {
     category: TCategory;
-    transactions: TPaginated<TTransaction>;
+    transactions: TPaginated<TTransactionListItem>;
 }) => {
     return (
         <AppLayout

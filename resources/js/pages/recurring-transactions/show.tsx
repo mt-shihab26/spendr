@@ -2,7 +2,7 @@ import type { TRecurringTransactionWithRelations } from '@/types/withs';
 
 import { formatCurrency } from '@/lib/formats';
 import { formatLocalDateLong } from '@/lib/date';
-import { getFrequency } from '@/lib/options';
+import { getFrequencyOption } from '@/lib/options';
 
 import { Link } from '@inertiajs/react';
 import { CalendarDays, FileText } from 'lucide-react';
@@ -19,7 +19,7 @@ const RecurringTransactionsShow = ({
     recurring: TRecurringTransactionWithRelations;
 }) => {
     const title = `Recurring '${recurring.name}'`;
-    const frequency = getFrequency(recurring.frequency);
+    const frequency = getFrequencyOption(recurring.frequency);
     const frequencyLabel = frequency?.label ?? recurring.frequency;
     const description = `${frequencyLabel} · Due ${formatLocalDateLong(recurring.next_due_at)}`;
 

@@ -1,6 +1,7 @@
 import { nowUtcIso, normalizeUtcIso } from '@/lib/date';
 
-import type { TTransaction, TWallet, TCategory } from '@/types/models';
+import type { TWallet, TCategory } from '@/types/models';
+import type { TTransactionWithRelations } from '@/types/withs';
 import type { TType } from '@/types/enums';
 
 import { useForm } from '@inertiajs/react';
@@ -23,7 +24,7 @@ export const TransactionForm = ({
     wallets,
     categories,
 }: {
-    transaction?: TTransaction;
+    transaction?: TTransactionWithRelations;
     wallets: TWallet[];
     categories: TCategory[];
 }) => {

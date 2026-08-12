@@ -19,6 +19,8 @@ export const CategorySelect = ({
     onValueChange,
     disabled = false,
     includeAll,
+    placeholder,
+    triggerClassName = 'w-full',
 }: {
     categories: TCategory[];
     type?: TType;
@@ -26,6 +28,8 @@ export const CategorySelect = ({
     onValueChange: (value: string | null) => void;
     disabled?: boolean;
     includeAll?: boolean;
+    placeholder?: string;
+    triggerClassName?: string;
 }) => {
     const filtered = type
         ? categories.filter((c) => c.type === type)
@@ -34,7 +38,7 @@ export const CategorySelect = ({
 
     return (
         <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className={triggerClassName}>
                 {selected ? (
                     <div className="flex items-center gap-2">
                         <IconBadge
@@ -47,7 +51,8 @@ export const CategorySelect = ({
                 ) : (
                     <SelectValue
                         placeholder={
-                            includeAll ? 'All Categories' : 'Select category'
+                            placeholder ??
+                            (includeAll ? 'All Categories' : 'Select category')
                         }
                     />
                 )}

@@ -2,7 +2,7 @@ import type { TRecurringTransactionWithRelations } from '@/types/withs';
 
 import { useState } from 'react';
 import { formatLocalDateLong } from '@/lib/date';
-import { getFrequency } from '@/lib/options';
+import { getFrequencyOption } from '@/lib/options';
 
 import { Link } from '@inertiajs/react';
 import { ChevronRight } from 'lucide-react';
@@ -79,13 +79,17 @@ export const RecurringTransactionsTable = ({
                                 </td>
                                 <td className="px-3 py-2.5">
                                     {(() => {
-                                        const freq = getFrequency(r.frequency);
+                                        const freq = getFrequencyOption(
+                                            r.frequency,
+                                        );
                                         return (
                                             <div className="flex items-center gap-1.5">
                                                 {freq?.icon && (
                                                     <freq.icon className="size-4 text-muted-foreground" />
                                                 )}
-                                                <span>{freq?.label ?? r.frequency}</span>
+                                                <span>
+                                                    {freq?.label ?? r.frequency}
+                                                </span>
                                             </div>
                                         );
                                     })()}
@@ -101,7 +105,9 @@ export const RecurringTransactionsTable = ({
                                 <td className="px-3 py-2.5">
                                     <Badge
                                         variant={
-                                            r.is_active ? 'secondary' : 'outline'
+                                            r.is_active
+                                                ? 'secondary'
+                                                : 'outline'
                                         }
                                         className="text-xs"
                                     >

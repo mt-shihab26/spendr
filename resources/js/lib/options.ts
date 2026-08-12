@@ -1,7 +1,28 @@
-import type { TFrequency } from '@/types/enums';
+import type { TFrequency, TType } from '@/types/enums';
 import type { LucideIcon } from 'lucide-react';
 
-import { Sun, CalendarDays, CalendarRange, CalendarCheck2 } from 'lucide-react';
+import {
+    Plus,
+    Minus,
+    Sun,
+    CalendarDays,
+    CalendarRange,
+    CalendarCheck2,
+} from 'lucide-react';
+
+export const typeOptions: {
+    value: TType;
+    label: string;
+    icon: LucideIcon;
+    color: string;
+}[] = [
+    { value: 'expense', label: 'Expense', icon: Minus, color: 'text-expense' },
+    { value: 'income', label: 'Income', icon: Plus, color: 'text-income' },
+];
+
+export const getTypeOption = (value: TType) => {
+    return typeOptions.find((o) => o.value === value);
+};
 
 export const frequencyOptions: {
     value: TFrequency;
@@ -14,6 +35,6 @@ export const frequencyOptions: {
     { value: 'yearly', label: 'Yearly', icon: CalendarCheck2 },
 ];
 
-export const getFrequency = (value: TFrequency) => {
+export const getFrequencyOption = (value: TFrequency) => {
     return frequencyOptions.find((o) => o.value === value);
 };

@@ -6,14 +6,14 @@ import {
     ViewItem,
 } from '@/components/elements/actions-menu';
 
-import type { TTransaction } from '@/types/models';
+import type { TTransactionListItem } from '@/types/withs';
 
 export const TransactionActions = ({
     transaction,
     onDelete,
 }: {
-    transaction: TTransaction;
-    onDelete: (transaction: TTransaction) => void;
+    transaction: TTransactionListItem;
+    onDelete: (transaction: TTransactionListItem) => void;
 }) => {
     return (
         <ActionsMenu>

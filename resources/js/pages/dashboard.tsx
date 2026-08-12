@@ -1,9 +1,9 @@
-import type {
-    TGoal,
-    TTransaction,
-} from '@/types/models';
+import type { TGoal } from '@/types/models';
 
-import type { TRecurringTransactionWithRelations } from '@/types/withs';
+import type {
+    TRecurringTransactionWithRelations,
+    TTransactionListItem,
+} from '@/types/withs';
 
 import type { TSpendingCategory } from '@/components/screens/dashboard/top-spending-by-category';
 import type { TCurrencyStat } from '@/components/screens/dashboard/currency-stats';
@@ -34,7 +34,7 @@ const Dashboard = ({
     currencyStats: TCurrencyStat[];
     wallets: TDashboardWallet[];
     spendingCategories: TSpendingCategory[];
-    recentTransactions: TTransaction[];
+    recentTransactions: TTransactionListItem[];
     budgets: TBudgetStatus[];
     upcomingRecurring: TRecurringTransactionWithRelations[];
     goals: TGoal[];

@@ -1,4 +1,5 @@
-import type { TFile, TTransaction } from '@/types/models';
+import type { TFile } from '@/types/models';
+import type { TTransactionWithRelations } from '@/types/withs';
 
 import { useState } from 'react';
 import { useForm, useHttp } from '@inertiajs/react';
@@ -77,7 +78,7 @@ export const FileAttachments = ({
     readonly = false,
     onFileIdsChange,
 }: {
-    transaction?: TTransaction;
+    transaction?: TTransactionWithRelations;
     readonly?: boolean;
     onFileIdsChange?: (ids: string[]) => void;
 }) => {

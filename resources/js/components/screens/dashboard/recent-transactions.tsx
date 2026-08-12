@@ -1,4 +1,4 @@
-import type { TTransaction } from '@/types/models';
+import type { TTransactionListItem } from '@/types/withs';
 
 import { ViewAllLink } from '@/components/elements/view-all-link';
 import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
@@ -6,7 +6,7 @@ import { TransactionsTable } from '@/components/screens/transactions/transaction
 export const RecentTransactions = ({
     recentTransactions,
 }: {
-    recentTransactions: TTransaction[];
+    recentTransactions: TTransactionListItem[];
 }) => {
     return (
         <div>

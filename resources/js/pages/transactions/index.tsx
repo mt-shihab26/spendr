@@ -8,19 +8,18 @@ import {
 } from '@/components/ui/select';
 
 import type { TPaginated, TTransactionType } from '@/types/utils';
-import type { TTransaction, TWallet, TCategory } from '@/types/models';
-import type { TStat } from '@/components/elements/currency-stats';
+import type { TWallet, TCategory } from '@/types/models';
+import type { TTransactionListItem, TTransactionStat } from '@/types/withs';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { router, Link } from '@inertiajs/react';
 import { InfiniteScroll } from '@inertiajs/react';
 import { ArrowRightLeft, Download, ListChecks, Upload, X } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { CurrencyStats } from '@/components/elements/currency-stats';
+import { TransactionStats } from '@/components/screens/transactions/transaction-stats';
 import { TransactionsTable } from '@/components/screens/transactions/transactions-table';
 import { DateRangePicker } from '@/components/elements/date-range-picker';
 import { WalletSelect } from '@/components/elements/wallet-select';
@@ -29,7 +28,6 @@ import { EmptyState } from '@/components/elements/empty-state';
 
 type TFilters = {
     type: TTransactionType;
-    search: string | null;
     wallet_id: string | null;
     category_id: string | null;
     date_from: string | null;
@@ -43,23 +41,13 @@ const TransactionsIndex = ({
     filters,
     stats,
 }: {
-    transactions: TPaginated<TTransaction>;
+    transactions: TPaginated<TTransactionListItem>;
     wallets: TWallet[];
     categories: TCategory[];
     filters: TFilters;
-    stats: TStat[];
+    stats: TTransactionStat[];
 }) => {
-    const [search, setSearch] = useState(filters.search ?? '');
     const [bulkMode, setBulkMode] = useState(false);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (search !== (filters.search ?? '')) {
-                navigate({ search: search || null });
-            }
-        }, 400);
-        return () => clearTimeout(timer);
-    }, [search]);
 
     const navigate = (params: Partial<TFilters>) => {
         router.get(
@@ -70,7 +58,6 @@ const TransactionsIndex = ({
     };
 
     const hasFilters =
-        !!filters.search ||
         filters.type !== 'all' ||
         !!filters.wallet_id ||
         !!filters.category_id ||
@@ -78,13 +65,11 @@ const TransactionsIndex = ({
         !!filters.date_to;
 
     const clearFilters = () => {
-        setSearch('');
         router.get(route('transactions.index'), {}, { replace: true });
     };
 
     const exportUrl = (() => {
         const params = new URLSearchParams();
-        if (filters.search) params.set('search', filters.search);
         if (filters.type !== 'all') params.set('type', filters.type);
         if (filters.wallet_id) params.set('wallet_id', filters.wallet_id);
         if (filters.category_id) params.set('category_id', filters.category_id);
@@ -118,12 +103,6 @@ const TransactionsIndex = ({
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
-                    <Input
-                        className="w-40"
-                        placeholder="Search…"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
                     <Select
                         value={filters.type}
                         onValueChange={(value) =>
@@ -191,7 +170,7 @@ const TransactionsIndex = ({
                     )}
                 </div>
 
-                {stats.length > 0 && <CurrencyStats stats={stats} />}
+                {stats.length > 0 && <TransactionStats stats={stats} />}
 
                 <div className="flex items-center justify-between">
                     <p className="text-xs text-muted-foreground">

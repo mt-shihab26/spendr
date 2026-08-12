@@ -1,4 +1,4 @@
-import type { TTransaction } from '@/types/models';
+import type { TTransactionListItem } from '@/types/withs';
 
 import { formatCurrency } from '@/lib/formats';
 import { cn } from '@/lib/utils';
@@ -7,7 +7,7 @@ export const TransactionAmount = ({
     transaction,
     className,
 }: {
-    transaction: TTransaction;
+    transaction: TTransactionListItem;
     className?: string;
 }) => {
     const isIncome = transaction.type === 'income';
