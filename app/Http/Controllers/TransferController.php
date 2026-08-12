@@ -29,28 +29,19 @@ class TransferController extends Controller
         $query = $request->user()
             ->transfers()
             ->with(['fromWallet', 'toWallet'])
+            ->when(! empty($validated['date_from']), fn ($q) => $q->whereDate('transacted_at', '>=', $validated['date_from']))
+            ->when(! empty($validated['date_to']), fn ($q) => $q->whereDate('transacted_at', '<=', $validated['date_to']))
+            ->when(! empty($validated['wallet_id']), function ($q) use ($validated): void {
+                $q->where(fn ($q) => $q
+                    ->where('from_wallet_id', $validated['wallet_id'])->orWhere('to_wallet_id', $validated['wallet_id'])
+                );
+            })
             ->orderByDesc('transacted_at')
             ->orderByDesc('created_at');
 
-        if (! empty($validated['date_from'])) {
-            $query->whereDate('transacted_at', '>=', $validated['date_from']);
-        }
-
-        if (! empty($validated['date_to'])) {
-            $query->whereDate('transacted_at', '<=', $validated['date_to']);
-        }
-
-        if (! empty($validated['wallet_id'])) {
-            $walletId = $validated['wallet_id'];
-            $query->where(function ($q) use ($walletId): void {
-                $q->where('from_wallet_id', $walletId)
-                    ->orWhere('to_wallet_id', $walletId);
-            });
-        }
-
         return inertia('transfers/index', [
-            'transfers' => Inertia::scroll($query->paginate(20)),
             'wallets' => $wallets,
+            'transfers' => Inertia::scroll($query->paginate(20)),
             'filters' => [
                 'date_from' => $validated['date_from'] ?? null,
                 'date_to' => $validated['date_to'] ?? null,
@@ -76,7 +67,7 @@ class TransferController extends Controller
      */
     public function store(StoreTransferRequest $request): RedirectResponse
     {
-        $transfer = $request->user()->transfers()->create($request->validated());
+        $request->user()->transfers()->create($request->validated());
 
         return redirect()
             ->route('transfers.index')
