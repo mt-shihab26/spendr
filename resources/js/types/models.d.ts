@@ -3,21 +3,31 @@ import type { TUserPreferences } from '@/types/global';
 
 export type TUser = {
     id: number;
-
     name: string;
     email: string;
     avatar?: string;
     email_verified_at: string | null;
     two_factor_enabled?: boolean;
     preferences: TUserPreferences | null;
+    created_at: string;
+    updated_at: string;
+};
 
+export type TFile = {
+    id: string;
+    user_id: string;
+    fileable_type: string;
+    fileable_id: string;
+    name: string;
+    path: string;
+    mime_type: string;
+    size: number;
     created_at: string;
     updated_at: string;
 };
 
 export type TWallet = {
     id: string;
-
     user_id: string;
     name: string;
     currency: TCurrency;
@@ -26,7 +36,6 @@ export type TWallet = {
     icon: string | null;
     is_default: boolean;
     sort_order: number;
-
     deleted_at: string | null;
     created_at: string;
     updated_at: string;
@@ -98,19 +107,6 @@ export type TBudget = {
     updated_at: string;
 
     category?: TCategory;
-};
-
-export type TFile = {
-    id: string;
-    user_id: string;
-    fileable_type: string;
-    fileable_id: string;
-    name: string;
-    path: string;
-    mime_type: string;
-    size: number;
-    created_at: string;
-    updated_at: string;
 };
 
 export type TGoal = {
