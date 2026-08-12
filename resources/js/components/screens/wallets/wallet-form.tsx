@@ -27,6 +27,7 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
 
     return (
         <form
+            className="space-y-5"
             onSubmit={(e) => {
                 e.preventDefault();
                 if (wallet) {
@@ -35,7 +36,6 @@ export const WalletForm = ({ wallet }: { wallet?: TWallet }) => {
                     post(route('wallets.store'));
                 }
             }}
-            className="space-y-5"
         >
             <div className="space-y-2">
                 <Label htmlFor="name">

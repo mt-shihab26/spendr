@@ -174,6 +174,217 @@ describe('index', function () {
     });
 });
 
+describe('create', function () {
+    test('guests are redirected to the login page', function () {
+        $this->get(route('wallets.create'))
+            ->assertRedirect(route('login'));
+    });
+
+    test('authenticated users can visit the create wallet page', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('wallets.create'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('wallets/create'));
+    });
+});
+
+describe('store', function () {
+    test('guests are redirected to the login page', function () {
+        $this->post(route('wallets.store'), [])
+            ->assertRedirect(route('login'));
+    });
+
+    test('creates a wallet and redirects to the show page with a success message', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('wallets.store'), [
+                'name' => 'My Wallet',
+                'currency' => Currency::BDT->value,
+                'initial_balance' => 1000,
+                'color' => '#ff0000',
+                'is_default' => false,
+            ])
+            ->assertRedirect(route('wallets.show', $user->wallets()->first()))
+            ->assertSessionHas('success', 'Wallet created.');
+    });
+
+    test('stores the wallet in the database', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->post(route('wallets.store'), [
+            'name' => 'Savings',
+            'currency' => Currency::USD->value,
+            'initial_balance' => 500,
+            'color' => '#00ff00',
+            'is_default' => false,
+        ]);
+
+        $this->assertDatabaseHas('wallets', [
+            'user_id' => $user->id,
+            'name' => 'Savings',
+            'currency' => Currency::USD->value,
+            'initial_balance' => 500,
+        ]);
+    });
+
+    test('when is_default is true, clears default from all other wallets', function () {
+        $user = User::factory()->create();
+        $existing = Wallet::factory()->for($user)->default()->create();
+
+        $this->actingAs($user)->post(route('wallets.store'), [
+            'name' => 'New Default',
+            'currency' => Currency::BDT->value,
+            'color' => '#000000',
+            'is_default' => true,
+        ]);
+
+        expect($existing->fresh()->is_default)->toBeFalse();
+        expect($user->wallets()->where('name', 'New Default')->first()->is_default)->toBeTrue();
+    });
+
+    test('when is_default is false, other wallets keep their default status', function () {
+        $user = User::factory()->create();
+        $existing = Wallet::factory()->for($user)->default()->create();
+
+        $this->actingAs($user)->post(route('wallets.store'), [
+            'name' => 'Secondary',
+            'currency' => Currency::BDT->value,
+            'color' => '#000000',
+            'is_default' => false,
+        ]);
+
+        expect($existing->fresh()->is_default)->toBeTrue();
+    });
+
+    test('returns 403 when the wallet limit is reached', function () {
+        $user = User::factory()->create();
+        Wallet::factory()->for($user)->count(config('limits.wallets'))->create();
+
+        $this->actingAs($user)
+            ->post(route('wallets.store'), [
+                'name' => 'Extra Wallet',
+                'currency' => Currency::BDT->value,
+                'color' => '#000000',
+                'is_default' => false,
+            ])
+            ->assertForbidden();
+    });
+
+    test('name is required', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('wallets.store'), [
+                'currency' => Currency::BDT->value,
+                'color' => '#000000',
+            ])
+            ->assertSessionHasErrors('name');
+    });
+
+    test('name must not exceed 100 characters', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('wallets.store'), [
+                'name' => str_repeat('a', 101),
+                'currency' => Currency::BDT->value,
+                'color' => '#000000',
+            ])
+            ->assertSessionHasErrors('name');
+    });
+
+    test('name must be unique per user', function () {
+        $user = User::factory()->create();
+        Wallet::factory()->for($user)->create(['name' => 'Savings']);
+
+        $this->actingAs($user)
+            ->post(route('wallets.store'), [
+                'name' => 'Savings',
+                'currency' => Currency::BDT->value,
+                'color' => '#000000',
+            ])
+            ->assertSessionHasErrors('name');
+    });
+
+    test('name can be reused by a different user', function () {
+        $user = User::factory()->create();
+        $other = User::factory()->create();
+        Wallet::factory()->for($other)->create(['name' => 'Savings']);
+
+        $this->actingAs($user)
+            ->post(route('wallets.store'), [
+                'name' => 'Savings',
+                'currency' => Currency::BDT->value,
+                'color' => '#000000',
+                'is_default' => false,
+            ])
+            ->assertSessionHasNoErrors();
+    });
+
+    test('currency is required', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('wallets.store'), [
+                'name' => 'My Wallet',
+                'color' => '#000000',
+            ])
+            ->assertSessionHasErrors('currency');
+    });
+
+    test('currency must be a valid enum value', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('wallets.store'), [
+                'name' => 'My Wallet',
+                'currency' => 'INVALID',
+                'color' => '#000000',
+            ])
+            ->assertSessionHasErrors('currency');
+    });
+
+    test('color is required', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('wallets.store'), [
+                'name' => 'My Wallet',
+                'currency' => Currency::BDT->value,
+            ])
+            ->assertSessionHasErrors('color');
+    });
+
+    test('initial_balance is optional', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('wallets.store'), [
+                'name' => 'My Wallet',
+                'currency' => Currency::BDT->value,
+                'color' => '#000000',
+                'is_default' => false,
+            ])
+            ->assertSessionHasNoErrors();
+    });
+
+    test('initial_balance must not be negative', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('wallets.store'), [
+                'name' => 'My Wallet',
+                'currency' => Currency::BDT->value,
+                'color' => '#000000',
+                'initial_balance' => -100,
+            ])
+            ->assertSessionHasErrors('initial_balance');
+    });
+});
+
 describe('show', function () {
     test('guests are redirected to the login page', function () {
         $wallet = Wallet::factory()->for(User::factory()->create())->create();
