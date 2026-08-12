@@ -1,4 +1,4 @@
-import type { TTransfer } from '@/types/models';
+import type { TTableTranster } from '@/types/transfers';
 
 import { formatLocalDateTimeLong } from '@/lib/date';
 import { formatCurrency } from '@/lib/formats';
@@ -10,7 +10,7 @@ import { EditButton } from '@/components/elements/edit-button';
 import { BackButton } from '@/components/elements/back-button';
 import { IconBadge } from '@/components/elements/icon-badge';
 
-const TransfersShow = ({ transfer }: { transfer: TTransfer }) => {
+const TransfersShow = ({ transfer }: { transfer: TTableTranster }) => {
     return (
         <AppLayout
             title="Transfer"

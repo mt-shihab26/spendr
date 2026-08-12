@@ -3,23 +3,23 @@ import type {
     TGoal,
     TRecurringTransaction,
     TTransaction,
-    TTransfer,
     TWallet,
 } from '@/types/models';
 
+import type { TTableTranster } from '@/types/transfers';
+
 import { useEffect, useRef } from 'react';
 import { router } from '@inertiajs/react';
+import { formatCurrency } from '@/lib/formats';
+import { formatLocalDate } from '@/lib/date';
+import { getIcon } from '@/lib/icons';
+
 import { Link } from '@inertiajs/react';
 import { RefreshCw, Target } from 'lucide-react';
-
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { TransactionAmount } from '@/components/elements/transaction-amount';
 import { IconBadge } from '@/components/elements/icon-badge';
-
-import { formatCurrency } from '@/lib/formats';
-import { formatLocalDate } from '@/lib/date';
-import { getIcon } from '@/lib/icons';
 
 const Section = ({
     title,
@@ -48,7 +48,7 @@ const Search = ({
     query: string;
     transactions: TTransaction[];
     wallets: TWallet[];
-    transfers: TTransfer[];
+    transfers: TTableTranster[];
     categories: TCategory[];
     goals: TGoal[];
     recurring: TRecurringTransaction[];
@@ -59,8 +59,7 @@ const Search = ({
         inputRef.current?.focus();
     }, []);
 
-    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleSearch = () => {
         const q = inputRef.current?.value ?? '';
         router.get(
             route('search'),
@@ -89,7 +88,12 @@ const Search = ({
                     description="Search across your financial data"
                 />
 
-                <form onSubmit={handleSearch}>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleSearch();
+                    }}
+                >
                     <input
                         ref={inputRef}
                         type="text"
