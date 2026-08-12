@@ -56,7 +56,7 @@ export const navEntries = (): TNavEntry[] => [
                 title: 'Wallets',
                 href: route('wallets.index'),
                 icon: Wallet,
-                description: 'Manage your accounts and balances',
+                description: 'Manage your accounts',
             },
             {
                 title: 'Transfers',
@@ -68,7 +68,7 @@ export const navEntries = (): TNavEntry[] => [
                 title: 'Recurring',
                 href: route('recurring-transactions.index'),
                 icon: RefreshCw,
-                description: 'Automated scheduled transactions',
+                description: 'Scheduled transactions',
             },
         ],
     },

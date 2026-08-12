@@ -14,7 +14,6 @@ import { TransferIn } from '@/components/elements/transfer-in';
 import { TransferOut } from '@/components/elements/transfer-out';
 import { Balance } from '@/components/elements/balance';
 import { Net } from '@/components/elements/net';
-import { TransactionCount } from '@/components/elements/transaction-count';
 import { WalletActions } from '@/components/screens/wallets/wallet-actions';
 import { WalletDeleteDialog } from '@/components/screens/wallets/wallet-delete-dialog';
 

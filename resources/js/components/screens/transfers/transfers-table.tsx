@@ -15,10 +15,11 @@ export const TransfersTable = ({ transfers }: { transfers: TTransfer[] }) => {
 
     const transfersByDate = transfers.reduce<Map<string, TTransfer[]>>(
         (groups, transfer) => {
-            const transfersForDate = groups.get(transfer.transacted_at) ?? [];
+            const dateKey = transfer.transacted_at.slice(0, 10);
+            const transfersForDate = groups.get(dateKey) ?? [];
 
             transfersForDate.push(transfer);
-            groups.set(transfer.transacted_at, transfersForDate);
+            groups.set(dateKey, transfersForDate);
 
             return groups;
         },
@@ -117,11 +118,11 @@ export const TransfersTable = ({ transfers }: { transfers: TTransfer[] }) => {
                                             onDelete={setToDelete}
                                         />
                                         <Link
-                                            href={route(
-                                                'transfers.edit',
-                                                transfer.id,
-                                            )}
                                             className="text-muted-foreground hover:text-foreground"
+                                            href={route(
+                                                'transfers.show',
+                                                transfer,
+                                            )}
                                         >
                                             <ChevronRight className="size-4" />
                                         </Link>

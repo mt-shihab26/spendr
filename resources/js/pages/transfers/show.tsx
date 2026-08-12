@@ -1,10 +1,10 @@
 import type { TTransfer } from '@/types/models';
 
-import { Link } from '@inertiajs/react';
 import { formatLocalDateTimeLong } from '@/lib/date';
 import { formatCurrency } from '@/lib/formats';
 
 import { AppLayout } from '@/components/layouts/app-layout';
+import { Link } from '@inertiajs/react';
 import { Heading } from '@/components/elements/heading';
 import { EditButton } from '@/components/elements/edit-button';
 import { BackButton } from '@/components/elements/back-button';

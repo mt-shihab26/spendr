@@ -3,13 +3,10 @@ import {
     ActionsMenuSeparator,
     DeleteItem,
     EditItem,
-    SetDefaultItem,
     ViewItem,
 } from '@/components/elements/actions-menu';
 
 import type { TTableWallet } from '@/types/wallets';
-
-import { router } from '@inertiajs/react';
 
 import { WithTooltip } from '@/components/elements/with-tooltip';
 import { TransactionsAction } from '@/components/elements/transactions-action';

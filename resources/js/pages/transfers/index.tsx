@@ -28,6 +28,8 @@ const TransfersIndex = ({
     wallets: TWallet[];
     transfers: TPaginated<TTransfer>;
 }) => {
+    const title = `Transfers (${transfers.total})`;
+
     const navigate = (params: Partial<TFilters>) => {
         router.get(
             route('transfers.index'),
@@ -44,14 +46,14 @@ const TransfersIndex = ({
 
     return (
         <AppLayout
-            title="Transfers"
+            title={title}
             description="Move funds between your wallets"
             breadcrumbs={[{ title: 'Transfers', route: 'transfers.index' }]}
         >
             <div className="flex flex-col gap-4 p-4">
                 <div className="flex items-center justify-between">
                     <Heading
-                        title={`Transfers (${transfers.total})`}
+                        title={title}
                         description="Move funds between your wallets"
                     />
                     <NewButton href={route('transfers.create')}>

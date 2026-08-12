@@ -61,20 +61,6 @@ export const TransferForm = ({
         >
             <div className="space-y-2">
                 <Label>
-                    Amount <span className="text-destructive">*</span>
-                </Label>
-                <NumberInput
-                    value={data.amount}
-                    onValueChange={({ value }) =>
-                        setData('amount', Number(value))
-                    }
-                    prefix={currencyPrefix}
-                />
-                <InputError message={errors.amount} />
-            </div>
-
-            <div className="space-y-2">
-                <Label>
                     From Wallet <span className="text-destructive">*</span>
                 </Label>
                 <WalletSelect
@@ -106,6 +92,20 @@ export const TransferForm = ({
                     disabled={!!transfer}
                 />
                 <InputError message={errors.to_wallet_id} />
+            </div>
+
+            <div className="space-y-2">
+                <Label>
+                    Amount <span className="text-destructive">*</span>
+                </Label>
+                <NumberInput
+                    value={data.amount}
+                    onValueChange={({ value }) =>
+                        setData('amount', Number(value))
+                    }
+                    prefix={currencyPrefix}
+                />
+                <InputError message={errors.amount} />
             </div>
 
             <div className="space-y-2">

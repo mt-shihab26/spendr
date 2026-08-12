@@ -39,7 +39,9 @@ export const WalletDeleteDialog = ({
             {trigger && <AlertDialogTrigger render={trigger} />}
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Delete "{wallet.name}"?</AlertDialogTitle>
+                    <AlertDialogTitle>
+                        Delete "{wallet.name}" Wallet?
+                    </AlertDialogTitle>
                     <AlertDialogDescription>
                         This cannot be undone. Reassign or delete all
                         transactions first.
