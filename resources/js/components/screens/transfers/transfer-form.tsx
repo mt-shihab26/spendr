@@ -1,9 +1,4 @@
-import {
-    localToUtcDatetime,
-    utcToLocalDatetimeInput,
-    nowUtcIso,
-    normalizeUtcIso,
-} from '@/lib/date';
+import { nowUtcIso, normalizeUtcIso } from '@/lib/date';
 
 import type { TTransfer, TWallet } from '@/types/models';
 
@@ -11,11 +6,11 @@ import { useForm } from '@inertiajs/react';
 
 import { Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { InputError } from '@/components/elements/input-error';
 import { NumberInput } from '@/components/elements/number-input';
 import { WalletSelect } from '@/components/elements/wallet-select';
+import { DateTimeInput } from '@/components/elements/datetime-input';
 import { Textarea } from '@/components/ui/textarea';
 
 export const TransferForm = ({
@@ -105,16 +100,10 @@ export const TransferForm = ({
                 <Label htmlFor="transacted_at">
                     Date <span className="text-destructive">*</span>
                 </Label>
-                <Input
+                <DateTimeInput
                     id="transacted_at"
-                    type="datetime-local"
-                    value={utcToLocalDatetimeInput(data.transacted_at)}
-                    onChange={(e) =>
-                        setData(
-                            'transacted_at',
-                            localToUtcDatetime(e.target.value),
-                        )
-                    }
+                    value={data.transacted_at}
+                    onChange={(value) => setData('transacted_at', value)}
                     required
                 />
                 <InputError message={errors.transacted_at} />

@@ -1,9 +1,4 @@
-import {
-    localToUtcDatetime,
-    utcToLocalDatetimeInput,
-    nowUtcIso,
-    normalizeUtcIso,
-} from '@/lib/date';
+import { nowUtcIso, normalizeUtcIso } from '@/lib/date';
 
 import type { TTransaction, TWallet, TCategory } from '@/types/models';
 import type { TType } from '@/types/enums';
@@ -20,6 +15,7 @@ import { TypePicker } from '@/components/elements/type-picker';
 import { Textarea } from '@/components/ui/textarea';
 import { WalletSelect } from '@/components/elements/wallet-select';
 import { CategorySelect } from '@/components/elements/category-select';
+import { DateTimeInput } from '@/components/elements/datetime-input';
 import { FileAttachments } from './file-attachments';
 
 export const TransactionForm = ({
@@ -145,16 +141,10 @@ export const TransactionForm = ({
                 <Label htmlFor="transacted_at">
                     Date <span className="text-destructive">*</span>
                 </Label>
-                <Input
+                <DateTimeInput
                     id="transacted_at"
-                    type="datetime-local"
-                    value={utcToLocalDatetimeInput(data.transacted_at)}
-                    onChange={(e) =>
-                        setData(
-                            'transacted_at',
-                            localToUtcDatetime(e.target.value),
-                        )
-                    }
+                    value={data.transacted_at}
+                    onChange={(value) => setData('transacted_at', value)}
                     required
                 />
                 <InputError message={errors.transacted_at} />
