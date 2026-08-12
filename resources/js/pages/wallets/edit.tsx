@@ -6,17 +6,14 @@ import { Heading } from '@/components/elements/heading';
 import { WalletForm } from '@/components/screens/wallets/wallet-form';
 import { WalletDeleteDialog } from '@/components/screens/wallets/wallet-delete-dialog';
 import { BackButton } from '@/components/elements/back-button';
+import { WithTooltip } from '@/components/elements/with-tooltip';
 import { Button } from '@/components/ui/button';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from '@/components/ui/tooltip';
 
-const WalletsEdit = ({ wallet }: { wallet: TWallet }) => {
-    const hasTransactions = (wallet.transactions_count ?? 0) > 0;
-
+const WalletsEdit = ({
+    wallet,
+}: {
+    wallet: TWallet & { has_transactions: boolean };
+}) => {
     return (
         <AppLayout
             title="Edit Wallet"
@@ -49,25 +46,17 @@ const WalletsEdit = ({ wallet }: { wallet: TWallet }) => {
                 <div className="mx-auto w-full max-w-lg border p-4">
                     <WalletForm wallet={wallet} />
                     <div className="mt-6 border-t pt-4">
-                        {hasTransactions ? (
-                            <TooltipProvider>
-                                <Tooltip>
-                                    <TooltipTrigger render={<span />}>
-                                        <Button
-                                            variant="destructive"
-                                            size="sm"
-                                            disabled
-                                        >
-                                            <Trash2 />
-                                            Delete Wallet
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        Reassign or delete all transactions
-                                        first.
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
+                        {wallet.has_transactions ? (
+                            <WithTooltip content="Reassign or delete all transactions first.">
+                                <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    disabled
+                                >
+                                    <Trash2 />
+                                    Delete Wallet
+                                </Button>
+                            </WithTooltip>
                         ) : (
                             <WalletDeleteDialog
                                 wallet={wallet}

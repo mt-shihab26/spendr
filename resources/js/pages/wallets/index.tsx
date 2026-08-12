@@ -1,5 +1,5 @@
-import type { TTableWallet } from '@/components/screens/wallets/wallets-table';
 import type { TStatWallet } from '@/components/screens/wallets/wallet-stats';
+import type { TTableWallet } from '@/types/wallets';
 
 import { Wallet } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';

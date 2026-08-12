@@ -7,23 +7,17 @@ import {
     ViewItem,
 } from '@/components/elements/actions-menu';
 
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from '@/components/ui/tooltip';
-
-import type { TWallet } from '@/types/models';
+import type { TTableWallet } from '@/types/wallets';
 
 import { router } from '@inertiajs/react';
+import { WithTooltip } from '@/components/elements/with-tooltip';
 
 export const WalletActions = ({
     wallet,
     onDelete,
 }: {
-    wallet: TWallet;
-    onDelete: (wallet: TWallet) => void;
+    wallet: TTableWallet;
+    onDelete: (wallet: TTableWallet) => void;
 }) => {
     const hasTransactions = (wallet.transactions_count ?? 0) > 0;
 
@@ -42,16 +36,13 @@ export const WalletActions = ({
             )}
             <ActionsMenuSeparator />
             {hasTransactions ? (
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger className="w-full">
-                            <DeleteItem onClick={() => {}} disabled />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            Reassign or delete all transactions first.
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+                <WithTooltip
+                    content="Reassign or delete all transactions first."
+                    disabled
+                    className="w-full"
+                >
+                    <DeleteItem onClick={() => {}} disabled />
+                </WithTooltip>
             ) : (
                 <DeleteItem onClick={() => onDelete(wallet)} />
             )}

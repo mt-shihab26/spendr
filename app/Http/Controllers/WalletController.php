@@ -115,7 +115,7 @@ class WalletController extends Controller
     {
         abort_if($wallet->user_id !== $request->user()->id, 403);
 
-        $wallet->loadCount('transactions');
+        $wallet->setAttribute('has_transactions', $wallet->transactions()->exists());
 
         return inertia('wallets/edit', [
             'wallet' => $wallet,
