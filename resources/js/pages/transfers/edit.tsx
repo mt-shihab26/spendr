@@ -1,4 +1,5 @@
-import type { TTransfer, TWallet } from '@/types/models';
+import type { TWallet } from '@/types/models';
+import type { TTableTranster } from '@/types/transfers';
 
 import { Trash2 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -9,11 +10,11 @@ import { TransferForm } from '@/components/screens/transfers/transfer-form';
 import { TransferDeleteDialog } from '@/components/screens/transfers/transfer-delete-dialog';
 
 const TransfersEdit = ({
-    transfer,
     wallets,
+    transfer,
 }: {
-    transfer: TTransfer;
     wallets: TWallet[];
+    transfer: TTableTranster;
 }) => {
     return (
         <AppLayout

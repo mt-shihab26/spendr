@@ -91,11 +91,13 @@ class TransferController extends Controller
     {
         abort_if($transfer->user_id !== $request->user()->id, 403);
 
+        $transfer->load(['fromWallet', 'toWallet']);
+
         $wallets = $request->user()->wallets()->orderBy('sort_order')->get();
 
         return inertia('transfers/edit', [
-            'transfer' => $transfer,
             'wallets' => $wallets,
+            'transfer' => $transfer,
         ]);
     }
 

@@ -10,12 +10,14 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-import type { TTransfer } from '@/types/models';
+import type { TTransfer, TWallet } from '@/types/models';
 import type { ReactElement } from 'react';
 
 import { router } from '@inertiajs/react';
 import { formatLocalDateLong } from '@/lib/date';
 import { formatCurrency } from '@/lib/formats';
+
+import { ArrowRight, Trash2 } from 'lucide-react';
 
 export const TransferDeleteDialog = ({
     transfer,
@@ -24,7 +26,10 @@ export const TransferDeleteDialog = ({
     onDeleted,
     trigger,
 }: {
-    transfer: TTransfer;
+    transfer: TTransfer & {
+        from_wallet: TWallet;
+        to_wallet: TWallet;
+    };
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
     onDeleted?: () => void;
@@ -43,14 +48,23 @@ export const TransferDeleteDialog = ({
                 <AlertDialogHeader>
                     <AlertDialogTitle>Delete transfer?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        {transfer.from_wallet?.name} →{' '}
-                        {transfer.to_wallet?.name},{' '}
-                        {formatCurrency(
-                            transfer.amount,
-                            transfer.from_wallet?.currency,
-                        )}{' '}
-                        on {formatLocalDateLong(transfer.transacted_at)}. Cannot
-                        be undone.
+                        <div>
+                            <div className="flex items-center gap-1">
+                                <span>{transfer.from_wallet.name}</span>
+                                <ArrowRight className="size-3" />
+                                <span>{transfer.to_wallet.name}</span>
+                                <span className="font-medium">
+                                    {formatCurrency(
+                                        transfer.amount,
+                                        transfer.from_wallet?.currency,
+                                    )}
+                                </span>
+                            </div>
+                            <span>
+                                {formatLocalDateLong(transfer.transacted_at)}.
+                                Cannot be undone.
+                            </span>
+                        </div>
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -59,6 +73,7 @@ export const TransferDeleteDialog = ({
                         variant="destructive"
                         onClick={handleDelete}
                     >
+                        <Trash2 />
                         Delete
                     </AlertDialogAction>
                 </AlertDialogFooter>
