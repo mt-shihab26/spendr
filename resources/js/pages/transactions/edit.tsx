@@ -48,15 +48,13 @@ const TransactionsEdit = ({
                         href={route('transactions.show', transaction.id)}
                     />
                 </div>
-                <div className="mx-auto w-full max-w-lg space-y-4">
-                    <div className="border p-4">
-                        <TransactionForm
-                            transaction={transaction}
-                            wallets={wallets}
-                            categories={categories}
-                        />
-                    </div>
-                    <div className="border-t pt-4">
+                <div className="mx-auto w-full max-w-lg border p-4">
+                    <TransactionForm
+                        transaction={transaction}
+                        wallets={wallets}
+                        categories={categories}
+                    />
+                    <div className="mt-6 border-t pt-4">
                         <TransactionDeleteDialog
                             transaction={transaction}
                             trigger={

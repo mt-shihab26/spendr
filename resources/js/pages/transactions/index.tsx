@@ -96,9 +96,11 @@ const TransactionsIndex = ({
 
     const categoryType = filters.type !== 'all' ? filters.type : undefined;
 
+    const title = `Transactions (${transactions.total})`;
+
     return (
         <AppLayout
-            title="Transactions"
+            title={title}
             description="Track your income and expenses"
             breadcrumbs={[
                 { title: 'Transactions', route: 'transactions.index' },
@@ -107,7 +109,7 @@ const TransactionsIndex = ({
             <div className="flex flex-col gap-4 p-4">
                 <div className="flex items-center justify-between">
                     <Heading
-                        title={`Transactions (${transactions.total})`}
+                        title={title}
                         description="Track your income and expenses"
                     />
                     <NewButton href={route('transactions.create')}>
