@@ -27,7 +27,7 @@ const RecurringTransactionsEdit = ({
                     route: 'recurring-transactions.index',
                 },
                 {
-                    title: recurring.id,
+                    title: recurring.name,
                     route: 'recurring-transactions.show',
                     params: { recurringTransaction: recurring.id },
                 },
