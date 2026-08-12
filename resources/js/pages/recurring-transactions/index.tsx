@@ -1,16 +1,18 @@
 import type { TRecurringTransaction } from '@/types/models';
 
-import { RefreshCw } from 'lucide-react';
-import { formatCurrency } from '@/lib/formats';
+import { useState } from 'react';
+import { ChevronRight, RefreshCw } from 'lucide-react';
+import { formatLocalDateLong } from '@/lib/date';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { EmptyState } from '@/components/elements/empty-state';
 import { Link } from '@inertiajs/react';
-import { EditButton } from '@/components/elements/edit-button';
 import { Badge } from '@/components/ui/badge';
 import { IconBadge } from '@/components/elements/icon-badge';
 import { TransactionAmount } from '@/components/elements/transaction-amount';
+import { RecurringTransactionActions } from '@/components/screens/recurring-transactions/recurring-transaction-actions';
+import { RecurringTransactionDeleteDialog } from '@/components/screens/recurring-transactions/recurring-transaction-delete-dialog';
 
 const FREQUENCY_LABELS: Record<string, string> = {
     daily: 'Daily',
@@ -24,6 +26,10 @@ const RecurringTransactionsIndex = ({
 }: {
     recurring: TRecurringTransaction[];
 }) => {
+    const [toDelete, setToDelete] = useState<TRecurringTransaction | null>(
+        null,
+    );
+
     return (
         <AppLayout
             title="Recurring Transactions"
@@ -77,7 +83,8 @@ const RecurringTransactionsIndex = ({
                                     <th className="px-3 py-2 text-left font-medium">
                                         Status
                                     </th>
-                                    <th className="w-10 px-3 py-2" />
+                                    <th className="w-8 px-3 py-2" />
+                                    <th className="w-8 px-3 py-2" />
                                 </tr>
                             </thead>
                             <tbody>
@@ -114,7 +121,7 @@ const RecurringTransactionsIndex = ({
                                                 r.frequency}
                                         </td>
                                         <td className="px-3 py-2.5 text-muted-foreground tabular-nums">
-                                            {r.next_due_at}
+                                            {formatLocalDateLong(r.next_due_at)}
                                         </td>
                                         <td className="px-3 py-2.5 text-right tabular-nums">
                                             <TransactionAmount
@@ -136,12 +143,21 @@ const RecurringTransactionsIndex = ({
                                             </Badge>
                                         </td>
                                         <td className="px-3 py-2.5">
-                                            <EditButton
+                                            <RecurringTransactionActions
+                                                recurring={r}
+                                                onDelete={setToDelete}
+                                            />
+                                        </td>
+                                        <td className="px-3 py-2.5">
+                                            <Link
                                                 href={route(
-                                                    'recurring-transactions.edit',
+                                                    'recurring-transactions.show',
                                                     r.id,
                                                 )}
-                                            />
+                                                className="text-muted-foreground hover:text-foreground"
+                                            >
+                                                <ChevronRight className="size-4" />
+                                            </Link>
                                         </td>
                                     </tr>
                                 ))}
@@ -150,6 +166,14 @@ const RecurringTransactionsIndex = ({
                     </div>
                 )}
             </div>
+            {toDelete && (
+                <RecurringTransactionDeleteDialog
+                    recurring={toDelete}
+                    open={!!toDelete}
+                    onOpenChange={(open) => !open && setToDelete(null)}
+                    onDeleted={() => setToDelete(null)}
+                />
+            )}
         </AppLayout>
     );
 };

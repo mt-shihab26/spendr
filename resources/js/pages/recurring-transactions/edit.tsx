@@ -1,9 +1,12 @@
 import type { TCategory, TRecurringTransaction, TWallet } from '@/types/models';
 
+import { Trash2 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { BackButton } from '@/components/elements/back-button';
+import { Button } from '@/components/ui/button';
 import { RecurringTransactionForm } from '@/components/screens/recurring-transactions/recurring-transaction-form';
+import { RecurringTransactionDeleteDialog } from '@/components/screens/recurring-transactions/recurring-transaction-delete-dialog';
 
 const RecurringTransactionsEdit = ({
     recurring,
@@ -24,7 +27,7 @@ const RecurringTransactionsEdit = ({
                     route: 'recurring-transactions.index',
                 },
                 {
-                    title: recurring.description,
+                    title: recurring.id,
                     route: 'recurring-transactions.show',
                     params: { recurringTransaction: recurring.id },
                 },
@@ -38,8 +41,8 @@ const RecurringTransactionsEdit = ({
             <div className="flex flex-col gap-4 p-4">
                 <div className="flex items-start justify-between">
                     <Heading
-                        title={`Edit: ${recurring.description}`}
-                        description="Update this recurring transaction"
+                        title="Edit Recurring"
+                        description={`Recurring #${recurring.id}`}
                     />
                     <BackButton
                         href={route(
@@ -54,6 +57,17 @@ const RecurringTransactionsEdit = ({
                         wallets={wallets}
                         categories={categories}
                     />
+                    <div className="mt-6 border-t pt-4">
+                        <RecurringTransactionDeleteDialog
+                            recurring={recurring}
+                            trigger={
+                                <Button variant="destructive" size="sm">
+                                    <Trash2 />
+                                    Delete Recurring
+                                </Button>
+                            }
+                        />
+                    </div>
                 </div>
             </div>
         </AppLayout>

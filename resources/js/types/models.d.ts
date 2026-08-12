@@ -1,4 +1,4 @@
-import type { TCurrency, TType } from '@/types/enums';
+import type { TCurrency, TFrequency, TType } from '@/types/enums';
 import type { TUserPreferences } from '@/types/global';
 
 export type TUser = {
@@ -32,6 +32,46 @@ export type TWallet = {
     updated_at: string;
 };
 
+export type TCategory = {
+    id: string;
+    user_id: string;
+    name: string;
+    type: TType;
+    color: string;
+    icon: string | null;
+    is_default: boolean;
+    sort_order: number;
+    transactions_count: number | null;
+    total_amount: number | null;
+    month_spent?: Partial<Record<TCurrency, number>>;
+    deleted_at: string | null;
+    created_at: string;
+    updated_at: string;
+
+    budget?: TBudget | null;
+};
+
+export type TTransaction = {
+    id: string;
+    user_id: string;
+    wallet_id: string;
+    category_id: string;
+    type: TType;
+    amount: number;
+    transacted_at: string;
+    description: string;
+    notes: string | null;
+    deleted_at: string | null;
+    created_at: string;
+    updated_at: string;
+
+    files_count?: number;
+
+    wallet?: TWallet;
+    category?: TCategory;
+    files?: TFile[];
+};
+
 export type TTransfer = {
     id: string;
 
@@ -60,25 +100,6 @@ export type TBudget = {
     category?: TCategory;
 };
 
-export type TCategory = {
-    id: string;
-    user_id: string;
-    name: string;
-    type: TType;
-    color: string;
-    icon: string | null;
-    is_default: boolean;
-    sort_order: number;
-    transactions_count: number | null;
-    total_amount: number | null;
-    month_spent?: Partial<Record<TCurrency, number>>;
-    deleted_at: string | null;
-    created_at: string;
-    updated_at: string;
-
-    budget?: TBudget | null;
-};
-
 export type TFile = {
     id: string;
     user_id: string;
@@ -90,48 +111,6 @@ export type TFile = {
     size: number;
     created_at: string;
     updated_at: string;
-};
-
-export type TTransaction = {
-    id: string;
-    user_id: string;
-    wallet_id: string;
-    category_id: string;
-    type: TType;
-    amount: number;
-    transacted_at: string;
-    description: string;
-    notes: string | null;
-    deleted_at: string | null;
-    created_at: string;
-    updated_at: string;
-
-    files_count?: number;
-
-    wallet?: TWallet;
-    category?: TCategory;
-    files?: TFile[];
-};
-
-export type TRecurringTransaction = {
-    id: string;
-    user_id: string;
-    wallet_id: string;
-    category_id: string | null;
-    type: TType;
-    amount: number;
-    description: string;
-    notes: string | null;
-    frequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
-    next_due_at: string;
-    last_run_at: string | null;
-    is_active: boolean;
-    deleted_at: string | null;
-    created_at: string;
-    updated_at: string;
-
-    wallet?: TWallet;
-    category?: TCategory | null;
 };
 
 export type TGoal = {
@@ -149,4 +128,25 @@ export type TGoal = {
     deleted_at: string | null;
     created_at: string;
     updated_at: string;
+};
+
+export type TRecurringTransaction = {
+    id: string;
+    user_id: string;
+    wallet_id: string;
+    category_id: string | null;
+    type: TType;
+    amount: number;
+    description: string;
+    notes: string | null;
+    frequency: TFrequency;
+    next_due_at: string;
+    last_run_at: string | null;
+    is_active: boolean;
+    deleted_at: string | null;
+    created_at: string;
+    updated_at: string;
+
+    wallet?: TWallet;
+    category?: TCategory | null;
 };

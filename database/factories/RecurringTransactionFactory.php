@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Frequency;
 use App\Enums\Type;
 use App\Models\RecurringTransaction;
 use App\Models\User;
@@ -30,7 +31,7 @@ class RecurringTransactionFactory extends Factory
             'amount' => fake()->randomFloat(2, 10, 5000),
             'description' => fake()->words(3, true),
             'notes' => fake()->optional()->sentence(),
-            'frequency' => fake()->randomElement(['daily', 'weekly', 'monthly', 'yearly']),
+            'frequency' => fake()->randomElement(Frequency::cases())->value,
             'next_due_at' => fake()->dateTimeBetween('now', '+3 months')->format('Y-m-d'),
             'last_run_at' => null,
             'is_active' => true,

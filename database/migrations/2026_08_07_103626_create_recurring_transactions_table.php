@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('amount', 15, 2);
             $table->string('description');
             $table->text('notes')->nullable();
-            $table->string('frequency', 20); // daily, weekly, monthly, yearly
+            $table->string('frequency', 20); // App\Enums\Frequency
             $table->date('next_due_at');
             $table->timestamp('last_run_at')->nullable();
             $table->boolean('is_active')->default(true);

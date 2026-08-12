@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\RecurringTransactions;
 
+use App\Enums\Frequency;
 use App\Enums\Type;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -31,7 +32,7 @@ class StoreRecurringTransactionRequest extends FormRequest
             'amount' => ['required', 'numeric', 'min:0.01'],
             'description' => ['required', 'string', 'max:255'],
             'notes' => ['nullable', 'string', 'max:1000'],
-            'frequency' => ['required', 'string', Rule::in(['daily', 'weekly', 'monthly', 'yearly'])],
+            'frequency' => ['required', 'string', Rule::in(array_column(Frequency::cases(), 'value'))],
             'next_due_at' => ['required', 'date'],
             'is_active' => ['nullable', 'boolean'],
         ];

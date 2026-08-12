@@ -1,14 +1,15 @@
 import type { TRecurringTransaction } from '@/types/models';
 
-import { useForm } from '@inertiajs/react';
 import { formatCurrency } from '@/lib/formats';
+import { formatLocalDateLong } from '@/lib/date';
 
+import { Link } from '@inertiajs/react';
+import { CalendarDays, FileText } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { EditButton } from '@/components/elements/edit-button';
 import { BackButton } from '@/components/elements/back-button';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { IconBadge } from '@/components/elements/icon-badge';
 
 const FREQUENCY_LABELS: Record<string, string> = {
@@ -23,26 +24,19 @@ const RecurringTransactionsShow = ({
 }: {
     recurring: TRecurringTransaction;
 }) => {
-    const { delete: destroy, processing } = useForm({});
-
-    const handleDelete = () => {
-        if (!confirm(`Delete "${recurring.description}"?`)) {
-            return;
-        }
-        destroy(route('recurring-transactions.destroy', recurring.id));
-    };
+    const title = `Recurring #${recurring.id}`;
 
     return (
         <AppLayout
-            title={recurring.description}
-            description="Recurring transaction details"
+            title={title}
+            description={recurring.description}
             breadcrumbs={[
                 {
                     title: 'Recurring',
                     route: 'recurring-transactions.index',
                 },
                 {
-                    title: recurring.description,
+                    title: recurring.id,
                     route: 'recurring-transactions.show',
                     params: { recurringTransaction: recurring.id },
                 },
@@ -50,11 +44,8 @@ const RecurringTransactionsShow = ({
         >
             <div className="flex flex-col gap-4 p-4">
                 <div className="flex items-start justify-between">
-                    <Heading
-                        title={recurring.description}
-                        description={`${FREQUENCY_LABELS[recurring.frequency] ?? recurring.frequency} · Next due: ${recurring.next_due_at}`}
-                    />
-                    <div className="flex items-center gap-1">
+                    <Heading title={title} description={recurring.description} />
+                    <div className="flex items-center gap-2">
                         <EditButton
                             href={route(
                                 'recurring-transactions.edit',
@@ -67,10 +58,16 @@ const RecurringTransactionsShow = ({
                     </div>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-4">
-                    <div className="border p-4">
+                <div className="flex w-full gap-4">
+                    <div className="w-full border p-4">
+                        <p className="text-xs text-muted-foreground">ID</p>
+                        <p className="mt-1 font-mono text-xs text-muted-foreground">
+                            {recurring.id}
+                        </p>
+                    </div>
+                    <div className="w-full border p-4">
                         <p className="text-xs text-muted-foreground">Amount</p>
-                        <p className="mt-1 text-lg font-semibold">
+                        <p className="mt-1 text-lg font-bold text-blue-600 tabular-nums">
                             {recurring.wallet
                                 ? formatCurrency(
                                       recurring.amount,
@@ -79,13 +76,16 @@ const RecurringTransactionsShow = ({
                                 : recurring.amount.toFixed(2)}
                         </p>
                     </div>
-                    <div className="border p-4">
+                    <div className="w-full border p-4">
                         <p className="text-xs text-muted-foreground">Type</p>
                         <Badge variant="secondary" className="mt-1 capitalize">
                             {recurring.type}
                         </Badge>
                     </div>
-                    <div className="border p-4">
+                </div>
+
+                <div className="flex w-full gap-4">
+                    <div className="w-full border p-4">
                         <p className="text-xs text-muted-foreground">
                             Frequency
                         </p>
@@ -94,7 +94,7 @@ const RecurringTransactionsShow = ({
                                 recurring.frequency}
                         </p>
                     </div>
-                    <div className="border p-4">
+                    <div className="w-full border p-4">
                         <p className="text-xs text-muted-foreground">Status</p>
                         <Badge
                             variant={
@@ -105,76 +105,87 @@ const RecurringTransactionsShow = ({
                             {recurring.is_active ? 'Active' : 'Paused'}
                         </Badge>
                     </div>
+                    <div className="w-full border p-4">
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <CalendarDays className="size-3" />
+                            Next Due
+                        </div>
+                        <p className="mt-1 text-sm font-medium">
+                            {formatLocalDateLong(recurring.next_due_at)}
+                        </p>
+                    </div>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Wallet</p>
-                        <div className="mt-1 flex items-center gap-2">
-                            {recurring.wallet && (
+                <div className="flex w-full gap-4">
+                    <div className="w-full border p-4">
+                        <p className="mb-2 text-xs text-muted-foreground">
+                            Wallet
+                        </p>
+                        {recurring.wallet ? (
+                            <div className="flex items-center gap-2">
                                 <IconBadge
                                     icon={recurring.wallet.icon}
                                     color={recurring.wallet.color}
                                 />
-                            )}
-                            <span className="text-sm font-medium">
-                                {recurring.wallet?.name ?? '—'}
+                                <Link
+                                    href={route(
+                                        'wallets.show',
+                                        recurring.wallet.id,
+                                    )}
+                                    className="text-sm font-medium hover:underline"
+                                >
+                                    {recurring.wallet.name}
+                                </Link>
+                            </div>
+                        ) : (
+                            <span className="text-sm text-muted-foreground">
+                                —
                             </span>
-                        </div>
+                        )}
                     </div>
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">
+                    <div className="w-full border p-4">
+                        <p className="mb-2 text-xs text-muted-foreground">
                             Category
                         </p>
-                        <div className="mt-1 flex items-center gap-2">
-                            {recurring.category && (
+                        {recurring.category ? (
+                            <div className="flex items-center gap-2">
                                 <IconBadge
                                     icon={recurring.category.icon}
                                     color={recurring.category.color}
                                 />
-                            )}
-                            <span className="text-sm font-medium">
-                                {recurring.category?.name ?? '—'}
+                                <span className="text-sm font-medium">
+                                    {recurring.category.name}
+                                </span>
+                            </div>
+                        ) : (
+                            <span className="text-sm text-muted-foreground">
+                                —
                             </span>
-                        </div>
+                        )}
                     </div>
                 </div>
 
                 {recurring.notes && (
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Notes</p>
+                    <div className="w-full border p-4">
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <FileText className="size-3" />
+                            Notes
+                        </div>
                         <p className="mt-1 text-sm">{recurring.notes}</p>
                     </div>
                 )}
 
-                <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">
-                            Next Due
-                        </p>
-                        <p className="mt-1 text-sm font-medium">
-                            {recurring.next_due_at}
-                        </p>
-                    </div>
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">
+                {recurring.last_run_at && (
+                    <div className="w-full border p-4">
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <CalendarDays className="size-3" />
                             Last Run
-                        </p>
+                        </div>
                         <p className="mt-1 text-sm font-medium">
-                            {recurring.last_run_at ?? 'Never'}
+                            {formatLocalDateLong(recurring.last_run_at)}
                         </p>
                     </div>
-                </div>
-
-                <div className="flex justify-end">
-                    <Button
-                        variant="destructive"
-                        onClick={handleDelete}
-                        disabled={processing}
-                    >
-                        Delete
-                    </Button>
-                </div>
+                )}
             </div>
         </AppLayout>
     );

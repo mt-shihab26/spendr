@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Frequency;
 use App\Enums\Type;
 use Database\Factories\RecurringTransactionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -21,7 +22,7 @@ use Illuminate\Support\Carbon;
  * @property float $amount
  * @property string $description
  * @property string|null $notes
- * @property string $frequency
+ * @property Frequency $frequency
  * @property Carbon $next_due_at
  * @property Carbon|null $last_run_at
  * @property bool $is_active
@@ -44,6 +45,7 @@ class RecurringTransaction extends Model
     {
         return [
             'type' => Type::class,
+            'frequency' => Frequency::class,
             'amount' => 'float',
             'next_due_at' => 'date',
             'last_run_at' => 'datetime',
@@ -87,10 +89,10 @@ class RecurringTransaction extends Model
     public function advanceNextDue(): void
     {
         $this->next_due_at = match ($this->frequency) {
-            'daily' => $this->next_due_at->addDay(),
-            'weekly' => $this->next_due_at->addWeek(),
-            'yearly' => $this->next_due_at->addYear(),
-            default => $this->next_due_at->addMonth(),
+            Frequency::Daily => $this->next_due_at->addDay(),
+            Frequency::Weekly => $this->next_due_at->addWeek(),
+            Frequency::Yearly => $this->next_due_at->addYear(),
+            Frequency::Monthly => $this->next_due_at->addMonth(),
         };
     }
 }
