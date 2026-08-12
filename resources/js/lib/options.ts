@@ -13,3 +13,7 @@ export const frequencyOptions: {
     { value: 'monthly', label: 'Monthly', icon: CalendarRange },
     { value: 'yearly', label: 'Yearly', icon: CalendarCheck2 },
 ];
+
+export const getFrequency = (value: TFrequency) => {
+    return frequencyOptions.find((o) => o.value === value);
+};

@@ -51,7 +51,9 @@ export const RecurringTransactionForm = ({
             }}
         >
             <div className="flex flex-col gap-1.5">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">
+                    Name <span className="text-destructive">*</span>
+                </Label>
                 <Input
                     id="name"
                     value={data.name}
@@ -62,7 +64,9 @@ export const RecurringTransactionForm = ({
             </div>
 
             <div className="flex flex-col gap-1.5">
-                <Label>Type</Label>
+                <Label>
+                    Type <span className="text-destructive">*</span>
+                </Label>
                 <TypePicker
                     value={data.type}
                     onChange={(v) => {
@@ -74,7 +78,9 @@ export const RecurringTransactionForm = ({
             </div>
 
             <div className="flex flex-col gap-1.5">
-                <Label htmlFor="wallet_id">Wallet</Label>
+                <Label htmlFor="wallet_id">
+                    Wallet <span className="text-destructive">*</span>
+                </Label>
                 <WalletSelect
                     wallets={wallets}
                     value={data.wallet_id}
@@ -84,7 +90,9 @@ export const RecurringTransactionForm = ({
             </div>
 
             <div className="flex flex-col gap-1.5">
-                <Label htmlFor="amount">Amount</Label>
+                <Label htmlFor="amount">
+                    Amount <span className="text-destructive">*</span>
+                </Label>
                 <NumberInput
                     id="amount"
                     value={data.amount}
@@ -97,7 +105,7 @@ export const RecurringTransactionForm = ({
             </div>
 
             <div className="flex flex-col gap-1.5">
-                <Label htmlFor="category_id">Category (optional)</Label>
+                <Label htmlFor="category_id">Category</Label>
                 <CategorySelect
                     categories={categories}
                     type={data.type}
@@ -109,7 +117,9 @@ export const RecurringTransactionForm = ({
 
             <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="frequency">Frequency</Label>
+                    <Label htmlFor="frequency">
+                        Frequency <span className="text-destructive">*</span>
+                    </Label>
                     <FrequencySelect
                         value={data.frequency}
                         onValueChange={(v) => setData('frequency', v)}
@@ -118,7 +128,9 @@ export const RecurringTransactionForm = ({
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="next_due_at">Next Due Date</Label>
+                    <Label htmlFor="next_due_at">
+                        Next Due Date <span className="text-destructive">*</span>
+                    </Label>
                     <DateInput
                         id="next_due_at"
                         value={data.next_due_at}
@@ -129,7 +141,7 @@ export const RecurringTransactionForm = ({
             </div>
 
             <div className="flex flex-col gap-1.5">
-                <Label htmlFor="notes">Notes (optional)</Label>
+                <Label htmlFor="notes">Notes</Label>
                 <Textarea
                     id="notes"
                     value={data.notes ?? ''}

@@ -54,7 +54,9 @@ export const GoalForm = ({ goal }: { goal?: TGoal }) => {
     return (
         <form onSubmit={submit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">
+                    Name <span className="text-destructive">*</span>
+                </Label>
                 <Input
                     id="name"
                     value={data.name}
@@ -65,7 +67,7 @@ export const GoalForm = ({ goal }: { goal?: TGoal }) => {
             </div>
 
             <div className="flex flex-col gap-1.5">
-                <Label htmlFor="description">Description (optional)</Label>
+                <Label htmlFor="description">Description</Label>
                 <Textarea
                     id="description"
                     value={data.description}
@@ -78,7 +80,9 @@ export const GoalForm = ({ goal }: { goal?: TGoal }) => {
 
             <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="currency">Currency</Label>
+                    <Label htmlFor="currency">
+                        Currency <span className="text-destructive">*</span>
+                    </Label>
                     <Select
                         value={data.currency}
                         onValueChange={(v) => setData('currency', v ?? '')}
@@ -112,7 +116,9 @@ export const GoalForm = ({ goal }: { goal?: TGoal }) => {
 
             <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="target_amount">Target Amount</Label>
+                    <Label htmlFor="target_amount">
+                        Target Amount <span className="text-destructive">*</span>
+                    </Label>
                     <Input
                         id="target_amount"
                         type="number"
@@ -145,7 +151,7 @@ export const GoalForm = ({ goal }: { goal?: TGoal }) => {
             </div>
 
             <div className="flex flex-col gap-1.5">
-                <Label htmlFor="target_date">Target Date (optional)</Label>
+                <Label htmlFor="target_date">Target Date</Label>
                 <Input
                     id="target_date"
                     type="date"

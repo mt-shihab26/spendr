@@ -14,8 +14,8 @@ export const IconPicker = ({
     value,
     onChange,
 }: {
-    value: string;
-    onChange: (value: string) => void;
+    value: string | null;
+    onChange: (value: string | null) => void;
 }) => {
     const [open, setOpen] = useState(false);
     const SelectedIcon = getIcon(value);

@@ -1,7 +1,8 @@
-import type { TRecurringTransaction } from '@/types/models';
+import type { TRecurringTransactionWithRelations } from '@/types/withs';
 
 import { formatCurrency } from '@/lib/formats';
 import { formatLocalDateLong } from '@/lib/date';
+import { getFrequency } from '@/lib/options';
 
 import { Link } from '@inertiajs/react';
 import { CalendarDays, FileText } from 'lucide-react';
@@ -12,31 +13,27 @@ import { BackButton } from '@/components/elements/back-button';
 import { Badge } from '@/components/ui/badge';
 import { IconBadge } from '@/components/elements/icon-badge';
 
-const FREQUENCY_LABELS: Record<string, string> = {
-    daily: 'Daily',
-    weekly: 'Weekly',
-    monthly: 'Monthly',
-    yearly: 'Yearly',
-};
-
 const RecurringTransactionsShow = ({
     recurring,
 }: {
-    recurring: TRecurringTransaction;
+    recurring: TRecurringTransactionWithRelations;
 }) => {
-    const title = `Recurring #${recurring.id}`;
+    const title = `Recurring '${recurring.name}'`;
+    const frequencyLabel =
+        getFrequency(recurring.frequency)?.label ?? recurring.frequency;
+    const description = `${frequencyLabel} · Due ${formatLocalDateLong(recurring.next_due_at)}`;
 
     return (
         <AppLayout
             title={title}
-            description={recurring.name}
+            description={description}
             breadcrumbs={[
                 {
                     title: 'Recurring',
                     route: 'recurring-transactions.index',
                 },
                 {
-                    title: recurring.id,
+                    title: recurring.name,
                     route: 'recurring-transactions.show',
                     params: { recurringTransaction: recurring.id },
                 },
@@ -44,7 +41,7 @@ const RecurringTransactionsShow = ({
         >
             <div className="flex flex-col gap-4 p-4">
                 <div className="flex items-start justify-between">
-                    <Heading title={title} description={recurring.name} />
+                    <Heading title={title} description={description} />
                     <div className="flex items-center gap-2">
                         <EditButton
                             href={route(
@@ -90,8 +87,7 @@ const RecurringTransactionsShow = ({
                             Frequency
                         </p>
                         <p className="mt-1 text-sm font-medium capitalize">
-                            {FREQUENCY_LABELS[recurring.frequency] ??
-                                recurring.frequency}
+                            {frequencyLabel}
                         </p>
                     </div>
                     <div className="w-full border p-4">

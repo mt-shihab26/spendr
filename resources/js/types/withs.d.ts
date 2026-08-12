@@ -1,4 +1,9 @@
-import type { TTransfer, TWallet } from './models';
+import type {
+    TCategory,
+    TRecurringTransaction,
+    TTransfer,
+    TWallet,
+} from './models';
 
 export type TWalletWithStats = TWallet & {
     balance: number;
@@ -14,4 +19,9 @@ export type TWalletWithStats = TWallet & {
 export type TTransterWithWallets = TTransfer & {
     from_wallet: TWallet;
     to_wallet: TWallet;
+};
+
+export type TRecurringTransactionWithRelations = TRecurringTransaction & {
+    wallet: TWallet;
+    category: TCategory | null;
 };
