@@ -19,7 +19,7 @@ const RecurringTransactionsEdit = ({
 }) => {
     return (
         <AppLayout
-            title={`Edit: ${recurring.description}`}
+            title={`Edit: ${recurring.name}`}
             description="Update recurring transaction"
             breadcrumbs={[
                 {

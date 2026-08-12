@@ -1,12 +1,14 @@
 import type {
     TCategory,
     TGoal,
-    TRecurringTransaction,
     TTransaction,
     TWallet,
 } from '@/types/models';
 
-import type { TTransterWithWallets } from '@/types/withs';
+import type {
+    TTransterWithWallets,
+    TRecurringTransactionWithRelations,
+} from '@/types/withs';
 
 import { useEffect, useRef } from 'react';
 import { router } from '@inertiajs/react';
@@ -51,7 +53,7 @@ const Search = ({
     transfers: TTransterWithWallets[];
     categories: TCategory[];
     goals: TGoal[];
-    recurring: TRecurringTransaction[];
+    recurring: TRecurringTransactionWithRelations[];
 }) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -304,7 +306,7 @@ const Search = ({
                                 </span>
                                 <div className="flex flex-1 flex-col">
                                     <span className="text-xs font-medium">
-                                        {r.description}
+                                        {r.name}
                                     </span>
                                     <span className="text-xs text-muted-foreground capitalize">
                                         {r.frequency} · next {r.next_due_at}

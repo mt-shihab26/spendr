@@ -32,12 +32,12 @@ export const GoalForm = ({ goal }: { goal?: TGoal }) => {
     const { data, setData, post, patch, processing, errors } =
         useForm<TGoalFormData>({
             name: goal ? (goal?.name ?? null) : '',
-            description: goal ? (goal?.description ?? null) : '',
+            description: goal ? (goal?.description ?? '') : '',
             currency: goal ? (goal?.currency ?? null) : preferences.default_currency,
             target_amount: goal ? (goal?.target_amount?.toString() ?? null) : '',
             current_amount: goal ? (goal?.current_amount?.toString() ?? null) : '0',
-            target_date: goal ? (goal?.target_date ?? null) : '',
-            icon: goal ? (goal?.icon ?? null) : '',
+            target_date: goal ? (goal?.target_date ?? '') : '',
+            icon: goal ? (goal?.icon ?? '') : '',
             color: goal ? (goal?.color ?? null) : '#6366f1',
         });
 

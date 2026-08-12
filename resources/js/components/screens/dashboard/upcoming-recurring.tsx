@@ -1,4 +1,4 @@
-import type { TRecurringTransaction } from '@/types/models';
+import type { TRecurringTransactionWithRelations } from '@/types/withs';
 
 import { formatCurrency } from '@/lib/formats';
 
@@ -9,7 +9,7 @@ import { ViewAllLink } from '@/components/elements/view-all-link';
 export const UpcomingRecurring = ({
     upcomingRecurring,
 }: {
-    upcomingRecurring: TRecurringTransaction[];
+    upcomingRecurring: TRecurringTransactionWithRelations[];
 }) => {
     if (upcomingRecurring.length === 0) {
         return null;

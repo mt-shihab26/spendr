@@ -16,23 +16,21 @@ class RecurringTransactionController extends Controller
      */
     public function index(Request $request): Response
     {
-        $validated = $request->validate([
+        $filters = $request->validate([
             'is_active' => ['nullable', 'boolean'],
         ]);
 
         $recurring = $request->user()
             ->recurringTransactions()
             ->with(['wallet', 'category'])
-            ->when(isset($validated['is_active']), fn ($q) => $q->where('is_active', $validated['is_active']))
+            ->when(isset($filters['is_active']), fn ($q) => $q->where('is_active', $filters['is_active']))
             ->orderBy('next_due_at')
             ->limit(config('limits.recurring_transactions'))
             ->get();
 
         return inertia('recurring-transactions/index', [
+            'filters' => $filters,
             'recurring' => $recurring,
-            'filters' => [
-                'is_active' => $validated['is_active'] ?? null,
-            ],
         ]);
     }
 
@@ -58,6 +56,7 @@ class RecurringTransactionController extends Controller
         abort_if($request->user()->recurringTransactions()->count() >= config('limits.recurring_transactions'), 403, 'You have reached the maximum limit of recurring transactions.');
 
         $validated = $request->validated();
+
         $validated['is_active'] = (bool) ($validated['is_active'] ?? true);
 
         $recurring = $request->user()->recurringTransactions()->create($validated);
@@ -92,9 +91,9 @@ class RecurringTransactionController extends Controller
         $categories = $request->user()->categories()->orderBy('sort_order')->get();
 
         return inertia('recurring-transactions/edit', [
-            'recurring' => $recurringTransaction->load(['wallet', 'category']),
             'wallets' => $wallets,
             'categories' => $categories,
+            'recurring' => $recurringTransaction->load(['wallet', 'category']),
         ]);
     }
 

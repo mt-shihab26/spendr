@@ -124,7 +124,7 @@ export const TransferForm = ({
                 <Label htmlFor="notes">Notes</Label>
                 <Textarea
                     id="notes"
-                    value={data.notes}
+                    value={data.notes ?? ''}
                     onChange={(e) => setData('notes', e.target.value)}
                     placeholder="Optional notes"
                 />

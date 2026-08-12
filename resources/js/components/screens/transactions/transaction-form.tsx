@@ -51,7 +51,7 @@ export const TransactionForm = ({
             ? normalizeUtcIso(transaction.transacted_at)
             : nowUtcIso(),
         description: transaction ? (transaction?.description ?? null) : '',
-        notes: transaction ? (transaction?.notes ?? null) : '',
+        notes: transaction ? (transaction?.notes ?? '') : '',
         file_ids: [],
     });
 
