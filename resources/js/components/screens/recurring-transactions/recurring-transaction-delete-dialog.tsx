@@ -2,6 +2,7 @@ import type { TRecurringTransaction } from '@/types/models';
 import type { ReactElement } from 'react';
 
 import { router } from '@inertiajs/react';
+import { formatLocalDateLong } from '@/lib/date';
 
 import { Trash2 } from 'lucide-react';
 import {
@@ -40,17 +41,29 @@ export const RecurringTransactionDeleteDialog = ({
             {trigger && <AlertDialogTrigger render={trigger} />}
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Delete recurring transaction?</AlertDialogTitle>
+                    <AlertDialogTitle>
+                        Delete recurring transaction?
+                    </AlertDialogTitle>
                     <AlertDialogDescription>
                         <div>
-                            <span className="font-medium">{recurring.name}</span>
-                            <span> — {recurring.frequency}. Cannot be undone.</span>
+                            <span className="font-medium text-foreground">
+                                {recurring.name}
+                            </span>
+                            <span>
+                                {' '}
+                                — {recurring.frequency}, due{' '}
+                                {formatLocalDateLong(recurring.next_due_at)}.
+                                Cannot be undone.
+                            </span>
                         </div>
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction variant="destructive" onClick={handleDelete}>
+                    <AlertDialogAction
+                        variant="destructive"
+                        onClick={handleDelete}
+                    >
                         <Trash2 />
                         Delete
                     </AlertDialogAction>

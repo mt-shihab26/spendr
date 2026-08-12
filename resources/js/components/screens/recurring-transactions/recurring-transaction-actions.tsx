@@ -6,14 +6,14 @@ import {
     ViewItem,
 } from '@/components/elements/actions-menu';
 
-import type { TRecurringTransaction } from '@/types/models';
+import type { TRecurringTransactionWithRelations } from '@/types/withs';
 
 export const RecurringTransactionActions = ({
     recurring,
     onDelete,
 }: {
-    recurring: TRecurringTransaction;
-    onDelete: (recurring: TRecurringTransaction) => void;
+    recurring: TRecurringTransactionWithRelations;
+    onDelete: (recurring: TRecurringTransactionWithRelations) => void;
 }) => {
     return (
         <ActionsMenu>

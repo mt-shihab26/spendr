@@ -19,8 +19,8 @@ const RecurringTransactionsShow = ({
     recurring: TRecurringTransactionWithRelations;
 }) => {
     const title = `Recurring '${recurring.name}'`;
-    const frequencyLabel =
-        getFrequency(recurring.frequency)?.label ?? recurring.frequency;
+    const frequency = getFrequency(recurring.frequency);
+    const frequencyLabel = frequency?.label ?? recurring.frequency;
     const description = `${frequencyLabel} · Due ${formatLocalDateLong(recurring.next_due_at)}`;
 
     return (
@@ -86,9 +86,14 @@ const RecurringTransactionsShow = ({
                         <p className="text-xs text-muted-foreground">
                             Frequency
                         </p>
-                        <p className="mt-1 text-sm font-medium capitalize">
-                            {frequencyLabel}
-                        </p>
+                        <div className="mt-1 flex items-center gap-1.5">
+                            {frequency?.icon && (
+                                <frequency.icon className="size-4 text-muted-foreground" />
+                            )}
+                            <p className="text-sm font-medium">
+                                {frequencyLabel}
+                            </p>
+                        </div>
                     </div>
                     <div className="w-full border p-4">
                         <p className="text-xs text-muted-foreground">Status</p>

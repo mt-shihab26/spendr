@@ -25,6 +25,7 @@ class RecurringTransactionController extends Controller
             ->with(['wallet', 'category'])
             ->when(isset($validated['is_active']), fn ($q) => $q->where('is_active', $validated['is_active']))
             ->orderBy('next_due_at')
+            ->limit(config('limits.recurring_transactions'))
             ->get();
 
         return inertia('recurring-transactions/index', [
@@ -54,6 +55,8 @@ class RecurringTransactionController extends Controller
      */
     public function store(StoreRecurringTransactionRequest $request): RedirectResponse
     {
+        abort_if($request->user()->recurringTransactions()->count() >= config('limits.recurring_transactions'), 403, 'You have reached the maximum limit of recurring transactions.');
+
         $validated = $request->validated();
         $validated['is_active'] = (bool) ($validated['is_active'] ?? true);
 

@@ -10,8 +10,8 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-import type { TTransfer, TWallet } from '@/types/models';
 import type { ReactElement } from 'react';
+import type { TTransterWithWallets } from '@/types/withs';
 
 import { router } from '@inertiajs/react';
 import { formatLocalDateLong } from '@/lib/date';
@@ -26,10 +26,7 @@ export const TransferDeleteDialog = ({
     onDeleted,
     trigger,
 }: {
-    transfer: TTransfer & {
-        from_wallet: TWallet;
-        to_wallet: TWallet;
-    };
+    transfer: TTransterWithWallets;
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
     onDeleted?: () => void;

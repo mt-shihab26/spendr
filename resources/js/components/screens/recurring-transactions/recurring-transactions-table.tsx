@@ -77,9 +77,18 @@ export const RecurringTransactionsTable = ({
                                 <td className="px-3 py-2.5 text-muted-foreground">
                                     {r.wallet?.name ?? '—'}
                                 </td>
-                                <td className="px-3 py-2.5 capitalize">
-                                    {getFrequency(r.frequency)?.label ??
-                                        r.frequency}
+                                <td className="px-3 py-2.5">
+                                    {(() => {
+                                        const freq = getFrequency(r.frequency);
+                                        return (
+                                            <div className="flex items-center gap-1.5">
+                                                {freq?.icon && (
+                                                    <freq.icon className="size-4 text-muted-foreground" />
+                                                )}
+                                                <span>{freq?.label ?? r.frequency}</span>
+                                            </div>
+                                        );
+                                    })()}
                                 </td>
                                 <td className="px-3 py-2.5 text-muted-foreground tabular-nums">
                                     {formatLocalDateLong(r.next_due_at)}

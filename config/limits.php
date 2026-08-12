@@ -12,4 +12,14 @@ return [
     */
     'wallets' => env('LIMIT_WALLETS', 100),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Recurring Transaction Limit
+    |--------------------------------------------------------------------------
+    |
+    | Maximum number of recurring transactions a single user is allowed to create.
+    |
+    */
+    'recurring_transactions' => env('LIMIT_RECURRING_TRANSACTIONS', 100),
+
 ];
