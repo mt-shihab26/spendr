@@ -7,7 +7,6 @@ import {
 
 import type { TTransfer, TWallet } from '@/types/models';
 
-import { getCurrencySymbol } from '@/lib/currency';
 import { useForm } from '@inertiajs/react';
 
 import { Link } from '@inertiajs/react';
@@ -40,12 +39,7 @@ export const TransferForm = ({
     });
 
     const fromWallet = wallets.find((w) => w.id === data.from_wallet_id);
-    const availableToWallets = wallets.filter(
-        (w) => w.id !== data.from_wallet_id,
-    );
-    const currencyPrefix = fromWallet
-        ? getCurrencySymbol(fromWallet.currency)
-        : '';
+    const toWallets = wallets.filter((w) => w.id !== data.from_wallet_id);
 
     return (
         <form
@@ -86,7 +80,7 @@ export const TransferForm = ({
                     To Wallet <span className="text-destructive">*</span>
                 </Label>
                 <WalletSelect
-                    wallets={availableToWallets}
+                    wallets={toWallets}
                     value={data.to_wallet_id}
                     onValueChange={(value) => setData('to_wallet_id', value)}
                     disabled={!!transfer}
@@ -100,10 +94,10 @@ export const TransferForm = ({
                 </Label>
                 <NumberInput
                     value={data.amount}
+                    currency={fromWallet?.currency}
                     onValueChange={({ value }) =>
                         setData('amount', Number(value))
                     }
-                    prefix={currencyPrefix}
                 />
                 <InputError message={errors.amount} />
             </div>

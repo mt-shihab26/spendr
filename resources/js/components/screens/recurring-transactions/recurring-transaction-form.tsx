@@ -14,20 +14,12 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { InputError } from '@/components/elements/input-error';
-import { IconBadge } from '@/components/elements/icon-badge';
 import { Switch } from '@/components/ui/switch';
-
-type TFormData = {
-    wallet_id: string;
-    category_id: string;
-    type: string;
-    amount: string;
-    name: string;
-    notes: string;
-    frequency: string;
-    next_due_at: string;
-    is_active: boolean;
-};
+import { TypePicker } from '@/components/elements/type-picker';
+import { NumberInput } from '@/components/elements/number-input';
+import { WalletSelect } from '@/components/elements/wallet-select';
+import { CategorySelect } from '@/components/elements/category-select';
+import type { TFrequency } from '@/types/enums';
 
 export const RecurringTransactionForm = ({
     recurring,
@@ -38,35 +30,32 @@ export const RecurringTransactionForm = ({
     wallets: TWallet[];
     categories: TCategory[];
 }) => {
-    const { data, setData, post, patch, processing, errors } =
-        useForm<TFormData>({
-            wallet_id: recurring?.wallet_id ?? '',
-            category_id: recurring?.category_id ?? '',
-            type: recurring?.type ?? 'expense',
-            amount: recurring?.amount?.toString() ?? '',
-            name: recurring?.name ?? '',
-            notes: recurring?.notes ?? '',
-            frequency: recurring?.frequency ?? 'monthly',
-            next_due_at: recurring?.next_due_at ?? '',
-            is_active: recurring?.is_active ?? true,
-        });
+    const { data, setData, post, patch, processing, errors } = useForm({
+        wallet_id: recurring?.wallet_id ?? '',
+        category_id: recurring?.category_id ?? '',
+        type: recurring ? (recurring?.type ?? null) : 'expense',
+        amount: recurring?.amount ?? 0,
+        name: recurring?.name ?? '',
+        notes: recurring?.notes ?? '',
+        frequency: recurring ? (recurring?.frequency ?? null) : 'monthly',
+        next_due_at: recurring?.next_due_at ?? '',
+        is_active: recurring ? (recurring?.is_active ?? null) : true,
+    });
 
-    const submit = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (recurring) {
-            patch(route('recurring-transactions.update', recurring.id));
-        } else {
-            post(route('recurring-transactions.store'));
-        }
-    };
-
-    const filteredCategories = categories.filter(
-        (c) => c.type === data.type || data.type === '',
-    );
+    const selectedWallet = wallets.find((w) => w.id === data.wallet_id);
 
     return (
-        <form onSubmit={submit} className="flex flex-col gap-4">
+        <form
+            className="flex flex-col gap-4"
+            onSubmit={(e) => {
+                e.preventDefault();
+                if (recurring) {
+                    patch(route('recurring-transactions.update', recurring.id));
+                } else {
+                    post(route('recurring-transactions.store'));
+                }
+            }}
+        >
             <div className="flex flex-col gap-1.5">
                 <Label htmlFor="name">Name</Label>
                 <Input
@@ -78,93 +67,49 @@ export const RecurringTransactionForm = ({
                 <InputError message={errors.name} />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="type">Type</Label>
-                    <Select
-                        value={data.type}
-                        onValueChange={(v) => {
-                            setData('type', v ?? '');
-                            setData('category_id', '');
-                        }}
-                    >
-                        <SelectTrigger id="type">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="income">Income</SelectItem>
-                            <SelectItem value="expense">Expense</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <InputError message={errors.type} />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="amount">Amount</Label>
-                    <Input
-                        id="amount"
-                        type="number"
-                        min="0.01"
-                        step="0.01"
-                        value={data.amount}
-                        onChange={(e) => setData('amount', e.target.value)}
-                        placeholder="0.00"
-                    />
-                    <InputError message={errors.amount} />
-                </div>
+            <div className="flex flex-col gap-1.5">
+                <Label>Type</Label>
+                <TypePicker
+                    value={data.type}
+                    onChange={(v) => {
+                        setData('type', v);
+                        setData('category_id', '');
+                    }}
+                />
+                <InputError message={errors.type} />
             </div>
 
             <div className="flex flex-col gap-1.5">
                 <Label htmlFor="wallet_id">Wallet</Label>
-                <Select
+                <WalletSelect
+                    wallets={wallets}
                     value={data.wallet_id}
                     onValueChange={(v) => setData('wallet_id', v ?? '')}
-                >
-                    <SelectTrigger id="wallet_id">
-                        <SelectValue placeholder="Select wallet" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {wallets.map((w) => (
-                            <SelectItem key={w.id} value={w.id}>
-                                <div className="flex items-center gap-2">
-                                    <IconBadge
-                                        icon={w.icon}
-                                        color={w.color}
-                                        size="sm"
-                                    />
-                                    {w.name}
-                                </div>
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                />
                 <InputError message={errors.wallet_id} />
             </div>
 
             <div className="flex flex-col gap-1.5">
+                <Label htmlFor="amount">Amount</Label>
+                <NumberInput
+                    id="amount"
+                    value={data.amount}
+                    currency={selectedWallet?.currency}
+                    onValueChange={({ value }) =>
+                        setData('amount', Number(value))
+                    }
+                />
+                <InputError message={errors.amount} />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
                 <Label htmlFor="category_id">Category (optional)</Label>
-                <Select
+                <CategorySelect
+                    categories={categories}
+                    type={data.type}
                     value={data.category_id}
                     onValueChange={(v) => setData('category_id', v ?? '')}
-                >
-                    <SelectTrigger id="category_id">
-                        <SelectValue placeholder="No category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {filteredCategories.map((c) => (
-                            <SelectItem key={c.id} value={c.id}>
-                                <div className="flex items-center gap-2">
-                                    <IconBadge
-                                        icon={c.icon}
-                                        color={c.color}
-                                        size="sm"
-                                    />
-                                    {c.name}
-                                </div>
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                />
                 <InputError message={errors.category_id} />
             </div>
 
@@ -173,7 +118,9 @@ export const RecurringTransactionForm = ({
                     <Label htmlFor="frequency">Frequency</Label>
                     <Select
                         value={data.frequency}
-                        onValueChange={(v) => setData('frequency', v ?? '')}
+                        onValueChange={(v) =>
+                            setData('frequency', v as TFrequency)
+                        }
                     >
                         <SelectTrigger id="frequency">
                             <SelectValue />
