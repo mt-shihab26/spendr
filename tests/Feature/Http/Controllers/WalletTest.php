@@ -10,12 +10,12 @@ use App\Models\Wallet;
 use Inertia\Testing\AssertableInertia as Assert;
 
 describe('index', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $this->get(route('wallets.index'))
             ->assertRedirect(route('login'));
     });
 
-    test('authenticated users can visit the wallets page', function () {
+    it('authenticated users can visit the wallets page', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -24,7 +24,7 @@ describe('index', function () {
             ->assertInertia(fn (Assert $page) => $page->component('wallets/index'));
     });
 
-    test('returns empty stats and wallets when user has no wallets', function () {
+    it('returns empty stats and wallets when user has no wallets', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -36,7 +36,7 @@ describe('index', function () {
     });
 
     describe('stats', function () {
-        test('returns one entry per unique currency', function () {
+        it('returns one entry per unique currency', function () {
             $user = User::factory()->create();
             Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
             Wallet::factory()->for($user)->create(['currency' => Currency::USD->value]);
@@ -48,7 +48,7 @@ describe('index', function () {
                 );
         });
 
-        test('groups wallets from the same currency into one entry', function () {
+        it('groups wallets from the same currency into one entry', function () {
             $user = User::factory()->create();
             Wallet::factory()->for($user)->count(3)->create(['currency' => Currency::BDT->value]);
 
@@ -59,7 +59,7 @@ describe('index', function () {
                 );
         });
 
-        test('includes all expected fields', function () {
+        it('includes all expected fields', function () {
             $user = User::factory()->create();
             Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
 
@@ -79,7 +79,7 @@ describe('index', function () {
                 );
         });
 
-        test('balance reflects initial balance plus income minus expense', function () {
+        it('balance reflects initial balance plus income minus expense', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create([
                 'currency' => Currency::BDT->value,
@@ -113,7 +113,7 @@ describe('index', function () {
                 );
         });
 
-        test('initial_balance is summed across wallets in the same currency', function () {
+        it('initial_balance is summed across wallets in the same currency', function () {
             $user = User::factory()->create();
             Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value, 'initial_balance' => 300]);
             Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value, 'initial_balance' => 700]);
@@ -125,7 +125,7 @@ describe('index', function () {
                 );
         });
 
-        test('transfers_in and transfers_out are summed from wallet transfers', function () {
+        it('transfers_in and transfers_out are summed from wallet transfers', function () {
             $user = User::factory()->create();
             $walletA = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value, 'initial_balance' => 0]);
             $walletB = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value, 'initial_balance' => 0]);
@@ -147,7 +147,7 @@ describe('index', function () {
     });
 
     describe('wallets', function () {
-        test('only shows wallets belonging to the authenticated user', function () {
+        it('only shows wallets belonging to the authenticated user', function () {
             $user = User::factory()->create();
             $other = User::factory()->create();
             Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
@@ -160,7 +160,7 @@ describe('index', function () {
                 );
         });
 
-        test('is limited to the configured wallet limit', function () {
+        it('is limited to the configured wallet limit', function () {
             $user = User::factory()->create();
             $limit = config('limits.wallets');
             Wallet::factory()->for($user)->count($limit + 5)->create(['currency' => Currency::BDT->value]);
@@ -172,7 +172,7 @@ describe('index', function () {
                 );
         });
 
-        test('each wallet includes transactions_count', function () {
+        it('each wallet includes transactions_count', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create();
             $category = Category::factory()->for($user)->expense()->create();
@@ -194,12 +194,12 @@ describe('index', function () {
 });
 
 describe('create', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $this->get(route('wallets.create'))
             ->assertRedirect(route('login'));
     });
 
-    test('authenticated users can visit the create wallet page', function () {
+    it('authenticated users can visit the create wallet page', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -210,12 +210,12 @@ describe('create', function () {
 });
 
 describe('store', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $this->post(route('wallets.store'), [])
             ->assertRedirect(route('login'));
     });
 
-    test('creates a wallet and redirects to the show page with a success message', function () {
+    it('creates a wallet and redirects to the show page with a success message', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -230,7 +230,7 @@ describe('store', function () {
             ->assertSessionHas('success', 'Wallet created.');
     });
 
-    test('stores the wallet in the database', function () {
+    it('stores the wallet in the database', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)->post(route('wallets.store'), [
@@ -249,7 +249,7 @@ describe('store', function () {
         ]);
     });
 
-    test('when is_default is true, clears default from all other wallets', function () {
+    it('when is_default is true, clears default from all other wallets', function () {
         $user = User::factory()->create();
         $existing = Wallet::factory()->for($user)->default()->create();
 
@@ -264,7 +264,7 @@ describe('store', function () {
         expect($user->wallets()->where('name', 'New Default')->first()->is_default)->toBeTrue();
     });
 
-    test('when is_default is false, other wallets keep their default status', function () {
+    it('when is_default is false, other wallets keep their default status', function () {
         $user = User::factory()->create();
         $existing = Wallet::factory()->for($user)->default()->create();
 
@@ -278,7 +278,7 @@ describe('store', function () {
         expect($existing->fresh()->is_default)->toBeTrue();
     });
 
-    test('returns 403 when the wallet limit is reached', function () {
+    it('returns 403 when the wallet limit is reached', function () {
         $user = User::factory()->create();
         Wallet::factory()->for($user)->count(config('limits.wallets'))->create();
 
@@ -292,7 +292,7 @@ describe('store', function () {
             ->assertForbidden();
     });
 
-    test('name is required', function () {
+    it('name is required', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -303,7 +303,7 @@ describe('store', function () {
             ->assertSessionHasErrors('name');
     });
 
-    test('name must not exceed 100 characters', function () {
+    it('name must not exceed 100 characters', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -315,7 +315,7 @@ describe('store', function () {
             ->assertSessionHasErrors('name');
     });
 
-    test('name must be unique per user', function () {
+    it('name must be unique per user', function () {
         $user = User::factory()->create();
         Wallet::factory()->for($user)->create(['name' => 'Savings']);
 
@@ -328,7 +328,7 @@ describe('store', function () {
             ->assertSessionHasErrors('name');
     });
 
-    test('name can be reused by a different user', function () {
+    it('name can be reused by a different user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         Wallet::factory()->for($other)->create(['name' => 'Savings']);
@@ -343,7 +343,7 @@ describe('store', function () {
             ->assertSessionHasNoErrors();
     });
 
-    test('currency is required', function () {
+    it('currency is required', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -354,7 +354,7 @@ describe('store', function () {
             ->assertSessionHasErrors('currency');
     });
 
-    test('currency must be a valid enum value', function () {
+    it('currency must be a valid enum value', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -366,7 +366,7 @@ describe('store', function () {
             ->assertSessionHasErrors('currency');
     });
 
-    test('color is required', function () {
+    it('color is required', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -377,7 +377,7 @@ describe('store', function () {
             ->assertSessionHasErrors('color');
     });
 
-    test('initial_balance is optional', function () {
+    it('initial_balance is optional', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -390,7 +390,7 @@ describe('store', function () {
             ->assertSessionHasNoErrors();
     });
 
-    test('initial_balance must not be negative', function () {
+    it('initial_balance must not be negative', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -405,14 +405,14 @@ describe('store', function () {
 });
 
 describe('show', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $wallet = Wallet::factory()->for(User::factory()->create())->create();
 
         $this->get(route('wallets.show', $wallet))
             ->assertRedirect(route('login'));
     });
 
-    test('authenticated users can visit the wallet show page', function () {
+    it('authenticated users can visit the wallet show page', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -422,7 +422,7 @@ describe('show', function () {
             ->assertInertia(fn (Assert $page) => $page->component('wallets/show'));
     });
 
-    test('returns 403 when the wallet belongs to another user', function () {
+    it('returns 403 when the wallet belongs to another user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $wallet = Wallet::factory()->for($other)->create();
@@ -432,7 +432,7 @@ describe('show', function () {
             ->assertForbidden();
     });
 
-    test('includes all expected wallet fields', function () {
+    it('includes all expected wallet fields', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -452,7 +452,7 @@ describe('show', function () {
             );
     });
 
-    test('transactions_count reflects the number of transactions', function () {
+    it('transactions_count reflects the number of transactions', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
         $category = Category::factory()->for($user)->expense()->create();
@@ -471,7 +471,7 @@ describe('show', function () {
             );
     });
 
-    test('balance reflects initial balance plus income minus expense', function () {
+    it('balance reflects initial balance plus income minus expense', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create(['initial_balance' => 1000]);
         $income = Category::factory()->for($user)->income()->create();
@@ -502,7 +502,7 @@ describe('show', function () {
             );
     });
 
-    test('transfers_in and transfers_out are summed from wallet transfers', function () {
+    it('transfers_in and transfers_out are summed from wallet transfers', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value, 'initial_balance' => 0]);
         $walletB = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value, 'initial_balance' => 0]);
@@ -529,7 +529,7 @@ describe('show', function () {
             );
     });
 
-    test('net is income minus expense plus transfers_in minus transfers_out', function () {
+    it('net is income minus expense plus transfers_in minus transfers_out', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create(['initial_balance' => 0]);
         $walletB = Wallet::factory()->for($user)->create(['initial_balance' => 0]);
@@ -568,14 +568,14 @@ describe('show', function () {
 });
 
 describe('edit', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $wallet = Wallet::factory()->for(User::factory()->create())->create();
 
         $this->get(route('wallets.edit', $wallet))
             ->assertRedirect(route('login'));
     });
 
-    test('authenticated users can visit the edit wallet page', function () {
+    it('authenticated users can visit the edit wallet page', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -585,7 +585,7 @@ describe('edit', function () {
             ->assertInertia(fn (Assert $page) => $page->component('wallets/edit'));
     });
 
-    test('returns 403 when the wallet belongs to another user', function () {
+    it('returns 403 when the wallet belongs to another user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $wallet = Wallet::factory()->for($other)->create();
@@ -595,7 +595,7 @@ describe('edit', function () {
             ->assertForbidden();
     });
 
-    test('has_transactions is false when wallet has no transactions', function () {
+    it('has_transactions is false when wallet has no transactions', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -606,7 +606,7 @@ describe('edit', function () {
             );
     });
 
-    test('has_transactions is true when wallet has transactions', function () {
+    it('has_transactions is true when wallet has transactions', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
         $category = Category::factory()->for($user)->expense()->create();
@@ -627,14 +627,14 @@ describe('edit', function () {
 });
 
 describe('update', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $wallet = Wallet::factory()->for(User::factory()->create())->create();
 
         $this->patch(route('wallets.update', $wallet), [])
             ->assertRedirect(route('login'));
     });
 
-    test('returns 403 when the wallet belongs to another user', function () {
+    it('returns 403 when the wallet belongs to another user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $wallet = Wallet::factory()->for($other)->create();
@@ -644,7 +644,7 @@ describe('update', function () {
             ->assertForbidden();
     });
 
-    test('updates the wallet and redirects back with a success message', function () {
+    it('updates the wallet and redirects back with a success message', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create(['name' => 'Old Name']);
 
@@ -656,7 +656,7 @@ describe('update', function () {
         expect($wallet->fresh()->name)->toBe('New Name');
     });
 
-    test('when is_default is true, clears default from all other wallets', function () {
+    it('when is_default is true, clears default from all other wallets', function () {
         $user = User::factory()->create();
         $other = Wallet::factory()->for($user)->default()->create();
         $wallet = Wallet::factory()->for($user)->create();
@@ -668,7 +668,7 @@ describe('update', function () {
         expect($wallet->fresh()->is_default)->toBeTrue();
     });
 
-    test('when is_default is true, does not clear default from itself', function () {
+    it('when is_default is true, does not clear default from itself', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->default()->create();
 
@@ -678,7 +678,7 @@ describe('update', function () {
         expect($wallet->fresh()->is_default)->toBeTrue();
     });
 
-    test('when is_default is false, other wallets keep their default status', function () {
+    it('when is_default is false, other wallets keep their default status', function () {
         $user = User::factory()->create();
         $default = Wallet::factory()->for($user)->default()->create();
         $wallet = Wallet::factory()->for($user)->create();
@@ -689,7 +689,7 @@ describe('update', function () {
         expect($default->fresh()->is_default)->toBeTrue();
     });
 
-    test('name must be unique per user ignoring the wallet itself', function () {
+    it('name must be unique per user ignoring the wallet itself', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create(['name' => 'Savings']);
 
@@ -698,7 +698,7 @@ describe('update', function () {
             ->assertSessionHasNoErrors();
     });
 
-    test('name must not duplicate another wallet name for the same user', function () {
+    it('name must not duplicate another wallet name for the same user', function () {
         $user = User::factory()->create();
         Wallet::factory()->for($user)->create(['name' => 'Savings']);
         $wallet = Wallet::factory()->for($user)->create(['name' => 'Other']);
@@ -708,7 +708,7 @@ describe('update', function () {
             ->assertSessionHasErrors('name');
     });
 
-    test('name must not exceed 100 characters', function () {
+    it('name must not exceed 100 characters', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -717,7 +717,7 @@ describe('update', function () {
             ->assertSessionHasErrors('name');
     });
 
-    test('currency must be a valid enum value', function () {
+    it('currency must be a valid enum value', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -726,7 +726,7 @@ describe('update', function () {
             ->assertSessionHasErrors('currency');
     });
 
-    test('initial_balance must not be negative', function () {
+    it('initial_balance must not be negative', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -737,14 +737,14 @@ describe('update', function () {
 });
 
 describe('destroy', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $wallet = Wallet::factory()->for(User::factory()->create())->create();
 
         $this->delete(route('wallets.destroy', $wallet))
             ->assertRedirect(route('login'));
     });
 
-    test('returns 403 when the wallet belongs to another user', function () {
+    it('returns 403 when the wallet belongs to another user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $wallet = Wallet::factory()->for($other)->create();
@@ -754,7 +754,7 @@ describe('destroy', function () {
             ->assertForbidden();
     });
 
-    test('deletes the wallet and redirects to the index with a success message', function () {
+    it('deletes the wallet and redirects to the index with a success message', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -766,7 +766,7 @@ describe('destroy', function () {
         $this->assertSoftDeleted('wallets', ['id' => $wallet->id]);
     });
 
-    test('when the deleted wallet was default, promotes the next wallet to default', function () {
+    it('when the deleted wallet was default, promotes the next wallet to default', function () {
         $user = User::factory()->create();
         $default = Wallet::factory()->for($user)->default()->create(['sort_order' => 1]);
         $next = Wallet::factory()->for($user)->create(['sort_order' => 2]);
@@ -777,7 +777,7 @@ describe('destroy', function () {
         expect($next->fresh()->is_default)->toBeTrue();
     });
 
-    test('promotes the wallet with the lowest sort_order first', function () {
+    it('promotes the wallet with the lowest sort_order first', function () {
         $user = User::factory()->create();
         $default = Wallet::factory()->for($user)->default()->create(['sort_order' => 1]);
         $second = Wallet::factory()->for($user)->create(['sort_order' => 3]);
@@ -790,7 +790,7 @@ describe('destroy', function () {
         expect($second->fresh()->is_default)->toBeFalse();
     });
 
-    test('when the deleted wallet was not default, no other wallet is promoted', function () {
+    it('when the deleted wallet was not default, no other wallet is promoted', function () {
         $user = User::factory()->create();
         $default = Wallet::factory()->for($user)->default()->create();
         $wallet = Wallet::factory()->for($user)->create();
@@ -801,7 +801,7 @@ describe('destroy', function () {
         expect($default->fresh()->is_default)->toBeTrue();
     });
 
-    test('when no other wallets exist after deleting the default, nothing breaks', function () {
+    it('when no other wallets exist after deleting the default, nothing breaks', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->default()->create();
 

@@ -15,12 +15,12 @@ $validPayload = [
 ];
 
 describe('index', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $this->get(route('recurring-transactions.index'))
             ->assertRedirect(route('login'));
     });
 
-    test('authenticated users can visit the recurring transactions page', function () {
+    it('authenticated users can visit the recurring transactions page', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -29,7 +29,7 @@ describe('index', function () {
             ->assertInertia(fn (Assert $page) => $page->component('recurring-transactions/index'));
     });
 
-    test('returns only the authenticated users recurring transactions', function () {
+    it('returns only the authenticated users recurring transactions', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
@@ -43,7 +43,7 @@ describe('index', function () {
             ->assertInertia(fn (Assert $page) => $page->has('recurring', 1));
     });
 
-    test('filters recurring transactions by is_active', function () {
+    it('filters recurring transactions by is_active', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -55,7 +55,7 @@ describe('index', function () {
             ->assertInertia(fn (Assert $page) => $page->has('recurring', 1));
     });
 
-    test('includes stats grouped by currency', function () {
+    it('includes stats grouped by currency', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create(['currency' => 'USD']);
 
@@ -73,7 +73,7 @@ describe('index', function () {
             );
     });
 
-    test('stats respect the is_active filter', function () {
+    it('stats respect the is_active filter', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create(['currency' => 'USD']);
 
@@ -90,12 +90,12 @@ describe('index', function () {
 });
 
 describe('create', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $this->get(route('recurring-transactions.create'))
             ->assertRedirect(route('login'));
     });
 
-    test('authenticated users can visit the create page', function () {
+    it('authenticated users can visit the create page', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -104,7 +104,7 @@ describe('create', function () {
             ->assertInertia(fn (Assert $page) => $page->component('recurring-transactions/create'));
     });
 
-    test('includes wallets belonging to the authenticated user', function () {
+    it('includes wallets belonging to the authenticated user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         Wallet::factory()->for($user)->create();
@@ -115,7 +115,7 @@ describe('create', function () {
             ->assertInertia(fn (Assert $page) => $page->has('wallets', 1));
     });
 
-    test('includes categories belonging to the authenticated user', function () {
+    it('includes categories belonging to the authenticated user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         Category::factory()->for($user)->create();
@@ -128,12 +128,12 @@ describe('create', function () {
 });
 
 describe('store', function () use (&$validPayload) {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $this->post(route('recurring-transactions.store'), [])
             ->assertRedirect(route('login'));
     });
 
-    test('creates a recurring transaction and redirects to show with a success message', function () use (&$validPayload) {
+    it('creates a recurring transaction and redirects to show with a success message', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -143,7 +143,7 @@ describe('store', function () use (&$validPayload) {
             ->assertSessionHas('success', 'Recurring transaction created.');
     });
 
-    test('stores the recurring transaction in the database', function () use (&$validPayload) {
+    it('stores the recurring transaction in the database', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -159,7 +159,7 @@ describe('store', function () use (&$validPayload) {
         ]);
     });
 
-    test('is_active defaults to true when not provided', function () use (&$validPayload) {
+    it('is_active defaults to true when not provided', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -172,7 +172,7 @@ describe('store', function () use (&$validPayload) {
         ]);
     });
 
-    test('returns 403 when the recurring transaction limit is reached', function () use (&$validPayload) {
+    it('returns 403 when the recurring transaction limit is reached', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -184,7 +184,7 @@ describe('store', function () use (&$validPayload) {
             ->assertForbidden();
     });
 
-    test('wallet_id is required', function () use (&$validPayload) {
+    it('wallet_id is required', function () use (&$validPayload) {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -192,7 +192,7 @@ describe('store', function () use (&$validPayload) {
             ->assertSessionHasErrors('wallet_id');
     });
 
-    test('wallet_id must belong to the authenticated user', function () use (&$validPayload) {
+    it('wallet_id must belong to the authenticated user', function () use (&$validPayload) {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $otherWallet = Wallet::factory()->for($other)->create();
@@ -202,7 +202,7 @@ describe('store', function () use (&$validPayload) {
             ->assertSessionHasErrors('wallet_id');
     });
 
-    test('name is required', function () use (&$validPayload) {
+    it('name is required', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -211,7 +211,7 @@ describe('store', function () use (&$validPayload) {
             ->assertSessionHasErrors('name');
     });
 
-    test('type is required', function () use (&$validPayload) {
+    it('type is required', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -220,7 +220,7 @@ describe('store', function () use (&$validPayload) {
             ->assertSessionHasErrors('type');
     });
 
-    test('type must be a valid value', function () use (&$validPayload) {
+    it('type must be a valid value', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -229,7 +229,7 @@ describe('store', function () use (&$validPayload) {
             ->assertSessionHasErrors('type');
     });
 
-    test('amount is required', function () use (&$validPayload) {
+    it('amount is required', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -238,7 +238,7 @@ describe('store', function () use (&$validPayload) {
             ->assertSessionHasErrors('amount');
     });
 
-    test('amount must be at least 0.01', function () use (&$validPayload) {
+    it('amount must be at least 0.01', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -247,7 +247,7 @@ describe('store', function () use (&$validPayload) {
             ->assertSessionHasErrors('amount');
     });
 
-    test('frequency is required', function () use (&$validPayload) {
+    it('frequency is required', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -256,7 +256,7 @@ describe('store', function () use (&$validPayload) {
             ->assertSessionHasErrors('frequency');
     });
 
-    test('frequency must be a valid value', function () use (&$validPayload) {
+    it('frequency must be a valid value', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -265,7 +265,7 @@ describe('store', function () use (&$validPayload) {
             ->assertSessionHasErrors('frequency');
     });
 
-    test('next_due_at is required', function () use (&$validPayload) {
+    it('next_due_at is required', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -274,7 +274,7 @@ describe('store', function () use (&$validPayload) {
             ->assertSessionHasErrors('next_due_at');
     });
 
-    test('next_due_at must be a valid date', function () use (&$validPayload) {
+    it('next_due_at must be a valid date', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -283,7 +283,7 @@ describe('store', function () use (&$validPayload) {
             ->assertSessionHasErrors('next_due_at');
     });
 
-    test('category_id must belong to the authenticated user', function () use (&$validPayload) {
+    it('category_id must belong to the authenticated user', function () use (&$validPayload) {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
@@ -294,7 +294,7 @@ describe('store', function () use (&$validPayload) {
             ->assertSessionHasErrors('category_id');
     });
 
-    test('notes is optional', function () use (&$validPayload) {
+    it('notes is optional', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -305,7 +305,7 @@ describe('store', function () use (&$validPayload) {
 });
 
 describe('show', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
         $recurring = RecurringTransaction::factory()->create(['user_id' => $user->id, 'wallet_id' => $wallet->id]);
@@ -314,7 +314,7 @@ describe('show', function () {
             ->assertRedirect(route('login'));
     });
 
-    test('authenticated users can visit the show page', function () {
+    it('authenticated users can visit the show page', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
         $recurring = RecurringTransaction::factory()->create(['user_id' => $user->id, 'wallet_id' => $wallet->id]);
@@ -325,7 +325,7 @@ describe('show', function () {
             ->assertInertia(fn (Assert $page) => $page->component('recurring-transactions/show'));
     });
 
-    test('returns 403 when the recurring transaction belongs to another user', function () {
+    it('returns 403 when the recurring transaction belongs to another user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $wallet = Wallet::factory()->for($other)->create();
@@ -336,7 +336,7 @@ describe('show', function () {
             ->assertForbidden();
     });
 
-    test('includes wallet and category relations', function () {
+    it('includes wallet and category relations', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
         $category = Category::factory()->for($user)->create();
@@ -352,7 +352,7 @@ describe('show', function () {
 });
 
 describe('edit', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
         $recurring = RecurringTransaction::factory()->create(['user_id' => $user->id, 'wallet_id' => $wallet->id]);
@@ -361,7 +361,7 @@ describe('edit', function () {
             ->assertRedirect(route('login'));
     });
 
-    test('authenticated users can visit the edit page', function () {
+    it('authenticated users can visit the edit page', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
         $recurring = RecurringTransaction::factory()->create(['user_id' => $user->id, 'wallet_id' => $wallet->id]);
@@ -372,7 +372,7 @@ describe('edit', function () {
             ->assertInertia(fn (Assert $page) => $page->component('recurring-transactions/edit'));
     });
 
-    test('returns 403 when the recurring transaction belongs to another user', function () {
+    it('returns 403 when the recurring transaction belongs to another user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $wallet = Wallet::factory()->for($other)->create();
@@ -383,7 +383,7 @@ describe('edit', function () {
             ->assertForbidden();
     });
 
-    test('includes wallets, categories, and the recurring transaction with relations', function () {
+    it('includes wallets, categories, and the recurring transaction with relations', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
@@ -403,7 +403,7 @@ describe('edit', function () {
 });
 
 describe('update', function () use (&$validPayload) {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
         $recurring = RecurringTransaction::factory()->create(['user_id' => $user->id, 'wallet_id' => $wallet->id]);
@@ -412,7 +412,7 @@ describe('update', function () use (&$validPayload) {
             ->assertRedirect(route('login'));
     });
 
-    test('returns 403 when the recurring transaction belongs to another user', function () use (&$validPayload) {
+    it('returns 403 when the recurring transaction belongs to another user', function () use (&$validPayload) {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $userWallet = Wallet::factory()->for($user)->create();
@@ -424,7 +424,7 @@ describe('update', function () use (&$validPayload) {
             ->assertForbidden();
     });
 
-    test('updates the recurring transaction and redirects back with a success message', function () use (&$validPayload) {
+    it('updates the recurring transaction and redirects back with a success message', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
         $recurring = RecurringTransaction::factory()->create(['user_id' => $user->id, 'wallet_id' => $wallet->id, 'name' => 'Old Name']);
@@ -437,7 +437,7 @@ describe('update', function () use (&$validPayload) {
         expect($recurring->fresh()->name)->toBe('New Name');
     });
 
-    test('amount must be at least 0.01', function () use (&$validPayload) {
+    it('amount must be at least 0.01', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
         $recurring = RecurringTransaction::factory()->create(['user_id' => $user->id, 'wallet_id' => $wallet->id]);
@@ -447,7 +447,7 @@ describe('update', function () use (&$validPayload) {
             ->assertSessionHasErrors('amount');
     });
 
-    test('wallet_id must belong to the authenticated user', function () use (&$validPayload) {
+    it('wallet_id must belong to the authenticated user', function () use (&$validPayload) {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
@@ -459,7 +459,7 @@ describe('update', function () use (&$validPayload) {
             ->assertSessionHasErrors('wallet_id');
     });
 
-    test('frequency must be a valid value', function () use (&$validPayload) {
+    it('frequency must be a valid value', function () use (&$validPayload) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
         $recurring = RecurringTransaction::factory()->create(['user_id' => $user->id, 'wallet_id' => $wallet->id]);
@@ -471,7 +471,7 @@ describe('update', function () use (&$validPayload) {
 });
 
 describe('destroy', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
         $recurring = RecurringTransaction::factory()->create(['user_id' => $user->id, 'wallet_id' => $wallet->id]);
@@ -480,7 +480,7 @@ describe('destroy', function () {
             ->assertRedirect(route('login'));
     });
 
-    test('returns 403 when the recurring transaction belongs to another user', function () {
+    it('returns 403 when the recurring transaction belongs to another user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $wallet = Wallet::factory()->for($other)->create();
@@ -491,7 +491,7 @@ describe('destroy', function () {
             ->assertForbidden();
     });
 
-    test('soft deletes the recurring transaction and redirects to index with a success message', function () {
+    it('soft deletes the recurring transaction and redirects to index with a success message', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
         $recurring = RecurringTransaction::factory()->create(['user_id' => $user->id, 'wallet_id' => $wallet->id]);

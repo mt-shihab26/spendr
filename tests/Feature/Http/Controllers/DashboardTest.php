@@ -12,12 +12,12 @@ use App\Models\Wallet;
 use Inertia\Testing\AssertableInertia as Assert;
 
 describe('index', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $response = $this->get(route('dashboard'));
         $response->assertRedirect(route('login'));
     });
 
-    test('authenticated users can visit the dashboard', function () {
+    it('authenticated users can visit the dashboard', function () {
         $user = User::factory()->create();
         $this->actingAs($user);
 
@@ -26,7 +26,7 @@ describe('index', function () {
     });
 
     describe('currencyStats', function () {
-        test('is empty when user has no wallets', function () {
+        it('is empty when user has no wallets', function () {
             $user = User::factory()->create();
 
             $this->actingAs($user)
@@ -36,7 +36,7 @@ describe('index', function () {
                 );
         });
 
-        test('returns one entry per unique currency', function () {
+        it('returns one entry per unique currency', function () {
             $user = User::factory()->create();
             Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
             Wallet::factory()->for($user)->create(['currency' => Currency::USD->value]);
@@ -48,7 +48,7 @@ describe('index', function () {
                 );
         });
 
-        test('balance reflects initial balance plus all-time income minus expense', function () {
+        it('balance reflects initial balance plus all-time income minus expense', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create([
                 'currency' => Currency::BDT->value,
@@ -82,7 +82,7 @@ describe('index', function () {
                 );
         });
 
-        test('month_income and month_expense are scoped to the current month', function () {
+        it('month_income and month_expense are scoped to the current month', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create([
                 'currency' => Currency::BDT->value,
@@ -128,7 +128,7 @@ describe('index', function () {
                 );
         });
 
-        test('prev_month_income and prev_month_expense are scoped to the previous month', function () {
+        it('prev_month_income and prev_month_expense are scoped to the previous month', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create([
                 'currency' => Currency::BDT->value,
@@ -173,7 +173,7 @@ describe('index', function () {
                 );
         });
 
-        test('excludes transactions belonging to other users', function () {
+        it('excludes transactions belonging to other users', function () {
             $user = User::factory()->create();
             $other = User::factory()->create();
 
@@ -206,7 +206,7 @@ describe('index', function () {
                 );
         });
 
-        test('stats are separated per currency with no cross-contamination', function () {
+        it('stats are separated per currency with no cross-contamination', function () {
             $user = User::factory()->create();
 
             $bdtWallet = Wallet::factory()->for($user)->create([
@@ -254,7 +254,7 @@ describe('index', function () {
     });
 
     describe('wallets', function () {
-        test('is empty when user has no wallets', function () {
+        it('is empty when user has no wallets', function () {
             $user = User::factory()->create();
 
             $this->actingAs($user)
@@ -264,7 +264,7 @@ describe('index', function () {
                 );
         });
 
-        test('returns at most 5 wallets', function () {
+        it('returns at most 5 wallets', function () {
             $user = User::factory()->create();
             Wallet::factory()->for($user)->count(7)->create();
 
@@ -275,7 +275,7 @@ describe('index', function () {
                 );
         });
 
-        test('returns all wallets when fewer than 5 exist', function () {
+        it('returns all wallets when fewer than 5 exist', function () {
             $user = User::factory()->create();
             Wallet::factory()->for($user)->count(3)->create();
 
@@ -286,7 +286,7 @@ describe('index', function () {
                 );
         });
 
-        test('excludes wallets belonging to other users', function () {
+        it('excludes wallets belonging to other users', function () {
             $user = User::factory()->create();
             $other = User::factory()->create();
 
@@ -300,7 +300,7 @@ describe('index', function () {
                 );
         });
 
-        test('wallets are ordered by sort_order then created_at', function () {
+        it('wallets are ordered by sort_order then created_at', function () {
             $user = User::factory()->create();
 
             Wallet::factory()->for($user)->create(['name' => 'Third', 'sort_order' => 3]);
@@ -316,7 +316,7 @@ describe('index', function () {
                 );
         });
 
-        test('each wallet includes a computed balance', function () {
+        it('each wallet includes a computed balance', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create(['initial_balance' => 500]);
 
@@ -340,7 +340,7 @@ describe('index', function () {
     });
 
     describe('spendingCategories', function () {
-        test('is empty when user has no wallets', function () {
+        it('is empty when user has no wallets', function () {
             $user = User::factory()->create();
 
             $this->actingAs($user)
@@ -350,7 +350,7 @@ describe('index', function () {
                 );
         });
 
-        test('is empty when there are no expense transactions this month', function () {
+        it('is empty when there are no expense transactions this month', function () {
             $user = User::factory()->create();
             Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
 
@@ -361,7 +361,7 @@ describe('index', function () {
                 );
         });
 
-        test('returns category name, color, total, and percentage', function () {
+        it('returns category name, color, total, and percentage', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
             $category = Category::factory()->for($user)->expense()->create();
@@ -386,7 +386,7 @@ describe('index', function () {
                 );
         });
 
-        test('only includes expense transactions', function () {
+        it('only includes expense transactions', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
             $income = Category::factory()->for($user)->income()->create();
@@ -418,7 +418,7 @@ describe('index', function () {
                 );
         });
 
-        test('is scoped to the current month', function () {
+        it('is scoped to the current month', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
             $category = Category::factory()->for($user)->expense()->create();
@@ -448,7 +448,7 @@ describe('index', function () {
                 );
         });
 
-        test('excludes transactions belonging to other users', function () {
+        it('excludes transactions belonging to other users', function () {
             $user = User::factory()->create();
             $other = User::factory()->create();
 
@@ -473,7 +473,7 @@ describe('index', function () {
                 );
         });
 
-        test('totals are grouped per currency with no cross-contamination', function () {
+        it('totals are grouped per currency with no cross-contamination', function () {
             $user = User::factory()->create();
             $bdtWallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
             $usdWallet = Wallet::factory()->for($user)->create(['currency' => Currency::USD->value]);
@@ -508,7 +508,7 @@ describe('index', function () {
                 );
         });
 
-        test('categories are sorted by total spending descending', function () {
+        it('categories are sorted by total spending descending', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
             $food = Category::factory()->for($user)->expense()->create(['name' => 'Food']);
@@ -540,7 +540,7 @@ describe('index', function () {
                 );
         });
 
-        test('percentage reflects each category share within its currency', function () {
+        it('percentage reflects each category share within its currency', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
             $food = Category::factory()->for($user)->expense()->create(['name' => 'Food']);
@@ -572,7 +572,7 @@ describe('index', function () {
                 );
         });
 
-        test('excludes transactions from wallets beyond the top 5', function () {
+        it('excludes transactions from wallets beyond the top 5', function () {
             $user = User::factory()->create();
             $category = Category::factory()->for($user)->expense()->create();
 
@@ -599,7 +599,7 @@ describe('index', function () {
     });
 
     describe('recentTransactions', function () {
-        test('is empty when user has no transactions', function () {
+        it('is empty when user has no transactions', function () {
             $user = User::factory()->create();
 
             $this->actingAs($user)
@@ -609,7 +609,7 @@ describe('index', function () {
                 );
         });
 
-        test('returns at most 10 transactions', function () {
+        it('returns at most 10 transactions', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create();
             $category = Category::factory()->for($user)->expense()->create();
@@ -628,7 +628,7 @@ describe('index', function () {
                 );
         });
 
-        test('transactions are ordered by transacted_at descending', function () {
+        it('transactions are ordered by transacted_at descending', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create();
             $category = Category::factory()->for($user)->expense()->create();
@@ -659,7 +659,7 @@ describe('index', function () {
                 );
         });
 
-        test('excludes transactions belonging to other users', function () {
+        it('excludes transactions belonging to other users', function () {
             $user = User::factory()->create();
             $other = User::factory()->create();
 
@@ -680,7 +680,7 @@ describe('index', function () {
                 );
         });
 
-        test('each transaction includes wallet and category relationships', function () {
+        it('each transaction includes wallet and category relationships', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create(['name' => 'My Wallet']);
             $category = Category::factory()->for($user)->expense()->create(['name' => 'Food']);
@@ -703,7 +703,7 @@ describe('index', function () {
     });
 
     describe('budgets', function () {
-        test('is empty when user has no budgets', function () {
+        it('is empty when user has no budgets', function () {
             $user = User::factory()->create();
 
             $this->actingAs($user)
@@ -713,7 +713,7 @@ describe('index', function () {
                 );
         });
 
-        test('returns one entry per budget currency', function () {
+        it('returns one entry per budget currency', function () {
             $user = User::factory()->create();
             $category = Category::factory()->for($user)->expense()->create();
 
@@ -728,7 +728,7 @@ describe('index', function () {
                 );
         });
 
-        test('includes category, budget_amount, spent, and currency', function () {
+        it('includes category, budget_amount, spent, and currency', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
             $category = Category::factory()->for($user)->expense()->create(['name' => 'Food']);
@@ -757,7 +757,7 @@ describe('index', function () {
                 );
         });
 
-        test('spent is scoped to the current month', function () {
+        it('spent is scoped to the current month', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create(['currency' => Currency::BDT->value]);
             $category = Category::factory()->for($user)->expense()->create();
@@ -793,7 +793,7 @@ describe('index', function () {
                 );
         });
 
-        test('spent is zero when no transactions exist for the category this month', function () {
+        it('spent is zero when no transactions exist for the category this month', function () {
             $user = User::factory()->create();
             $category = Category::factory()->for($user)->expense()->create();
 
@@ -808,7 +808,7 @@ describe('index', function () {
                 );
         });
 
-        test('excludes other users transactions from spent calculation', function () {
+        it('excludes other users transactions from spent calculation', function () {
             $user = User::factory()->create();
             $other = User::factory()->create();
 
@@ -839,7 +839,7 @@ describe('index', function () {
     });
 
     describe('goals', function () {
-        test('is empty when user has no goals', function () {
+        it('is empty when user has no goals', function () {
             $user = User::factory()->create();
 
             $this->actingAs($user)
@@ -849,7 +849,7 @@ describe('index', function () {
                 );
         });
 
-        test('returns at most 4 goals', function () {
+        it('returns at most 4 goals', function () {
             $user = User::factory()->create();
 
             Goal::factory()->count(6)->create([
@@ -865,7 +865,7 @@ describe('index', function () {
                 );
         });
 
-        test('goals are ordered by least progress first', function () {
+        it('goals are ordered by least progress first', function () {
             $user = User::factory()->create();
 
             Goal::factory()->create([
@@ -898,7 +898,7 @@ describe('index', function () {
                 );
         });
 
-        test('each goal includes a progress_percentage', function () {
+        it('each goal includes a progress_percentage', function () {
             $user = User::factory()->create();
 
             Goal::factory()->create([
@@ -914,7 +914,7 @@ describe('index', function () {
                 );
         });
 
-        test('excludes goals belonging to other users', function () {
+        it('excludes goals belonging to other users', function () {
             $user = User::factory()->create();
             $other = User::factory()->create();
 
@@ -933,7 +933,7 @@ describe('index', function () {
     });
 
     describe('upcomingRecurring', function () {
-        test('is empty when user has no recurring transactions', function () {
+        it('is empty when user has no recurring transactions', function () {
             $user = User::factory()->create();
 
             $this->actingAs($user)
@@ -943,7 +943,7 @@ describe('index', function () {
                 );
         });
 
-        test('returns at most 5 upcoming recurring transactions', function () {
+        it('returns at most 5 upcoming recurring transactions', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create();
             $category = Category::factory()->for($user)->expense()->create();
@@ -963,7 +963,7 @@ describe('index', function () {
                 );
         });
 
-        test('only includes active recurring transactions', function () {
+        it('only includes active recurring transactions', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create();
             $category = Category::factory()->for($user)->expense()->create();
@@ -983,7 +983,7 @@ describe('index', function () {
                 );
         });
 
-        test('ordered by next_due_at ascending', function () {
+        it('ordered by next_due_at ascending', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create();
             $category = Category::factory()->for($user)->expense()->create();
@@ -1014,7 +1014,7 @@ describe('index', function () {
                 );
         });
 
-        test('excludes recurring transactions belonging to other users', function () {
+        it('excludes recurring transactions belonging to other users', function () {
             $user = User::factory()->create();
             $other = User::factory()->create();
 
@@ -1036,7 +1036,7 @@ describe('index', function () {
                 );
         });
 
-        test('each entry includes wallet and category relationships', function () {
+        it('each entry includes wallet and category relationships', function () {
             $user = User::factory()->create();
             $wallet = Wallet::factory()->for($user)->create(['name' => 'bKash']);
             $category = Category::factory()->for($user)->expense()->create(['name' => 'Utilities']);

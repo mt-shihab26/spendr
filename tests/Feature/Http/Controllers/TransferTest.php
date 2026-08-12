@@ -8,12 +8,12 @@ use Inertia\Testing\AssertableInertia as Assert;
 $validTransactedAt = '2024-01-15T10:30:00.000Z';
 
 describe('index', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $this->get(route('transfers.index'))
             ->assertRedirect(route('login'));
     });
 
-    test('authenticated users can visit the transfers page', function () {
+    it('authenticated users can visit the transfers page', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -22,7 +22,7 @@ describe('index', function () {
             ->assertInertia(fn (Assert $page) => $page->component('transfers/index'));
     });
 
-    test('returns only the authenticated users transfers', function () {
+    it('returns only the authenticated users transfers', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
@@ -38,7 +38,7 @@ describe('index', function () {
             ->assertInertia(fn (Assert $page) => $page->has('transfers.data', 1));
     });
 
-    test('returns wallets belonging to the authenticated user', function () {
+    it('returns wallets belonging to the authenticated user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         Wallet::factory()->for($user)->create();
@@ -49,7 +49,7 @@ describe('index', function () {
             ->assertInertia(fn (Assert $page) => $page->has('wallets', 1));
     });
 
-    test('filters transfers by wallet_id matching from or to wallet', function () {
+    it('filters transfers by wallet_id matching from or to wallet', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -64,7 +64,7 @@ describe('index', function () {
             ->assertInertia(fn (Assert $page) => $page->has('transfers.data', 2));
     });
 
-    test('filters transfers by date_from', function () {
+    it('filters transfers by date_from', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -77,7 +77,7 @@ describe('index', function () {
             ->assertInertia(fn (Assert $page) => $page->has('transfers.data', 1));
     });
 
-    test('filters transfers by date_to', function () {
+    it('filters transfers by date_to', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -90,7 +90,7 @@ describe('index', function () {
             ->assertInertia(fn (Assert $page) => $page->has('transfers.data', 1));
     });
 
-    test('wallet_id must belong to the authenticated user', function () {
+    it('wallet_id must belong to the authenticated user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $otherWallet = Wallet::factory()->for($other)->create();
@@ -100,7 +100,7 @@ describe('index', function () {
             ->assertSessionHasErrors('wallet_id');
     });
 
-    test('date_to must be after or equal to date_from', function () {
+    it('date_to must be after or equal to date_from', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -108,7 +108,7 @@ describe('index', function () {
             ->assertSessionHasErrors('date_to');
     });
 
-    test('includes filters in the response', function () {
+    it('includes filters in the response', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -121,7 +121,7 @@ describe('index', function () {
             );
     });
 
-    test('includes stats grouped by currency', function () {
+    it('includes stats grouped by currency', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create(['currency' => 'USD']);
         $walletB = Wallet::factory()->for($user)->create(['currency' => 'USD']);
@@ -135,18 +135,18 @@ describe('index', function () {
                 ->has('stats', 1)
                 ->where('stats.0.currency', 'USD')
                 ->where('stats.0.count', 2)
-                ->where('stats.0.volume', 300.0)
+                ->where('stats.0.volume', 300)
             );
     });
 });
 
 describe('create', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $this->get(route('transfers.create'))
             ->assertRedirect(route('login'));
     });
 
-    test('authenticated users can visit the create transfer page', function () {
+    it('authenticated users can visit the create transfer page', function () {
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -155,7 +155,7 @@ describe('create', function () {
             ->assertInertia(fn (Assert $page) => $page->component('transfers/create'));
     });
 
-    test('includes wallets belonging to the authenticated user', function () {
+    it('includes wallets belonging to the authenticated user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         Wallet::factory()->for($user)->create();
@@ -168,12 +168,12 @@ describe('create', function () {
 });
 
 describe('store', function () use (&$validTransactedAt) {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $this->post(route('transfers.store'), [])
             ->assertRedirect(route('login'));
     });
 
-    test('creates a transfer and redirects to the index with a success message', function () use (&$validTransactedAt) {
+    it('creates a transfer and redirects to the index with a success message', function () use (&$validTransactedAt) {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -189,7 +189,7 @@ describe('store', function () use (&$validTransactedAt) {
             ->assertSessionHas('success', 'Transfer created.');
     });
 
-    test('stores the transfer in the database', function () use (&$validTransactedAt) {
+    it('stores the transfer in the database', function () use (&$validTransactedAt) {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -209,7 +209,7 @@ describe('store', function () use (&$validTransactedAt) {
         ]);
     });
 
-    test('from_wallet_id is required', function () {
+    it('from_wallet_id is required', function () {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -218,7 +218,7 @@ describe('store', function () use (&$validTransactedAt) {
             ->assertSessionHasErrors('from_wallet_id');
     });
 
-    test('to_wallet_id is required', function () use (&$validTransactedAt) {
+    it('to_wallet_id is required', function () use (&$validTransactedAt) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -227,7 +227,7 @@ describe('store', function () use (&$validTransactedAt) {
             ->assertSessionHasErrors('to_wallet_id');
     });
 
-    test('from_wallet_id must belong to the authenticated user', function () use (&$validTransactedAt) {
+    it('from_wallet_id must belong to the authenticated user', function () use (&$validTransactedAt) {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $otherWallet = Wallet::factory()->for($other)->create();
@@ -243,7 +243,7 @@ describe('store', function () use (&$validTransactedAt) {
             ->assertSessionHasErrors('from_wallet_id');
     });
 
-    test('to_wallet_id must belong to the authenticated user', function () use (&$validTransactedAt) {
+    it('to_wallet_id must belong to the authenticated user', function () use (&$validTransactedAt) {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
@@ -259,7 +259,7 @@ describe('store', function () use (&$validTransactedAt) {
             ->assertSessionHasErrors('to_wallet_id');
     });
 
-    test('from_wallet_id and to_wallet_id must be different', function () use (&$validTransactedAt) {
+    it('from_wallet_id and to_wallet_id must be different', function () use (&$validTransactedAt) {
         $user = User::factory()->create();
         $wallet = Wallet::factory()->for($user)->create();
 
@@ -273,7 +273,7 @@ describe('store', function () use (&$validTransactedAt) {
             ->assertSessionHasErrors('to_wallet_id');
     });
 
-    test('amount is required', function () use (&$validTransactedAt) {
+    it('amount is required', function () use (&$validTransactedAt) {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -287,7 +287,7 @@ describe('store', function () use (&$validTransactedAt) {
             ->assertSessionHasErrors('amount');
     });
 
-    test('amount must be at least 0.01', function () use (&$validTransactedAt) {
+    it('amount must be at least 0.01', function () use (&$validTransactedAt) {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -302,7 +302,7 @@ describe('store', function () use (&$validTransactedAt) {
             ->assertSessionHasErrors('amount');
     });
 
-    test('transacted_at is required', function () {
+    it('transacted_at is required', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -316,7 +316,7 @@ describe('store', function () use (&$validTransactedAt) {
             ->assertSessionHasErrors('transacted_at');
     });
 
-    test('transacted_at must be a valid ISO 8601 datetime', function () {
+    it('transacted_at must be a valid ISO 8601 datetime', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -331,7 +331,7 @@ describe('store', function () use (&$validTransactedAt) {
             ->assertSessionHasErrors('transacted_at');
     });
 
-    test('notes is optional', function () use (&$validTransactedAt) {
+    it('notes is optional', function () use (&$validTransactedAt) {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -348,7 +348,7 @@ describe('store', function () use (&$validTransactedAt) {
 });
 
 describe('show', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -358,7 +358,7 @@ describe('show', function () {
             ->assertRedirect(route('login'));
     });
 
-    test('authenticated users can visit the transfer show page', function () {
+    it('authenticated users can visit the transfer show page', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -370,7 +370,7 @@ describe('show', function () {
             ->assertInertia(fn (Assert $page) => $page->component('transfers/show'));
     });
 
-    test('returns 403 when the transfer belongs to another user', function () {
+    it('returns 403 when the transfer belongs to another user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $walletA = Wallet::factory()->for($other)->create();
@@ -382,7 +382,7 @@ describe('show', function () {
             ->assertForbidden();
     });
 
-    test('includes from_wallet and to_wallet', function () {
+    it('includes from_wallet and to_wallet', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -398,7 +398,7 @@ describe('show', function () {
 });
 
 describe('edit', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -408,7 +408,7 @@ describe('edit', function () {
             ->assertRedirect(route('login'));
     });
 
-    test('authenticated users can visit the edit transfer page', function () {
+    it('authenticated users can visit the edit transfer page', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -420,7 +420,7 @@ describe('edit', function () {
             ->assertInertia(fn (Assert $page) => $page->component('transfers/edit'));
     });
 
-    test('returns 403 when the transfer belongs to another user', function () {
+    it('returns 403 when the transfer belongs to another user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $walletA = Wallet::factory()->for($other)->create();
@@ -432,7 +432,7 @@ describe('edit', function () {
             ->assertForbidden();
     });
 
-    test('includes from_wallet and to_wallet on the transfer', function () {
+    it('includes from_wallet and to_wallet on the transfer', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -449,7 +449,7 @@ describe('edit', function () {
 });
 
 describe('update', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -459,7 +459,7 @@ describe('update', function () {
             ->assertRedirect(route('login'));
     });
 
-    test('returns 403 when the transfer belongs to another user', function () {
+    it('returns 403 when the transfer belongs to another user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $walletA = Wallet::factory()->for($other)->create();
@@ -471,7 +471,7 @@ describe('update', function () {
             ->assertForbidden();
     });
 
-    test('updates the transfer and redirects back with a success message', function () {
+    it('updates the transfer and redirects back with a success message', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -485,7 +485,7 @@ describe('update', function () {
         expect($transfer->fresh()->amount)->toBe(500.0);
     });
 
-    test('amount must be at least 0.01', function () {
+    it('amount must be at least 0.01', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -496,7 +496,7 @@ describe('update', function () {
             ->assertSessionHasErrors('amount');
     });
 
-    test('from_wallet_id must belong to the authenticated user', function () {
+    it('from_wallet_id must belong to the authenticated user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
@@ -509,7 +509,7 @@ describe('update', function () {
             ->assertSessionHasErrors('from_wallet_id');
     });
 
-    test('to_wallet_id must belong to the authenticated user', function () {
+    it('to_wallet_id must belong to the authenticated user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
@@ -522,7 +522,7 @@ describe('update', function () {
             ->assertSessionHasErrors('to_wallet_id');
     });
 
-    test('from_wallet_id and to_wallet_id must be different', function () {
+    it('from_wallet_id and to_wallet_id must be different', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -535,7 +535,7 @@ describe('update', function () {
 });
 
 describe('destroy', function () {
-    test('guests are redirected to the login page', function () {
+    it('guests are redirected to the login page', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
@@ -545,7 +545,7 @@ describe('destroy', function () {
             ->assertRedirect(route('login'));
     });
 
-    test('returns 403 when the transfer belongs to another user', function () {
+    it('returns 403 when the transfer belongs to another user', function () {
         $user = User::factory()->create();
         $other = User::factory()->create();
         $walletA = Wallet::factory()->for($other)->create();
@@ -557,7 +557,7 @@ describe('destroy', function () {
             ->assertForbidden();
     });
 
-    test('deletes the transfer and redirects to the index with a success message', function () {
+    it('deletes the transfer and redirects to the index with a success message', function () {
         $user = User::factory()->create();
         $walletA = Wallet::factory()->for($user)->create();
         $walletB = Wallet::factory()->for($user)->create();
