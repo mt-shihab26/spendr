@@ -20,17 +20,27 @@ class RecurringTransactionController extends Controller
             'is_active' => ['nullable', 'boolean'],
         ]);
 
-        $recurring = $request->user()
+        $baseQuery = $request->user()
             ->recurringTransactions()
+            ->when(isset($filters['is_active']), fn ($q) => $q->where('is_active', $filters['is_active']));
+
+        $recurring = (clone $baseQuery)
             ->with(['wallet', 'category'])
-            ->when(isset($filters['is_active']), fn ($q) => $q->where('is_active', $filters['is_active']))
             ->orderBy('next_due_at')
             ->limit(config('limits.recurring_transactions'))
+            ->get();
+
+        $stats = (clone $baseQuery)
+            ->join('wallets', 'recurring_transactions.wallet_id', '=', 'wallets.id')
+            ->selectRaw('wallets.currency, COUNT(recurring_transactions.id) as total, SUM(CASE WHEN recurring_transactions.is_active = 1 THEN 1 ELSE 0 END) as active, ROUND(SUM(recurring_transactions.amount), 2) as amount')
+            ->groupBy('wallets.currency')
+            ->orderBy('wallets.currency')
             ->get();
 
         return inertia('recurring-transactions/index', [
             'filters' => $filters,
             'recurring' => $recurring,
+            'stats' => $stats,
         ]);
     }
 

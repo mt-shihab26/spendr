@@ -1,4 +1,5 @@
 import type { TRecurringTransactionWithRelations } from '@/types/withs';
+import type { TRecurringTransactionStat } from '@/components/screens/recurring-transactions/recurring-transaction-stats';
 
 import { RefreshCw } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -6,11 +7,14 @@ import { Heading } from '@/components/elements/heading';
 import { NewButton } from '@/components/elements/new-button';
 import { EmptyState } from '@/components/elements/empty-state';
 import { RecurringTransactionsTable } from '@/components/screens/recurring-transactions/recurring-transactions-table';
+import { RecurringTransactionStats } from '@/components/screens/recurring-transactions/recurring-transaction-stats';
 
 const RecurringTransactionsIndex = ({
     recurring,
+    stats,
 }: {
     recurring: TRecurringTransactionWithRelations[];
+    stats: TRecurringTransactionStat[];
 }) => {
     const title = `Recurring Transactions (${recurring.length})`;
 
@@ -44,7 +48,12 @@ const RecurringTransactionsIndex = ({
                         action="Create first recurring transaction"
                     />
                 ) : (
-                    <RecurringTransactionsTable recurring={recurring} />
+                    <>
+                        {stats.length > 0 && (
+                            <RecurringTransactionStats stats={stats} />
+                        )}
+                        <RecurringTransactionsTable recurring={recurring} />
+                    </>
                 )}
             </div>
         </AppLayout>

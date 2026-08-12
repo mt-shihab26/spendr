@@ -120,6 +120,24 @@ describe('index', function () {
                 ->where('filters.date_to', '2024-01-31')
             );
     });
+
+    test('includes stats grouped by currency', function () {
+        $user = User::factory()->create();
+        $walletA = Wallet::factory()->for($user)->create(['currency' => 'USD']);
+        $walletB = Wallet::factory()->for($user)->create(['currency' => 'USD']);
+
+        Transfer::factory()->create(['user_id' => $user->id, 'from_wallet_id' => $walletA->id, 'to_wallet_id' => $walletB->id, 'amount' => 100]);
+        Transfer::factory()->create(['user_id' => $user->id, 'from_wallet_id' => $walletA->id, 'to_wallet_id' => $walletB->id, 'amount' => 200]);
+
+        $this->actingAs($user)
+            ->get(route('transfers.index'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('stats', 1)
+                ->where('stats.0.currency', 'USD')
+                ->where('stats.0.count', 2)
+                ->where('stats.0.volume', 300.0)
+            );
+    });
 });
 
 describe('create', function () {
