@@ -6,14 +6,14 @@ import {
     ViewItem,
 } from '@/components/elements/actions-menu';
 
-import type { TTableTranster } from '@/types/transfers';
+import type { TTransterWithWallets } from '@/types/withs';
 
 export const TransferActions = ({
     transfer,
     onDelete,
 }: {
-    transfer: TTableTranster;
-    onDelete: (transfer: TTableTranster) => void;
+    transfer: TTransterWithWallets;
+    onDelete: (transfer: TTransterWithWallets) => void;
 }) => {
     return (
         <ActionsMenu>

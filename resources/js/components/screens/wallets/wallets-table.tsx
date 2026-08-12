@@ -1,5 +1,5 @@
 import type { TWallet } from '@/types/models';
-import type { TTableWallet } from '@/types/wallets';
+import type { TWalletWithStats } from '@/types/withs';
 
 import { useState } from 'react';
 import { getCurrencySymbol } from '@/lib/currency';
@@ -17,7 +17,7 @@ import { Net } from '@/components/elements/net';
 import { WalletActions } from '@/components/screens/wallets/wallet-actions';
 import { WalletDeleteDialog } from '@/components/screens/wallets/wallet-delete-dialog';
 
-export const WalletsTable = ({ wallets }: { wallets: TTableWallet[] }) => {
+export const WalletsTable = ({ wallets }: { wallets: TWalletWithStats[] }) => {
     const [walletToDelete, setWalletToDelete] = useState<TWallet | null>(null);
 
     return (

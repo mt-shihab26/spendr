@@ -1,5 +1,5 @@
 import type { TStatWallet } from '@/components/screens/wallets/wallet-stats';
-import type { TTableWallet } from '@/types/wallets';
+import type { TWalletWithStats } from '@/types/withs';
 
 import { Wallet } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -14,7 +14,7 @@ const WalletsIndex = ({
     wallets,
 }: {
     stats: TStatWallet[];
-    wallets: TTableWallet[];
+    wallets: TWalletWithStats[];
 }) => {
     const title = `Wallets (${wallets.length})`;
 

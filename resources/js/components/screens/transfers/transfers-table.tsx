@@ -1,4 +1,4 @@
-import type { TTableTranster } from '@/types/transfers';
+import type { TTransterWithWallets } from '@/types/withs';
 
 import { useState } from 'react';
 import { formatLocalDateLong, formatLocalDateTime } from '@/lib/date';
@@ -13,22 +13,21 @@ import { TransferDeleteDialog } from '@/components/screens/transfers/transfer-de
 export const TransfersTable = ({
     transfers,
 }: {
-    transfers: TTableTranster[];
+    transfers: TTransterWithWallets[];
 }) => {
-    const [toDelete, setToDelete] = useState<TTableTranster | null>(null);
+    const [toDelete, setToDelete] = useState<TTransterWithWallets | null>(null);
 
-    const transfersByDate = transfers.reduce<Map<string, TTableTranster[]>>(
-        (groups, transfer) => {
-            const dateKey = transfer.transacted_at.slice(0, 10);
-            const transfersForDate = groups.get(dateKey) ?? [];
+    const transfersByDate = transfers.reduce<
+        Map<string, TTransterWithWallets[]>
+    >((groups, transfer) => {
+        const dateKey = transfer.transacted_at.slice(0, 10);
+        const transfersForDate = groups.get(dateKey) ?? [];
 
-            transfersForDate.push(transfer);
-            groups.set(dateKey, transfersForDate);
+        transfersForDate.push(transfer);
+        groups.set(dateKey, transfersForDate);
 
-            return groups;
-        },
-        new Map(),
-    );
+        return groups;
+    }, new Map());
 
     return (
         <>

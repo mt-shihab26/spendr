@@ -6,7 +6,7 @@ import {
     ViewItem,
 } from '@/components/elements/actions-menu';
 
-import type { TTableWallet } from '@/types/wallets';
+import type { TWalletWithStats } from '@/types/withs';
 
 import { WithTooltip } from '@/components/elements/with-tooltip';
 import { TransactionsAction } from '@/components/elements/transactions-action';
@@ -16,8 +16,8 @@ export const WalletActions = ({
     wallet,
     onDelete,
 }: {
-    wallet: TTableWallet;
-    onDelete: (wallet: TTableWallet) => void;
+    wallet: TWalletWithStats;
+    onDelete: (wallet: TWalletWithStats) => void;
 }) => {
     const hasTransactions = (wallet.transactions_count ?? 0) > 0;
 

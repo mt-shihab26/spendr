@@ -1,5 +1,5 @@
 import type { TPaginated } from '@/types/utils';
-import type { TTableTranster } from '@/types/transfers';
+import type { TTransterWithWallets } from '@/types/withs';
 import type { TWallet } from '@/types/models';
 
 import { router } from '@inertiajs/react';
@@ -27,7 +27,7 @@ const TransfersIndex = ({
 }: {
     filters: TFilters;
     wallets: TWallet[];
-    transfers: TPaginated<TTableTranster>;
+    transfers: TPaginated<TTransterWithWallets>;
 }) => {
     const title = `Transfers (${transfers.total})`;
 

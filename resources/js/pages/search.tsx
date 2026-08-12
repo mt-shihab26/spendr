@@ -6,7 +6,7 @@ import type {
     TWallet,
 } from '@/types/models';
 
-import type { TTableTranster } from '@/types/transfers';
+import type { TTransterWithWallets } from '@/types/withs';
 
 import { useEffect, useRef } from 'react';
 import { router } from '@inertiajs/react';
@@ -48,7 +48,7 @@ const Search = ({
     query: string;
     transactions: TTransaction[];
     wallets: TWallet[];
-    transfers: TTableTranster[];
+    transfers: TTransterWithWallets[];
     categories: TCategory[];
     goals: TGoal[];
     recurring: TRecurringTransaction[];
