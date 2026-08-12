@@ -1,19 +1,8 @@
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-
 import type { TWallet } from '@/types/models';
+import type { ReactElement } from 'react';
 
 import { router } from '@inertiajs/react';
-import type { ReactElement } from 'react';
+import { DeleteDialog } from '@/components/elements/delete-dialog';
 
 export const WalletDeleteDialog = ({
     wallet,
@@ -28,35 +17,18 @@ export const WalletDeleteDialog = ({
     onDeleted?: () => void;
     trigger?: ReactElement;
 }) => {
-    const handleDelete = () => {
-        router.delete(route('wallets.destroy', wallet.id), {
-            onSuccess: () => onDeleted?.(),
-        });
-    };
-
     return (
-        <AlertDialog open={open} onOpenChange={onOpenChange}>
-            {trigger && <AlertDialogTrigger render={trigger} />}
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>
-                        Delete "{wallet.name}" Wallet?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                        This cannot be undone. Reassign or delete all
-                        transactions first.
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                        variant="destructive"
-                        onClick={handleDelete}
-                    >
-                        Delete
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+        <DeleteDialog
+            open={open}
+            onOpenChange={onOpenChange}
+            trigger={trigger}
+            title={`Delete "${wallet.name}" Wallet?`}
+            description="This cannot be undone. Reassign or delete all transactions first."
+            onConfirm={() =>
+                router.delete(route('wallets.destroy', wallet.id), {
+                    onSuccess: () => onDeleted?.(),
+                })
+            }
+        />
     );
 };
