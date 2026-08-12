@@ -30,7 +30,7 @@ class StoreRecurringTransactionRequest extends FormRequest
             'category_id' => ['nullable', 'uuid', Rule::exists('categories', 'id')->where('user_id', $this->user()->id)],
             'type' => ['required', 'string', Rule::in(array_column(Type::cases(), 'value'))],
             'amount' => ['required', 'numeric', 'min:0.01'],
-            'description' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'frequency' => ['required', 'string', Rule::in(array_column(Frequency::cases(), 'value'))],
             'next_due_at' => ['required', 'date'],

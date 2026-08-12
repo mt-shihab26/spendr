@@ -35,7 +35,7 @@ export const UpcomingRecurring = ({
                         </span>
                         <div className="flex flex-1 flex-col">
                             <span className="text-xs font-medium">
-                                {r.description}
+                                {r.name}
                             </span>
                             <span className="text-xs text-muted-foreground capitalize">
                                 {r.frequency} · due {r.next_due_at}

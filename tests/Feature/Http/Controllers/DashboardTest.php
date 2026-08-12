@@ -992,7 +992,7 @@ describe('index', function () {
                 'user_id' => $user->id,
                 'wallet_id' => $wallet->id,
                 'category_id' => $category->id,
-                'description' => 'Late',
+                'name' => 'Late',
                 'is_active' => true,
                 'next_due_at' => now()->addDays(10)->format('Y-m-d'),
             ]);
@@ -1001,7 +1001,7 @@ describe('index', function () {
                 'user_id' => $user->id,
                 'wallet_id' => $wallet->id,
                 'category_id' => $category->id,
-                'description' => 'Soon',
+                'name' => 'Soon',
                 'is_active' => true,
                 'next_due_at' => now()->addDays(2)->format('Y-m-d'),
             ]);
@@ -1009,8 +1009,8 @@ describe('index', function () {
             $this->actingAs($user)
                 ->get(route('dashboard'))
                 ->assertInertia(fn (Assert $page) => $page
-                    ->where('upcomingRecurring.0.description', 'Soon')
-                    ->where('upcomingRecurring.1.description', 'Late')
+                    ->where('upcomingRecurring.0.name', 'Soon')
+                    ->where('upcomingRecurring.1.name', 'Late')
                 );
         });
 

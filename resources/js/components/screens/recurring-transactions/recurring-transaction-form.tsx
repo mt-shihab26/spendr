@@ -22,7 +22,7 @@ type TFormData = {
     category_id: string;
     type: string;
     amount: string;
-    description: string;
+    name: string;
     notes: string;
     frequency: string;
     next_due_at: string;
@@ -44,7 +44,7 @@ export const RecurringTransactionForm = ({
             category_id: recurring?.category_id ?? '',
             type: recurring?.type ?? 'expense',
             amount: recurring?.amount?.toString() ?? '',
-            description: recurring?.description ?? '',
+            name: recurring?.name ?? '',
             notes: recurring?.notes ?? '',
             frequency: recurring?.frequency ?? 'monthly',
             next_due_at: recurring?.next_due_at ?? '',
@@ -68,14 +68,14 @@ export const RecurringTransactionForm = ({
     return (
         <form onSubmit={submit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="name">Name</Label>
                 <Input
-                    id="description"
-                    value={data.description}
-                    onChange={(e) => setData('description', e.target.value)}
+                    id="name"
+                    value={data.name}
+                    onChange={(e) => setData('name', e.target.value)}
                     placeholder="Monthly rent"
                 />
-                <InputError message={errors.description} />
+                <InputError message={errors.name} />
             </div>
 
             <div className="grid grid-cols-2 gap-4">

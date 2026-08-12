@@ -20,7 +20,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $category_id
  * @property Type $type
  * @property float $amount
- * @property string $description
+ * @property string $name
  * @property string|null $notes
  * @property Frequency $frequency
  * @property Carbon $next_due_at
@@ -30,7 +30,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['wallet_id', 'category_id', 'type', 'amount', 'description', 'notes', 'frequency', 'next_due_at', 'last_run_at', 'is_active'])]
+#[Fillable(['wallet_id', 'category_id', 'type', 'amount', 'name', 'notes', 'frequency', 'next_due_at', 'last_run_at', 'is_active'])]
 class RecurringTransaction extends Model
 {
     /** @use HasFactory<RecurringTransactionFactory> */

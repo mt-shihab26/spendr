@@ -43,7 +43,7 @@ export const RecurringTransactionDeleteDialog = ({
                     <AlertDialogTitle>Delete recurring transaction?</AlertDialogTitle>
                     <AlertDialogDescription>
                         <div>
-                            <span className="font-medium">{recurring.description}</span>
+                            <span className="font-medium">{recurring.name}</span>
                             <span> — {recurring.frequency}. Cannot be undone.</span>
                         </div>
                     </AlertDialogDescription>

@@ -29,7 +29,7 @@ const RecurringTransactionsShow = ({
     return (
         <AppLayout
             title={title}
-            description={recurring.description}
+            description={recurring.name}
             breadcrumbs={[
                 {
                     title: 'Recurring',
@@ -44,7 +44,7 @@ const RecurringTransactionsShow = ({
         >
             <div className="flex flex-col gap-4 p-4">
                 <div className="flex items-start justify-between">
-                    <Heading title={title} description={recurring.description} />
+                    <Heading title={title} description={recurring.name} />
                     <div className="flex items-center gap-2">
                         <EditButton
                             href={route(

@@ -66,7 +66,7 @@ const RecurringTransactionsIndex = ({
                             <thead>
                                 <tr className="border-b bg-muted/40 text-xs text-muted-foreground">
                                     <th className="px-3 py-2 text-left font-medium">
-                                        Description
+                                        Name
                                     </th>
                                     <th className="px-3 py-2 text-left font-medium">
                                         Wallet
@@ -109,7 +109,7 @@ const RecurringTransactionsIndex = ({
                                                     )}
                                                     className="font-medium hover:underline"
                                                 >
-                                                    {r.description}
+                                                    {r.name}
                                                 </Link>
                                             </div>
                                         </td>

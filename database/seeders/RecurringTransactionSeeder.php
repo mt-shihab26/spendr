@@ -33,7 +33,7 @@ class RecurringTransactionSeeder extends Seeder
                     'category_id' => $category->id,
                     'type' => $data['type'],
                     'amount' => $data['amount'],
-                    'description' => $data['description'],
+                    'name' => $data['name'],
                     'frequency' => $data['frequency'],
                     'next_due_at' => now()->startOfMonth()->addMonth()->addDays($data['due_day'] - 1)->format('Y-m-d'),
                     'is_active' => true,

@@ -133,7 +133,7 @@ export type TRecurringTransaction = {
     category_id: string | null;
     type: TType;
     amount: number;
-    description: string;
+    name: string;
     notes: string | null;
     frequency: TFrequency;
     next_due_at: string;
@@ -142,7 +142,4 @@ export type TRecurringTransaction = {
     deleted_at: string | null;
     created_at: string;
     updated_at: string;
-
-    wallet?: TWallet;
-    category?: TCategory | null;
 };

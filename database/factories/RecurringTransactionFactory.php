@@ -29,7 +29,7 @@ class RecurringTransactionFactory extends Factory
             'category_id' => null,
             'type' => $type,
             'amount' => fake()->randomFloat(2, 10, 5000),
-            'description' => fake()->words(3, true),
+            'name' => fake()->words(3, true),
             'notes' => fake()->optional()->sentence(),
             'frequency' => fake()->randomElement(Frequency::cases())->value,
             'next_due_at' => fake()->dateTimeBetween('now', '+3 months')->format('Y-m-d'),

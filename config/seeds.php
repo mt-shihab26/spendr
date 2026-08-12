@@ -88,12 +88,12 @@ return [
      * Demo recurring transactions seeded for the test user.
      */
     'demo_recurring' => [
-        ['wallet' => 'Bank Account', 'category' => 'Salary',       'type' => 'income',  'amount' => 55000, 'description' => 'Monthly Salary',      'frequency' => 'monthly', 'due_day' => 1],
-        ['wallet' => 'bKash',        'category' => 'Housing',       'type' => 'expense', 'amount' => 18000, 'description' => 'House Rent',           'frequency' => 'monthly', 'due_day' => 3],
-        ['wallet' => 'Wise USD',     'category' => 'Entertainment', 'type' => 'expense', 'amount' => 15.99, 'description' => 'Netflix Subscription', 'frequency' => 'monthly', 'due_day' => 5],
-        ['wallet' => 'Wise USD',     'category' => 'Education',     'type' => 'expense', 'amount' => 19.99, 'description' => 'Duolingo Plus',        'frequency' => 'monthly', 'due_day' => 12],
-        ['wallet' => 'bKash',        'category' => 'Transport',     'type' => 'expense', 'amount' => 1200,  'description' => 'Monthly Bus Pass',     'frequency' => 'monthly', 'due_day' => 1],
-        ['wallet' => 'Wise USD',     'category' => 'Education',     'type' => 'expense', 'amount' => 9.99,  'description' => 'Spotify Premium',      'frequency' => 'monthly', 'due_day' => 7],
+        ['wallet' => 'Bank Account', 'category' => 'Salary',       'type' => 'income',  'amount' => 55000, 'name' => 'Monthly Salary',      'frequency' => 'monthly', 'due_day' => 1],
+        ['wallet' => 'bKash',        'category' => 'Housing',       'type' => 'expense', 'amount' => 18000, 'name' => 'House Rent',           'frequency' => 'monthly', 'due_day' => 3],
+        ['wallet' => 'Wise USD',     'category' => 'Entertainment', 'type' => 'expense', 'amount' => 15.99, 'name' => 'Netflix Subscription', 'frequency' => 'monthly', 'due_day' => 5],
+        ['wallet' => 'Wise USD',     'category' => 'Education',     'type' => 'expense', 'amount' => 19.99, 'name' => 'Duolingo Plus',        'frequency' => 'monthly', 'due_day' => 12],
+        ['wallet' => 'bKash',        'category' => 'Transport',     'type' => 'expense', 'amount' => 1200,  'name' => 'Monthly Bus Pass',     'frequency' => 'monthly', 'due_day' => 1],
+        ['wallet' => 'Wise USD',     'category' => 'Education',     'type' => 'expense', 'amount' => 9.99,  'name' => 'Spotify Premium',      'frequency' => 'monthly', 'due_day' => 7],
     ],
 
     /*

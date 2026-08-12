@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignUuid('category_id')->nullable()->constrained()->nullOnDelete();
             $table->string('type', 20);
             $table->decimal('amount', 15, 2);
-            $table->string('description');
+            $table->string('name');
             $table->text('notes')->nullable();
             $table->string('frequency', 20); // App\Enums\Frequency
             $table->date('next_due_at');
