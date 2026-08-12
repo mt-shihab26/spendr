@@ -18,6 +18,10 @@ export const RecurringTransactionStats = ({
 }: {
     stats: TRecurringTransactionStat[];
 }) => {
+    if (stats.length === 0) {
+        return null;
+    }
+
     return (
         <div className="flex flex-col divide-y border">
             {stats.map(({ currency, total, active, amount }) => {
@@ -37,7 +41,10 @@ export const RecurringTransactionStats = ({
                                     {active} Active
                                 </Badge>
                                 {paused > 0 && (
-                                    <Badge variant="outline" className="text-xs">
+                                    <Badge
+                                        variant="outline"
+                                        className="text-xs"
+                                    >
                                         {paused} Paused
                                     </Badge>
                                 )}
@@ -57,7 +64,7 @@ export const RecurringTransactionStats = ({
                             />
                         </div>
                         <div className="ml-auto flex items-center">
-                            <span className="text-xs font-medium uppercase text-muted-foreground">
+                            <span className="text-xs font-medium text-muted-foreground uppercase">
                                 {currency}
                             </span>
                         </div>

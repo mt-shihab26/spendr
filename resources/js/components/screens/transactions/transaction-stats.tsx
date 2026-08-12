@@ -7,6 +7,10 @@ import { Expense } from '@/components/elements/expense';
 import { Net } from '@/components/elements/net';
 
 export const TransactionStats = ({ stats }: { stats: TTransactionStat[] }) => {
+    if (stats.length === 0) {
+        return null;
+    }
+
     return (
         <div className="flex flex-col divide-y border">
             {stats.map(({ currency, count, income, expense, net }) => (

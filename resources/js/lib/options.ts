@@ -16,8 +16,8 @@ export const typeOptions: {
     icon: LucideIcon;
     color: string;
 }[] = [
-    { value: 'expense', label: 'Expense', icon: Minus, color: 'text-expense' },
-    { value: 'income', label: 'Income', icon: Plus, color: 'text-income' },
+    { value: 'expense', label: 'Expense', icon: Minus, color: '#ef4444' },
+    { value: 'income', label: 'Income', icon: Plus, color: '#22c55e' },
 ];
 
 export const getTypeOption = (value: TType) => {

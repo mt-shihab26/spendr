@@ -49,9 +49,7 @@ const RecurringTransactionsIndex = ({
                     />
                 ) : (
                     <>
-                        {stats.length > 0 && (
-                            <RecurringTransactionStats stats={stats} />
-                        )}
+                        <RecurringTransactionStats stats={stats} />
                         <RecurringTransactionsTable recurring={recurring} />
                     </>
                 )}

@@ -102,7 +102,7 @@ const TransfersIndex = ({
                     />
                 ) : (
                     <>
-                        {stats.length > 0 && <TransferStats stats={stats} />}
+                        <TransferStats stats={stats} />
                         <InfiniteScroll data="transfers" onlyNext preserveUrl>
                             <TransfersTable transfers={transfers.data} />
                         </InfiniteScroll>

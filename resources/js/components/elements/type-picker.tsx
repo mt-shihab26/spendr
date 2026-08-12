@@ -21,14 +21,14 @@ export const TypePicker = ({
             disabled={disabled}
             className="flex gap-4"
         >
-            {typeOptions.map(({ value: val, label, icon: Icon }) => (
+            {typeOptions.map(({ value: val, label, icon: Icon, color }) => (
                 <div key={val} className="flex items-center gap-2">
                     <RadioGroupItem id={`type-${val}`} value={val} />
                     <Label
                         htmlFor={`type-${val}`}
                         className="flex cursor-pointer items-center gap-1.5 font-normal"
                     >
-                        <Icon className="size-4 text-muted-foreground" />
+                        <Icon className="size-4" style={{ color }} />
                         {label}
                     </Label>
                 </div>

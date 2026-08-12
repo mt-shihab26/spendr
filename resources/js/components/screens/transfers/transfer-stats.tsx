@@ -1,6 +1,6 @@
 import type { TCurrency } from '@/types/enums';
 
-import { ArrowLeftRight, Hash } from 'lucide-react';
+import { ArrowLeftRight } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { StatItem } from '@/components/elements/stat-item';
 import { TransactionCount } from '@/components/elements/transaction-count';
@@ -12,6 +12,10 @@ export type TTransferStat = {
 };
 
 export const TransferStats = ({ stats }: { stats: TTransferStat[] }) => {
+    if (stats.length === 0) {
+        return null;
+    }
+
     return (
         <div className="flex flex-col divide-y border">
             {stats.map(({ currency, count, volume }) => (

@@ -7,9 +7,6 @@ export type TBreadcrumb = {
     params?: Record<string, string | number>;
 };
 
-export type TTransactionPeriod = 'today' | 'week' | 'month' | 'year' | 'all';
-export type TTransactionType = 'income' | 'expense' | 'all';
-
 export type TPaginated<T> = {
     data: T[];
     current_page: number;

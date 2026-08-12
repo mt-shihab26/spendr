@@ -26,7 +26,7 @@ class TransactionController extends Controller
     public function index(Request $request): Response
     {
         $validated = $request->validate([
-            'type' => ['nullable', 'string', Rule::in(['income', 'expense', 'all'])],
+            'type' => ['nullable', 'string', Rule::in(['income', 'expense'])],
             'search' => ['nullable', 'string', 'max:100'],
             'wallet_id' => ['nullable', 'uuid', 'exists:wallets,id'],
             'category_id' => ['nullable', 'uuid', 'exists:categories,id'],
@@ -34,14 +34,14 @@ class TransactionController extends Controller
             'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
         ]);
 
-        $type = $validated['type'] ?? 'all';
+        $type = $validated['type'] ?? null;
 
         $wallets = $request->user()->wallets()->orderBy('sort_order')->get();
         $categories = $request->user()->categories()->orderBy('sort_order')->get();
 
         $baseQuery = $this->buildQuery($request, $validated);
 
-        $transactionsQuery = $type !== 'all'
+        $transactionsQuery = $type !== null
             ? (clone $baseQuery)->where('type', $type)
             : clone $baseQuery;
 
@@ -91,7 +91,7 @@ class TransactionController extends Controller
     public function export(Request $request): StreamedResponse
     {
         $validated = $request->validate([
-            'type' => ['nullable', 'string', Rule::in(['income', 'expense', 'all'])],
+            'type' => ['nullable', 'string', Rule::in(['income', 'expense'])],
             'search' => ['nullable', 'string', 'max:100'],
             'wallet_id' => ['nullable', 'uuid', 'exists:wallets,id'],
             'category_id' => ['nullable', 'uuid', 'exists:categories,id'],
@@ -99,11 +99,11 @@ class TransactionController extends Controller
             'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
         ]);
 
-        $type = $validated['type'] ?? 'all';
+        $type = $validated['type'] ?? null;
 
         $query = $this->buildQuery($request, $validated);
 
-        if ($type !== 'all') {
+        if ($type !== null) {
             $query->where('type', $type);
         }
 
