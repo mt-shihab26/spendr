@@ -39,7 +39,7 @@ class ProcessRecurringTransactions extends Command
                     'category_id' => $recurring->category_id,
                     'type' => $recurring->type->value,
                     'amount' => $recurring->amount,
-                    'description' => $recurring->description,
+                    'description' => $recurring->name,
                     'notes' => $recurring->notes,
                     'transacted_at' => now(),
                 ]);

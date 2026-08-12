@@ -43,9 +43,9 @@ class RecurringTransactionReminder extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject("Recurring transaction processed: {$this->recurring->description}")
+            ->subject("Recurring transaction processed: {$this->recurring->name}")
             ->greeting('Recurring Transaction')
-            ->line("Your recurring {$this->recurring->type->value} \"{$this->recurring->description}\" has been automatically processed.")
+            ->line("Your recurring {$this->recurring->type->value} \"{$this->recurring->name}\" has been automatically processed.")
             ->line("Amount: {$this->recurring->amount}")
             ->line("Next due: {$this->recurring->next_due_at->toFormattedDateString()}")
             ->action('View Recurring Transactions', url(route('recurring-transactions.index')));
@@ -60,7 +60,7 @@ class RecurringTransactionReminder extends Notification
     {
         return [
             'recurring_id' => $this->recurring->id,
-            'description' => $this->recurring->description,
+            'description' => $this->recurring->name,
             'type' => $this->recurring->type->value,
             'amount' => $this->recurring->amount,
             'frequency' => $this->recurring->frequency,
