@@ -59,19 +59,19 @@ export const WalletsTable = ({ wallets }: { wallets: TTableWallet[] }) => {
                             </div>
 
                             <div className="flex flex-1 items-center">
-                                <div className="w-[14%]">
+                                <div className="flex-1">
                                     <InitialBalance
                                         amount={wallet.initial_balance}
                                         currency={wallet.currency}
                                     />
                                 </div>
-                                <div className="w-[14%]">
+                                <div className="flex-1">
                                     <Income
                                         income={wallet.income}
                                         currency={wallet.currency}
                                     />
                                 </div>
-                                <div className="w-[14%]">
+                                <div className="flex-1">
                                     <Expense
                                         expense={wallet.expense}
                                         currency={wallet.currency}
@@ -79,7 +79,7 @@ export const WalletsTable = ({ wallets }: { wallets: TTableWallet[] }) => {
                                 </div>
                                 {hasTransfers && (
                                     <>
-                                        <div className="w-[14%]">
+                                        <div className="flex-1">
                                             {wallet.transfers_in > 0 && (
                                                 <TransferIn
                                                     amount={wallet.transfers_in}
@@ -87,7 +87,7 @@ export const WalletsTable = ({ wallets }: { wallets: TTableWallet[] }) => {
                                                 />
                                             )}
                                         </div>
-                                        <div className="w-[14%]">
+                                        <div className="flex-1">
                                             {wallet.transfers_out > 0 && (
                                                 <TransferOut
                                                     amount={
@@ -99,22 +99,16 @@ export const WalletsTable = ({ wallets }: { wallets: TTableWallet[] }) => {
                                         </div>
                                     </>
                                 )}
-                                <div className="w-[14%]">
+                                <div className="flex-1">
                                     <Net
                                         net={wallet.net}
                                         currency={wallet.currency}
                                     />
                                 </div>
-                                <div className="w-[14%]">
+                                <div className="flex-1">
                                     <Balance
                                         balance={wallet.balance}
                                         currency={wallet.currency}
-                                        prominent={false}
-                                    />
-                                </div>
-                                <div className="w-[14%]">
-                                    <TransactionCount
-                                        count={wallet.transactions_count}
                                         prominent={false}
                                     />
                                 </div>

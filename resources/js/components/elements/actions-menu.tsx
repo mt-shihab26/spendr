@@ -20,7 +20,9 @@ export const ActionsMenu = ({ children }: { children: ReactNode }) => {
             >
                 <MoreHorizontal />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">{children}</DropdownMenuContent>
+            <DropdownMenuContent align="end" className="min-w-38">
+                {children}
+            </DropdownMenuContent>
         </DropdownMenu>
     );
 };

@@ -8,4 +8,5 @@ export type TTableWallet = TWallet & {
     transfers_in: number;
     transfers_out: number;
     transactions_count: number;
+    transfers_count: number;
 };

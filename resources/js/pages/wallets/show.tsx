@@ -7,7 +7,8 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { EditButton } from '@/components/elements/edit-button';
 import { BackButton } from '@/components/elements/back-button';
-import { TransactionsButton } from '@/components/elements/transactions-button';
+import { TransactionsAction } from '@/components/elements/transactions-action';
+import { TransfersAction } from '@/components/elements/transfers-action';
 import { Balance } from '@/components/elements/balance';
 import { InitialBalance } from '@/components/elements/initial-balance';
 import { Income } from '@/components/elements/income';
@@ -25,6 +26,7 @@ type TShowWallet = TWallet & {
     transfers_out: number;
     net: number;
     transactions_count: number;
+    transfers_count: number;
 };
 
 const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
@@ -56,7 +58,18 @@ const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
                         color={wallet.color}
                     />
                     <div className="flex items-center gap-2">
-                        <TransactionsButton href={route('transactions.index', { wallet_id: wallet.id })} />
+                        <TransactionsAction
+                            type="button"
+                            href={route('transactions.index', {
+                                wallet_id: wallet.id,
+                            })}
+                        />
+                        <TransfersAction
+                            type="button"
+                            href={route('transfers.index', {
+                                wallet_id: wallet.id,
+                            })}
+                        />
                         <EditButton href={route('wallets.edit', wallet.id)} />
                         <BackButton href={route('wallets.index')} />
                     </div>
@@ -64,10 +77,16 @@ const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
 
                 <div className="flex w-full gap-4">
                     <div className="w-full border p-4">
-                        <Balance balance={wallet.balance} currency={wallet.currency} />
+                        <Balance
+                            balance={wallet.balance}
+                            currency={wallet.currency}
+                        />
                     </div>
                     <div className="w-full border p-4">
-                        <InitialBalance amount={wallet.initial_balance} currency={wallet.currency} />
+                        <InitialBalance
+                            amount={wallet.initial_balance}
+                            currency={wallet.currency}
+                        />
                     </div>
                     <div className="w-full border p-4">
                         <Net net={wallet.net} currency={wallet.currency} />
@@ -75,14 +94,26 @@ const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
                     <div className="w-full border p-4">
                         <TransactionCount count={wallet.transactions_count} />
                     </div>
+                    <div className="w-full border p-4">
+                        <TransactionCount
+                            count={wallet.transfers_count}
+                            label="Transfers"
+                        />
+                    </div>
                 </div>
 
                 <div className="flex w-full gap-4">
                     <div className="w-full border p-4">
-                        <Income income={wallet.income} currency={wallet.currency} />
+                        <Income
+                            income={wallet.income}
+                            currency={wallet.currency}
+                        />
                     </div>
                     <div className="w-full border p-4">
-                        <Expense expense={wallet.expense} currency={wallet.currency} />
+                        <Expense
+                            expense={wallet.expense}
+                            currency={wallet.currency}
+                        />
                     </div>
                 </div>
 
@@ -90,12 +121,18 @@ const WalletsShow = ({ wallet }: { wallet: TShowWallet }) => {
                     <div className="flex w-full gap-4">
                         {wallet.transfers_in > 0 && (
                             <div className="w-full border p-4">
-                                <TransferIn amount={wallet.transfers_in} currency={wallet.currency} />
+                                <TransferIn
+                                    amount={wallet.transfers_in}
+                                    currency={wallet.currency}
+                                />
                             </div>
                         )}
                         {wallet.transfers_out > 0 && (
                             <div className="w-full border p-4">
-                                <TransferOut amount={wallet.transfers_out} currency={wallet.currency} />
+                                <TransferOut
+                                    amount={wallet.transfers_out}
+                                    currency={wallet.currency}
+                                />
                             </div>
                         )}
                     </div>

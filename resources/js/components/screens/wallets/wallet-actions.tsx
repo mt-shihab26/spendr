@@ -10,7 +10,10 @@ import {
 import type { TTableWallet } from '@/types/wallets';
 
 import { router } from '@inertiajs/react';
+
 import { WithTooltip } from '@/components/elements/with-tooltip';
+import { TransactionsAction } from '@/components/elements/transactions-action';
+import { TransfersAction } from '@/components/elements/transfers-action';
 
 export const WalletActions = ({
     wallet,
@@ -25,6 +28,14 @@ export const WalletActions = ({
         <ActionsMenu>
             <ViewItem href={route('wallets.show', wallet.id)} />
             <EditItem href={route('wallets.edit', wallet.id)} />
+            <TransactionsAction
+                href={route('transactions.index', { wallet_id: wallet.id })}
+                count={wallet.transactions_count}
+            />
+            <TransfersAction
+                href={route('transfers.index', { wallet_id: wallet.id })}
+                count={wallet.transfers_count}
+            />
             {!wallet.is_default && (
                 <SetDefaultItem
                     onClick={() =>

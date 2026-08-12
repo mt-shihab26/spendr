@@ -24,7 +24,7 @@ class WalletController extends Controller
             ->withSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount')
             ->withSum('outgoingTransfers as transfers_out', 'amount')
             ->withSum('incomingTransfers as transfers_in', 'amount')
-            ->withCount('transactions')
+            ->withCount(['transactions', 'outgoingTransfers as outgoing_transfers_count', 'incomingTransfers as incoming_transfers_count'])
             ->orderBy('sort_order')
             ->orderBy('created_at')
             ->limit(config('limits.wallets'))
@@ -36,6 +36,7 @@ class WalletController extends Controller
                 $wallet->setAttribute('transfers_out', $wallet->transfersOut());
                 $wallet->setAttribute('net', $wallet->net());
                 $wallet->setAttribute('balance', $wallet->balance());
+                $wallet->setAttribute('transfers_count', ($wallet->outgoing_transfers_count ?? 0) + ($wallet->incoming_transfers_count ?? 0));
             });
 
         $stats = $wallets
@@ -98,11 +99,12 @@ class WalletController extends Controller
             ->loadSum(['transactions as expense' => fn ($q) => $q->where('type', Type::Expense->value)], 'amount')
             ->loadSum(['outgoingTransfers as transfers_out'], 'amount')
             ->loadSum(['incomingTransfers as transfers_in'], 'amount')
-            ->loadCount('transactions')
+            ->loadCount(['transactions', 'outgoingTransfers as outgoing_transfers_count', 'incomingTransfers as incoming_transfers_count'])
             ->setAttribute('transfers_in', $wallet->transfersIn())
             ->setAttribute('transfers_out', $wallet->transfersOut())
             ->setAttribute('net', $wallet->net())
-            ->setAttribute('balance', $wallet->balance());
+            ->setAttribute('balance', $wallet->balance())
+            ->setAttribute('transfers_count', ($wallet->outgoing_transfers_count ?? 0) + ($wallet->incoming_transfers_count ?? 0));
 
         return inertia('wallets/show', [
             'wallet' => $wallet,
