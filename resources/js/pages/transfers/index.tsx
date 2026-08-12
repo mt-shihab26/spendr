@@ -14,25 +14,31 @@ import { WalletSelect } from '@/components/elements/wallet-select';
 import { EmptyState } from '@/components/elements/empty-state';
 
 type TFilters = {
+    wallet_id: string | null;
     date_from: string | null;
     date_to: string | null;
-    wallet_id: string | null;
 };
 
 const TransfersIndex = ({
-    transfers,
-    wallets,
     filters,
+    wallets,
+    transfers,
 }: {
-    transfers: TPaginated<TTransfer>;
-    wallets: TWallet[];
     filters: TFilters;
+    wallets: TWallet[];
+    transfers: TPaginated<TTransfer>;
 }) => {
     const navigate = (params: Partial<TFilters>) => {
         router.get(
             route('transfers.index'),
-            { ...filters, ...params },
-            { preserveScroll: true, replace: true },
+            {
+                ...filters,
+                ...params,
+            },
+            {
+                preserveScroll: true,
+                replace: true,
+            },
         );
     };
 

@@ -211,10 +211,10 @@ export const DateRangePicker = ({
                 <PopoverTrigger
                     className={cn(
                         buttonVariants({
-                            variant: hasSelection ? 'default' : 'outline',
+                            variant: hasSelection ? 'outline' : 'outline',
                             size: 'sm',
                         }),
-                        'h-8 w-full gap-1.5 text-xs font-normal',
+                        'h-8 gap-1.5 text-xs font-normal',
                     )}
                 >
                     <CalendarIcon className="size-3.5 shrink-0" />
