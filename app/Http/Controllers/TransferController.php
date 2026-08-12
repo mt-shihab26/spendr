@@ -18,22 +18,25 @@ class TransferController extends Controller
      */
     public function index(Request $request): Response
     {
-        $wallets = $request->user()->wallets()->orderBy('sort_order')->get();
-
-        $validated = $request->validate([
+        $filters = $request->validate([
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
             'wallet_id' => ['nullable', 'uuid', Rule::exists('wallets', 'id')->where('user_id', $request->user()->id)],
         ]);
 
+        $wallets = $request->user()
+            ->wallets()
+            ->orderBy('sort_order')
+            ->get();
+
         $query = $request->user()
             ->transfers()
             ->with(['fromWallet', 'toWallet'])
-            ->when(! empty($validated['date_from']), fn ($q) => $q->whereDate('transacted_at', '>=', $validated['date_from']))
-            ->when(! empty($validated['date_to']), fn ($q) => $q->whereDate('transacted_at', '<=', $validated['date_to']))
-            ->when(! empty($validated['wallet_id']), function ($q) use ($validated): void {
+            ->when(! empty($filters['date_from']), fn ($q) => $q->whereDate('transacted_at', '>=', $filters['date_from']))
+            ->when(! empty($filters['date_to']), fn ($q) => $q->whereDate('transacted_at', '<=', $filters['date_to']))
+            ->when(! empty($filters['wallet_id']), function ($q) use ($filters): void {
                 $q->where(fn ($q) => $q
-                    ->where('from_wallet_id', $validated['wallet_id'])->orWhere('to_wallet_id', $validated['wallet_id'])
+                    ->where('from_wallet_id', $filters['wallet_id'])->orWhere('to_wallet_id', $filters['wallet_id'])
                 );
             })
             ->orderByDesc('transacted_at')
@@ -41,12 +44,8 @@ class TransferController extends Controller
 
         return inertia('transfers/index', [
             'wallets' => $wallets,
+            'filters' => $filters,
             'transfers' => Inertia::scroll($query->paginate(20)),
-            'filters' => [
-                'date_from' => $validated['date_from'] ?? null,
-                'date_to' => $validated['date_to'] ?? null,
-                'wallet_id' => $validated['wallet_id'] ?? null,
-            ],
         ]);
     }
 
