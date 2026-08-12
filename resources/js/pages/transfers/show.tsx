@@ -1,27 +1,45 @@
 import type { TTransterWithWallets } from '@/types/withs';
 
-import { formatLocalDateTimeLong } from '@/lib/date';
 import { formatCurrency } from '@/lib/formats';
+import { formatLocalDateLong, formatLocalDateTime } from '@/lib/date';
+import { getCurrencySymbol } from '@/lib/currency';
 
-import { AppLayout } from '@/components/layouts/app-layout';
 import { Link } from '@inertiajs/react';
+import { CalendarDays, FileText } from 'lucide-react';
+import { AppLayout } from '@/components/layouts/app-layout';
 import { Heading } from '@/components/elements/heading';
 import { EditButton } from '@/components/elements/edit-button';
 import { BackButton } from '@/components/elements/back-button';
 import { IconBadge } from '@/components/elements/icon-badge';
 
+const WalletCard = ({ wallet }: { wallet: TTransterWithWallets['from_wallet'] }) => (
+    <div className="flex items-center gap-3">
+        <IconBadge icon={wallet.icon} color={wallet.color} />
+        <div>
+            <Link
+                href={route('wallets.show', wallet.id)}
+                className="text-sm font-medium hover:underline"
+            >
+                {wallet.name}
+            </Link>
+            <p className="text-xs text-muted-foreground">
+                {getCurrencySymbol(wallet.currency)} {wallet.currency}
+            </p>
+        </div>
+    </div>
+);
+
 const TransfersShow = ({ transfer }: { transfer: TTransterWithWallets }) => {
+    const title = `Transfer #${transfer.id}`;
+
     return (
         <AppLayout
-            title="Transfer"
-            description="Transfer details"
+            title={title}
+            description={formatLocalDateLong(transfer.transacted_at)}
             breadcrumbs={[
+                { title: 'Transfers', route: 'transfers.index' },
                 {
-                    title: 'Transfers',
-                    route: 'transfers.index',
-                },
-                {
-                    title: 'Transfer',
+                    title,
                     route: 'transfers.show',
                     params: { transfer: transfer.id },
                 },
@@ -30,84 +48,56 @@ const TransfersShow = ({ transfer }: { transfer: TTransterWithWallets }) => {
             <div className="flex flex-col gap-4 p-4">
                 <div className="flex items-start justify-between">
                     <Heading
-                        title="Transfer"
-                        description={formatLocalDateTimeLong(
-                            transfer.transacted_at,
-                        )}
+                        title={title}
+                        description={formatLocalDateLong(transfer.transacted_at)}
                     />
-                    <div className="flex items-center">
-                        <EditButton
-                            href={route('transfers.edit', transfer.id)}
-                        />
+                    <div className="flex items-center gap-2">
+                        <EditButton href={route('transfers.edit', transfer.id)} />
                         <BackButton href={route('transfers.index')} />
                     </div>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="border p-4">
+
+                <div className="flex w-full gap-4">
+                    <div className="w-full border p-4">
+                        <p className="text-xs text-muted-foreground">ID</p>
+                        <p className="mt-1 font-mono text-xs text-muted-foreground">
+                            {transfer.id}
+                        </p>
+                    </div>
+                    <div className="w-full border p-4">
                         <p className="text-xs text-muted-foreground">Amount</p>
-                        <p className="mt-1 text-lg font-semibold text-blue-600 tabular-nums">
-                            {formatCurrency(
-                                transfer.amount,
-                                transfer.from_wallet?.currency,
-                            )}
+                        <p className="mt-1 text-lg font-bold tabular-nums text-blue-600">
+                            {formatCurrency(transfer.amount, transfer.from_wallet.currency)}
                         </p>
                     </div>
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">
-                            From Wallet
-                        </p>
-                        <div className="mt-1 flex items-center gap-2">
-                            {transfer.from_wallet && (
-                                <IconBadge
-                                    icon={transfer.from_wallet.icon}
-                                    color={transfer.from_wallet.color}
-                                />
-                            )}
-                            {transfer.from_wallet ? (
-                                <Link
-                                    href={route(
-                                        'wallets.show',
-                                        transfer.from_wallet.id,
-                                    )}
-                                    className="text-sm font-medium hover:underline"
-                                >
-                                    {transfer.from_wallet.name}
-                                </Link>
-                            ) : (
-                                <span className="text-sm font-medium">—</span>
-                            )}
+                    <div className="w-full border p-4">
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <CalendarDays className="size-3" />
+                            Date
                         </div>
-                    </div>
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">
-                            To Wallet
+                        <p className="mt-1 text-sm font-medium">
+                            {formatLocalDateTime(transfer.transacted_at)}
                         </p>
-                        <div className="mt-1 flex items-center gap-2">
-                            {transfer.to_wallet && (
-                                <IconBadge
-                                    icon={transfer.to_wallet.icon}
-                                    color={transfer.to_wallet.color}
-                                />
-                            )}
-                            {transfer.to_wallet ? (
-                                <Link
-                                    href={route(
-                                        'wallets.show',
-                                        transfer.to_wallet.id,
-                                    )}
-                                    className="text-sm font-medium hover:underline"
-                                >
-                                    {transfer.to_wallet.name}
-                                </Link>
-                            ) : (
-                                <span className="text-sm font-medium">—</span>
-                            )}
-                        </div>
                     </div>
                 </div>
+
+                <div className="flex w-full gap-4">
+                    <div className="w-full border p-4">
+                        <p className="mb-2 text-xs text-muted-foreground">From</p>
+                        <WalletCard wallet={transfer.from_wallet} />
+                    </div>
+                    <div className="w-full border p-4">
+                        <p className="mb-2 text-xs text-muted-foreground">To</p>
+                        <WalletCard wallet={transfer.to_wallet} />
+                    </div>
+                </div>
+
                 {transfer.notes && (
-                    <div className="border p-4">
-                        <p className="text-xs text-muted-foreground">Notes</p>
+                    <div className="w-full border p-4">
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <FileText className="size-3" />
+                            Notes
+                        </div>
                         <p className="mt-1 text-sm">{transfer.notes}</p>
                     </div>
                 )}
