@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\DevCommands;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -27,8 +28,12 @@ class AppServiceProvider extends ServiceProvider
         $this->configureDefaults();
     }
 
+    /**
+     * Configure default behaviors for application services.
+     */
     protected function configureDefaults(): void
     {
+        DevCommands::inline();
         Date::use(CarbonImmutable::class);
         Model::preventLazyLoading(! app()->isProduction());
         DB::prohibitDestructiveCommands(app()->isProduction());
